@@ -1197,43 +1197,41 @@
 
                // ==================== دوال التنقل بين الصفحات (المعدلة) ====================
         
-        // دالة إخفاء جميع الصفحات بشكل قاطع
         function hideAllPages() {
-            const pages = ['homePage', 'loginPage', 'registerPage', 'forgotPasswordPage', 'dashboardPage', 'aboutPage', 'myAccountPage'];
-            pages.forEach(page => {
-                const el = document.getElementById(page);
-                if (el) {
-                    el.classList.add('hidden');
-                    el.style.display = 'none';  // 🔧 إضافة强制 إخفاء
-                }
-            });
-            console.log('✅ تم إخفاء جميع الصفحات');
+    const pages = ['homePage', 'loginPage', 'registerPage', 'forgotPasswordPage', 'dashboardPage', 'aboutPage', 'myAccountPage', 'mailPage'];
+    pages.forEach(page => {
+        const el = document.getElementById(page);
+        if (el) {
+            el.classList.add('hidden');
+            el.style.display = 'none';
         }
+    });
+    console.log('✅ تم إخفاء جميع الصفحات');
+}
 
-        // دالة إظهار صفحة معينة بشكل قاطع
         function showSpecificPage(pageId) {
-            // إخفاء جميع الصفحات أولاً
-            const pages = ['homePage', 'loginPage', 'registerPage', 'forgotPasswordPage', 'dashboardPage', 'aboutPage', 'myAccountPage'];
-            pages.forEach(page => {
-                const el = document.getElementById(page);
-                if (el) {
-                    el.classList.add('hidden');
-                    el.style.display = 'none';
-                }
-            });
-            
-            // إظهار الصفحة المطلوبة
-            const page = document.getElementById(pageId);
-            if (page) {
-                page.classList.remove('hidden');
-                page.style.display = 'flex';  // 🔧强制 إظهار
-                console.log(`✅ تم إظهار الصفحة: ${pageId}`);
-                return true;
-            } else {
-                console.error(`❌ الصفحة غير موجودة: ${pageId}`);
-                return false;
-            }
+    // إخفاء جميع الصفحات أولاً
+    const pages = ['homePage', 'loginPage', 'registerPage', 'forgotPasswordPage', 'dashboardPage', 'aboutPage', 'myAccountPage', 'mailPage'];
+    pages.forEach(page => {
+        const el = document.getElementById(page);
+        if (el) {
+            el.classList.add('hidden');
+            el.style.display = 'none';
         }
+    });
+    
+    // إظهار الصفحة المطلوبة
+    const page = document.getElementById(pageId);
+    if (page) {
+        page.classList.remove('hidden');
+        page.style.display = 'flex';
+        console.log(`✅ تم إظهار الصفحة: ${pageId}`);
+        return true;
+    } else {
+        console.error(`❌ الصفحة غير موجودة: ${pageId}`);
+        return false;
+    }
+}
 
         function showHomePage() {
             showSpecificPage('homePage');
