@@ -9,6 +9,29 @@
     <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-database-compat.js"></script>
     <style>
+        /* تأكيد ظهور المحتوى */
+#loginPage:not(.hidden),
+#registerPage:not(.hidden),
+#aboutPage:not(.hidden),
+#myAccountPage:not(.hidden),
+#dashboardPage:not(.hidden),
+#forgotPasswordPage:not(.hidden) {
+    display: flex !important;
+    opacity: 1 !important;
+    visibility: visible !important;
+}
+
+/* تأكيد ظهور العناصر الداخلية */
+.page-container {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+}
+
+/* حل لمشكلة الخلفية البيضاء */
+.bg-white, .bg-gray-50, .rounded-2xl, .rounded-3xl {
+    background-color: white !important;
+}
         /* Social Media Buttons - Footer */
 .footer-social {
     display: flex;
@@ -1482,7 +1505,44 @@ async function isUsernameTaken(username) {
             }
             console.log('✅ عرض صفحة حسابي');
         }
-
+        // ====================强制 إظهار المحتوى ====================
+        function forceShowContent() {
+            // التأكد من أن جميع الصفحات لها خلفية
+            const pages = ['loginPage', 'registerPage', 'aboutPage', 'myAccountPage', 'dashboardPage', 'forgotPasswordPage'];
+            pages.forEach(pageId => {
+                const page = document.getElementById(pageId);
+                if (page && !page.classList.contains('hidden')) {
+                    page.style.display = 'flex';
+                    page.style.minHeight = '100vh';
+                    console.log(`🔧 تم强制 إظهار محتوى ${pageId}`);
+                }
+            });
+        }
+        
+        // مراقبة التغييرات على الصفحات
+        const observer = new MutationObserver(function(mutations) {
+            mutations.forEach(function(mutation) {
+                if (mutation.type === 'attributes' && mutation.attributeName === 'class') {
+                    const target = mutation.target;
+                    if (target.id && !target.classList.contains('hidden')) {
+                        target.style.display = 'flex';
+                        console.log(`🔍 تم اكتشاف إظهار صفحة: ${target.id}`);
+                    }
+                }
+            });
+        });
+        
+        // بدء المراقبة بعد تحميل الصفحة
+        window.addEventListener('load', function() {
+            const pages = ['loginPage', 'registerPage', 'aboutPage', 'myAccountPage', 'dashboardPage', 'forgotPasswordPage'];
+            pages.forEach(pageId => {
+                const page = document.getElementById(pageId);
+                if (page) {
+                    observer.observe(page, { attributes: true });
+                }
+            });
+            console.log('✅ تم تفعيل مراقبة الصفحات');
+        });
         // ==================== دوال تحديث واجهة المستخدم ====================
         function updateHomeUI() {
             const loginArea = document.getElementById('loginBtnAreaHome');
