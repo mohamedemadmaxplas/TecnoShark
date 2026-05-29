@@ -15,11 +15,132 @@
         .service-card:hover { transform: translateY(-8px); transition: all 0.3s ease; }
         .hero-gradient { background: linear-gradient(135deg, #1e3a5f 0%, #0f2b4f 100%); }
         .suggestion-item:hover { background-color: #e0e7ff; }
+        
+        /* Sidebar Styles */
+        .sidebar {
+            position: fixed;
+            top: 0;
+            right: -100%;
+            width: 280px;
+            height: 100%;
+            background: linear-gradient(135deg, #1e293b 0%, #0f172a 100%);
+            z-index: 1000;
+            transition: right 0.3s ease;
+            box-shadow: -5px 0 25px rgba(0,0,0,0.2);
+            overflow-y: auto;
+        }
+
+        .sidebar.active {
+            right: 0;
+        }
+
+        .overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.5);
+            z-index: 999;
+            display: none;
+        }
+
+        .overlay.active {
+            display: block;
+        }
+
+        .menu-btn {
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .menu-btn:hover {
+            opacity: 0.8;
+        }
+
+        .sidebar-link {
+            transition: all 0.3s ease;
+            border-radius: 12px;
+        }
+
+        .sidebar-link:hover {
+            background: rgba(59, 130, 246, 0.3);
+            padding-right: 8px;
+        }
+
+        .user-sidebar-card {
+            background: linear-gradient(135deg, #2563eb, #1e40af);
+        }
+
+        .nav-logo {
+            transition: transform 0.3s ease;
+        }
+
+        .nav-logo:hover {
+            transform: scale(1.05);
+        }
     </style>
 </head>
 <body class="bg-gradient-to-br from-blue-50 to-indigo-100 min-h-screen">
 
     <div id="toast" class="fixed top-24 left-1/2 transform -translate-x-1/2 bg-gray-800 text-white px-5 py-2 rounded-full z-50 opacity-0 transition-all duration-300 text-sm"></div>
+
+    <!-- Overlay -->
+    <div id="overlay" class="overlay" onclick="closeSidebar()"></div>
+
+    <!-- Sidebar Menu -->
+    <div id="sidebar" class="sidebar">
+        <div class="p-5">
+            <!-- Close Button -->
+            <div class="flex justify-start mb-6">
+                <button onclick="closeSidebar()" class="text-gray-400 hover:text-white text-2xl">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            
+            <!-- User Info in Sidebar -->
+            <div id="sidebarUserInfo" class="user-sidebar-card rounded-2xl p-4 mb-6 text-center">
+                <div class="w-16 h-16 bg-white/20 rounded-full flex items-center justify-center mx-auto mb-3">
+                    <i class="fas fa-user text-3xl text-white"></i>
+                </div>
+                <p id="sidebarUserName" class="text-white font-bold">زائر</p>
+                <p id="sidebarUserStatus" class="text-blue-200 text-xs">غير مسجل الدخول</p>
+            </div>
+            
+            <!-- Menu Items -->
+            <div class="space-y-2">
+                <a onclick="goToHomePageFromSidebar()" class="sidebar-link flex items-center gap-3 p-3 text-gray-300 hover:text-white cursor-pointer">
+                    <i class="fas fa-home w-5"></i>
+                    <span>الرئيسية</span>
+                </a>
+                <a onclick="goToAboutPageFromSidebar()" class="sidebar-link flex items-center gap-3 p-3 text-gray-300 hover:text-white cursor-pointer">
+                    <i class="fas fa-building w-5"></i>
+                    <span>حول الشركة</span>
+                </a>
+                <a onclick="goToMyAccountPageFromSidebar()" class="sidebar-link flex items-center gap-3 p-3 text-gray-300 hover:text-white cursor-pointer">
+                    <i class="fas fa-user-circle w-5"></i>
+                    <span>حسابي</span>
+                </a>
+                <hr class="border-gray-700 my-3">
+                <div id="sidebarAuthSection">
+                    <a onclick="showLoginFromSidebar()" class="sidebar-link flex items-center gap-3 p-3 text-blue-400 hover:text-blue-300 cursor-pointer">
+                        <i class="fas fa-sign-in-alt w-5"></i>
+                        <span>تسجيل الدخول</span>
+                    </a>
+                    <a onclick="showRegisterFromSidebar()" class="sidebar-link flex items-center gap-3 p-3 text-green-400 hover:text-green-300 cursor-pointer">
+                        <i class="fas fa-user-plus w-5"></i>
+                        <span>إنشاء حساب</span>
+                    </a>
+                </div>
+                <div id="sidebarLogoutSection" class="hidden">
+                    <a onclick="logoutFromSidebar()" class="sidebar-link flex items-center gap-3 p-3 text-red-400 hover:text-red-300 cursor-pointer">
+                        <i class="fas fa-sign-out-alt w-5"></i>
+                        <span>تسجيل الخروج</span>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
 
     <!-- ==================== الصفحة الرئيسية (Landing Page) ==================== -->
     <div id="homePage">
@@ -27,6 +148,10 @@
         <nav class="bg-white/90 backdrop-blur-md shadow-sm sticky top-0 z-40 border-b">
             <div class="container mx-auto px-6 py-3 flex justify-between items-center">
                 <div class="flex items-center gap-2">
+                    <!-- Menu Button (Burger) -->
+                    <div class="menu-btn ml-3" onclick="toggleSidebar()">
+                        <i class="fas fa-bars text-2xl text-gray-700"></i>
+                    </div>
                     <img src="https://i.ibb.co/Fk4jw8pR/4840e6da-a9c5-4858-a78d-8ceb60d1eaaa.png" alt="Logo" class="w-10 h-10 rounded-full">
                     <span class="text-2xl font-bold text-gray-800">Tecno<span class="text-blue-600">Shark</span></span>
                 </div>
@@ -304,6 +429,167 @@
         </div>
     </div>
 
+    <!-- ==================== صفحة حول الشركة ==================== -->
+    <div id="aboutPage" class="hidden min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 py-12">
+        <div class="container mx-auto px-6">
+            <button onclick="showHomePage()" class="mb-6 text-blue-600 hover:text-blue-800 transition">
+                <i class="fas fa-arrow-right ml-2"></i> العودة للرئيسية
+            </button>
+            
+            <div class="bg-white rounded-3xl shadow-xl overflow-hidden">
+                <div class="bg-gradient-to-r from-blue-600 to-indigo-600 p-8 text-white text-center">
+                    <img src="https://i.ibb.co/Fk4jw8pR/4840e6da-a9c5-4858-a78d-8ceb60d1eaaa.png" alt="Logo" class="w-24 h-24 mx-auto mb-4 rounded-full border-4 border-white shadow-lg">
+                    <h1 class="text-3xl font-bold">TecnoShark</h1>
+                    <p class="text-blue-100 mt-2">شريكك الموثوق في عالم البرمجيات والحلول الرقمية</p>
+                </div>
+                
+                <div class="p-8">
+                    <div class="mb-8">
+                        <h2 class="text-2xl font-bold text-gray-800 mb-4"><i class="fas fa-info-circle text-blue-600 ml-2"></i> نبذة عنا</h2>
+                        <p class="text-gray-600 leading-relaxed">
+                            تأسست شركة TecnoShark لتكون رائدة في مجال تقديم الحلول البرمجية والرقمية المتكاملة. 
+                            نهدف إلى تمكين الأعمال من خلال أحدث التقنيات والحلول المبتكرة التي تلبي احتياجات العصر الرقمي.
+                            نقدم خدماتنا لعملائنا في جميع أنحاء العالم بجودة عالية وأسعار تنافسية.
+                        </p>
+                    </div>
+                    
+                    <div class="grid md:grid-cols-2 gap-6 mb-8">
+                        <div class="bg-blue-50 rounded-2xl p-6">
+                            <h3 class="text-xl font-bold text-blue-800 mb-3"><i class="fas fa-chart-line ml-2"></i> خصائص الشركة</h3>
+                            <ul class="space-y-2 text-gray-700">
+                                <li><i class="fas fa-check-circle text-green-500 ml-2"></i> خبرة تزيد عن 10 سنوات</li>
+                                <li><i class="fas fa-check-circle text-green-500 ml-2"></i> أكثر من 300 مشروع ناجح</li>
+                                <li><i class="fas fa-check-circle text-green-500 ml-2"></i> فريق عمل محترف من 25+ خبير</li>
+                                <li><i class="fas fa-check-circle text-green-500 ml-2"></i> شهادات معتمدة في أحدث التقنيات</li>
+                                <li><i class="fas fa-check-circle text-green-500 ml-2"></i> دعم فني على مدار الساعة</li>
+                            </ul>
+                        </div>
+                        <div class="bg-indigo-50 rounded-2xl p-6">
+                            <h3 class="text-xl font-bold text-indigo-800 mb-3"><i class="fas fa-star ml-2"></i> مميزاتنا</h3>
+                            <ul class="space-y-2 text-gray-700">
+                                <li><i class="fas fa-gem text-indigo-500 ml-2"></i> حلول مبتكرة حسب احتياج العميل</li>
+                                <li><i class="fas fa-shield-alt text-indigo-500 ml-2"></i> أمان وحماية عالية المستوى</li>
+                                <li><i class="fas fa-tachometer-alt text-indigo-500 ml-2"></i> أداء فائق وسرعة في التنفيذ</li>
+                                <li><i class="fas fa-headset text-indigo-500 ml-2"></i> دعم فني واستشارات مجانية</li>
+                                <li><i class="fas fa-sync-alt text-indigo-500 ml-2"></i> تحديثات دورية وتحسين مستمر</li>
+                            </ul>
+                        </div>
+                    </div>
+                    
+                    <div class="mb-8">
+                        <h2 class="text-2xl font-bold text-gray-800 mb-4"><i class="fas fa-phone-alt text-blue-600 ml-2"></i> أرقام التواصل</h2>
+                        <div class="grid md:grid-cols-3 gap-4">
+                            <div class="flex items-center gap-3 bg-gray-50 rounded-xl p-4">
+                                <i class="fas fa-phone text-green-600 text-xl"></i>
+                                <span class="text-gray-700 font-mono" dir="ltr">01144100018</span>
+                                <button onclick="copyToClipboard('01144100018')" class="text-blue-500 hover:text-blue-700"><i class="fas fa-copy"></i></button>
+                            </div>
+                            <div class="flex items-center gap-3 bg-gray-50 rounded-xl p-4">
+                                <i class="fas fa-phone text-green-600 text-xl"></i>
+                                <span class="text-gray-700 font-mono" dir="ltr">01126125881</span>
+                                <button onclick="copyToClipboard('01126125881')" class="text-blue-500 hover:text-blue-700"><i class="fas fa-copy"></i></button>
+                            </div>
+                            <div class="flex items-center gap-3 bg-gray-50 rounded-xl p-4">
+                                <i class="fas fa-phone text-green-600 text-xl"></i>
+                                <span class="text-gray-700 font-mono" dir="ltr">01035636654</span>
+                                <button onclick="copyToClipboard('01035636654')" class="text-blue-500 hover:text-blue-700"><i class="fas fa-copy"></i></button>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div>
+                        <h2 class="text-2xl font-bold text-gray-800 mb-4"><i class="fas fa-users text-blue-600 ml-2"></i> فريق الإدارة</h2>
+                        <div class="grid md:grid-cols-2 gap-6">
+                            <div class="bg-gradient-to-r from-gray-50 to-gray-100 rounded-2xl p-6 text-center">
+                                <div class="w-20 h-20 bg-blue-100 rounded-full flex items-center justify-center mx-auto mb-3">
+                                    <i class="fas fa-user-tie text-3xl text-blue-600"></i>
+                                </div>
+                                <h3 class="text-xl font-bold text-gray-800">Mohamed Emad Abd El-Aty</h3>
+                                <p class="text-gray-500">محمد عماد عبد العاطي</p>
+                                <p class="text-blue-600 text-sm mt-2">المدير التنفيذي</p>
+                            </div>
+                            <div class="bg-gradient-to-r from-gray-50 to-gray-100 rounded-2xl p-6 text-center">
+                                <div class="w-20 h-20 bg-indigo-100 rounded-full flex items-center justify-center mx-auto mb-3">
+                                    <i class="fas fa-user-tie text-3xl text-indigo-600"></i>
+                                </div>
+                                <h3 class="text-xl font-bold text-gray-800">Abdulrahman Mohamed Sobhy</h3>
+                                <p class="text-gray-500">عبد الرحمن محمد صبحي</p>
+                                <p class="text-indigo-600 text-sm mt-2">مدير التكنولوجيا</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ==================== صفحة حسابي ==================== -->
+    <div id="myAccountPage" class="hidden min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 py-12">
+        <div class="container mx-auto px-6">
+            <button onclick="showHomePage()" class="mb-6 text-blue-600 hover:text-blue-800 transition">
+                <i class="fas fa-arrow-right ml-2"></i> العودة للرئيسية
+            </button>
+            
+            <div class="bg-white rounded-3xl shadow-xl overflow-hidden">
+                <div class="bg-gradient-to-r from-blue-600 to-indigo-600 p-8 text-white text-center">
+                    <div class="w-28 h-28 mx-auto mb-4 rounded-full border-4 border-white overflow-hidden bg-white/20 flex items-center justify-center">
+                        <i class="fas fa-user-circle text-6xl text-white"></i>
+                    </div>
+                    <h1 class="text-2xl font-bold" id="myAccountName">مرحباً بك</h1>
+                    <p class="text-blue-100 mt-1" id="myAccountUsername">الرجاء تسجيل الدخول</p>
+                </div>
+                
+                <div id="myAccountLoggedOut" class="p-8 text-center">
+                    <div class="bg-yellow-50 border border-yellow-200 rounded-2xl p-6 mb-6">
+                        <i class="fas fa-exclamation-triangle text-yellow-500 text-4xl mb-3"></i>
+                        <p class="text-gray-700">أنت غير مسجل الدخول. يرجى تسجيل الدخول لعرض بيانات حسابك.</p>
+                    </div>
+                    <button onclick="showLoginPage()" class="bg-blue-600 text-white px-8 py-3 rounded-xl hover:bg-blue-700 transition">
+                        <i class="fas fa-sign-in-alt ml-2"></i> تسجيل الدخول
+                    </button>
+                    <button onclick="showRegisterPage()" class="bg-green-600 text-white px-8 py-3 rounded-xl hover:bg-green-700 transition mr-3">
+                        <i class="fas fa-user-plus ml-2"></i> إنشاء حساب
+                    </button>
+                </div>
+                
+                <div id="myAccountLoggedIn" class="hidden p-8">
+                    <div class="grid md:grid-cols-2 gap-6">
+                        <div class="bg-gray-50 rounded-2xl p-5">
+                            <p class="text-gray-500 text-sm mb-1"><i class="fas fa-user ml-1"></i> الاسم الكامل</p>
+                            <p class="text-gray-800 font-bold text-lg" id="accountFullName">-</p>
+                        </div>
+                        <div class="bg-gray-50 rounded-2xl p-5">
+                            <p class="text-gray-500 text-sm mb-1"><i class="fas fa-envelope ml-1"></i> البريد الإلكتروني</p>
+                            <p class="text-gray-800 font-bold text-lg" id="accountEmail">-</p>
+                        </div>
+                        <div class="bg-gray-50 rounded-2xl p-5">
+                            <p class="text-gray-500 text-sm mb-1"><i class="fas fa-phone ml-1"></i> رقم الهاتف</p>
+                            <p class="text-gray-800 font-bold text-lg" id="accountPhone">-</p>
+                        </div>
+                        <div class="bg-gray-50 rounded-2xl p-5">
+                            <p class="text-gray-500 text-sm mb-1"><i class="fas fa-tag ml-1"></i> اسم المستخدم</p>
+                            <p class="text-gray-800 font-bold text-lg" id="accountUsername">-</p>
+                        </div>
+                        <div class="bg-gray-50 rounded-2xl p-5">
+                            <p class="text-gray-500 text-sm mb-1"><i class="fas fa-gem ml-1"></i> نوع الحساب</p>
+                            <p class="text-blue-600 font-bold text-lg" id="accountPlan">مجاني</p>
+                        </div>
+                        <div class="bg-gray-50 rounded-2xl p-5">
+                            <p class="text-gray-500 text-sm mb-1"><i class="fas fa-calendar ml-1"></i> تاريخ الإنشاء</p>
+                            <p class="text-gray-800 font-bold text-lg" id="accountCreatedAt">-</p>
+                        </div>
+                    </div>
+                    
+                    <div class="mt-6 flex gap-3">
+                        <button onclick="logout()" class="bg-red-600 text-white px-6 py-2 rounded-xl hover:bg-red-700 transition">
+                            <i class="fas fa-sign-out-alt ml-2"></i> تسجيل الخروج
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <script>
         // ==================== Firebase Configuration ====================
         const firebaseConfig = {
@@ -454,6 +740,8 @@
             document.getElementById('registerPage').classList.add('hidden');
             document.getElementById('forgotPasswordPage').classList.add('hidden');
             document.getElementById('dashboardPage').classList.add('hidden');
+            document.getElementById('aboutPage').classList.add('hidden');
+            document.getElementById('myAccountPage').classList.add('hidden');
             updateHomeUI();
         }
 
@@ -463,8 +751,11 @@
             document.getElementById('registerPage').classList.add('hidden');
             document.getElementById('forgotPasswordPage').classList.add('hidden');
             document.getElementById('dashboardPage').classList.add('hidden');
+            document.getElementById('aboutPage').classList.add('hidden');
+            document.getElementById('myAccountPage').classList.add('hidden');
             document.getElementById('loginUsername').value = '';
             document.getElementById('loginPassword').value = '';
+            updateSidebarUI();
         }
 
         function showRegisterPage() {
@@ -473,7 +764,10 @@
             document.getElementById('registerPage').classList.remove('hidden');
             document.getElementById('forgotPasswordPage').classList.add('hidden');
             document.getElementById('dashboardPage').classList.add('hidden');
+            document.getElementById('aboutPage').classList.add('hidden');
+            document.getElementById('myAccountPage').classList.add('hidden');
             resetRegistration();
+            updateSidebarUI();
         }
 
         function showForgotPasswordPage() {
@@ -482,6 +776,8 @@
             document.getElementById('registerPage').classList.add('hidden');
             document.getElementById('forgotPasswordPage').classList.remove('hidden');
             document.getElementById('dashboardPage').classList.add('hidden');
+            document.getElementById('aboutPage').classList.add('hidden');
+            document.getElementById('myAccountPage').classList.add('hidden');
             resetForgotPassword();
         }
 
@@ -490,8 +786,11 @@
             document.getElementById('loginPage').classList.add('hidden');
             document.getElementById('registerPage').classList.add('hidden');
             document.getElementById('forgotPasswordPage').classList.add('hidden');
+            document.getElementById('aboutPage').classList.add('hidden');
+            document.getElementById('myAccountPage').classList.add('hidden');
             document.getElementById('dashboardPage').classList.remove('hidden');
             updateDashboardUI();
+            updateSidebarUI();
         }
 
         // ==================== إنشاء حساب ====================
@@ -521,7 +820,6 @@
             currentStep = step;
         }
 
-        // ✅ التصحيح الأول: إضافة async
         async function nextStep(step) {
             if (step === 2) {
                 let firstName = document.getElementById('firstName').value.trim();
@@ -572,7 +870,6 @@
             } else { showToast('❌ حدث خطأ'); }
         }
 
-        // ✅ التصحيح الثاني: إضافة await
         async function checkUsernameAvailability() {
             let username = document.getElementById('username').value.trim();
             let statusDiv = document.getElementById('usernameStatus');
@@ -676,6 +973,7 @@
             localStorage.removeItem('currentUser');
             showHomePage();
             showToast('تم تسجيل الخروج');
+            updateSidebarUI();
         }
 
         function updateHomeUI() {
@@ -692,6 +990,7 @@
                 loginArea.classList.remove('hidden');
                 userArea.classList.add('hidden');
             }
+            updateSidebarUI();
         }
 
         function updateDashboardUI() {
@@ -703,8 +1002,108 @@
             }
         }
 
+        // ==================== دوال السايد بار ====================
+        function toggleSidebar() {
+            document.getElementById('sidebar').classList.toggle('active');
+            document.getElementById('overlay').classList.toggle('active');
+        }
+
+        function closeSidebar() {
+            document.getElementById('sidebar').classList.remove('active');
+            document.getElementById('overlay').classList.remove('active');
+        }
+
+        function updateSidebarUI() {
+            const sidebarUserName = document.getElementById('sidebarUserName');
+            const sidebarUserStatus = document.getElementById('sidebarUserStatus');
+            const sidebarAuthSection = document.getElementById('sidebarAuthSection');
+            const sidebarLogoutSection = document.getElementById('sidebarLogoutSection');
+            
+            if (currentUser) {
+                sidebarUserName.innerText = currentUser.name || currentUser.username || 'مستخدم';
+                sidebarUserStatus.innerText = 'مسجل الدخول';
+                sidebarAuthSection.classList.add('hidden');
+                sidebarLogoutSection.classList.remove('hidden');
+            } else {
+                sidebarUserName.innerText = 'زائر';
+                sidebarUserStatus.innerText = 'غير مسجل الدخول';
+                sidebarAuthSection.classList.remove('hidden');
+                sidebarLogoutSection.classList.add('hidden');
+            }
+        }
+
+        function goToHomePageFromSidebar() {
+            closeSidebar();
+            showHomePage();
+        }
+
+        function goToAboutPageFromSidebar() {
+            closeSidebar();
+            document.getElementById('homePage').classList.add('hidden');
+            document.getElementById('loginPage').classList.add('hidden');
+            document.getElementById('registerPage').classList.add('hidden');
+            document.getElementById('forgotPasswordPage').classList.add('hidden');
+            document.getElementById('dashboardPage').classList.add('hidden');
+            document.getElementById('myAccountPage').classList.add('hidden');
+            document.getElementById('aboutPage').classList.remove('hidden');
+        }
+
+        function goToMyAccountPageFromSidebar() {
+            closeSidebar();
+            showMyAccountPage();
+        }
+
+        function showMyAccountPage() {
+            document.getElementById('homePage').classList.add('hidden');
+            document.getElementById('loginPage').classList.add('hidden');
+            document.getElementById('registerPage').classList.add('hidden');
+            document.getElementById('forgotPasswordPage').classList.add('hidden');
+            document.getElementById('dashboardPage').classList.add('hidden');
+            document.getElementById('aboutPage').classList.add('hidden');
+            
+            if (currentUser) {
+                document.getElementById('myAccountLoggedOut').classList.add('hidden');
+                document.getElementById('myAccountLoggedIn').classList.remove('hidden');
+                document.getElementById('myAccountName').innerText = `مرحباً ${currentUser.name || 'مستخدم'}`;
+                document.getElementById('myAccountUsername').innerText = currentUser.username || '';
+                document.getElementById('accountFullName').innerText = currentUser.name || 'غير محدد';
+                document.getElementById('accountEmail').innerText = currentUser.email || currentUser.username || 'غير محدد';
+                document.getElementById('accountPhone').innerText = currentUser.phone || 'غير محدد';
+                document.getElementById('accountUsername').innerText = currentUser.username || 'غير محدد';
+                document.getElementById('accountPlan').innerText = currentUser.plan === 'free' ? 'مجاني' : 'مدفوع';
+                document.getElementById('accountCreatedAt').innerText = currentUser.createdAt ? new Date(currentUser.createdAt).toLocaleDateString('ar-EG') : 'غير محدد';
+            } else {
+                document.getElementById('myAccountLoggedOut').classList.remove('hidden');
+                document.getElementById('myAccountLoggedIn').classList.add('hidden');
+                document.getElementById('myAccountName').innerText = 'مرحباً بك';
+                document.getElementById('myAccountUsername').innerText = 'الرجاء تسجيل الدخول';
+            }
+            
+            document.getElementById('myAccountPage').classList.remove('hidden');
+        }
+
+        function showLoginFromSidebar() {
+            closeSidebar();
+            showLoginPage();
+        }
+
+        function showRegisterFromSidebar() {
+            closeSidebar();
+            showRegisterPage();
+        }
+
+        function logoutFromSidebar() {
+            logout();
+            closeSidebar();
+        }
+
+        function copyToClipboard(text) {
+            navigator.clipboard.writeText(text).then(() => {
+                showToast('✅ تم نسخ الرقم: ' + text);
+            });
+        }
+
         // ==================== ربط الدوال للنطاق العام (window) ====================
-        // ✅ التصحيح الثالث: ربط الدوال لضمان عمل الأزرار
         window.showLoginPage = showLoginPage;
         window.showRegisterPage = showRegisterPage;
         window.showHomePage = showHomePage;
@@ -720,6 +1119,16 @@
         window.verifyPhoneForReset = verifyPhoneForReset;
         window.checkUserForReset = checkUserForReset;
         window.goBackToForgotStep1 = goBackToForgotStep1;
+        window.toggleSidebar = toggleSidebar;
+        window.closeSidebar = closeSidebar;
+        window.goToHomePageFromSidebar = goToHomePageFromSidebar;
+        window.goToAboutPageFromSidebar = goToAboutPageFromSidebar;
+        window.goToMyAccountPageFromSidebar = goToMyAccountPageFromSidebar;
+        window.showMyAccountPage = showMyAccountPage;
+        window.showLoginFromSidebar = showLoginFromSidebar;
+        window.showRegisterFromSidebar = showRegisterFromSidebar;
+        window.logoutFromSidebar = logoutFromSidebar;
+        window.copyToClipboard = copyToClipboard;
 
         // ==================== استعادة الجلسة ====================
         let savedUser = localStorage.getItem('currentUser');
