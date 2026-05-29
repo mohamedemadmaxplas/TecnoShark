@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>TecnoShark | منصة البرمجيات والحلول الرقمية</title>
+    <title>TecnoShark منصه</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
@@ -798,12 +798,14 @@
                 tempUserData.firstName = firstName;
                 tempUserData.lastName = lastName;
             } else if (step === 3) {
-                const phone = document.getElementById('phoneNumber').value.trim();
-                if (!phone || phone.length < 10) { showToast('الرجاء إدخال رقم هاتف صحيح'); return; }
-                const phoneExists = await isPhoneTaken(phone);
-                if (phoneExists) { showToast('رقم الهاتف مسجل بالفعل'); return; }
-                tempUserData.phone = phone;
-            } else if (step === 4) {
+    const phone = document.getElementById('phoneNumber').value.trim();
+    if (!phone || phone.length < 10) {
+        showToast('الرجاء إدخال رقم هاتف صحيح (10 أرقام على الأقل)');
+        return;
+    }
+    // ✅ تم إلغاء التحقق من تكرار رقم الهاتف
+    tempUserData.phone = phone;
+} else if (step === 4) {
                 const username = document.getElementById('username').value.trim();
                 if (!username) { showToast('الرجاء إدخال اسم المستخدم'); return; }
                 const fullUsername = normalizeUsername(username);
