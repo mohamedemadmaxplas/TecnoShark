@@ -10,72 +10,74 @@
     <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-database-compat.js"></script>
     <style>
         /* تأكيد ظهور المحتوى */
-#loginPage:not(.hidden),
-#registerPage:not(.hidden),
-#aboutPage:not(.hidden),
-#myAccountPage:not(.hidden),
-#dashboardPage:not(.hidden),
-#forgotPasswordPage:not(.hidden) {
-    display: flex !important;
-    opacity: 1 !important;
-    visibility: visible !important;
-}
+        #loginPage:not(.hidden),
+        #registerPage:not(.hidden),
+        #aboutPage:not(.hidden),
+        #myAccountPage:not(.hidden),
+        #dashboardPage:not(.hidden),
+        #forgotPasswordPage:not(.hidden) {
+            display: flex !important;
+            opacity: 1 !important;
+            visibility: visible !important;
+        }
 
-/* تأكيد ظهور العناصر الداخلية */
-.page-container {
-    display: flex;
-    flex-direction: column;
-    width: 100%;
-}
+        /* تأكيد ظهور العناصر الداخلية */
+        .page-container {
+            display: flex;
+            flex-direction: column;
+            width: 100%;
+        }
 
-/* حل لمشكلة الخلفية البيضاء */
-.bg-white, .bg-gray-50, .rounded-2xl, .rounded-3xl {
-    background-color: white !important;
-}
+        /* حل لمشكلة الخلفية البيضاء */
+        .bg-white, .bg-gray-50, .rounded-2xl, .rounded-3xl {
+            background-color: white !important;
+        }
+
         /* Social Media Buttons - Footer */
-.footer-social {
-    display: flex;
-    justify-content: center;
-    gap: 15px;
-    margin-top: 20px;
-    flex-wrap: wrap;
-}
+        .footer-social {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            margin-top: 20px;
+            flex-wrap: wrap;
+        }
 
-.footer-social-btn {
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    gap: 8px;
-    padding: 10px 20px;
-    border-radius: 50px;
-    color: white;
-    font-weight: bold;
-    text-decoration: none;
-    transition: all 0.3s ease;
-    font-size: 14px;
-}
+        .footer-social-btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            padding: 10px 20px;
+            border-radius: 50px;
+            color: white;
+            font-weight: bold;
+            text-decoration: none;
+            transition: all 0.3s ease;
+            font-size: 14px;
+        }
 
-.footer-social-btn i {
-    font-size: 18px;
-}
+        .footer-social-btn i {
+            font-size: 18px;
+        }
 
-.footer-social-btn:hover {
-    transform: translateY(-3px);
-    box-shadow: 0 5px 15px rgba(0,0,0,0.2);
-}
+        .footer-social-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+        }
 
-.footer-whatsapp { background-color: #25D366; }
-.footer-whatsapp:hover { background-color: #128C7E; }
+        .footer-whatsapp { background-color: #25D366; }
+        .footer-whatsapp:hover { background-color: #128C7E; }
 
-.footer-facebook { background-color: #1877F2; }
-.footer-facebook:hover { background-color: #0D65D9; }
+        .footer-facebook { background-color: #1877F2; }
+        .footer-facebook:hover { background-color: #0D65D9; }
 
-.footer-tiktok {
-    background: linear-gradient(135deg, #00f2ea, #ff004f);
-}
-.footer-tiktok:hover {
-    background: linear-gradient(135deg, #00c9c0, #e0004a);
-}
+        .footer-tiktok {
+            background: linear-gradient(135deg, #00f2ea, #ff004f);
+        }
+        .footer-tiktok:hover {
+            background: linear-gradient(135deg, #00c9c0, #e0004a);
+        }
+        
         @import url('https://fonts.googleapis.com/css2?family=Cairo:wght@400;500;600;700;800&display=swap');
         * { font-family: 'Cairo', sans-serif; }
         .step { transition: all 0.3s ease; }
@@ -223,7 +225,7 @@
         </div>
     </nav>
 
-    <!-- الصفحة الرئيسية -->
+    <!-- ==================== الصفحة الرئيسية ==================== -->
     <div id="homePage" class="page-container">
         <div class="hero-gradient text-white">
             <div class="container mx-auto px-6 py-20 text-center">
@@ -280,27 +282,26 @@
             </div>
         </div>
 
-       <footer class="bg-gray-900 text-white py-8">
-    <div class="container mx-auto px-6 text-center">
-        <p>&copy; 2026 TecnoShark - جميع الحقوق محفوظة</p>
-        <p class="text-gray-400 text-sm mt-2">شركة البرمجيات والحلول الرقمية</p>
-        
-        <!-- أزرار التواصل الاجتماعي -->
-        <div class="footer-social">
-            <a href="https://wa.me/201035636654" target="_blank" class="footer-social-btn footer-whatsapp">
-                <i class="fab fa-whatsapp"></i> واتساب
-            </a>
-            <a href="https://www.facebook.com/share/18oMJ3PRYG/" target="_blank" class="footer-social-btn footer-facebook">
-                <i class="fab fa-facebook-f"></i> فيسبوك
-            </a>
-            <a href="https://www.tiktok.com/@tecno.shark47" target="_blank" class="footer-social-btn footer-tiktok">
-                <i class="fab fa-tiktok"></i> تيك توك
-            </a>
-        </div>
+        <footer class="bg-gray-900 text-white py-8">
+            <div class="container mx-auto px-6 text-center">
+                <p>&copy; 2026 TecnoShark - جميع الحقوق محفوظة</p>
+                <p class="text-gray-400 text-sm mt-2">شركة البرمجيات والحلول الرقمية</p>
+                <div class="footer-social">
+                    <a href="https://wa.me/201035636654" target="_blank" class="footer-social-btn footer-whatsapp">
+                        <i class="fab fa-whatsapp"></i> واتساب
+                    </a>
+                    <a href="https://www.facebook.com/share/18oMJ3PRYG/" target="_blank" class="footer-social-btn footer-facebook">
+                        <i class="fab fa-facebook-f"></i> فيسبوك
+                    </a>
+                    <a href="https://www.tiktok.com/@tecno.shark47" target="_blank" class="footer-social-btn footer-tiktok">
+                        <i class="fab fa-tiktok"></i> تيك توك
+                    </a>
+                </div>
+            </div>
+        </footer>
     </div>
-</footer>
 
-    <!-- باقي الصفحات (نفس الكود السابق ولكن باختصار لتوفير المساحة) -->
+    <!-- ==================== صفحة تسجيل الدخول ==================== -->
     <div id="loginPage" class="hidden page-container flex items-center justify-center py-12">
         <div class="bg-white rounded-2xl shadow-xl p-8 max-w-md w-full mx-4 animate-fade-scale">
             <div class="text-center mb-6">
@@ -324,7 +325,7 @@
         </div>
     </div>
 
-    <!-- صفحة حول الشركة -->
+    <!-- ==================== صفحة حول الشركة ==================== -->
     <div id="aboutPage" class="hidden page-container py-12">
         <div class="container mx-auto px-6">
             <div class="bg-white rounded-3xl shadow-xl overflow-hidden animate-fade-scale">
@@ -368,7 +369,7 @@
         </div>
     </div>
 
-    <!-- صفحة حسابي -->
+    <!-- ==================== صفحة حسابي ==================== -->
     <div id="myAccountPage" class="hidden page-container py-12">
         <div class="container mx-auto px-6">
             <div class="bg-white rounded-3xl shadow-xl overflow-hidden animate-fade-scale">
@@ -413,33 +414,22 @@
                 </div>
             </div>
             
-            <!-- الخطوة 1: الاسم -->
             <div id="step1" class="step">
                 <h2 class="text-xl font-bold mb-6 text-center">ما اسمك؟</h2>
-                <div class="mb-4">
-                    <input type="text" id="firstName" class="w-full p-3 border rounded-lg focus:ring-2 focus:ring-blue-500" placeholder="الاسم الأول">
-                </div>
-                <div class="mb-6">
-                    <input type="text" id="lastName" class="w-full p-3 border rounded-lg focus:ring-2 focus:ring-blue-500" placeholder="الاسم الأخير">
-                </div>
-                <button onclick="nextStep(2)" class="w-full bg-blue-600 text-white py-3 rounded-lg hover:bg-blue-700 transition font-semibold">
-                    التالي <i class="fas fa-arrow-left mr-2"></i>
-                </button>
+                <div class="mb-4"><input type="text" id="firstName" class="w-full p-3 border rounded-lg focus:ring-2 focus:ring-blue-500" placeholder="الاسم الأول"></div>
+                <div class="mb-6"><input type="text" id="lastName" class="w-full p-3 border rounded-lg focus:ring-2 focus:ring-blue-500" placeholder="الاسم الأخير"></div>
+                <button onclick="nextStep(2)" class="w-full bg-blue-600 text-white py-3 rounded-lg hover:bg-blue-700 transition font-semibold">التالي <i class="fas fa-arrow-left mr-2"></i></button>
             </div>
             
-            <!-- الخطوة 2: رقم الهاتف -->
             <div id="step2" class="step hidden">
                 <h2 class="text-xl font-bold mb-6 text-center">ما رقم هاتفك؟</h2>
-                <div class="mb-6">
-                    <input type="tel" id="phoneNumber" class="w-full p-3 border rounded-lg focus:ring-2 focus:ring-blue-500" placeholder="مثال: 01123456789">
-                </div>
+                <div class="mb-6"><input type="tel" id="phoneNumber" class="w-full p-3 border rounded-lg focus:ring-2 focus:ring-blue-500" placeholder="مثال: 01123456789"></div>
                 <div class="flex gap-3">
                     <button onclick="prevStep(1)" class="w-1/2 bg-gray-200 py-3 rounded-lg hover:bg-gray-300 transition">رجوع</button>
                     <button onclick="nextStep(3)" class="w-1/2 bg-blue-600 text-white py-3 rounded-lg hover:bg-blue-700 transition">التالي</button>
                 </div>
             </div>
             
-            <!-- الخطوة 3: اسم المستخدم -->
             <div id="step3" class="step hidden">
                 <h2 class="text-xl font-bold mb-6 text-center">اختر اسم المستخدم</h2>
                 <div class="mb-4">
@@ -457,22 +447,16 @@
                 </div>
             </div>
             
-            <!-- الخطوة 4: كلمة المرور -->
             <div id="step4" class="step hidden">
                 <h2 class="text-xl font-bold mb-6 text-center">إنشاء كلمة مرور</h2>
-                <div class="mb-4">
-                    <input type="password" id="password" class="w-full p-3 border rounded-lg focus:ring-2 focus:ring-blue-500" placeholder="كلمة المرور">
-                </div>
-                <div class="mb-6">
-                    <input type="password" id="confirmPassword" class="w-full p-3 border rounded-lg focus:ring-2 focus:ring-blue-500" placeholder="تأكيد كلمة المرور">
-                </div>
+                <div class="mb-4"><input type="password" id="password" class="w-full p-3 border rounded-lg focus:ring-2 focus:ring-blue-500" placeholder="كلمة المرور"></div>
+                <div class="mb-6"><input type="password" id="confirmPassword" class="w-full p-3 border rounded-lg focus:ring-2 focus:ring-blue-500" placeholder="تأكيد كلمة المرور"></div>
                 <div class="flex gap-3">
                     <button onclick="prevStep(3)" class="w-1/2 bg-gray-200 py-3 rounded-lg hover:bg-gray-300 transition">رجوع</button>
                     <button onclick="nextStep(5)" class="w-1/2 bg-blue-600 text-white py-3 rounded-lg hover:bg-blue-700 transition">التالي</button>
                 </div>
             </div>
             
-            <!-- الخطوة 5: الشروط والأحكام -->
             <div id="step5" class="step hidden">
                 <h2 class="text-xl font-bold mb-4 text-center">الشروط والأحكام</h2>
                 <div class="bg-gray-50 p-4 rounded-lg mb-4 max-h-60 overflow-y-auto text-sm">
@@ -495,10 +479,10 @@
             </div>
         </div>
     </div>
-        <!-- ==================== صفحة نسيت كلمة المرور ==================== -->
+
+    <!-- ==================== صفحة نسيت كلمة المرور ==================== -->
     <div id="forgotPasswordPage" class="hidden page-container flex items-center justify-center py-12">
         <div class="bg-white rounded-2xl shadow-xl p-8 max-w-md w-full mx-4">
-            <!-- الخطوة 1: إدخال اسم المستخدم -->
             <div id="forgotStep1">
                 <div class="text-center mb-6">
                     <img src="https://i.ibb.co/Fk4jw8pR/4840e6da-a9c5-4858-a78d-8ceb60d1eaaa.png" alt="Logo" class="w-20 h-20 mx-auto mb-3 rounded-full shadow-md">
@@ -509,15 +493,10 @@
                     <label class="block text-sm font-medium text-gray-700 mb-1">اسم المستخدم</label>
                     <input type="text" id="forgotUsername" class="w-full p-3 border rounded-lg focus:ring-2 focus:ring-blue-500" placeholder="أدخل اسم المستخدم">
                 </div>
-                <button onclick="checkUserForReset()" class="w-full bg-blue-600 text-white py-3 rounded-lg hover:bg-blue-700 transition font-semibold">
-                    التالي <i class="fas fa-arrow-left mr-2"></i>
-                </button>
-                <div class="mt-4 text-center">
-                    <a onclick="showLoginPage()" class="text-sm text-gray-500 cursor-pointer hover:underline">العودة لتسجيل الدخول</a>
-                </div>
+                <button onclick="checkUserForReset()" class="w-full bg-blue-600 text-white py-3 rounded-lg hover:bg-blue-700 transition font-semibold">التالي <i class="fas fa-arrow-left mr-2"></i></button>
+                <div class="mt-4 text-center"><a onclick="showLoginPage()" class="text-sm text-gray-500 cursor-pointer hover:underline">العودة لتسجيل الدخول</a></div>
             </div>
             
-            <!-- الخطوة 2: تأكيد رقم الهاتف -->
             <div id="forgotStep2" class="hidden">
                 <div class="text-center mb-6">
                     <img src="https://i.ibb.co/Fk4jw8pR/4840e6da-a9c5-4858-a78d-8ceb60d1eaaa.png" alt="Logo" class="w-20 h-20 mx-auto mb-3 rounded-full shadow-md">
@@ -528,42 +507,26 @@
                     <label class="block text-sm font-medium text-gray-700 mb-1">رقم الهاتف المسجل</label>
                     <input type="tel" id="forgotPhone" class="w-full p-3 border rounded-lg focus:ring-2 focus:ring-blue-500" placeholder="أدخل رقم هاتفك">
                 </div>
-                <div id="phoneHint" class="text-sm text-gray-500 mb-4 hidden">
-                    <i class="fas fa-info-circle ml-1"></i> التلميح: الرقم يظهر كـ <span id="maskedPhone" class="font-mono"></span>
-                </div>
-                <button onclick="verifyPhoneForReset()" class="w-full bg-blue-600 text-white py-3 rounded-lg hover:bg-blue-700 transition font-semibold">
-                    تحقق <i class="fas fa-check ml-2"></i>
-                </button>
-                <div class="mt-4 text-center">
-                    <a onclick="goBackToForgotStep1()" class="text-sm text-gray-500 cursor-pointer hover:underline">رجوع</a>
-                </div>
+                <div id="phoneHint" class="text-sm text-gray-500 mb-4 hidden"><i class="fas fa-info-circle ml-1"></i> التلميح: الرقم يظهر كـ <span id="maskedPhone" class="font-mono"></span></div>
+                <button onclick="verifyPhoneForReset()" class="w-full bg-blue-600 text-white py-3 rounded-lg hover:bg-blue-700 transition font-semibold">تحقق <i class="fas fa-check ml-2"></i></button>
+                <div class="mt-4 text-center"><a onclick="goBackToForgotStep1()" class="text-sm text-gray-500 cursor-pointer hover:underline">رجوع</a></div>
             </div>
             
-            <!-- الخطوة 3: إدخال كلمة المرور الجديدة -->
             <div id="forgotStep3" class="hidden">
                 <div class="text-center mb-6">
                     <img src="https://i.ibb.co/Fk4jw8pR/4840e6da-a9c5-4858-a78d-8ceb60d1eaaa.png" alt="Logo" class="w-20 h-20 mx-auto mb-3 rounded-full shadow-md">
                     <h1 class="text-2xl font-bold">كلمة مرور جديدة</h1>
                     <p class="text-gray-500 text-sm">أدخل كلمة المرور الجديدة</p>
                 </div>
-                <div class="mb-4">
-                    <label class="block text-sm font-medium text-gray-700 mb-1">كلمة المرور الجديدة</label>
-                    <input type="password" id="newPassword" class="w-full p-3 border rounded-lg focus:ring-2 focus:ring-blue-500" placeholder="أدخل كلمة المرور">
-                </div>
-                <div class="mb-6">
-                    <label class="block text-sm font-medium text-gray-700 mb-1">تأكيد كلمة المرور</label>
-                    <input type="password" id="confirmNewPassword" class="w-full p-3 border rounded-lg focus:ring-2 focus:ring-blue-500" placeholder="أعد إدخال كلمة المرور">
-                </div>
-                <button onclick="resetPassword()" class="w-full bg-blue-600 text-white py-3 rounded-lg hover:bg-blue-700 transition font-semibold">
-                    تغيير كلمة المرور <i class="fas fa-save mr-2"></i>
-                </button>
-                <div class="mt-4 text-center">
-                    <a onclick="showLoginPage()" class="text-sm text-gray-500 cursor-pointer hover:underline">العودة لتسجيل الدخول</a>
-                </div>
+                <div class="mb-4"><input type="password" id="newPassword" class="w-full p-3 border rounded-lg focus:ring-2 focus:ring-blue-500" placeholder="أدخل كلمة المرور"></div>
+                <div class="mb-6"><input type="password" id="confirmNewPassword" class="w-full p-3 border rounded-lg focus:ring-2 focus:ring-blue-500" placeholder="أعد إدخال كلمة المرور"></div>
+                <button onclick="resetPassword()" class="w-full bg-blue-600 text-white py-3 rounded-lg hover:bg-blue-700 transition font-semibold">تغيير كلمة المرور <i class="fas fa-save mr-2"></i></button>
+                <div class="mt-4 text-center"><a onclick="showLoginPage()" class="text-sm text-gray-500 cursor-pointer hover:underline">العودة لتسجيل الدخول</a></div>
             </div>
         </div>
     </div>
-        <!-- ==================== لوحة التحكم ==================== -->
+
+    <!-- ==================== لوحة التحكم ==================== -->
     <div id="dashboardPage" class="hidden page-container flex items-center justify-center py-12">
         <div class="bg-white rounded-2xl shadow-xl p-8 max-w-md w-full mx-4 animate-fade-scale">
             <div class="text-center mb-6">
@@ -571,33 +534,18 @@
                 <h1 class="text-2xl font-bold">لوحة التحكم</h1>
                 <p class="text-gray-500">مرحباً <span id="dashboardUserName" class="font-semibold text-blue-600"></span></p>
             </div>
-            <div class="bg-gray-50 rounded-xl p-4 mb-4">
-                <p class="text-sm text-gray-500">الاسم الكامل</p>
-                <p class="font-bold" id="dashboardFullName">-</p>
-            </div>
-            <div class="bg-gray-50 rounded-xl p-4 mb-4">
-                <p class="text-sm text-gray-500">البريد الإلكتروني</p>
-                <p class="font-bold" id="dashboardEmail">-</p>
-            </div>
-            <div class="bg-gray-50 rounded-xl p-4 mb-4">
-                <p class="text-sm text-gray-500">رقم الهاتف</p>
-                <p class="font-bold" id="dashboardPhone">-</p>
-            </div>
-            <div class="bg-gray-50 rounded-xl p-4 mb-4">
-                <p class="text-sm text-gray-500">اسم المستخدم</p>
-                <p class="font-bold" id="dashboardUsername">-</p>
-            </div>
-            <div class="bg-gray-50 rounded-xl p-4 mb-6">
-                <p class="text-sm text-gray-500">نوع الحساب</p>
-                <p class="font-bold text-blue-600" id="dashboardPlan">مجاني</p>
-            </div>
+            <div class="bg-gray-50 rounded-xl p-4 mb-4"><p class="text-sm text-gray-500">الاسم الكامل</p><p class="font-bold" id="dashboardFullName">-</p></div>
+            <div class="bg-gray-50 rounded-xl p-4 mb-4"><p class="text-sm text-gray-500">البريد الإلكتروني</p><p class="font-bold" id="dashboardEmail">-</p></div>
+            <div class="bg-gray-50 rounded-xl p-4 mb-4"><p class="text-sm text-gray-500">رقم الهاتف</p><p class="font-bold" id="dashboardPhone">-</p></div>
+            <div class="bg-gray-50 rounded-xl p-4 mb-4"><p class="text-sm text-gray-500">اسم المستخدم</p><p class="font-bold" id="dashboardUsername">-</p></div>
+            <div class="bg-gray-50 rounded-xl p-4 mb-6"><p class="text-sm text-gray-500">نوع الحساب</p><p class="font-bold text-blue-600" id="dashboardPlan">مجاني</p></div>
             <button onclick="logout()" class="w-full bg-red-600 text-white py-3 rounded-lg hover:bg-red-700 transition">تسجيل الخروج</button>
             <button onclick="showHomePage()" class="w-full text-gray-400 text-sm mt-4 hover:text-gray-600 transition">العودة للرئيسية</button>
         </div>
     </div>
 
     <script>
-                // ==================== Firebase Configuration ====================
+        // ==================== Firebase Configuration ====================
         const firebaseConfig = {
             apiKey: "AIzaSyAs3U2941_rNArLPpCYjKM9yAVQtiK-oDw",
             authDomain: "nabd-store-1.firebaseapp.com",
@@ -634,295 +582,38 @@
             }
         }
 
-    // ==================== إعادة تعريف الدوال المفقودة بشكل صريح ====================
-    
-    // دوال إنشاء الحساب
-    window.nextStep = async function(step) {
-        console.log('nextStep called with step:', step);
-        
-        if (step === 2) {
-            const firstName = document.getElementById('firstName')?.value.trim();
-            const lastName = document.getElementById('lastName')?.value.trim();
-            if (!firstName || !lastName) {
-                showToast('الرجاء إدخال الاسم الأول والاسم الأخير');
-                return;
-            }
-            window.tempUserData = window.tempUserData || {};
-            window.tempUserData.firstName = firstName;
-            window.tempUserData.lastName = lastName;
-        }
-        else if (step === 3) {
-            const phone = document.getElementById('phoneNumber')?.value.trim();
-            if (!phone || phone.length < 10) {
-                showToast('الرجاء إدخال رقم هاتف صحيح');
-                return;
-            }
-            window.tempUserData = window.tempUserData || {};
-            window.tempUserData.phone = phone;
-        }
-        else if (step === 4) {
-            const username = document.getElementById('username')?.value.trim();
-            if (!username) {
-                showToast('الرجاء إدخال اسم المستخدم');
-                return;
-            }
-            const fullUsername = normalizeUsername(username);
-            const exists = await isUsernameTaken(fullUsername);
-            if (exists) {
-                showToast('اسم المستخدم موجود بالفعل');
-                return;
-            }
-            window.tempUserData = window.tempUserData || {};
-            window.tempUserData.username = fullUsername;
-            const usernameInput = document.getElementById('username');
-            if (usernameInput) usernameInput.value = extractBaseUsername(fullUsername);
-        }
-        else if (step === 5) {
-            const password = document.getElementById('password')?.value;
-            const confirm = document.getElementById('confirmPassword')?.value;
-            if (password.length < 6) {
-                showToast('كلمة المرور 6 أحرف على الأقل');
-                return;
-            }
-            if (password !== confirm) {
-                showToast('كلمة المرور غير متطابقة');
-                return;
-            }
-            window.tempUserData = window.tempUserData || {};
-            window.tempUserData.password = password;
-        }
-        
-        // إظهار الخطوة التالية
-        for (let i = 1; i <= 5; i++) {
-            const el = document.getElementById(`step${i}`);
-            if (el) el.classList.add('hidden');
-        }
-        const nextStepEl = document.getElementById(`step${step}`);
-        if (nextStepEl) nextStepEl.classList.remove('hidden');
-        
-        const percent = (step / 5) * 100;
-        const progressBar = document.getElementById('progressBar');
-        const stepLabel = document.getElementById('stepLabel');
-        const stepPercent = document.getElementById('stepPercent');
-        if (progressBar) progressBar.style.width = `${percent}%`;
-        if (stepLabel) stepLabel.innerText = `الخطوة ${step} من 5`;
-        if (stepPercent) stepPercent.innerText = `${percent}%`;
-        window.currentStep = step;
-    };
-
-    window.prevStep = function(step) {
-        for (let i = 1; i <= 5; i++) {
-            const el = document.getElementById(`step${i}`);
-            if (el) el.classList.add('hidden');
-        }
-        const prevStepEl = document.getElementById(`step${step}`);
-        if (prevStepEl) prevStepEl.classList.remove('hidden');
-        
-        const percent = (step / 5) * 100;
-        const progressBar = document.getElementById('progressBar');
-        const stepLabel = document.getElementById('stepLabel');
-        const stepPercent = document.getElementById('stepPercent');
-        if (progressBar) progressBar.style.width = `${percent}%`;
-        if (stepLabel) stepLabel.innerText = `الخطوة ${step} من 5`;
-        if (stepPercent) stepPercent.innerText = `${percent}%`;
-        window.currentStep = step;
-    };
-
-    window.completeRegistration = async function() {
-        const agree = document.getElementById('agreeTerms')?.checked;
-        if (!agree) {
-            showToast('الرجاء الموافقة على الشروط');
-            return;
-        }
-        
-        if (!window.tempUserData || !window.tempUserData.firstName || !window.tempUserData.lastName || !window.tempUserData.phone || !window.tempUserData.username || !window.tempUserData.password) {
-            showToast('الرجاء إكمال جميع الخطوات');
-            return;
-        }
-        
-        const newUid = 'user_' + Date.now() + '_' + Math.random().toString(36).substring(2, 8);
-        const fullName = `${window.tempUserData.firstName} ${window.tempUserData.lastName}`;
-        const newUser = {
-            name: fullName,
-            phone: window.tempUserData.phone,
-            username: window.tempUserData.username,
-            email: window.tempUserData.username,
-            password: window.tempUserData.password,
-            plan: 'free',
-            createdAt: new Date().toISOString(),
-            lastLogin: new Date().toISOString()
-        };
-        
-        try {
-            await db.ref(`users/${newUid}`).set(newUser);
-            showToast('✅ تم إنشاء الحساب بنجاح');
-            window.currentUser = { uid: newUid, ...newUser };
-            localStorage.setItem('currentUser', JSON.stringify(window.currentUser));
-            showDashboard();
-        } catch (error) {
-            console.error('خطأ:', error);
-            showToast('❌ حدث خطأ في إنشاء الحساب');
-        }
-    };
-
-    window.checkUsernameAvailability = async function() {
-        const username = document.getElementById('username')?.value.trim();
-        const statusDiv = document.getElementById('usernameStatus');
-        const suggestionsBox = document.getElementById('suggestionsBox');
-        
-        if (!username) {
-            if (statusDiv) statusDiv.innerHTML = '';
-            if (suggestionsBox) suggestionsBox.classList.add('hidden');
-            return;
-        }
-        
-        const fullUsername = normalizeUsername(username);
-        let exists = false;
-        try {
-            const snapshot = await db.ref('users').once('value');
-            const users = snapshot.val();
-            if (users) {
-                for (let uid in users) {
-                    if (users[uid].username === fullUsername) {
-                        exists = true;
-                        break;
-                    }
-                }
-            }
-        } catch (error) {
-            console.error('خطأ:', error);
-        }
-        
-        if (exists) {
-            if (statusDiv) statusDiv.innerHTML = '<span class="text-red-600">❌ غير متاح</span>';
-            if (suggestionsBox) suggestionsBox.classList.remove('hidden');
-            // اقتراحات
-            const suggestions = [];
-            for (let i = 1; i <= 5; i++) {
-                suggestions.push(`${username}${i}`);
-            }
-            const list = document.getElementById('suggestionsList');
-            if (list) {
-                list.innerHTML = suggestions.map(s => `<span onclick="document.getElementById('username').value='${s}'; checkUsernameAvailability();" class="suggestion-item bg-gray-100 px-3 py-1 rounded-full text-sm cursor-pointer hover:bg-blue-100">${s}</span>`).join('');
-            }
-        } else {
-            if (statusDiv) statusDiv.innerHTML = '<span class="text-green-600">✅ متاح</span>';
-            if (suggestionsBox) suggestionsBox.classList.add('hidden');
-        }
-    };
-
-    // إعادة تعريف showToast إذا لم تكن موجودة
-    if (typeof window.showToast !== 'function') {
-        window.showToast = function(msg) {
-            const toast = document.getElementById('toast');
-            if (toast) {
-                toast.textContent = msg;
-                toast.classList.remove('opacity-0');
-                toast.classList.add('opacity-100');
-                setTimeout(() => {
-                    toast.classList.remove('opacity-100');
-                    toast.classList.add('opacity-0');
-                }, 3000);
-            } else {
-                alert(msg);
-            }
-        };
-    }
-
-    // إعادة تعريف normalizeUsername
-    if (typeof window.normalizeUsername !== 'function') {
-        window.normalizeUsername = function(input) {
+        // ==================== دوال معالجة اسم المستخدم ====================
+        function normalizeUsername(input) {
             let username = input.trim().toLowerCase();
-            if (username.includes('@tecno.shark')) return username;
+            if (username.includes('@tecno.com')) return username;
             if (username.includes('@')) {
                 let parts = username.split('@');
-                return `${parts[0]}@tecno.shark`;
+                return `${parts[0]}@tecno.com`;
             }
-            return `${username}@tecno.shark`;
-        };
-    }
-
-    // إعادة تعريف extractBaseUsername
-    if (typeof window.extractBaseUsername !== 'function') {
-        window.extractBaseUsername = function(fullUsername) {
-            return fullUsername.split('@')[0];
-        };
-    }
-
-    console.log('✅ جميع الدوال تم تحميلها بنجاح');
-
-        // ==================== دالة التمرير للخدمات ====================
-        function scrollToServices() {
-            const services = document.getElementById('services');
-            if (services) services.scrollIntoView({ behavior: 'smooth' });
+            return `${username}@tecno.com`;
         }
 
-        // ==================== دوال معالجة اسم المستخدم ====================
-      // استبدل @tecno.shark بـ @tecno.com
-function normalizeUsername(input) {
-    let username = input.trim().toLowerCase();
-    if (username.includes('@tecno.com')) return username;  // ✅ تم التعديل
-    if (username.includes('@')) {
-        let parts = username.split('@');
-        return `${parts[0]}@tecno.com`;  // ✅ تم التعديل
-    }
-    return `${username}@tecno.com`;  // ✅ تم التعديل
-}
-
-      function extractBaseUsername(fullUsername) {
-    if (!fullUsername) return '';
-    
-    // إذا كان يحتوي على @، خذ ما قبله
-    if (fullUsername.includes('@')) {
-        return fullUsername.split('@')[0].toLowerCase().trim();
-    }
-    
-    // إذا لم يحتوي على @، أرجع النص كما هو
-    return fullUsername.toLowerCase().trim();
-}
+        function extractBaseUsername(fullUsername) {
+            if (!fullUsername) return '';
+            if (fullUsername.includes('@')) {
+                return fullUsername.split('@')[0].toLowerCase().trim();
+            }
+            return fullUsername.toLowerCase().trim();
+        }
 
         // ==================== دوال Firebase الأساسية ====================
-        
-        // دالة حفظ المستخدم في القاعدتين (نبض + امتحان)
-async function saveUserToBothDatabases(userData, uid) {
-    try {
-        // 💾 حفظ في قاعدة نبض (users)
-        await db.ref(`users/${uid}`).set(userData);
-        
-        // 💾 حفظ في قاعدة امتحان (imtihan_users)
-        await db.ref(`imtihan_users/${uid}`).set(userData);
-        
-        console.log('✅ تم حفظ المستخدم في قاعدتي نبض وامتحان');
-        return true;
-    } catch (error) {
-        console.error('❌ خطأ في الحفظ:', error);
-        return false;
-    }
-}
-        // ==================== فحص الصفحات عند التحميل ====================
-        console.log('🚀 بدء تحميل الموقع...');
-        
-        // وظيفة لفحص وجود جميع عناصر الصفحات
-        function checkAllPagesExist() {
-            const pages = ['homePage', 'loginPage', 'registerPage', 'forgotPasswordPage', 'dashboardPage', 'aboutPage', 'myAccountPage'];
-            let allExist = true;
-            pages.forEach(page => {
-                const el = document.getElementById(page);
-                if (!el) {
-                    console.error(`❌ العنصر ${page} غير موجود!`);
-                    allExist = false;
-                } else {
-                    console.log(`✅ العنصر ${page} موجود`);
-                }
-            });
-            return allExist;
+        async function saveUserToBothDatabases(userData, uid) {
+            try {
+                await db.ref(`users/${uid}`).set(userData);
+                await db.ref(`imtihan_users/${uid}`).set(userData);
+                console.log('✅ تم حفظ المستخدم في قاعدتي نبض وامتحان');
+                return true;
+            } catch (error) {
+                console.error('❌ خطأ في الحفظ:', error);
+                return false;
+            }
         }
-        
-        // تنفيذ الفحص
-        setTimeout(() => {
-            checkAllPagesExist();
-        }, 100);
-        // جلب جميع المستخدمين من Firebase
+
         async function getAllUsersFromFirebase() {
             try {
                 const snapshot = await db.ref('users').once('value');
@@ -932,34 +623,7 @@ async function saveUserToBothDatabases(userData, uid) {
                 return null;
             }
         }
-        // ==================== دوال إضافية للتأكد من ظهور الصفحات ====================
-        
-        // دالة إعادة تعيين كاملة
-        window.resetAllPages = function() {
-            hideAllPages();
-            showHomePage();
-            console.log('✅ تم إعادة تعيين جميع الصفحات');
-        };
-        
-        // دالة اختبار سريع
-        window.testPages = function() {
-            console.log('=== اختبار الصفحات ===');
-            console.log('currentUser:', currentUser);
-            console.log('showLoginPage موجودة:', typeof showLoginPage === 'function');
-            console.log('showRegisterPage موجودة:', typeof showRegisterPage === 'function');
-            console.log('showMyAccountPage موجودة:', typeof showMyAccountPage === 'function');
-            console.log('showAboutPage موجودة:', typeof showAboutPage === 'function');
-            checkAllPagesExist();
-        };
-        
-        // تنفيذ اختبار سريع بعد 2 ثانية
-        setTimeout(() => {
-            console.log('📋 تنفيذ اختبار سريع للصفحات...');
-            if (typeof window.testPages === 'function') {
-                window.testPages();
-            }
-        }, 500);
-        // البحث عن مستخدم بواسطة اسم المستخدم
+
         async function findUserByUsername(username) {
             username = normalizeUsername(username);
             try {
@@ -979,7 +643,6 @@ async function saveUserToBothDatabases(userData, uid) {
             }
         }
 
-        // البحث عن مستخدم بواسطة الهاتف
         async function findUserByPhone(phone) {
             try {
                 const snapshot = await db.ref('users').once('value');
@@ -998,35 +661,29 @@ async function saveUserToBothDatabases(userData, uid) {
             }
         }
 
-        // تعديل دالة isUsernameTaken لتبحث في القاعدتين
-async function isUsernameTaken(username) {
-    try {
-        // البحث في قاعدة نبض (users)
-        const nabdSnapshot = await db.ref('users').once('value');
-        const nabdUsers = nabdSnapshot.val();
-        if (nabdUsers) {
-            for (let uid in nabdUsers) {
-                if (nabdUsers[uid].username === username) return true;
+        async function isUsernameTaken(username) {
+            try {
+                const nabdSnapshot = await db.ref('users').once('value');
+                const nabdUsers = nabdSnapshot.val();
+                if (nabdUsers) {
+                    for (let uid in nabdUsers) {
+                        if (nabdUsers[uid].username === username) return true;
+                    }
+                }
+                const imtihanSnapshot = await db.ref('imtihan_users').once('value');
+                const imtihanUsers = imtihanSnapshot.val();
+                if (imtihanUsers) {
+                    for (let uid in imtihanUsers) {
+                        if (imtihanUsers[uid].username === username) return true;
+                    }
+                }
+                return false;
+            } catch (error) {
+                console.error('خطأ:', error);
+                return false;
             }
         }
-        
-        // البحث في قاعدة امتحان (imtihan_users)
-        const imtihanSnapshot = await db.ref('imtihan_users').once('value');
-        const imtihanUsers = imtihanSnapshot.val();
-        if (imtihanUsers) {
-            for (let uid in imtihanUsers) {
-                if (imtihanUsers[uid].username === username) return true;
-            }
-        }
-        
-        return false;
-    } catch (error) {
-        console.error('خطأ:', error);
-        return false;
-    }
-}
 
-        // التحقق من وجود رقم الهاتف
         async function isPhoneTaken(phone) {
             try {
                 const snapshot = await db.ref('users').once('value');
@@ -1043,7 +700,6 @@ async function isUsernameTaken(username) {
             }
         }
 
-        // تسجيل الدخول
         async function loginUser(identifier, password) {
             try {
                 const snapshot = await db.ref('users').once('value');
@@ -1063,7 +719,6 @@ async function isUsernameTaken(username) {
             }
         }
 
-        // تحديث كلمة المرور في Firebase
         async function updatePasswordInFirebase(uid, newPassword) {
             try {
                 await db.ref(`users/${uid}/password`).set(newPassword);
@@ -1075,7 +730,6 @@ async function isUsernameTaken(username) {
             }
         }
 
-        // تحديث بيانات المستخدم في Firebase
         async function updateUserInFirebase(uid, userData) {
             try {
                 await db.ref(`users/${uid}`).update(userData);
@@ -1087,7 +741,6 @@ async function isUsernameTaken(username) {
             }
         }
 
-        // حذف مستخدم من Firebase
         async function deleteUserFromFirebase(uid) {
             try {
                 await db.ref(`users/${uid}`).remove();
@@ -1099,11 +752,10 @@ async function isUsernameTaken(username) {
             }
         }
 
-        // ==================== دوال إنشاء حساب (5 خطوات) ====================
+        // ==================== دوال إنشاء حساب ====================
         function resetRegistration() {
             currentStep = 1;
             tempUserData = {};
-            
             const firstName = document.getElementById('firstName');
             const lastName = document.getElementById('lastName');
             const phoneNumber = document.getElementById('phoneNumber');
@@ -1111,7 +763,6 @@ async function isUsernameTaken(username) {
             const password = document.getElementById('password');
             const confirmPassword = document.getElementById('confirmPassword');
             const agreeTerms = document.getElementById('agreeTerms');
-            
             if (firstName) firstName.value = '';
             if (lastName) lastName.value = '';
             if (phoneNumber) phoneNumber.value = '';
@@ -1119,7 +770,6 @@ async function isUsernameTaken(username) {
             if (password) password.value = '';
             if (confirmPassword) confirmPassword.value = '';
             if (agreeTerms) agreeTerms.checked = false;
-            
             showStep(1);
         }
 
@@ -1128,19 +778,15 @@ async function isUsernameTaken(username) {
                 const el = document.getElementById(`step${i}`);
                 if (el) el.classList.add('hidden');
             }
-            
             const currentStepEl = document.getElementById(`step${step}`);
             if (currentStepEl) currentStepEl.classList.remove('hidden');
-            
             const percent = (step / 5) * 100;
             const progressBar = document.getElementById('progressBar');
             const stepLabel = document.getElementById('stepLabel');
             const stepPercent = document.getElementById('stepPercent');
-            
             if (progressBar) progressBar.style.width = `${percent}%`;
             if (stepLabel) stepLabel.innerText = `الخطوة ${step} من 5`;
             if (stepPercent) stepPercent.innerText = `${percent}%`;
-            
             currentStep = step;
         }
 
@@ -1148,106 +794,61 @@ async function isUsernameTaken(username) {
             if (step === 2) {
                 const firstName = document.getElementById('firstName').value.trim();
                 const lastName = document.getElementById('lastName').value.trim();
-                if (!firstName || !lastName) {
-                    showToast('الرجاء إدخال الاسم الأول والاسم الأخير');
-                    return;
-                }
+                if (!firstName || !lastName) { showToast('الرجاء إدخال الاسم الأول والاسم الأخير'); return; }
                 tempUserData.firstName = firstName;
                 tempUserData.lastName = lastName;
-            }
-            else if (step === 3) {
+            } else if (step === 3) {
                 const phone = document.getElementById('phoneNumber').value.trim();
-                if (!phone || phone.length < 10) {
-                    showToast('الرجاء إدخال رقم هاتف صحيح');
-                    return;
-                }
+                if (!phone || phone.length < 10) { showToast('الرجاء إدخال رقم هاتف صحيح'); return; }
                 const phoneExists = await isPhoneTaken(phone);
-                if (phoneExists) {
-                    showToast('رقم الهاتف مسجل بالفعل');
-                    return;
-                }
+                if (phoneExists) { showToast('رقم الهاتف مسجل بالفعل'); return; }
                 tempUserData.phone = phone;
-            }
-            else if (step === 4) {
+            } else if (step === 4) {
                 const username = document.getElementById('username').value.trim();
-                if (!username) {
-                    showToast('الرجاء إدخال اسم المستخدم');
-                    return;
-                }
+                if (!username) { showToast('الرجاء إدخال اسم المستخدم'); return; }
                 const fullUsername = normalizeUsername(username);
                 const exists = await isUsernameTaken(fullUsername);
-                if (exists) {
-                    showToast('اسم المستخدم موجود بالفعل');
-                    return;
-                }
+                if (exists) { showToast('اسم المستخدم موجود بالفعل'); return; }
                 tempUserData.username = fullUsername;
                 document.getElementById('username').value = extractBaseUsername(fullUsername);
-            }
-            else if (step === 5) {
+            } else if (step === 5) {
                 const password = document.getElementById('password').value;
                 const confirm = document.getElementById('confirmPassword').value;
-                if (password.length < 6) {
-                    showToast('كلمة المرور 6 أحرف على الأقل');
-                    return;
-                }
-                if (password !== confirm) {
-                    showToast('كلمة المرور غير متطابقة');
-                    return;
-                }
+                if (password.length < 6) { showToast('كلمة المرور 6 أحرف على الأقل'); return; }
+                if (password !== confirm) { showToast('كلمة المرور غير متطابقة'); return; }
                 tempUserData.password = password;
             }
             showStep(step);
         }
 
-        function prevStep(step) {
-            showStep(step);
-        }
+        function prevStep(step) { showStep(step); }
 
         async function completeRegistration() {
             const agree = document.getElementById('agreeTerms').checked;
-            if (!agree) {
-                showToast('الرجاء الموافقة على الشروط');
-                return;
-            }
-            
+            if (!agree) { showToast('الرجاء الموافقة على الشروط'); return; }
             const newUid = 'user_' + Date.now() + '_' + Math.random().toString(36).substring(2, 8);
             const fullName = `${tempUserData.firstName} ${tempUserData.lastName}`;
             const newUser = {
-                name: fullName,
-                phone: tempUserData.phone,
-                username: tempUserData.username,
-                email: tempUserData.username,
-                password: tempUserData.password,
-                plan: 'free',
-                createdAt: new Date().toISOString(),
-                lastLogin: new Date().toISOString()
+                name: fullName, phone: tempUserData.phone, username: tempUserData.username,
+                email: tempUserData.username, password: tempUserData.password,
+                plan: 'free', createdAt: new Date().toISOString(), lastLogin: new Date().toISOString()
             };
-            
             const saved = await saveUserToBothDatabases(newUser, newUid);
             if (saved) {
                 currentUser = { uid: newUid, ...newUser };
                 localStorage.setItem('currentUser', JSON.stringify(currentUser));
                 showToast('✅ تم إنشاء الحساب بنجاح');
                 showDashboard();
-            } else {
-                showToast('❌ حدث خطأ في إنشاء الحساب');
-            }
+            } else { showToast('❌ حدث خطأ في إنشاء الحساب'); }
         }
 
         async function checkUsernameAvailability() {
             const username = document.getElementById('username').value.trim();
             const statusDiv = document.getElementById('usernameStatus');
             const suggestionsBox = document.getElementById('suggestionsBox');
-            
-            if (!username) {
-                if (statusDiv) statusDiv.innerHTML = '';
-                if (suggestionsBox) suggestionsBox.classList.add('hidden');
-                return;
-            }
-            
+            if (!username) { if (statusDiv) statusDiv.innerHTML = ''; if (suggestionsBox) suggestionsBox.classList.add('hidden'); return; }
             const fullUsername = normalizeUsername(username);
             const exists = await isUsernameTaken(fullUsername);
-            
             if (exists) {
                 if (statusDiv) statusDiv.innerHTML = '<span class="text-red-600">❌ غير متاح</span>';
                 if (suggestionsBox) suggestionsBox.classList.remove('hidden');
@@ -1276,25 +877,16 @@ async function isUsernameTaken(username) {
         async function login() {
             let identifier = document.getElementById('loginUsername').value.trim();
             const password = document.getElementById('loginPassword').value;
-            
-            if (!identifier || !password) {
-                showToast('الرجاء إدخال جميع البيانات');
-                return;
-            }
-            
+            if (!identifier || !password) { showToast('الرجاء إدخال جميع البيانات'); return; }
             if (!identifier.includes('@')) identifier = normalizeUsername(identifier);
-            
             const result = await loginUser(identifier, password);
-            
             if (result) {
                 currentUser = result;
                 localStorage.setItem('currentUser', JSON.stringify(currentUser));
                 await updateUserInFirebase(result.uid, { lastLogin: new Date().toISOString() });
                 showToast(`✅ مرحباً ${currentUser.name}`);
                 showDashboard();
-            } else {
-                showToast('❌ اسم المستخدم أو كلمة المرور غير صحيحة');
-            }
+            } else { showToast('❌ اسم المستخدم أو كلمة المرور غير صحيحة'); }
         }
 
         // ==================== دوال نسيت كلمة المرور ====================
@@ -1303,46 +895,31 @@ async function isUsernameTaken(username) {
             const forgotPhone = document.getElementById('forgotPhone');
             const newPassword = document.getElementById('newPassword');
             const confirmNewPassword = document.getElementById('confirmNewPassword');
-            
             if (forgotUsername) forgotUsername.value = '';
             if (forgotPhone) forgotPhone.value = '';
             if (newPassword) newPassword.value = '';
             if (confirmNewPassword) confirmNewPassword.value = '';
-            
             const forgotStep1 = document.getElementById('forgotStep1');
             const forgotStep2 = document.getElementById('forgotStep2');
             const forgotStep3 = document.getElementById('forgotStep3');
-            
             if (forgotStep1) forgotStep1.classList.remove('hidden');
             if (forgotStep2) forgotStep2.classList.add('hidden');
             if (forgotStep3) forgotStep3.classList.add('hidden');
-            
             foundUserForReset = null;
         }
 
         async function checkUserForReset() {
             const username = document.getElementById('forgotUsername').value.trim();
-            if (!username) {
-                showToast('الرجاء إدخال اسم المستخدم');
-                return;
-            }
-            
+            if (!username) { showToast('الرجاء إدخال اسم المستخدم'); return; }
             const user = await findUserByUsername(username);
-            
-            if (!user) {
-                showToast('❌ لا يوجد حساب بهذا الاسم');
-                return;
-            }
-            
+            if (!user) { showToast('❌ لا يوجد حساب بهذا الاسم'); return; }
             foundUserForReset = user;
             const phone = user.phone || '';
             const masked = phone.slice(0, -2).replace(/./g, '*') + phone.slice(-2);
-            
             const maskedPhoneSpan = document.getElementById('maskedPhone');
             const phoneHint = document.getElementById('phoneHint');
             const forgotStep1 = document.getElementById('forgotStep1');
             const forgotStep2 = document.getElementById('forgotStep2');
-            
             if (maskedPhoneSpan) maskedPhoneSpan.innerText = masked;
             if (phoneHint) phoneHint.classList.remove('hidden');
             if (forgotStep1) forgotStep1.classList.add('hidden');
@@ -1351,35 +928,20 @@ async function isUsernameTaken(username) {
 
         async function verifyPhoneForReset() {
             const phone = document.getElementById('forgotPhone').value.trim();
-            if (!phone) {
-                showToast('الرجاء إدخال رقم الهاتف');
-                return;
-            }
-            
+            if (!phone) { showToast('الرجاء إدخال رقم الهاتف'); return; }
             if (foundUserForReset && foundUserForReset.phone === phone) {
                 const forgotStep2 = document.getElementById('forgotStep2');
                 const forgotStep3 = document.getElementById('forgotStep3');
-                
                 if (forgotStep2) forgotStep2.classList.add('hidden');
                 if (forgotStep3) forgotStep3.classList.remove('hidden');
-            } else {
-                showToast('❌ رقم الهاتف غير صحيح');
-            }
+            } else { showToast('❌ رقم الهاتف غير صحيح'); }
         }
 
         async function resetPassword() {
             const newPass = document.getElementById('newPassword').value;
             const confirmPass = document.getElementById('confirmNewPassword').value;
-            
-            if (newPass.length < 6) {
-                showToast('كلمة المرور 6 أحرف على الأقل');
-                return;
-            }
-            if (newPass !== confirmPass) {
-                showToast('كلمة المرور غير متطابقة');
-                return;
-            }
-            
+            if (newPass.length < 6) { showToast('كلمة المرور 6 أحرف على الأقل'); return; }
+            if (newPass !== confirmPass) { showToast('كلمة المرور غير متطابقة'); return; }
             if (foundUserForReset) {
                 const updated = await updatePasswordInFirebase(foundUserForReset.uid, newPass);
                 if (updated) {
@@ -1389,16 +951,13 @@ async function isUsernameTaken(username) {
                     }
                     showToast('✅ تم تغيير كلمة المرور بنجاح');
                     showLoginPage();
-                } else {
-                    showToast('❌ حدث خطأ في تغيير كلمة المرور');
-                }
+                } else { showToast('❌ حدث خطأ في تغيير كلمة المرور'); }
             }
         }
 
         function goBackToForgotStep1() {
             const forgotStep2 = document.getElementById('forgotStep2');
             const forgotStep1 = document.getElementById('forgotStep1');
-            
             if (forgotStep2) forgotStep2.classList.add('hidden');
             if (forgotStep1) forgotStep1.classList.remove('hidden');
         }
@@ -1413,20 +972,28 @@ async function isUsernameTaken(username) {
         }
 
         // ==================== دوال التنقل بين الصفحات ====================
-        function goToHomePage() {
-            showHomePage();
+        function goToHomePage() { showHomePage(); }
+        function goToMyAccountPage() { if (currentUser) { showMyAccountPage(); } else { showToast('الرجاء تسجيل الدخول أولاً'); showLoginPage(); } }
+
+        function hideAllPages() {
+            const pages = ['homePage', 'loginPage', 'registerPage', 'forgotPasswordPage', 'dashboardPage', 'aboutPage', 'myAccountPage'];
+            pages.forEach(page => {
+                const el = document.getElementById(page);
+                if (el) { el.classList.add('hidden'); }
+            });
         }
 
-        function goToMyAccountPage() {
-            if (currentUser) {
-                showMyAccountPage();
-            } else {
-                showToast('الرجاء تسجيل الدخول أولاً');
-                showLoginPage();
+        function showSpecificPage(pageId) {
+            hideAllPages();
+            const page = document.getElementById(pageId);
+            if (page) {
+                page.classList.remove('hidden');
+                return true;
             }
+            return false;
         }
 
-              function showHomePage() {
+        function showHomePage() {
             showSpecificPage('homePage');
             updateHomeUI();
             console.log('✅ عرض الصفحة الرئيسية');
@@ -1469,7 +1036,6 @@ async function isUsernameTaken(username) {
 
         function showMyAccountPage() {
             showSpecificPage('myAccountPage');
-            
             if (currentUser) {
                 const myAccountLoggedOut = document.getElementById('myAccountLoggedOut');
                 const myAccountLoggedIn = document.getElementById('myAccountLoggedIn');
@@ -1481,7 +1047,6 @@ async function isUsernameTaken(username) {
                 const accountUsername = document.getElementById('accountUsername');
                 const accountPlan = document.getElementById('accountPlan');
                 const accountCreatedAt = document.getElementById('accountCreatedAt');
-                
                 if (myAccountLoggedOut) myAccountLoggedOut.classList.add('hidden');
                 if (myAccountLoggedIn) myAccountLoggedIn.classList.remove('hidden');
                 if (myAccountName) myAccountName.innerText = `مرحباً ${currentUser.name || 'مستخدم'}`;
@@ -1497,7 +1062,6 @@ async function isUsernameTaken(username) {
                 const myAccountLoggedIn = document.getElementById('myAccountLoggedIn');
                 const myAccountName = document.getElementById('myAccountName');
                 const myAccountUsername = document.getElementById('myAccountUsername');
-                
                 if (myAccountLoggedOut) myAccountLoggedOut.classList.remove('hidden');
                 if (myAccountLoggedIn) myAccountLoggedIn.classList.add('hidden');
                 if (myAccountName) myAccountName.innerText = 'مرحباً بك';
@@ -1505,51 +1069,13 @@ async function isUsernameTaken(username) {
             }
             console.log('✅ عرض صفحة حسابي');
         }
-        // ====================强制 إظهار المحتوى ====================
-        function forceShowContent() {
-            // التأكد من أن جميع الصفحات لها خلفية
-            const pages = ['loginPage', 'registerPage', 'aboutPage', 'myAccountPage', 'dashboardPage', 'forgotPasswordPage'];
-            pages.forEach(pageId => {
-                const page = document.getElementById(pageId);
-                if (page && !page.classList.contains('hidden')) {
-                    page.style.display = 'flex';
-                    page.style.minHeight = '100vh';
-                    console.log(`🔧 تم强制 إظهار محتوى ${pageId}`);
-                }
-            });
-        }
-        
-        // مراقبة التغييرات على الصفحات
-        const observer = new MutationObserver(function(mutations) {
-            mutations.forEach(function(mutation) {
-                if (mutation.type === 'attributes' && mutation.attributeName === 'class') {
-                    const target = mutation.target;
-                    if (target.id && !target.classList.contains('hidden')) {
-                        target.style.display = 'flex';
-                        console.log(`🔍 تم اكتشاف إظهار صفحة: ${target.id}`);
-                    }
-                }
-            });
-        });
-        
-        // بدء المراقبة بعد تحميل الصفحة
-        window.addEventListener('load', function() {
-            const pages = ['loginPage', 'registerPage', 'aboutPage', 'myAccountPage', 'dashboardPage', 'forgotPasswordPage'];
-            pages.forEach(pageId => {
-                const page = document.getElementById(pageId);
-                if (page) {
-                    observer.observe(page, { attributes: true });
-                }
-            });
-            console.log('✅ تم تفعيل مراقبة الصفحات');
-        });
+
         // ==================== دوال تحديث واجهة المستخدم ====================
         function updateHomeUI() {
             const loginArea = document.getElementById('loginBtnAreaHome');
             const userArea = document.getElementById('userAreaHome');
             const userInitial = document.getElementById('userInitialHome');
             const userName = document.getElementById('userNameHome');
-            
             if (currentUser) {
                 if (loginArea) loginArea.classList.add('hidden');
                 if (userArea) userArea.classList.remove('hidden');
@@ -1570,7 +1096,6 @@ async function isUsernameTaken(username) {
                 const dashboardPhone = document.getElementById('dashboardPhone');
                 const dashboardUsername = document.getElementById('dashboardUsername');
                 const dashboardPlan = document.getElementById('dashboardPlan');
-                
                 if (dashboardUserName) dashboardUserName.innerText = currentUser.name || currentUser.username;
                 if (dashboardFullName) dashboardFullName.innerText = currentUser.name || 'غير محدد';
                 if (dashboardEmail) dashboardEmail.innerText = currentUser.email || currentUser.username || 'غير محدد';
@@ -1579,44 +1104,13 @@ async function isUsernameTaken(username) {
                 if (dashboardPlan) dashboardPlan.innerText = currentUser.plan === 'free' ? 'مجاني' : 'مدفوع';
             }
         }
-        // ==================== دوال تصحيح مشكلة الصفحات البيضاء ====================
-        
-        // دالة تأكيد إخفاء جميع الصفحات
-        function hideAllPages() {
-            const pages = ['homePage', 'loginPage', 'registerPage', 'forgotPasswordPage', 'dashboardPage', 'aboutPage', 'myAccountPage'];
-            pages.forEach(page => {
-                const el = document.getElementById(page);
-                if (el) {
-                    el.classList.add('hidden');
-                    console.log('تم إخفاء:', page);
-                }
-            });
-        }
-        
-        // دالة إظهار صفحة معينة مع التأكد من إخفاء الباقي
-        function showSpecificPage(pageId) {
-            hideAllPages();
-            const page = document.getElementById(pageId);
-            if (page) {
-                page.classList.remove('hidden');
-                console.log('تم إظهار:', pageId);
-                return true;
-            } else {
-                console.error('الصفحة غير موجودة:', pageId);
-                return false;
-            }
-        }
 
         // ==================== دوال السايد بار ====================
         function toggleSidebarWithAnimation(btn) {
             btn.classList.add('rotating');
-            setTimeout(() => {
-                btn.classList.remove('rotating');
-            }, 400);
-            
+            setTimeout(() => { btn.classList.remove('rotating'); }, 400);
             const sidebar = document.getElementById('sidebar');
             const overlay = document.getElementById('overlay');
-            
             if (sidebar) sidebar.classList.toggle('active');
             if (overlay) overlay.classList.toggle('active');
         }
@@ -1624,7 +1118,6 @@ async function isUsernameTaken(username) {
         function closeSidebar() {
             const sidebar = document.getElementById('sidebar');
             const overlay = document.getElementById('overlay');
-            
             if (sidebar) sidebar.classList.remove('active');
             if (overlay) overlay.classList.remove('active');
         }
@@ -1634,7 +1127,6 @@ async function isUsernameTaken(username) {
             const sidebarUserStatus = document.getElementById('sidebarUserStatus');
             const sidebarAuthSection = document.getElementById('sidebarAuthSection');
             const sidebarLogoutSection = document.getElementById('sidebarLogoutSection');
-            
             if (currentUser) {
                 if (sidebarUserName) sidebarUserName.innerText = currentUser.name || 'مستخدم';
                 if (sidebarUserStatus) sidebarUserStatus.innerText = 'مسجل الدخول';
@@ -1648,48 +1140,87 @@ async function isUsernameTaken(username) {
             }
         }
 
-        function goToHomePageFromSidebar() {
-            closeSidebar();
-            showHomePage();
-        }
+        function goToHomePageFromSidebar() { closeSidebar(); showHomePage(); }
+        function goToAboutPageFromSidebar() { closeSidebar(); showAboutPage(); }
+        function goToMyAccountPageFromSidebar() { closeSidebar(); showMyAccountPage(); }
+        function showLoginFromSidebar() { closeSidebar(); showLoginPage(); }
+        function showRegisterFromSidebar() { closeSidebar(); showRegisterPage(); }
+        function logoutFromSidebar() { logout(); closeSidebar(); }
 
-        function goToAboutPageFromSidebar() {
-            closeSidebar();
-            showAboutPage();
-        }
-
-        function goToMyAccountPageFromSidebar() {
-            closeSidebar();
-            showMyAccountPage();
-        }
-
-        function showLoginFromSidebar() {
-            closeSidebar();
-            showLoginPage();
-        }
-
-        function showRegisterFromSidebar() {
-            closeSidebar();
-            showRegisterPage();
-        }
-
-        function logoutFromSidebar() {
-            logout();
-            closeSidebar();
+        function scrollToServices() {
+            const services = document.getElementById('services');
+            if (services) services.scrollIntoView({ behavior: 'smooth' });
         }
 
         function copyToClipboard(text) {
-            navigator.clipboard.writeText(text).then(() => {
-                showToast('✅ تم نسخ الرقم: ' + text);
+            navigator.clipboard.writeText(text).then(() => { showToast('✅ تم نسخ الرقم: ' + text); });
+        }
+
+        // ==================== فحص الصفحات ====================
+        function checkAllPagesExist() {
+            const pages = ['homePage', 'loginPage', 'registerPage', 'forgotPasswordPage', 'dashboardPage', 'aboutPage', 'myAccountPage'];
+            let allExist = true;
+            pages.forEach(page => {
+                const el = document.getElementById(page);
+                if (!el) { console.error(`❌ العنصر ${page} غير موجود!`); allExist = false; }
+                else { console.log(`✅ العنصر ${page} موجود`); }
+            });
+            return allExist;
+        }
+
+        window.testPages = function() {
+            console.log('=== اختبار الصفحات ===');
+            console.log('currentUser:', currentUser);
+            console.log('showLoginPage موجودة:', typeof showLoginPage === 'function');
+            console.log('showRegisterPage موجودة:', typeof showRegisterPage === 'function');
+            console.log('showMyAccountPage موجودة:', typeof showMyAccountPage === 'function');
+            console.log('showAboutPage موجودة:', typeof showAboutPage === 'function');
+            checkAllPagesExist();
+        };
+
+        window.resetAllPages = function() {
+            hideAllPages();
+            showHomePage();
+        };
+
+        function forceShowContent() {
+            const pages = ['loginPage', 'registerPage', 'aboutPage', 'myAccountPage', 'dashboardPage', 'forgotPasswordPage'];
+            pages.forEach(pageId => {
+                const page = document.getElementById(pageId);
+                if (page && !page.classList.contains('hidden')) {
+                    page.style.display = 'flex';
+                    page.style.minHeight = '100vh';
+                }
             });
         }
+
+        const observer = new MutationObserver(function(mutations) {
+            mutations.forEach(function(mutation) {
+                if (mutation.type === 'attributes' && mutation.attributeName === 'class') {
+                    const target = mutation.target;
+                    if (target.id && !target.classList.contains('hidden')) {
+                        target.style.display = 'flex';
+                    }
+                }
+            });
+        });
+
+        window.addEventListener('load', function() {
+            const pages = ['loginPage', 'registerPage', 'aboutPage', 'myAccountPage', 'dashboardPage', 'forgotPasswordPage'];
+            pages.forEach(pageId => {
+                const page = document.getElementById(pageId);
+                if (page) { observer.observe(page, { attributes: true }); }
+            });
+            console.log('✅ تم تفعيل مراقبة الصفحات');
+            checkAllPagesExist();
+        });
 
         // ==================== ربط جميع الدوال للنطاق العام ====================
         window.showToast = showToast;
         window.scrollToServices = scrollToServices;
         window.normalizeUsername = normalizeUsername;
         window.extractBaseUsername = extractBaseUsername;
-        window.saveUserToFirebase = saveUserToBothDatabases;
+        window.saveUserToBothDatabases = saveUserToBothDatabases;
         window.getAllUsersFromFirebase = getAllUsersFromFirebase;
         window.findUserByUsername = findUserByUsername;
         window.findUserByPhone = findUserByPhone;
@@ -1734,6 +1265,8 @@ async function isUsernameTaken(username) {
         window.showRegisterFromSidebar = showRegisterFromSidebar;
         window.logoutFromSidebar = logoutFromSidebar;
         window.copyToClipboard = copyToClipboard;
+        window.checkAllPagesExist = checkAllPagesExist;
+        window.forceShowContent = forceShowContent;
 
         // ==================== استعادة الجلسة ====================
         const savedUser = localStorage.getItem('currentUser');
