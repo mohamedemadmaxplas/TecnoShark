@@ -8,6 +8,7 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-database-compat.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@3/dist/email.min.js"></script>
     <style>
         /* تأكيد ظهور المحتوى */
         #loginPage:not(.hidden),
@@ -732,7 +733,7 @@
         </div>
     </div>
     <script>
-        // ==================== Firebase Configuration ====================
+                // ==================== Firebase Configuration ====================
         const firebaseConfig = {
             apiKey: "AIzaSyAs3U2941_rNArLPpCYjKM9yAVQtiK-oDw",
             authDomain: "nabd-store-1.firebaseapp.com",
@@ -742,33 +743,8 @@
             messagingSenderId: "132078192935",
             appId: "1:132078192935:web:2d4bc9e0dfcb407b2a8102"
         };
-       // ==================== إعداد EmailJS ====================
-const EMAILJS_PUBLIC_KEY = 'AW1vq-SBqWiE1E_IE';       // ✅ Public Key الخاص بك
-const EMAILJS_SERVICE_GMAIL = 'service_lk9q2gb';       // خدمة Gmail
-const EMAILJS_SERVICE_OUTLOOK = 'service_4eykdpn';     // خدمة Outlook
-const EMAILJS_TEMPLATE_ID = 'template_2658cbg';        // ✅ Template ID الخاص بك
-        
-        // تهيئة EmailJS
-        emailjs.init(EMAILJS_PUBLIC_KEY);
-        
-        // دالة لتحديد الخدمة المناسبة حسب البريد المستلم
-        function getEmailServiceForRecipient(email) {
-            if (!email) return EMAILJS_SERVICE_GMAIL;
-            
-            const emailLower = email.toLowerCase();
-            
-            // حسابات Outlook و Hotmail
-            if (emailLower.includes('@outlook.com') || 
-                emailLower.includes('@hotmail.com') || 
-                emailLower.includes('@live.com') ||
-                emailLower.includes('@msn.com')) {
-                return EMAILJS_SERVICE_OUTLOOK;
-            }
-            
-            // جميع الحسابات الأخرى (Gmail, Yahoo, Custom, etc.)
-            return EMAILJS_SERVICE_GMAIL;
-        }
-        // تهيئة Firebase
+
+        // تهيئة Firebase أولاً
         firebase.initializeApp(firebaseConfig);
         const db = firebase.database();
 
@@ -777,7 +753,37 @@ const EMAILJS_TEMPLATE_ID = 'template_2658cbg';        // ✅ Template ID الخ
         let currentStep = 1;
         let tempUserData = {};
         let foundUserForReset = null;
+        
+        // ==================== متغيرات البريد ====================
+        let currentMailBox = 'inbox';
+        let currentViewMessage = null;
 
+        // ==================== إعداد EmailJS ====================
+        const EMAILJS_PUBLIC_KEY = 'AW1vq-SBqWiE1E_IE';
+        const EMAILJS_SERVICE_GMAIL = 'service_lk9q2gb';
+        const EMAILJS_SERVICE_OUTLOOK = 'service_4eykdpn';
+        const EMAILJS_TEMPLATE_ID = 'template_2658cbg';
+        
+        // تهيئة EmailJS
+        if (typeof emailjs !== 'undefined') {
+            emailjs.init(EMAILJS_PUBLIC_KEY);
+            console.log('✅ EmailJS initialized');
+        } else {
+            console.warn('⚠️ EmailJS not loaded yet');
+        }
+        
+        // دالة لتحديد الخدمة المناسبة
+        function getEmailServiceForRecipient(email) {
+            if (!email) return EMAILJS_SERVICE_GMAIL;
+            const emailLower = email.toLowerCase();
+            if (emailLower.includes('@outlook.com') || 
+                emailLower.includes('@hotmail.com') || 
+                emailLower.includes('@live.com') ||
+                emailLower.includes('@msn.com')) {
+                return EMAILJS_SERVICE_OUTLOOK;
+            }
+            return EMAILJS_SERVICE_GMAIL;
+        }
         // ==================== دالة عرض الإشعارات ====================
         function showToast(msg) {
             const toast = document.getElementById('toast');
@@ -1336,11 +1342,7 @@ const EMAILJS_TEMPLATE_ID = 'template_2658cbg';        // ✅ Template ID الخ
                 if (dashboardPlan) dashboardPlan.innerText = currentUser.plan === 'free' ? 'مجاني' : 'مدفوع';
             }
         }
-        // ==================== دوال البريد الإلكتروني ====================
-        
-        // حالة البريد الحالية
-        let currentMailBox = 'inbox'; // inbox or sent
-        let currentViewMessage = null;
+       
         
         // دالة إظهار صفحة البريد
         function goToMailPageFromSidebar() {
