@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>TecnoShark منصه</title>
+    <title>TecnoShark | منصة البرمجيات والحلول الرقمية</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
@@ -143,6 +143,80 @@
             .container { padding-left: 1rem; padding-right: 1rem; }
             .text-5xl { font-size: 2rem; }
         }
+        /* ==================== صفحة البريد الإلكتروني ==================== */
+.mail-container {
+    max-width: 1200px;
+    margin: 0 auto;
+    background: white;
+    border-radius: 20px;
+    overflow: hidden;
+    box-shadow: 0 10px 40px rgba(0,0,0,0.1);
+}
+
+.mail-sidebar {
+    background: #f8fafc;
+    border-left: 1px solid #e2e8f0;
+    min-height: 600px;
+}
+
+.mail-list {
+    background: white;
+}
+
+.mail-item {
+    border-bottom: 1px solid #e2e8f0;
+    transition: all 0.2s ease;
+    cursor: pointer;
+}
+
+.mail-item:hover {
+    background: #f1f5f9;
+}
+
+.mail-item.unread {
+    background: #eff6ff;
+    font-weight: bold;
+}
+
+.mail-item.selected {
+    background: #dbeafe;
+}
+
+.compose-btn {
+    background: linear-gradient(135deg, #3b82f6, #1d4ed8);
+    transition: all 0.3s ease;
+}
+
+.compose-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 5px 15px rgba(59,130,246,0.3);
+}
+
+.modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0,0,0,0.5);
+    z-index: 1100;
+    display: none;
+    align-items: center;
+    justify-content: center;
+}
+
+.modal-overlay.active {
+    display: flex;
+}
+
+.modal-content {
+    background: white;
+    border-radius: 20px;
+    max-width: 500px;
+    width: 90%;
+    max-height: 80vh;
+    overflow-y: auto;
+}
     </style>
 </head>
 <body class="bg-gradient-to-br from-blue-50 to-indigo-100 min-h-screen">
@@ -172,6 +246,9 @@
                 <a onclick="goToAboutPageFromSidebar()" class="sidebar-link flex items-center gap-3 p-3 text-gray-300 hover:text-white cursor-pointer animate-slide-right delay-200">
                     <i class="fas fa-building w-5"></i><span>حول الشركة</span>
                 </a>
+                <a onclick="goToMailPageFromSidebar()" class="sidebar-link flex items-center gap-3 p-3 text-gray-300 hover:text-white cursor-pointer animate-slide-right delay-350">
+    <i class="fas fa-envelope w-5"></i><span>البريد الإلكتروني</span>
+</a>
                 <a onclick="goToMyAccountPageFromSidebar()" class="sidebar-link flex items-center gap-3 p-3 text-gray-300 hover:text-white cursor-pointer animate-slide-right delay-300">
                     <i class="fas fa-user-circle w-5"></i><span>حسابي</span>
                 </a>
@@ -543,7 +620,117 @@
             <button onclick="showHomePage()" class="w-full text-gray-400 text-sm mt-4 hover:text-gray-600 transition">العودة للرئيسية</button>
         </div>
     </div>
+    <!-- ==================== صفحة البريد الإلكتروني ==================== -->
+    <div id="mailPage" class="hidden page-container py-8">
+        <div class="container mx-auto px-4">
+            <div class="mail-container">
+                <div class="grid md:grid-cols-4">
+                    <!-- الشريط الجانبي للبريد -->
+                    <div class="mail-sidebar p-4">
+                        <button onclick="openComposeModal()" class="compose-btn w-full text-white py-3 rounded-xl font-bold mb-6">
+                            <i class="fas fa-pen-alt ml-2"></i> رسالة جديدة
+                        </button>
+                        
+                        <div class="space-y-2">
+                            <a onclick="showInbox()" class="flex items-center gap-3 p-3 rounded-lg hover:bg-blue-50 cursor-pointer transition" id="inboxBtn">
+                                <i class="fas fa-inbox w-5 text-blue-500"></i>
+                                <span>صندوق الوارد</span>
+                                <span id="unreadCount" class="mr-auto bg-red-500 text-white text-xs px-2 py-0.5 rounded-full">0</span>
+                            </a>
+                            <a onclick="showSentPage()" class="flex items-center gap-3 p-3 rounded-lg hover:bg-blue-50 cursor-pointer transition">
+                                <i class="fas fa-paper-plane w-5 text-green-500"></i>
+                                <span>المرسلة</span>
+                            </a>
+                        </div>
+                        
+                        <hr class="my-4">
+                        
+                        <div class="text-sm text-gray-500">
+                            <p><i class="fas fa-database ml-1"></i> مساحة التخزين</p>
+                            <div class="w-full bg-gray-200 rounded-full h-2 mt-1">
+                                <div id="storageUsed" class="bg-blue-500 h-2 rounded-full" style="width: 0%"></div>
+                            </div>
+                            <p class="text-xs mt-1" id="storageText">0 رسالة</p>
+                        </div>
+                    </div>
+                    
+                    <!-- قائمة الرسائل -->
+                    <div class="md:col-span-3">
+                        <div class="p-4 border-b bg-gray-50 flex justify-between items-center">
+                            <h2 class="font-bold text-lg" id="mailBoxTitle">صندوق الوارد</h2>
+                            <button onclick="refreshMails()" class="text-blue-500 hover:text-blue-700">
+                                <i class="fas fa-sync-alt"></i>
+                            </button>
+                        </div>
+                        
+                        <!-- قائمة الرسائل -->
+                        <div id="mailList" class="mail-list divide-y">
+                            <div class="text-center py-10 text-gray-400">
+                                <i class="fas fa-inbox text-5xl mb-3"></i>
+                                <p>لا توجد رسائل</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
 
+    <!-- نافذة إنشاء رسالة جديدة -->
+    <div id="composeModal" class="modal-overlay" onclick="closeComposeModal(event)">
+        <div class="modal-content p-6" onclick="event.stopPropagation()">
+            <div class="flex justify-between items-center mb-4">
+                <h3 class="text-xl font-bold">رسالة جديدة</h3>
+                <button onclick="closeComposeModal()" class="text-gray-400 hover:text-gray-600">
+                    <i class="fas fa-times text-xl"></i>
+                </button>
+            </div>
+            <div class="mb-3">
+                <label class="block text-sm font-medium mb-1">إلى</label>
+                <input type="text" id="composeTo" class="w-full p-2 border rounded-lg focus:ring-2 focus:ring-blue-500" placeholder="اسم المستخدم المستلم">
+                <p class="text-xs text-gray-400 mt-1">أدخل اسم المستخدم (مثال: mohamed)</p>
+            </div>
+            <div class="mb-3">
+                <label class="block text-sm font-medium mb-1">الموضوع</label>
+                <input type="text" id="composeSubject" class="w-full p-2 border rounded-lg focus:ring-2 focus:ring-blue-500" placeholder="الموضوع">
+            </div>
+            <div class="mb-4">
+                <label class="block text-sm font-medium mb-1">المحتوى</label>
+                <textarea id="composeMessage" rows="5" class="w-full p-2 border rounded-lg focus:ring-2 focus:ring-blue-500" placeholder="اكتب رسالتك هنا..."></textarea>
+            </div>
+            <button onclick="sendMessage()" class="w-full bg-blue-600 text-white py-2 rounded-lg hover:bg-blue-700 transition">
+                <i class="fas fa-paper-plane ml-2"></i> إرسال
+            </button>
+        </div>
+    </div>
+
+    <!-- نافذة عرض الرسالة -->
+    <div id="viewMailModal" class="modal-overlay" onclick="closeViewModal(event)">
+        <div class="modal-content p-6" style="max-width: 600px;" onclick="event.stopPropagation()">
+            <div class="flex justify-between items-center mb-4">
+                <h3 class="text-xl font-bold" id="viewSubject">الموضوع</h3>
+                <button onclick="closeViewModal()" class="text-gray-400 hover:text-gray-600">
+                    <i class="fas fa-times text-xl"></i>
+                </button>
+            </div>
+            <div class="mb-3">
+                <p class="text-sm text-gray-500">من: <span id="viewFrom" class="font-medium text-gray-700"></span></p>
+                <p class="text-sm text-gray-500">إلى: <span id="viewTo" class="font-medium text-gray-700"></span></p>
+                <p class="text-sm text-gray-500">التاريخ: <span id="viewDate" class="font-medium text-gray-700"></span></p>
+            </div>
+            <div class="border-t pt-4 mt-2">
+                <p id="viewBody" class="text-gray-700 leading-relaxed whitespace-pre-wrap"></p>
+            </div>
+            <div class="mt-6 flex gap-3">
+                <button onclick="replyToMessage()" class="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition">
+                    <i class="fas fa-reply ml-2"></i> رد
+                </button>
+                <button onclick="deleteCurrentMessage()" class="bg-red-600 text-white px-4 py-2 rounded-lg hover:bg-red-700 transition">
+                    <i class="fas fa-trash ml-2"></i> حذف
+                </button>
+            </div>
+        </div>
+    </div>
     <script>
         // ==================== Firebase Configuration ====================
         const firebaseConfig = {
@@ -1124,7 +1311,284 @@
                 if (dashboardPlan) dashboardPlan.innerText = currentUser.plan === 'free' ? 'مجاني' : 'مدفوع';
             }
         }
-
+        // ==================== دوال البريد الإلكتروني ====================
+        
+        // حالة البريد الحالية
+        let currentMailBox = 'inbox'; // inbox or sent
+        let currentViewMessage = null;
+        
+        // دالة إظهار صفحة البريد
+        function goToMailPageFromSidebar() {
+            closeSidebar();
+            showMailPage();
+        }
+        
+        function showMailPage() {
+            hideAllPages();
+            const mailPage = document.getElementById('mailPage');
+            if (mailPage) {
+                mailPage.classList.remove('hidden');
+                mailPage.style.display = 'block';
+            }
+            loadMails();
+            updateStorageInfo();
+        }
+        
+        // تحميل الرسائل من Firebase
+        async function loadMails() {
+            if (!currentUser) {
+                showToast('الرجاء تسجيل الدخول أولاً');
+                showLoginPage();
+                return;
+            }
+            
+            try {
+                const snapshot = await db.ref('messages').once('value');
+                const allMessages = snapshot.val();
+                const myMessages = [];
+                
+                if (allMessages) {
+                    for (let uid in allMessages) {
+                        const msg = allMessages[uid];
+                        if (currentMailBox === 'inbox') {
+                            if (msg.to === currentUser.username) {
+                                myMessages.push({ id: uid, ...msg });
+                            }
+                        } else {
+                            if (msg.from === currentUser.username) {
+                                myMessages.push({ id: uid, ...msg });
+                            }
+                        }
+                    }
+                }
+                
+                // ترتيب حسب التاريخ (الأحدث أولاً)
+                myMessages.sort((a, b) => new Date(b.timestamp) - new Date(a.timestamp));
+                renderMailList(myMessages);
+                updateUnreadCount(myMessages);
+                
+            } catch (error) {
+                console.error('خطأ في تحميل الرسائل:', error);
+                showToast('خطأ في تحميل الرسائل');
+            }
+        }
+        
+        // عرض قائمة الرسائل
+        function renderMailList(messages) {
+            const mailList = document.getElementById('mailList');
+            if (!mailList) return;
+            
+            if (messages.length === 0) {
+                mailList.innerHTML = `
+                    <div class="text-center py-10 text-gray-400">
+                        <i class="fas fa-inbox text-5xl mb-3"></i>
+                        <p>لا توجد رسائل</p>
+                    </div>
+                `;
+                return;
+            }
+            
+            mailList.innerHTML = messages.map(msg => `
+                <div class="mail-item p-4 flex justify-between items-center cursor-pointer hover:bg-gray-50 ${!msg.read ? 'unread' : ''}" onclick="viewMessage('${msg.id}')">
+                    <div class="flex-1">
+                        <div class="flex items-center gap-3">
+                            <i class="fas ${currentMailBox === 'inbox' ? 'fa-envelope' : 'fa-paper-plane'} ${!msg.read ? 'text-blue-500' : 'text-gray-400'}"></i>
+                            <span class="font-medium">${currentMailBox === 'inbox' ? msg.from : msg.to}</span>
+                            <span class="text-sm text-gray-500">${msg.subject || 'بدون موضوع'}</span>
+                        </div>
+                        <p class="text-sm text-gray-500 mt-1 line-clamp-1">${msg.body.substring(0, 80)}${msg.body.length > 80 ? '...' : ''}</p>
+                    </div>
+                    <div class="text-xs text-gray-400">
+                        ${new Date(msg.timestamp).toLocaleDateString('ar-EG')}
+                    </div>
+                </div>
+            `).join('');
+        }
+        
+        // تحديث عدد الرسائل غير المقروءة
+        function updateUnreadCount(messages) {
+            const unreadCount = messages.filter(m => !m.read).length;
+            const unreadSpan = document.getElementById('unreadCount');
+            if (unreadSpan) {
+                unreadSpan.innerText = unreadCount;
+                unreadSpan.style.display = unreadCount > 0 ? 'inline-block' : 'none';
+            }
+        }
+        
+        // عرض رسالة مفصلة
+        window.viewMessage = async function(messageId) {
+            try {
+                const snapshot = await db.ref(`messages/${messageId}`).once('value');
+                const message = snapshot.val();
+                if (message) {
+                    currentViewMessage = { id: messageId, ...message };
+                    
+                    // تحديث حالة القراءة
+                    if (!message.read && currentMailBox === 'inbox') {
+                        await db.ref(`messages/${messageId}/read`).set(true);
+                        message.read = true;
+                    }
+                    
+                    document.getElementById('viewSubject').innerText = message.subject || 'بدون موضوع';
+                    document.getElementById('viewFrom').innerText = message.from;
+                    document.getElementById('viewTo').innerText = message.to;
+                    document.getElementById('viewDate').innerText = new Date(message.timestamp).toLocaleString('ar-EG');
+                    document.getElementById('viewBody').innerText = message.body;
+                    
+                    document.getElementById('viewMailModal').classList.add('active');
+                    
+                    // إعادة تحميل القائمة إذا تغيرت حالة القراءة
+                    loadMails();
+                }
+            } catch (error) {
+                console.error('خطأ:', error);
+                showToast('خطأ في عرض الرسالة');
+            }
+        };
+        
+        // فتح نافذة إنشاء رسالة جديدة
+        function openComposeModal() {
+            if (!currentUser) {
+                showToast('الرجاء تسجيل الدخول أولاً');
+                showLoginPage();
+                return;
+            }
+            document.getElementById('composeTo').value = '';
+            document.getElementById('composeSubject').value = '';
+            document.getElementById('composeMessage').value = '';
+            document.getElementById('composeModal').classList.add('active');
+        }
+        
+        // إغلاق نافذة إنشاء رسالة
+        function closeComposeModal(event) {
+            if (!event || event.target === document.getElementById('composeModal') || !event) {
+                document.getElementById('composeModal').classList.remove('active');
+            }
+        }
+        
+        // إغلاق نافذة عرض الرسالة
+        function closeViewModal(event) {
+            if (!event || event.target === document.getElementById('viewMailModal') || !event) {
+                document.getElementById('viewMailModal').classList.remove('active');
+                currentViewMessage = null;
+            }
+        }
+        
+        // إرسال رسالة
+        async function sendMessage() {
+            const to = document.getElementById('composeTo').value.trim();
+            const subject = document.getElementById('composeSubject').value.trim();
+            const body = document.getElementById('composeMessage').value.trim();
+            
+            if (!to) {
+                showToast('الرجاء إدخال اسم المستخدم المستلم');
+                return;
+            }
+            if (!body) {
+                showToast('الرجاء إدخال محتوى الرسالة');
+                return;
+            }
+            
+            // التحقق من وجود المستخدم المستلم
+            const receiver = await findUserByUsername(normalizeUsername(to));
+            if (!receiver) {
+                showToast('❌ المستخدم غير موجود');
+                return;
+            }
+            
+            const newMessage = {
+                from: currentUser.username,
+                to: normalizeUsername(to),
+                subject: subject,
+                body: body,
+                timestamp: new Date().toISOString(),
+                read: false
+            };
+            
+            try {
+                const newRef = db.ref('messages').push();
+                await newRef.set(newMessage);
+                showToast('✅ تم إرسال الرسالة بنجاح');
+                closeComposeModal();
+                loadMails();
+                updateStorageInfo();
+            } catch (error) {
+                console.error('خطأ في الإرسال:', error);
+                showToast('❌ حدث خطأ في إرسال الرسالة');
+            }
+        }
+        
+        // الرد على رسالة
+        function replyToMessage() {
+            if (currentViewMessage) {
+                closeViewModal();
+                setTimeout(() => {
+                    openComposeModal();
+                    document.getElementById('composeTo').value = extractBaseUsername(currentViewMessage.from);
+                    document.getElementById('composeSubject').value = `رد: ${currentViewMessage.subject || 'رسالة'}`;
+                    document.getElementById('composeMessage').value = `\n\n---\nالرسالة الأصلية:\n${currentViewMessage.body}`;
+                }, 300);
+            }
+        }
+        
+        // حذف الرسالة الحالية
+        async function deleteCurrentMessage() {
+            if (currentViewMessage && confirm('هل أنت متأكد من حذف هذه الرسالة؟')) {
+                try {
+                    await db.ref(`messages/${currentViewMessage.id}`).remove();
+                    showToast('✅ تم حذف الرسالة');
+                    closeViewModal();
+                    loadMails();
+                    updateStorageInfo();
+                } catch (error) {
+                    showToast('❌ حدث خطأ في الحذف');
+                }
+            }
+        }
+        
+        // تبديل بين صندوق الوارد والمرسلة
+        function showInbox() {
+            currentMailBox = 'inbox';
+            document.getElementById('mailBoxTitle').innerText = 'صندوق الوارد';
+            loadMails();
+        }
+        
+        function showSentPage() {
+            currentMailBox = 'sent';
+            document.getElementById('mailBoxTitle').innerText = 'المرسلة';
+            loadMails();
+        }
+        
+        // تحديث معلومات التخزين
+        async function updateStorageInfo() {
+            try {
+                const snapshot = await db.ref('messages').once('value');
+                const allMessages = snapshot.val();
+                let myMessagesCount = 0;
+                if (allMessages) {
+                    for (let uid in allMessages) {
+                        if (allMessages[uid].from === currentUser?.username || allMessages[uid].to === currentUser?.username) {
+                            myMessagesCount++;
+                        }
+                    }
+                }
+                const maxMessages = 100;
+                const percent = Math.min((myMessagesCount / maxMessages) * 100, 100);
+                const storageBar = document.getElementById('storageUsed');
+                const storageText = document.getElementById('storageText');
+                if (storageBar) storageBar.style.width = `${percent}%`;
+                if (storageText) storageText.innerText = `${myMessagesCount} / ${maxMessages} رسالة`;
+            } catch (error) {
+                console.error('خطأ:', error);
+            }
+        }
+        
+        function refreshMails() {
+            loadMails();
+            showToast('🔄 تم تحديث البريد');
+        }
+        
+       
         // ==================== دوال السايد بار ====================
         function toggleSidebarWithAnimation(btn) {
             btn.classList.add('rotating');
@@ -1285,6 +1749,18 @@
         window.showRegisterFromSidebar = showRegisterFromSidebar;
         window.logoutFromSidebar = logoutFromSidebar;
         window.copyToClipboard = copyToClipboard;
+        window.goToMailPageFromSidebar = goToMailPageFromSidebar;
+        window.showMailPage = showMailPage;
+        window.openComposeModal = openComposeModal;
+        window.closeComposeModal = closeComposeModal;
+        window.closeViewModal = closeViewModal;
+        window.sendMessage = sendMessage;
+        window.replyToMessage = replyToMessage;
+        window.deleteCurrentMessage = deleteCurrentMessage;
+        window.showInbox = showInbox;
+        window.showSentPage = showSentPage;
+        window.refreshMails = refreshMails;
+        window.loadMails = loadMails;
         window.checkAllPagesExist = checkAllPagesExist;
         window.forceShowContent = forceShowContent;
 
