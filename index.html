@@ -975,28 +975,49 @@
         function goToHomePage() { showHomePage(); }
         function goToMyAccountPage() { if (currentUser) { showMyAccountPage(); } else { showToast('الرجاء تسجيل الدخول أولاً'); showLoginPage(); } }
 
+               // ==================== دوال التنقل بين الصفحات (المعدلة) ====================
+        
+        // دالة إخفاء جميع الصفحات بشكل قاطع
         function hideAllPages() {
             const pages = ['homePage', 'loginPage', 'registerPage', 'forgotPasswordPage', 'dashboardPage', 'aboutPage', 'myAccountPage'];
             pages.forEach(page => {
                 const el = document.getElementById(page);
-                if (el) { el.classList.add('hidden'); }
+                if (el) {
+                    el.classList.add('hidden');
+                    el.style.display = 'none';  // 🔧 إضافة强制 إخفاء
+                }
             });
+            console.log('✅ تم إخفاء جميع الصفحات');
         }
 
+        // دالة إظهار صفحة معينة بشكل قاطع
         function showSpecificPage(pageId) {
-            hideAllPages();
+            // إخفاء جميع الصفحات أولاً
+            const pages = ['homePage', 'loginPage', 'registerPage', 'forgotPasswordPage', 'dashboardPage', 'aboutPage', 'myAccountPage'];
+            pages.forEach(page => {
+                const el = document.getElementById(page);
+                if (el) {
+                    el.classList.add('hidden');
+                    el.style.display = 'none';
+                }
+            });
+            
+            // إظهار الصفحة المطلوبة
             const page = document.getElementById(pageId);
             if (page) {
                 page.classList.remove('hidden');
+                page.style.display = 'flex';  // 🔧强制 إظهار
+                console.log(`✅ تم إظهار الصفحة: ${pageId}`);
                 return true;
+            } else {
+                console.error(`❌ الصفحة غير موجودة: ${pageId}`);
+                return false;
             }
-            return false;
         }
 
         function showHomePage() {
             showSpecificPage('homePage');
             updateHomeUI();
-            console.log('✅ عرض الصفحة الرئيسية');
         }
 
         function showLoginPage() {
@@ -1006,36 +1027,32 @@
             if (loginUsername) loginUsername.value = '';
             if (loginPassword) loginPassword.value = '';
             updateSidebarUI();
-            console.log('✅ عرض صفحة تسجيل الدخول');
         }
 
         function showRegisterPage() {
             showSpecificPage('registerPage');
             resetRegistration();
             updateSidebarUI();
-            console.log('✅ عرض صفحة إنشاء حساب');
         }
 
         function showForgotPasswordPage() {
             showSpecificPage('forgotPasswordPage');
             resetForgotPassword();
-            console.log('✅ عرض صفحة نسيت كلمة المرور');
         }
 
         function showDashboard() {
             showSpecificPage('dashboardPage');
             updateDashboardUI();
             updateSidebarUI();
-            console.log('✅ عرض لوحة التحكم');
         }
 
         function showAboutPage() {
             showSpecificPage('aboutPage');
-            console.log('✅ عرض صفحة حول الشركة');
         }
 
         function showMyAccountPage() {
             showSpecificPage('myAccountPage');
+            
             if (currentUser) {
                 const myAccountLoggedOut = document.getElementById('myAccountLoggedOut');
                 const myAccountLoggedIn = document.getElementById('myAccountLoggedIn');
@@ -1047,6 +1064,7 @@
                 const accountUsername = document.getElementById('accountUsername');
                 const accountPlan = document.getElementById('accountPlan');
                 const accountCreatedAt = document.getElementById('accountCreatedAt');
+                
                 if (myAccountLoggedOut) myAccountLoggedOut.classList.add('hidden');
                 if (myAccountLoggedIn) myAccountLoggedIn.classList.remove('hidden');
                 if (myAccountName) myAccountName.innerText = `مرحباً ${currentUser.name || 'مستخدم'}`;
@@ -1062,12 +1080,12 @@
                 const myAccountLoggedIn = document.getElementById('myAccountLoggedIn');
                 const myAccountName = document.getElementById('myAccountName');
                 const myAccountUsername = document.getElementById('myAccountUsername');
+                
                 if (myAccountLoggedOut) myAccountLoggedOut.classList.remove('hidden');
                 if (myAccountLoggedIn) myAccountLoggedIn.classList.add('hidden');
                 if (myAccountName) myAccountName.innerText = 'مرحباً بك';
                 if (myAccountUsername) myAccountUsername.innerText = 'الرجاء تسجيل الدخول';
             }
-            console.log('✅ عرض صفحة حسابي');
         }
 
         // ==================== دوال تحديث واجهة المستخدم ====================
