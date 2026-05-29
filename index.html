@@ -359,7 +359,6 @@
         // ==================== دوال البحث في القاعدتين ====================
         async function findUserInBothDatabases(identifier, password) {
             try {
-                // البحث في قاعدة نبض
                 const nabdSnapshot = await db.ref('users').once('value');
                 const nabdUsers = nabdSnapshot.val();
                 if (nabdUsers) {
@@ -370,7 +369,6 @@
                         }
                     }
                 }
-                // البحث في قاعدة امتحان
                 const imtihanSnapshot = await db.ref('imtihan_users').once('value');
                 const imtihanUsers = imtihanSnapshot.val();
                 if (imtihanUsers) {
@@ -523,34 +521,35 @@
             currentStep = step;
         }
 
-        async function nextStep(step) {   // ✅ إضافة async
-    if (step === 2) {
-        let firstName = document.getElementById('firstName').value.trim();
-        let lastName = document.getElementById('lastName').value.trim();
-        if (!firstName || !lastName) { showToast('الرجاء إدخال الاسم الأول والاسم الأخير'); return; }
-        tempUserData.firstName = firstName;
-        tempUserData.lastName = lastName;
-    } else if (step === 3) {
-        let phone = document.getElementById('phoneNumber').value.trim();
-        if (!phone || phone.length < 10) { showToast('الرجاء إدخال رقم هاتف صحيح'); return; }
-        tempUserData.phone = phone;
-    } else if (step === 4) {
-        let username = document.getElementById('username').value.trim();
-        if (!username) { showToast('الرجاء إدخال اسم المستخدم'); return; }
-        let fullUsername = normalizeUsername(username);
-        let exists = await isUsernameTaken(fullUsername);
-        if (exists) { showToast('اسم المستخدم موجود بالفعل'); return; }
-        tempUserData.username = fullUsername;
-        document.getElementById('username').value = extractBaseUsername(fullUsername);
-    } else if (step === 5) {
-        let password = document.getElementById('password').value;
-        let confirm = document.getElementById('confirmPassword').value;
-        if (password.length < 6) { showToast('كلمة المرور 6 أحرف على الأقل'); return; }
-        if (password !== confirm) { showToast('كلمة المرور غير متطابقة'); return; }
-        tempUserData.password = password;
-    }
-    showStep(step);
-}
+        // ✅ التصحيح الأول: إضافة async
+        async function nextStep(step) {
+            if (step === 2) {
+                let firstName = document.getElementById('firstName').value.trim();
+                let lastName = document.getElementById('lastName').value.trim();
+                if (!firstName || !lastName) { showToast('الرجاء إدخال الاسم الأول والاسم الأخير'); return; }
+                tempUserData.firstName = firstName;
+                tempUserData.lastName = lastName;
+            } else if (step === 3) {
+                let phone = document.getElementById('phoneNumber').value.trim();
+                if (!phone || phone.length < 10) { showToast('الرجاء إدخال رقم هاتف صحيح'); return; }
+                tempUserData.phone = phone;
+            } else if (step === 4) {
+                let username = document.getElementById('username').value.trim();
+                if (!username) { showToast('الرجاء إدخال اسم المستخدم'); return; }
+                let fullUsername = normalizeUsername(username);
+                let exists = await isUsernameTaken(fullUsername);
+                if (exists) { showToast('اسم المستخدم موجود بالفعل'); return; }
+                tempUserData.username = fullUsername;
+                document.getElementById('username').value = extractBaseUsername(fullUsername);
+            } else if (step === 5) {
+                let password = document.getElementById('password').value;
+                let confirm = document.getElementById('confirmPassword').value;
+                if (password.length < 6) { showToast('كلمة المرور 6 أحرف على الأقل'); return; }
+                if (password !== confirm) { showToast('كلمة المرور غير متطابقة'); return; }
+                tempUserData.password = password;
+            }
+            showStep(step);
+        }
 
         function prevStep(step) { showStep(step); }
 
@@ -573,34 +572,35 @@
             } else { showToast('❌ حدث خطأ'); }
         }
 
+        // ✅ التصحيح الثاني: إضافة await
         async function checkUsernameAvailability() {
-    let username = document.getElementById('username').value.trim();
-    let statusDiv = document.getElementById('usernameStatus');
-    let suggestionsBox = document.getElementById('suggestionsBox');
-    if (!username) { statusDiv.innerHTML = ''; suggestionsBox.classList.add('hidden'); return; }
-    let fullUsername = normalizeUsername(username);
-    let exists = await isUsernameTaken(fullUsername);
-    if (exists) {
-        statusDiv.innerHTML = '<span class="text-red-600">❌ غير متاح</span>';
-        await generateSuggestions(username);  // ✅ إضافة await
-        suggestionsBox.classList.remove('hidden');
-    } else {
-        statusDiv.innerHTML = '<span class="text-green-600">✅ متاح</span>';
-        suggestionsBox.classList.add('hidden');
-    }
-}
+            let username = document.getElementById('username').value.trim();
+            let statusDiv = document.getElementById('usernameStatus');
+            let suggestionsBox = document.getElementById('suggestionsBox');
+            if (!username) { statusDiv.innerHTML = ''; suggestionsBox.classList.add('hidden'); return; }
+            let fullUsername = normalizeUsername(username);
+            let exists = await isUsernameTaken(fullUsername);
+            if (exists) {
+                statusDiv.innerHTML = '<span class="text-red-600">❌ غير متاح</span>';
+                await generateSuggestions(username);
+                suggestionsBox.classList.remove('hidden');
+            } else {
+                statusDiv.innerHTML = '<span class="text-green-600">✅ متاح</span>';
+                suggestionsBox.classList.add('hidden');
+            }
+        }
 
         async function generateSuggestions(base) {
-    let suggestions = [];
-    for (let i = 1; i <= 5; i++) {
-        let suggestion = normalizeUsername(`${base}${i}`);
-        if (!await isUsernameTaken(suggestion)) {
-            suggestions.push(extractBaseUsername(suggestion));
+            let suggestions = [];
+            for (let i = 1; i <= 5; i++) {
+                let suggestion = normalizeUsername(`${base}${i}`);
+                if (!await isUsernameTaken(suggestion)) {
+                    suggestions.push(extractBaseUsername(suggestion));
+                }
+            }
+            let list = document.getElementById('suggestionsList');
+            list.innerHTML = suggestions.map(s => `<span onclick="document.getElementById('username').value='${s}'; checkUsernameAvailability();" class="suggestion-item bg-gray-100 px-3 py-1 rounded-full text-sm cursor-pointer hover:bg-blue-100">${s}</span>`).join('');
         }
-    }
-    let list = document.getElementById('suggestionsList');
-    list.innerHTML = suggestions.map(s => `<span onclick="document.getElementById('username').value='${s}'; checkUsernameAvailability();" class="suggestion-item bg-gray-100 px-3 py-1 rounded-full text-sm cursor-pointer hover:bg-blue-100">${s}</span>`).join('');
-}
 
         // ==================== تسجيل الدخول ====================
         async function login() {
@@ -702,6 +702,24 @@
                 document.getElementById('dashboardPlan').innerText = currentUser.plan === 'free' ? 'مجاني' : 'مدفوع';
             }
         }
+
+        // ==================== ربط الدوال للنطاق العام (window) ====================
+        // ✅ التصحيح الثالث: ربط الدوال لضمان عمل الأزرار
+        window.showLoginPage = showLoginPage;
+        window.showRegisterPage = showRegisterPage;
+        window.showHomePage = showHomePage;
+        window.showForgotPasswordPage = showForgotPasswordPage;
+        window.login = login;
+        window.logout = logout;
+        window.completeRegistration = completeRegistration;
+        window.nextStep = nextStep;
+        window.prevStep = prevStep;
+        window.checkUsernameAvailability = checkUsernameAvailability;
+        window.scrollToServices = scrollToServices;
+        window.resetPassword = resetPassword;
+        window.verifyPhoneForReset = verifyPhoneForReset;
+        window.checkUserForReset = checkUserForReset;
+        window.goBackToForgotStep1 = goBackToForgotStep1;
 
         // ==================== استعادة الجلسة ====================
         let savedUser = localStorage.getItem('currentUser');
