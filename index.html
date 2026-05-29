@@ -9,6 +9,50 @@
     <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-database-compat.js"></script>
     <style>
+        /* Social Media Buttons - Footer */
+.footer-social {
+    display: flex;
+    justify-content: center;
+    gap: 15px;
+    margin-top: 20px;
+    flex-wrap: wrap;
+}
+
+.footer-social-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    padding: 10px 20px;
+    border-radius: 50px;
+    color: white;
+    font-weight: bold;
+    text-decoration: none;
+    transition: all 0.3s ease;
+    font-size: 14px;
+}
+
+.footer-social-btn i {
+    font-size: 18px;
+}
+
+.footer-social-btn:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+}
+
+.footer-whatsapp { background-color: #25D366; }
+.footer-whatsapp:hover { background-color: #128C7E; }
+
+.footer-facebook { background-color: #1877F2; }
+.footer-facebook:hover { background-color: #0D65D9; }
+
+.footer-tiktok {
+    background: linear-gradient(135deg, #00f2ea, #ff004f);
+}
+.footer-tiktok:hover {
+    background: linear-gradient(135deg, #00c9c0, #e0004a);
+}
         @import url('https://fonts.googleapis.com/css2?family=Cairo:wght@400;500;600;700;800&display=swap');
         * { font-family: 'Cairo', sans-serif; }
         .step { transition: all 0.3s ease; }
@@ -213,13 +257,25 @@
             </div>
         </div>
 
-        <footer class="bg-gray-900 text-white py-8">
-            <div class="container mx-auto px-6 text-center">
-                <p>&copy; 2026 TecnoShark - جميع الحقوق محفوظة</p>
-                <p class="text-gray-400 text-sm mt-2">شركة البرمجيات والحلول الرقمية</p>
-            </div>
-        </footer>
+       <footer class="bg-gray-900 text-white py-8">
+    <div class="container mx-auto px-6 text-center">
+        <p>&copy; 2026 TecnoShark - جميع الحقوق محفوظة</p>
+        <p class="text-gray-400 text-sm mt-2">شركة البرمجيات والحلول الرقمية</p>
+        
+        <!-- أزرار التواصل الاجتماعي -->
+        <div class="footer-social">
+            <a href="https://wa.me/201035636654" target="_blank" class="footer-social-btn footer-whatsapp">
+                <i class="fab fa-whatsapp"></i> واتساب
+            </a>
+            <a href="https://www.facebook.com/share/18oMJ3PRYG/" target="_blank" class="footer-social-btn footer-facebook">
+                <i class="fab fa-facebook-f"></i> فيسبوك
+            </a>
+            <a href="https://www.tiktok.com/@tecno.shark47" target="_blank" class="footer-social-btn footer-tiktok">
+                <i class="fab fa-tiktok"></i> تيك توك
+            </a>
+        </div>
     </div>
+</footer>
 
     <!-- باقي الصفحات (نفس الكود السابق ولكن باختصار لتوفير المساحة) -->
     <div id="loginPage" class="hidden page-container flex items-center justify-center py-12">
@@ -365,7 +421,7 @@
                 <h2 class="text-xl font-bold mb-6 text-center">اختر اسم المستخدم</h2>
                 <div class="mb-4">
                     <input type="text" id="username" class="w-full p-3 border rounded-lg focus:ring-2 focus:ring-blue-500" placeholder="example" oninput="checkUsernameAvailability()">
-                    <p class="text-xs text-gray-400 mt-1">سيتم إضافة @tecno.shark تلقائياً</p>
+                    <p class="text-xs text-gray-400 mt-1">سيتم إضافة @tecno.com تلقائياً</p>
                     <div id="usernameStatus" class="text-sm mt-1"></div>
                 </div>
                 <div id="suggestionsBox" class="mb-6 hidden">
@@ -779,34 +835,47 @@
         }
 
         // ==================== دوال معالجة اسم المستخدم ====================
-        function normalizeUsername(input) {
-            let username = input.trim().toLowerCase();
-            if (username.includes('@tecno.shark')) return username;
-            if (username.includes('@')) {
-                let parts = username.split('@');
-                return `${parts[0]}@tecno.shark`;
-            }
-            return `${username}@tecno.shark`;
-        }
+      // استبدل @tecno.shark بـ @tecno.com
+function normalizeUsername(input) {
+    let username = input.trim().toLowerCase();
+    if (username.includes('@tecno.com')) return username;  // ✅ تم التعديل
+    if (username.includes('@')) {
+        let parts = username.split('@');
+        return `${parts[0]}@tecno.com`;  // ✅ تم التعديل
+    }
+    return `${username}@tecno.com`;  // ✅ تم التعديل
+}
 
-        function extractBaseUsername(fullUsername) {
-            return fullUsername.split('@')[0];
-        }
+      function extractBaseUsername(fullUsername) {
+    if (!fullUsername) return '';
+    
+    // إذا كان يحتوي على @، خذ ما قبله
+    if (fullUsername.includes('@')) {
+        return fullUsername.split('@')[0].toLowerCase().trim();
+    }
+    
+    // إذا لم يحتوي على @، أرجع النص كما هو
+    return fullUsername.toLowerCase().trim();
+}
 
         // ==================== دوال Firebase الأساسية ====================
         
-        // حفظ مستخدم جديد في Firebase
-        async function saveUserToFirebase(userData, uid) {
-            try {
-                await db.ref(`users/${uid}`).set(userData);
-                console.log('✅ تم حفظ المستخدم في Firebase');
-                return true;
-            } catch (error) {
-                console.error('❌ خطأ في حفظ المستخدم:', error);
-                showToast('خطأ في الاتصال بقاعدة البيانات');
-                return false;
-            }
-        }
+        // دالة حفظ المستخدم في القاعدتين (نبض + امتحان)
+async function saveUserToBothDatabases(userData, uid) {
+    try {
+        // 💾 حفظ في قاعدة نبض (users)
+        await db.ref(`users/${uid}`).set(userData);
+        
+        // 💾 حفظ في قاعدة امتحان (imtihan_users)
+        await db.ref(`imtihan_users/${uid}`).set(userData);
+        
+        console.log('✅ تم حفظ المستخدم في قاعدتي نبض وامتحان');
+        return true;
+    } catch (error) {
+        console.error('❌ خطأ في الحفظ:', error);
+        return false;
+    }
+}
 
         // جلب جميع المستخدمين من Firebase
         async function getAllUsersFromFirebase() {
@@ -858,22 +927,33 @@
             }
         }
 
-        // التحقق من وجود اسم المستخدم
-        async function isUsernameTaken(username) {
-            try {
-                const snapshot = await db.ref('users').once('value');
-                const users = snapshot.val();
-                if (users) {
-                    for (let uid in users) {
-                        if (users[uid].username === username) return true;
-                    }
-                }
-                return false;
-            } catch (error) {
-                console.error('خطأ:', error);
-                return false;
+        // تعديل دالة isUsernameTaken لتبحث في القاعدتين
+async function isUsernameTaken(username) {
+    try {
+        // البحث في قاعدة نبض (users)
+        const nabdSnapshot = await db.ref('users').once('value');
+        const nabdUsers = nabdSnapshot.val();
+        if (nabdUsers) {
+            for (let uid in nabdUsers) {
+                if (nabdUsers[uid].username === username) return true;
             }
         }
+        
+        // البحث في قاعدة امتحان (imtihan_users)
+        const imtihanSnapshot = await db.ref('imtihan_users').once('value');
+        const imtihanUsers = imtihanSnapshot.val();
+        if (imtihanUsers) {
+            for (let uid in imtihanUsers) {
+                if (imtihanUsers[uid].username === username) return true;
+            }
+        }
+        
+        return false;
+    } catch (error) {
+        console.error('خطأ:', error);
+        return false;
+    }
+}
 
         // التحقق من وجود رقم الهاتف
         async function isPhoneTaken(phone) {
@@ -1072,7 +1152,7 @@
                 lastLogin: new Date().toISOString()
             };
             
-            const saved = await saveUserToFirebase(newUser, newUid);
+            const saved = await saveUserToBothDatabases(newUser, newUid);
             if (saved) {
                 currentUser = { uid: newUid, ...newUser };
                 localStorage.setItem('currentUser', JSON.stringify(currentUser));
