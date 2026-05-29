@@ -25,13 +25,96 @@
             height: 100%;
             background: linear-gradient(135deg, #1e293b 0%, #0f172a 100%);
             z-index: 1000;
-            transition: right 0.3s ease;
+            transition: right 0.4s cubic-bezier(0.4, 0, 0.2, 1);
             box-shadow: -5px 0 25px rgba(0,0,0,0.2);
             overflow-y: auto;
         }
 
         .sidebar.active {
             right: 0;
+        }
+
+        /* أنميشن دوران الأيقونة */
+        .menu-btn.rotating i {
+            animation: rotateIcon 0.4s ease-in-out;
+        }
+
+        @keyframes rotateIcon {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(90deg); }
+        }
+
+        /* أنميشن ظهور العناصر */
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes fadeInScale {
+            from {
+                opacity: 0;
+                transform: scale(0.9);
+            }
+            to {
+                opacity: 1;
+                transform: scale(1);
+            }
+        }
+
+        @keyframes slideInRight {
+            from {
+                opacity: 0;
+                transform: translateX(50px);
+            }
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+
+        @keyframes slideInLeft {
+            from {
+                opacity: 0;
+                transform: translateX(-50px);
+            }
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+
+        .animate-fade-up {
+            animation: fadeInUp 0.6s ease forwards;
+        }
+
+        .animate-fade-scale {
+            animation: fadeInScale 0.5s ease forwards;
+        }
+
+        .animate-slide-right {
+            animation: slideInRight 0.5s ease forwards;
+        }
+
+        .animate-slide-left {
+            animation: slideInLeft 0.5s ease forwards;
+        }
+
+        /* تأخيرات للأنميشن */
+        .delay-100 { animation-delay: 0.1s; }
+        .delay-200 { animation-delay: 0.2s; }
+        .delay-300 { animation-delay: 0.3s; }
+        .delay-400 { animation-delay: 0.4s; }
+        .delay-500 { animation-delay: 0.5s; }
+
+        /* عناصر مخفية في البداية للأنميشن */
+        .animate-on-load {
+            opacity: 0;
         }
 
         .overlay {
@@ -43,6 +126,12 @@
             background: rgba(0,0,0,0.5);
             z-index: 999;
             display: none;
+            animation: fadeIn 0.3s ease;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
         }
 
         .overlay.active {
@@ -74,11 +163,42 @@
 
         .nav-logo {
             transition: transform 0.3s ease;
+            cursor: pointer;
         }
 
         .nav-logo:hover {
             transform: scale(1.05);
         }
+
+        /* اسم المستخدم في الناف بار - cursor pointer */
+        #userNameHome {
+            cursor: pointer;
+            transition: color 0.3s ease;
+        }
+
+        #userNameHome:hover {
+            color: #2563eb;
+        }
+
+        /* أنميشن للكروت */
+        .service-card {
+            opacity: 0;
+            animation: fadeInUp 0.6s ease forwards;
+        }
+
+        .service-card:nth-child(1) { animation-delay: 0.1s; }
+        .service-card:nth-child(2) { animation-delay: 0.2s; }
+        .service-card:nth-child(3) { animation-delay: 0.3s; }
+
+        /* أنميشن للإحصائيات */
+        .stat-item {
+            opacity: 0;
+            animation: fadeInScale 0.5s ease forwards;
+        }
+        .stat-item:nth-child(1) { animation-delay: 0.1s; }
+        .stat-item:nth-child(2) { animation-delay: 0.2s; }
+        .stat-item:nth-child(3) { animation-delay: 0.3s; }
+        .stat-item:nth-child(4) { animation-delay: 0.4s; }
     </style>
 </head>
 <body class="bg-gradient-to-br from-blue-50 to-indigo-100 min-h-screen">
@@ -93,13 +213,13 @@
         <div class="p-5">
             <!-- Close Button -->
             <div class="flex justify-start mb-6">
-                <button onclick="closeSidebar()" class="text-gray-400 hover:text-white text-2xl">
+                <button onclick="closeSidebar()" class="text-gray-400 hover:text-white text-2xl transition-transform hover:rotate-90 duration-300">
                     <i class="fas fa-times"></i>
                 </button>
             </div>
             
             <!-- User Info in Sidebar -->
-            <div id="sidebarUserInfo" class="user-sidebar-card rounded-2xl p-4 mb-6 text-center">
+            <div id="sidebarUserInfo" class="user-sidebar-card rounded-2xl p-4 mb-6 text-center animate-fade-scale">
                 <div class="w-16 h-16 bg-white/20 rounded-full flex items-center justify-center mx-auto mb-3">
                     <i class="fas fa-user text-3xl text-white"></i>
                 </div>
@@ -109,31 +229,31 @@
             
             <!-- Menu Items -->
             <div class="space-y-2">
-                <a onclick="goToHomePageFromSidebar()" class="sidebar-link flex items-center gap-3 p-3 text-gray-300 hover:text-white cursor-pointer">
+                <a onclick="goToHomePageFromSidebar()" class="sidebar-link flex items-center gap-3 p-3 text-gray-300 hover:text-white cursor-pointer animate-slide-right delay-100">
                     <i class="fas fa-home w-5"></i>
                     <span>الرئيسية</span>
                 </a>
-                <a onclick="goToAboutPageFromSidebar()" class="sidebar-link flex items-center gap-3 p-3 text-gray-300 hover:text-white cursor-pointer">
+                <a onclick="goToAboutPageFromSidebar()" class="sidebar-link flex items-center gap-3 p-3 text-gray-300 hover:text-white cursor-pointer animate-slide-right delay-200">
                     <i class="fas fa-building w-5"></i>
                     <span>حول الشركة</span>
                 </a>
-                <a onclick="goToMyAccountPageFromSidebar()" class="sidebar-link flex items-center gap-3 p-3 text-gray-300 hover:text-white cursor-pointer">
+                <a onclick="goToMyAccountPageFromSidebar()" class="sidebar-link flex items-center gap-3 p-3 text-gray-300 hover:text-white cursor-pointer animate-slide-right delay-300">
                     <i class="fas fa-user-circle w-5"></i>
                     <span>حسابي</span>
                 </a>
-                <hr class="border-gray-700 my-3">
+                <hr class="border-gray-700 my-3 animate-fade-scale delay-400">
                 <div id="sidebarAuthSection">
-                    <a onclick="showLoginFromSidebar()" class="sidebar-link flex items-center gap-3 p-3 text-blue-400 hover:text-blue-300 cursor-pointer">
+                    <a onclick="showLoginFromSidebar()" class="sidebar-link flex items-center gap-3 p-3 text-blue-400 hover:text-blue-300 cursor-pointer animate-slide-right delay-400">
                         <i class="fas fa-sign-in-alt w-5"></i>
                         <span>تسجيل الدخول</span>
                     </a>
-                    <a onclick="showRegisterFromSidebar()" class="sidebar-link flex items-center gap-3 p-3 text-green-400 hover:text-green-300 cursor-pointer">
+                    <a onclick="showRegisterFromSidebar()" class="sidebar-link flex items-center gap-3 p-3 text-green-400 hover:text-green-300 cursor-pointer animate-slide-right delay-500">
                         <i class="fas fa-user-plus w-5"></i>
                         <span>إنشاء حساب</span>
                     </a>
                 </div>
                 <div id="sidebarLogoutSection" class="hidden">
-                    <a onclick="logoutFromSidebar()" class="sidebar-link flex items-center gap-3 p-3 text-red-400 hover:text-red-300 cursor-pointer">
+                    <a onclick="logoutFromSidebar()" class="sidebar-link flex items-center gap-3 p-3 text-red-400 hover:text-red-300 cursor-pointer animate-slide-right delay-400">
                         <i class="fas fa-sign-out-alt w-5"></i>
                         <span>تسجيل الخروج</span>
                     </a>
@@ -142,48 +262,50 @@
         </div>
     </div>
 
-    <!-- ==================== الصفحة الرئيسية (Landing Page) ==================== -->
-    <div id="homePage">
-        <!-- Navbar -->
-        <nav class="bg-white/90 backdrop-blur-md shadow-sm sticky top-0 z-40 border-b">
-            <div class="container mx-auto px-6 py-3 flex justify-between items-center">
-                <div class="flex items-center gap-2">
-                    <!-- Menu Button (Burger) -->
-                    <div class="menu-btn ml-3" onclick="toggleSidebar()">
-                        <i class="fas fa-bars text-2xl text-gray-700"></i>
-                    </div>
+    <!-- ==================== Navbar ثابت في جميع الصفحات ==================== -->
+    <nav class="bg-white/90 backdrop-blur-md shadow-sm sticky top-0 z-40 border-b">
+        <div class="container mx-auto px-6 py-3 flex justify-between items-center">
+            <div class="flex items-center gap-2">
+                <!-- Menu Button (Burger) -->
+                <div class="menu-btn ml-3" onclick="toggleSidebarWithAnimation(this)">
+                    <i class="fas fa-bars text-2xl text-gray-700"></i>
+                </div>
+                <div class="nav-logo flex items-center gap-2" onclick="goToHomePage()">
                     <img src="https://i.ibb.co/Fk4jw8pR/4840e6da-a9c5-4858-a78d-8ceb60d1eaaa.png" alt="Logo" class="w-10 h-10 rounded-full">
                     <span class="text-2xl font-bold text-gray-800">Tecno<span class="text-blue-600">Shark</span></span>
                 </div>
-                <div id="userSectionHome">
-                    <div id="loginBtnAreaHome">
-                        <button onclick="showLoginPage()" class="bg-blue-600 text-white px-5 py-2 rounded-full hover:bg-blue-700 transition text-sm">
-                            <i class="fas fa-sign-in-alt ml-1"></i> تسجيل الدخول
-                        </button>
+            </div>
+            <div id="userSectionHome">
+                <div id="loginBtnAreaHome">
+                    <button onclick="showLoginPage()" class="bg-blue-600 text-white px-5 py-2 rounded-full hover:bg-blue-700 transition text-sm">
+                        <i class="fas fa-sign-in-alt ml-1"></i> تسجيل الدخول
+                    </button>
+                </div>
+                <div id="userAreaHome" class="hidden flex items-center gap-3">
+                    <div class="w-9 h-9 bg-blue-600 rounded-full flex items-center justify-center text-white font-bold">
+                        <span id="userInitialHome">U</span>
                     </div>
-                    <div id="userAreaHome" class="hidden flex items-center gap-3">
-                        <div class="w-9 h-9 bg-blue-600 rounded-full flex items-center justify-center text-white font-bold">
-                            <span id="userInitialHome">U</span>
-                        </div>
-                        <div>
-                            <p class="font-bold text-sm" id="userNameHome"></p>
-                        </div>
-                        <button onclick="logout()" class="text-red-500 text-sm hover:text-red-700">
-                            <i class="fas fa-sign-out-alt"></i>
-                        </button>
+                    <div>
+                        <p class="font-bold text-sm" id="userNameHome" onclick="goToMyAccountPage()"></p>
                     </div>
+                    <button onclick="logout()" class="text-red-500 text-sm hover:text-red-700">
+                        <i class="fas fa-sign-out-alt"></i>
+                    </button>
                 </div>
             </div>
-        </nav>
+        </div>
+    </nav>
 
+    <!-- ==================== الصفحة الرئيسية (Landing Page) ==================== -->
+    <div id="homePage" class="animate-on-load">
         <!-- Hero Section -->
         <div class="hero-gradient text-white">
             <div class="container mx-auto px-6 py-20 text-center">
-                <img src="https://i.ibb.co/Fk4jw8pR/4840e6da-a9c5-4858-a78d-8ceb60d1eaaa.png" alt="TecnoShark Logo" class="w-28 h-28 mx-auto mb-6 rounded-full shadow-xl border-4 border-white">
-                <h1 class="text-5xl md:text-6xl font-bold mb-4">Tecno<span class="text-yellow-300">Shark</span></h1>
-                <p class="text-xl md:text-2xl mb-6 opacity-90">شريكك الموثوق في عالم البرمجيات والحلول الرقمية</p>
-                <p class="text-lg max-w-2xl mx-auto opacity-80">نقدم خدمات متكاملة في تصميم وتطوير المواقع والتطبيقات، بأحدث التقنيات وأعلى معايير الجودة</p>
-                <div class="mt-8 flex gap-4 justify-center">
+                <img src="https://i.ibb.co/Fk4jw8pR/4840e6da-a9c5-4858-a78d-8ceb60d1eaaa.png" alt="TecnoShark Logo" class="w-28 h-28 mx-auto mb-6 rounded-full shadow-xl border-4 border-white animate-fade-scale">
+                <h1 class="text-5xl md:text-6xl font-bold mb-4 animate-fade-up delay-100">Tecno<span class="text-yellow-300">Shark</span></h1>
+                <p class="text-xl md:text-2xl mb-6 opacity-90 animate-fade-up delay-200">شريكك الموثوق في عالم البرمجيات والحلول الرقمية</p>
+                <p class="text-lg max-w-2xl mx-auto opacity-80 animate-fade-up delay-300">نقدم خدمات متكاملة في تصميم وتطوير المواقع والتطبيقات، بأحدث التقنيات وأعلى معايير الجودة</p>
+                <div class="mt-8 flex gap-4 justify-center animate-fade-up delay-400">
                     <button onclick="showLoginPage()" class="bg-white text-blue-600 px-6 py-3 rounded-full font-bold hover:shadow-lg transition">
                         <i class="fas fa-user-plus ml-2"></i> ابدأ الآن
                     </button>
@@ -196,7 +318,7 @@
 
         <!-- Services Section -->
         <div class="container mx-auto px-6 py-16" id="services">
-            <h2 class="text-3xl font-bold text-center text-gray-800 mb-12">خدماتنا <span class="text-blue-600">المتميزة</span></h2>
+            <h2 class="text-3xl font-bold text-center text-gray-800 mb-12 animate-fade-up">خدماتنا <span class="text-blue-600">المتميزة</span></h2>
             <div class="grid md:grid-cols-3 gap-8">
                 <div class="service-card bg-white rounded-2xl p-6 shadow-lg text-center border hover:shadow-2xl transition cursor-pointer">
                     <div class="w-20 h-20 bg-blue-100 rounded-full flex items-center justify-center mx-auto mb-4">
@@ -226,10 +348,10 @@
         <div class="bg-gradient-to-r from-blue-600 to-indigo-600 text-white py-12">
             <div class="container mx-auto px-6">
                 <div class="grid md:grid-cols-4 gap-6 text-center">
-                    <div><i class="fas fa-smile text-4xl mb-2"></i><p class="text-3xl font-bold">150+</p><p>عميل سعيد</p></div>
-                    <div><i class="fas fa-code text-4xl mb-2"></i><p class="text-3xl font-bold">300+</p><p>مشروع منجز</p></div>
-                    <div><i class="fas fa-users text-4xl mb-2"></i><p class="text-3xl font-bold">25+</p><p>فريق عمل</p></div>
-                    <div><i class="fas fa-trophy text-4xl mb-2"></i><p class="text-3xl font-bold">10+</p><p>جائزة تقنية</p></div>
+                    <div class="stat-item"><i class="fas fa-smile text-4xl mb-2"></i><p class="text-3xl font-bold">150+</p><p>عميل سعيد</p></div>
+                    <div class="stat-item"><i class="fas fa-code text-4xl mb-2"></i><p class="text-3xl font-bold">300+</p><p>مشروع منجز</p></div>
+                    <div class="stat-item"><i class="fas fa-users text-4xl mb-2"></i><p class="text-3xl font-bold">25+</p><p>فريق عمل</p></div>
+                    <div class="stat-item"><i class="fas fa-trophy text-4xl mb-2"></i><p class="text-3xl font-bold">10+</p><p>جائزة تقنية</p></div>
                 </div>
             </div>
         </div>
@@ -245,7 +367,7 @@
 
     <!-- ==================== صفحة تسجيل الدخول ==================== -->
     <div id="loginPage" class="hidden min-h-screen flex items-center justify-center py-12">
-        <div class="bg-white rounded-2xl shadow-xl p-8 max-w-md w-full mx-4">
+        <div class="bg-white rounded-2xl shadow-xl p-8 max-w-md w-full mx-4 animate-fade-scale">
             <div class="text-center mb-6">
                 <img src="https://i.ibb.co/Fk4jw8pR/4840e6da-a9c5-4858-a78d-8ceb60d1eaaa.png" alt="Logo" class="w-20 h-20 mx-auto mb-3 rounded-full shadow-md">
                 <h1 class="text-2xl font-bold">تسجيل الدخول</h1>
@@ -277,7 +399,7 @@
 
     <!-- ==================== صفحة نسيت كلمة المرور ==================== -->
     <div id="forgotPasswordPage" class="hidden min-h-screen flex items-center justify-center py-12">
-        <div class="bg-white rounded-2xl shadow-xl p-8 max-w-md w-full mx-4">
+        <div class="bg-white rounded-2xl shadow-xl p-8 max-w-md w-full mx-4 animate-fade-scale">
             <div id="forgotStep1">
                 <div class="text-center mb-6">
                     <img src="https://i.ibb.co/Fk4jw8pR/4840e6da-a9c5-4858-a78d-8ceb60d1eaaa.png" alt="Logo" class="w-20 h-20 mx-auto mb-3 rounded-full shadow-md">
@@ -341,7 +463,7 @@
 
     <!-- ==================== صفحة إنشاء حساب (متعددة الخطوات) ==================== -->
     <div id="registerPage" class="hidden min-h-screen flex items-center justify-center py-12">
-        <div class="bg-white rounded-2xl shadow-xl p-8 max-w-md w-full mx-4">
+        <div class="bg-white rounded-2xl shadow-xl p-8 max-w-md w-full mx-4 animate-fade-scale">
             <div class="text-center mb-4">
                 <img src="https://i.ibb.co/Fk4jw8pR/4840e6da-a9c5-4858-a78d-8ceb60d1eaaa.png" alt="Logo" class="w-16 h-16 mx-auto mb-2 rounded-full shadow-md">
             </div>
@@ -415,7 +537,7 @@
 
     <!-- ==================== لوحة التحكم ==================== -->
     <div id="dashboardPage" class="hidden min-h-screen flex items-center justify-center py-12">
-        <div class="bg-white rounded-2xl shadow-xl p-8 max-w-md w-full mx-4">
+        <div class="bg-white rounded-2xl shadow-xl p-8 max-w-md w-full mx-4 animate-fade-scale">
             <div class="text-center mb-6">
                 <img src="https://i.ibb.co/Fk4jw8pR/4840e6da-a9c5-4858-a78d-8ceb60d1eaaa.png" alt="Logo" class="w-24 h-24 mx-auto mb-3 rounded-full shadow-md">
                 <h1 class="text-2xl font-bold">لوحة التحكم</h1>
@@ -432,19 +554,15 @@
     <!-- ==================== صفحة حول الشركة ==================== -->
     <div id="aboutPage" class="hidden min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 py-12">
         <div class="container mx-auto px-6">
-            <button onclick="showHomePage()" class="mb-6 text-blue-600 hover:text-blue-800 transition">
-                <i class="fas fa-arrow-right ml-2"></i> العودة للرئيسية
-            </button>
-            
-            <div class="bg-white rounded-3xl shadow-xl overflow-hidden">
+            <div class="bg-white rounded-3xl shadow-xl overflow-hidden animate-fade-scale">
                 <div class="bg-gradient-to-r from-blue-600 to-indigo-600 p-8 text-white text-center">
-                    <img src="https://i.ibb.co/Fk4jw8pR/4840e6da-a9c5-4858-a78d-8ceb60d1eaaa.png" alt="Logo" class="w-24 h-24 mx-auto mb-4 rounded-full border-4 border-white shadow-lg">
-                    <h1 class="text-3xl font-bold">TecnoShark</h1>
-                    <p class="text-blue-100 mt-2">شريكك الموثوق في عالم البرمجيات والحلول الرقمية</p>
+                    <img src="https://i.ibb.co/Fk4jw8pR/4840e6da-a9c5-4858-a78d-8ceb60d1eaaa.png" alt="Logo" class="w-24 h-24 mx-auto mb-4 rounded-full border-4 border-white shadow-lg animate-fade-scale">
+                    <h1 class="text-3xl font-bold animate-fade-up delay-100">TecnoShark</h1>
+                    <p class="text-blue-100 mt-2 animate-fade-up delay-200">شريكك الموثوق في عالم البرمجيات والحلول الرقمية</p>
                 </div>
                 
                 <div class="p-8">
-                    <div class="mb-8">
+                    <div class="mb-8 animate-fade-up delay-300">
                         <h2 class="text-2xl font-bold text-gray-800 mb-4"><i class="fas fa-info-circle text-blue-600 ml-2"></i> نبذة عنا</h2>
                         <p class="text-gray-600 leading-relaxed">
                             تأسست شركة TecnoShark لتكون رائدة في مجال تقديم الحلول البرمجية والرقمية المتكاملة. 
@@ -454,7 +572,7 @@
                     </div>
                     
                     <div class="grid md:grid-cols-2 gap-6 mb-8">
-                        <div class="bg-blue-50 rounded-2xl p-6">
+                        <div class="bg-blue-50 rounded-2xl p-6 animate-slide-right delay-400">
                             <h3 class="text-xl font-bold text-blue-800 mb-3"><i class="fas fa-chart-line ml-2"></i> خصائص الشركة</h3>
                             <ul class="space-y-2 text-gray-700">
                                 <li><i class="fas fa-check-circle text-green-500 ml-2"></i> خبرة تزيد عن 10 سنوات</li>
@@ -464,7 +582,7 @@
                                 <li><i class="fas fa-check-circle text-green-500 ml-2"></i> دعم فني على مدار الساعة</li>
                             </ul>
                         </div>
-                        <div class="bg-indigo-50 rounded-2xl p-6">
+                        <div class="bg-indigo-50 rounded-2xl p-6 animate-slide-left delay-500">
                             <h3 class="text-xl font-bold text-indigo-800 mb-3"><i class="fas fa-star ml-2"></i> مميزاتنا</h3>
                             <ul class="space-y-2 text-gray-700">
                                 <li><i class="fas fa-gem text-indigo-500 ml-2"></i> حلول مبتكرة حسب احتياج العميل</li>
@@ -476,20 +594,20 @@
                         </div>
                     </div>
                     
-                    <div class="mb-8">
+                    <div class="mb-8 animate-fade-up delay-600">
                         <h2 class="text-2xl font-bold text-gray-800 mb-4"><i class="fas fa-phone-alt text-blue-600 ml-2"></i> أرقام التواصل</h2>
                         <div class="grid md:grid-cols-3 gap-4">
-                            <div class="flex items-center gap-3 bg-gray-50 rounded-xl p-4">
+                            <div class="flex items-center gap-3 bg-gray-50 rounded-xl p-4 hover:bg-blue-50 transition">
                                 <i class="fas fa-phone text-green-600 text-xl"></i>
                                 <span class="text-gray-700 font-mono" dir="ltr">01144100018</span>
                                 <button onclick="copyToClipboard('01144100018')" class="text-blue-500 hover:text-blue-700"><i class="fas fa-copy"></i></button>
                             </div>
-                            <div class="flex items-center gap-3 bg-gray-50 rounded-xl p-4">
+                            <div class="flex items-center gap-3 bg-gray-50 rounded-xl p-4 hover:bg-blue-50 transition">
                                 <i class="fas fa-phone text-green-600 text-xl"></i>
                                 <span class="text-gray-700 font-mono" dir="ltr">01126125881</span>
                                 <button onclick="copyToClipboard('01126125881')" class="text-blue-500 hover:text-blue-700"><i class="fas fa-copy"></i></button>
                             </div>
-                            <div class="flex items-center gap-3 bg-gray-50 rounded-xl p-4">
+                            <div class="flex items-center gap-3 bg-gray-50 rounded-xl p-4 hover:bg-blue-50 transition">
                                 <i class="fas fa-phone text-green-600 text-xl"></i>
                                 <span class="text-gray-700 font-mono" dir="ltr">01035636654</span>
                                 <button onclick="copyToClipboard('01035636654')" class="text-blue-500 hover:text-blue-700"><i class="fas fa-copy"></i></button>
@@ -497,10 +615,10 @@
                         </div>
                     </div>
                     
-                    <div>
+                    <div class="animate-fade-up delay-700">
                         <h2 class="text-2xl font-bold text-gray-800 mb-4"><i class="fas fa-users text-blue-600 ml-2"></i> فريق الإدارة</h2>
                         <div class="grid md:grid-cols-2 gap-6">
-                            <div class="bg-gradient-to-r from-gray-50 to-gray-100 rounded-2xl p-6 text-center">
+                            <div class="bg-gradient-to-r from-gray-50 to-gray-100 rounded-2xl p-6 text-center hover:shadow-lg transition">
                                 <div class="w-20 h-20 bg-blue-100 rounded-full flex items-center justify-center mx-auto mb-3">
                                     <i class="fas fa-user-tie text-3xl text-blue-600"></i>
                                 </div>
@@ -508,7 +626,7 @@
                                 <p class="text-gray-500">محمد عماد عبد العاطي</p>
                                 <p class="text-blue-600 text-sm mt-2">المدير التنفيذي</p>
                             </div>
-                            <div class="bg-gradient-to-r from-gray-50 to-gray-100 rounded-2xl p-6 text-center">
+                            <div class="bg-gradient-to-r from-gray-50 to-gray-100 rounded-2xl p-6 text-center hover:shadow-lg transition">
                                 <div class="w-20 h-20 bg-indigo-100 rounded-full flex items-center justify-center mx-auto mb-3">
                                     <i class="fas fa-user-tie text-3xl text-indigo-600"></i>
                                 </div>
@@ -526,21 +644,17 @@
     <!-- ==================== صفحة حسابي ==================== -->
     <div id="myAccountPage" class="hidden min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 py-12">
         <div class="container mx-auto px-6">
-            <button onclick="showHomePage()" class="mb-6 text-blue-600 hover:text-blue-800 transition">
-                <i class="fas fa-arrow-right ml-2"></i> العودة للرئيسية
-            </button>
-            
-            <div class="bg-white rounded-3xl shadow-xl overflow-hidden">
+            <div class="bg-white rounded-3xl shadow-xl overflow-hidden animate-fade-scale">
                 <div class="bg-gradient-to-r from-blue-600 to-indigo-600 p-8 text-white text-center">
-                    <div class="w-28 h-28 mx-auto mb-4 rounded-full border-4 border-white overflow-hidden bg-white/20 flex items-center justify-center">
+                    <div class="w-28 h-28 mx-auto mb-4 rounded-full border-4 border-white overflow-hidden bg-white/20 flex items-center justify-center animate-fade-scale">
                         <i class="fas fa-user-circle text-6xl text-white"></i>
                     </div>
-                    <h1 class="text-2xl font-bold" id="myAccountName">مرحباً بك</h1>
-                    <p class="text-blue-100 mt-1" id="myAccountUsername">الرجاء تسجيل الدخول</p>
+                    <h1 class="text-2xl font-bold animate-fade-up delay-100" id="myAccountName">مرحباً بك</h1>
+                    <p class="text-blue-100 mt-1 animate-fade-up delay-200" id="myAccountUsername">الرجاء تسجيل الدخول</p>
                 </div>
                 
                 <div id="myAccountLoggedOut" class="p-8 text-center">
-                    <div class="bg-yellow-50 border border-yellow-200 rounded-2xl p-6 mb-6">
+                    <div class="bg-yellow-50 border border-yellow-200 rounded-2xl p-6 mb-6 animate-fade-scale">
                         <i class="fas fa-exclamation-triangle text-yellow-500 text-4xl mb-3"></i>
                         <p class="text-gray-700">أنت غير مسجل الدخول. يرجى تسجيل الدخول لعرض بيانات حسابك.</p>
                     </div>
@@ -554,33 +668,33 @@
                 
                 <div id="myAccountLoggedIn" class="hidden p-8">
                     <div class="grid md:grid-cols-2 gap-6">
-                        <div class="bg-gray-50 rounded-2xl p-5">
+                        <div class="bg-gray-50 rounded-2xl p-5 animate-slide-right delay-100">
                             <p class="text-gray-500 text-sm mb-1"><i class="fas fa-user ml-1"></i> الاسم الكامل</p>
                             <p class="text-gray-800 font-bold text-lg" id="accountFullName">-</p>
                         </div>
-                        <div class="bg-gray-50 rounded-2xl p-5">
+                        <div class="bg-gray-50 rounded-2xl p-5 animate-slide-right delay-200">
                             <p class="text-gray-500 text-sm mb-1"><i class="fas fa-envelope ml-1"></i> البريد الإلكتروني</p>
                             <p class="text-gray-800 font-bold text-lg" id="accountEmail">-</p>
                         </div>
-                        <div class="bg-gray-50 rounded-2xl p-5">
+                        <div class="bg-gray-50 rounded-2xl p-5 animate-slide-left delay-300">
                             <p class="text-gray-500 text-sm mb-1"><i class="fas fa-phone ml-1"></i> رقم الهاتف</p>
                             <p class="text-gray-800 font-bold text-lg" id="accountPhone">-</p>
                         </div>
-                        <div class="bg-gray-50 rounded-2xl p-5">
+                        <div class="bg-gray-50 rounded-2xl p-5 animate-slide-left delay-400">
                             <p class="text-gray-500 text-sm mb-1"><i class="fas fa-tag ml-1"></i> اسم المستخدم</p>
                             <p class="text-gray-800 font-bold text-lg" id="accountUsername">-</p>
                         </div>
-                        <div class="bg-gray-50 rounded-2xl p-5">
+                        <div class="bg-gray-50 rounded-2xl p-5 animate-fade-up delay-500">
                             <p class="text-gray-500 text-sm mb-1"><i class="fas fa-gem ml-1"></i> نوع الحساب</p>
                             <p class="text-blue-600 font-bold text-lg" id="accountPlan">مجاني</p>
                         </div>
-                        <div class="bg-gray-50 rounded-2xl p-5">
+                        <div class="bg-gray-50 rounded-2xl p-5 animate-fade-up delay-600">
                             <p class="text-gray-500 text-sm mb-1"><i class="fas fa-calendar ml-1"></i> تاريخ الإنشاء</p>
                             <p class="text-gray-800 font-bold text-lg" id="accountCreatedAt">-</p>
                         </div>
                     </div>
                     
-                    <div class="mt-6 flex gap-3">
+                    <div class="mt-6 flex gap-3 animate-fade-up delay-700">
                         <button onclick="logout()" class="bg-red-600 text-white px-6 py-2 rounded-xl hover:bg-red-700 transition">
                             <i class="fas fa-sign-out-alt ml-2"></i> تسجيل الخروج
                         </button>
@@ -625,6 +739,38 @@
 
         function scrollToServices() {
             document.getElementById('services').scrollIntoView({ behavior: 'smooth' });
+        }
+
+        // ==================== دوال الأنميشن ====================
+        function toggleSidebarWithAnimation(btn) {
+            // إضافة أنميشن دوران للأيقونة
+            btn.classList.add('rotating');
+            setTimeout(() => {
+                btn.classList.remove('rotating');
+            }, 400);
+            
+            // فتح/غلق السايد بار
+            document.getElementById('sidebar').classList.toggle('active');
+            document.getElementById('overlay').classList.toggle('active');
+        }
+
+        function closeSidebar() {
+            document.getElementById('sidebar').classList.remove('active');
+            document.getElementById('overlay').classList.remove('active');
+        }
+
+        // دالة لإضافة أنميشن للعناصر عند ظهور الصفحة
+        function animatePageElements(containerId) {
+            const container = document.getElementById(containerId);
+            if (container) {
+                const elements = container.querySelectorAll('.animate-on-load, .service-card, .stat-item, [class*="animate-"]');
+                elements.forEach(el => {
+                    el.style.opacity = '0';
+                    setTimeout(() => {
+                        el.style.opacity = '1';
+                    }, 10);
+                });
+            }
         }
 
         // ==================== معالجة اسم المستخدم ====================
@@ -733,7 +879,20 @@
             }
         }
 
-        // ==================== التنقل بين الصفحات ====================
+        // ==================== التنقل بين الصفحات (مع أنميشن) ====================
+        function goToHomePage() {
+            showHomePage();
+        }
+
+        function goToMyAccountPage() {
+            if (currentUser) {
+                showMyAccountPage();
+            } else {
+                showToast('الرجاء تسجيل الدخول أولاً');
+                showLoginPage();
+            }
+        }
+
         function showHomePage() {
             document.getElementById('homePage').classList.remove('hidden');
             document.getElementById('loginPage').classList.add('hidden');
@@ -743,6 +902,20 @@
             document.getElementById('aboutPage').classList.add('hidden');
             document.getElementById('myAccountPage').classList.add('hidden');
             updateHomeUI();
+            // إعادة تشغيل الأنميشن للصفحة الرئيسية
+            setTimeout(() => {
+                const heroImg = document.querySelector('#homePage .hero-gradient img');
+                const heroH1 = document.querySelector('#homePage .hero-gradient h1');
+                const heroP = document.querySelector('#homePage .hero-gradient p');
+                if (heroImg) heroImg.style.animation = 'none';
+                if (heroH1) heroH1.style.animation = 'none';
+                if (heroP) heroP.style.animation = 'none';
+                setTimeout(() => {
+                    if (heroImg) heroImg.style.animation = 'fadeScale 0.5s ease forwards';
+                    if (heroH1) heroH1.style.animation = 'fadeInUp 0.6s ease forwards';
+                    if (heroP) heroP.style.animation = 'fadeInUp 0.6s ease forwards';
+                }, 10);
+            }, 100);
         }
 
         function showLoginPage() {
@@ -1003,16 +1176,6 @@
         }
 
         // ==================== دوال السايد بار ====================
-        function toggleSidebar() {
-            document.getElementById('sidebar').classList.toggle('active');
-            document.getElementById('overlay').classList.toggle('active');
-        }
-
-        function closeSidebar() {
-            document.getElementById('sidebar').classList.remove('active');
-            document.getElementById('overlay').classList.remove('active');
-        }
-
         function updateSidebarUI() {
             const sidebarUserName = document.getElementById('sidebarUserName');
             const sidebarUserStatus = document.getElementById('sidebarUserStatus');
@@ -1119,7 +1282,7 @@
         window.verifyPhoneForReset = verifyPhoneForReset;
         window.checkUserForReset = checkUserForReset;
         window.goBackToForgotStep1 = goBackToForgotStep1;
-        window.toggleSidebar = toggleSidebar;
+        window.toggleSidebarWithAnimation = toggleSidebarWithAnimation;
         window.closeSidebar = closeSidebar;
         window.goToHomePageFromSidebar = goToHomePageFromSidebar;
         window.goToAboutPageFromSidebar = goToAboutPageFromSidebar;
@@ -1129,6 +1292,8 @@
         window.showRegisterFromSidebar = showRegisterFromSidebar;
         window.logoutFromSidebar = logoutFromSidebar;
         window.copyToClipboard = copyToClipboard;
+        window.goToHomePage = goToHomePage;
+        window.goToMyAccountPage = goToMyAccountPage;
 
         // ==================== استعادة الجلسة ====================
         let savedUser = localStorage.getItem('currentUser');
