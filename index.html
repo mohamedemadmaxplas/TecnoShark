@@ -876,7 +876,29 @@ async function saveUserToBothDatabases(userData, uid) {
         return false;
     }
 }
-
+        // ==================== فحص الصفحات عند التحميل ====================
+        console.log('🚀 بدء تحميل الموقع...');
+        
+        // وظيفة لفحص وجود جميع عناصر الصفحات
+        function checkAllPagesExist() {
+            const pages = ['homePage', 'loginPage', 'registerPage', 'forgotPasswordPage', 'dashboardPage', 'aboutPage', 'myAccountPage'];
+            let allExist = true;
+            pages.forEach(page => {
+                const el = document.getElementById(page);
+                if (!el) {
+                    console.error(`❌ العنصر ${page} غير موجود!`);
+                    allExist = false;
+                } else {
+                    console.log(`✅ العنصر ${page} موجود`);
+                }
+            });
+            return allExist;
+        }
+        
+        // تنفيذ الفحص
+        setTimeout(() => {
+            checkAllPagesExist();
+        }, 100);
         // جلب جميع المستخدمين من Firebase
         async function getAllUsersFromFirebase() {
             try {
@@ -887,7 +909,33 @@ async function saveUserToBothDatabases(userData, uid) {
                 return null;
             }
         }
-
+        // ==================== دوال إضافية للتأكد من ظهور الصفحات ====================
+        
+        // دالة إعادة تعيين كاملة
+        window.resetAllPages = function() {
+            hideAllPages();
+            showHomePage();
+            console.log('✅ تم إعادة تعيين جميع الصفحات');
+        };
+        
+        // دالة اختبار سريع
+        window.testPages = function() {
+            console.log('=== اختبار الصفحات ===');
+            console.log('currentUser:', currentUser);
+            console.log('showLoginPage موجودة:', typeof showLoginPage === 'function');
+            console.log('showRegisterPage موجودة:', typeof showRegisterPage === 'function');
+            console.log('showMyAccountPage موجودة:', typeof showMyAccountPage === 'function');
+            console.log('showAboutPage موجودة:', typeof showAboutPage === 'function');
+            checkAllPagesExist();
+        };
+        
+        // تنفيذ اختبار سريع بعد 2 ثانية
+        setTimeout(() => {
+            console.log('📋 تنفيذ اختبار سريع للصفحات...');
+            if (typeof window.testPages === 'function') {
+                window.testPages();
+            }
+        }, 500);
         // البحث عن مستخدم بواسطة اسم المستخدم
         async function findUserByUsername(username) {
             username = normalizeUsername(username);
@@ -1355,88 +1403,49 @@ async function isUsernameTaken(username) {
             }
         }
 
-        function showHomePage() {
-            const pages = ['homePage', 'loginPage', 'registerPage', 'forgotPasswordPage', 'dashboardPage', 'aboutPage', 'myAccountPage'];
-            pages.forEach(page => {
-                const el = document.getElementById(page);
-                if (el) el.classList.add('hidden');
-            });
-            const homePage = document.getElementById('homePage');
-            if (homePage) homePage.classList.remove('hidden');
+              function showHomePage() {
+            showSpecificPage('homePage');
             updateHomeUI();
+            console.log('✅ عرض الصفحة الرئيسية');
         }
 
         function showLoginPage() {
-            const pages = ['homePage', 'loginPage', 'registerPage', 'forgotPasswordPage', 'dashboardPage', 'aboutPage', 'myAccountPage'];
-            pages.forEach(page => {
-                const el = document.getElementById(page);
-                if (el) el.classList.add('hidden');
-            });
-            const loginPage = document.getElementById('loginPage');
-            if (loginPage) loginPage.classList.remove('hidden');
-            
+            showSpecificPage('loginPage');
             const loginUsername = document.getElementById('loginUsername');
             const loginPassword = document.getElementById('loginPassword');
             if (loginUsername) loginUsername.value = '';
             if (loginPassword) loginPassword.value = '';
-            
             updateSidebarUI();
+            console.log('✅ عرض صفحة تسجيل الدخول');
         }
 
         function showRegisterPage() {
-            const pages = ['homePage', 'loginPage', 'registerPage', 'forgotPasswordPage', 'dashboardPage', 'aboutPage', 'myAccountPage'];
-            pages.forEach(page => {
-                const el = document.getElementById(page);
-                if (el) el.classList.add('hidden');
-            });
-            const registerPage = document.getElementById('registerPage');
-            if (registerPage) registerPage.classList.remove('hidden');
-            
+            showSpecificPage('registerPage');
             resetRegistration();
             updateSidebarUI();
+            console.log('✅ عرض صفحة إنشاء حساب');
         }
 
         function showForgotPasswordPage() {
-            const pages = ['homePage', 'loginPage', 'registerPage', 'forgotPasswordPage', 'dashboardPage', 'aboutPage', 'myAccountPage'];
-            pages.forEach(page => {
-                const el = document.getElementById(page);
-                if (el) el.classList.add('hidden');
-            });
-            const forgotPasswordPage = document.getElementById('forgotPasswordPage');
-            if (forgotPasswordPage) forgotPasswordPage.classList.remove('hidden');
-            
+            showSpecificPage('forgotPasswordPage');
             resetForgotPassword();
+            console.log('✅ عرض صفحة نسيت كلمة المرور');
         }
 
         function showDashboard() {
-            const pages = ['homePage', 'loginPage', 'registerPage', 'forgotPasswordPage', 'dashboardPage', 'aboutPage', 'myAccountPage'];
-            pages.forEach(page => {
-                const el = document.getElementById(page);
-                if (el) el.classList.add('hidden');
-            });
-            const dashboardPage = document.getElementById('dashboardPage');
-            if (dashboardPage) dashboardPage.classList.remove('hidden');
-            
+            showSpecificPage('dashboardPage');
             updateDashboardUI();
             updateSidebarUI();
+            console.log('✅ عرض لوحة التحكم');
         }
 
         function showAboutPage() {
-            const pages = ['homePage', 'loginPage', 'registerPage', 'forgotPasswordPage', 'dashboardPage', 'aboutPage', 'myAccountPage'];
-            pages.forEach(page => {
-                const el = document.getElementById(page);
-                if (el) el.classList.add('hidden');
-            });
-            const aboutPage = document.getElementById('aboutPage');
-            if (aboutPage) aboutPage.classList.remove('hidden');
+            showSpecificPage('aboutPage');
+            console.log('✅ عرض صفحة حول الشركة');
         }
 
         function showMyAccountPage() {
-            const pages = ['homePage', 'loginPage', 'registerPage', 'forgotPasswordPage', 'dashboardPage', 'aboutPage', 'myAccountPage'];
-            pages.forEach(page => {
-                const el = document.getElementById(page);
-                if (el) el.classList.add('hidden');
-            });
+            showSpecificPage('myAccountPage');
             
             if (currentUser) {
                 const myAccountLoggedOut = document.getElementById('myAccountLoggedOut');
@@ -1471,9 +1480,7 @@ async function isUsernameTaken(username) {
                 if (myAccountName) myAccountName.innerText = 'مرحباً بك';
                 if (myAccountUsername) myAccountUsername.innerText = 'الرجاء تسجيل الدخول';
             }
-            
-            const myAccountPage = document.getElementById('myAccountPage');
-            if (myAccountPage) myAccountPage.classList.remove('hidden');
+            console.log('✅ عرض صفحة حسابي');
         }
 
         // ==================== دوال تحديث واجهة المستخدم ====================
@@ -1510,6 +1517,33 @@ async function isUsernameTaken(username) {
                 if (dashboardPhone) dashboardPhone.innerText = currentUser.phone || 'غير محدد';
                 if (dashboardUsername) dashboardUsername.innerText = currentUser.username || 'غير محدد';
                 if (dashboardPlan) dashboardPlan.innerText = currentUser.plan === 'free' ? 'مجاني' : 'مدفوع';
+            }
+        }
+        // ==================== دوال تصحيح مشكلة الصفحات البيضاء ====================
+        
+        // دالة تأكيد إخفاء جميع الصفحات
+        function hideAllPages() {
+            const pages = ['homePage', 'loginPage', 'registerPage', 'forgotPasswordPage', 'dashboardPage', 'aboutPage', 'myAccountPage'];
+            pages.forEach(page => {
+                const el = document.getElementById(page);
+                if (el) {
+                    el.classList.add('hidden');
+                    console.log('تم إخفاء:', page);
+                }
+            });
+        }
+        
+        // دالة إظهار صفحة معينة مع التأكد من إخفاء الباقي
+        function showSpecificPage(pageId) {
+            hideAllPages();
+            const page = document.getElementById(pageId);
+            if (page) {
+                page.classList.remove('hidden');
+                console.log('تم إظهار:', pageId);
+                return true;
+            } else {
+                console.error('الصفحة غير موجودة:', pageId);
+                return false;
             }
         }
 
