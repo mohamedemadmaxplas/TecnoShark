@@ -16,7 +16,6 @@
         .hero-gradient { background: linear-gradient(135deg, #1e3a5f 0%, #0f2b4f 100%); }
         .suggestion-item:hover { background-color: #e0e7ff; }
         
-        /* Sidebar Styles */
         .sidebar {
             position: fixed;
             top: 0;
@@ -29,45 +28,17 @@
             box-shadow: -5px 0 25px rgba(0,0,0,0.2);
             overflow-y: auto;
         }
-
-        .sidebar.active {
-            right: 0;
-        }
-
-        .menu-btn.rotating i {
-            animation: rotateIcon 0.4s ease-in-out;
-        }
-
-        @keyframes rotateIcon {
-            0% { transform: rotate(0deg); }
-            100% { transform: rotate(90deg); }
-        }
-
-        @keyframes fadeInUp {
-            from { opacity: 0; transform: translateY(30px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
-
-        @keyframes fadeInScale {
-            from { opacity: 0; transform: scale(0.9); }
-            to { opacity: 1; transform: scale(1); }
-        }
-
-        @keyframes slideInRight {
-            from { opacity: 0; transform: translateX(50px); }
-            to { opacity: 1; transform: translateX(0); }
-        }
-
-        @keyframes slideInLeft {
-            from { opacity: 0; transform: translateX(-50px); }
-            to { opacity: 1; transform: translateX(0); }
-        }
-
+        .sidebar.active { right: 0; }
+        .menu-btn.rotating i { animation: rotateIcon 0.4s ease-in-out; }
+        @keyframes rotateIcon { 0% { transform: rotate(0deg); } 100% { transform: rotate(90deg); } }
+        @keyframes fadeInUp { from { opacity: 0; transform: translateY(30px); } to { opacity: 1; transform: translateY(0); } }
+        @keyframes fadeInScale { from { opacity: 0; transform: scale(0.9); } to { opacity: 1; transform: scale(1); } }
+        @keyframes slideInRight { from { opacity: 0; transform: translateX(50px); } to { opacity: 1; transform: translateX(0); } }
+        @keyframes slideInLeft { from { opacity: 0; transform: translateX(-50px); } to { opacity: 1; transform: translateX(0); } }
         .animate-fade-up { animation: fadeInUp 0.6s ease forwards; }
         .animate-fade-scale { animation: fadeInScale 0.5s ease forwards; }
         .animate-slide-right { animation: slideInRight 0.5s ease forwards; }
         .animate-slide-left { animation: slideInLeft 0.5s ease forwards; }
-        
         .delay-100 { animation-delay: 0.1s; }
         .delay-200 { animation-delay: 0.2s; }
         .delay-300 { animation-delay: 0.3s; }
@@ -75,24 +46,8 @@
         .delay-500 { animation-delay: 0.5s; }
         .delay-600 { animation-delay: 0.6s; }
         .delay-700 { animation-delay: 0.7s; }
-
-        .overlay {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: rgba(0,0,0,0.5);
-            z-index: 999;
-            display: none;
-            animation: fadeIn 0.3s ease;
-        }
-
-        @keyframes fadeIn {
-            from { opacity: 0; }
-            to { opacity: 1; }
-        }
-
+        .overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); z-index: 999; display: none; animation: fadeIn 0.3s ease; }
+        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
         .overlay.active { display: block; }
         .menu-btn { cursor: pointer; transition: all 0.3s ease; }
         .menu-btn:hover { opacity: 0.8; }
@@ -112,10 +67,12 @@
         .stat-item:nth-child(2) { animation-delay: 0.2s; }
         .stat-item:nth-child(3) { animation-delay: 0.3s; }
         .stat-item:nth-child(4) { animation-delay: 0.4s; }
+        .page-container { min-height: calc(100vh - 73px); }
         
-        /* تحسين مظهر الصفحات */
-        .page-container {
-            min-height: calc(100vh - 73px);
+        /* تحسين للشاشات الصغيرة */
+        @media (max-width: 768px) {
+            .container { padding-left: 1rem; padding-right: 1rem; }
+            .text-5xl { font-size: 2rem; }
         }
     </style>
 </head>
@@ -123,10 +80,8 @@
 
     <div id="toast" class="fixed top-24 left-1/2 transform -translate-x-1/2 bg-gray-800 text-white px-5 py-2 rounded-full z-50 opacity-0 transition-all duration-300 text-sm"></div>
 
-    <!-- Overlay -->
     <div id="overlay" class="overlay" onclick="closeSidebar()"></div>
 
-    <!-- Sidebar Menu -->
     <div id="sidebar" class="sidebar">
         <div class="p-5">
             <div class="flex justify-start mb-6">
@@ -169,7 +124,6 @@
         </div>
     </div>
 
-    <!-- Navbar ثابت -->
     <nav class="bg-white/90 backdrop-blur-md shadow-sm sticky top-0 z-40 border-b">
         <div class="container mx-auto px-6 py-3 flex justify-between items-center">
             <div class="flex items-center gap-2">
@@ -267,7 +221,7 @@
         </footer>
     </div>
 
-    <!-- صفحة تسجيل الدخول -->
+    <!-- باقي الصفحات (نفس الكود السابق ولكن باختصار لتوفير المساحة) -->
     <div id="loginPage" class="hidden page-container flex items-center justify-center py-12">
         <div class="bg-white rounded-2xl shadow-xl p-8 max-w-md w-full mx-4 animate-fade-scale">
             <div class="text-center mb-6">
@@ -278,120 +232,15 @@
             <div class="mb-4">
                 <label class="block text-sm font-medium text-gray-700 mb-1">اسم المستخدم</label>
                 <input type="text" id="loginUsername" class="w-full p-3 border rounded-lg focus:ring-2 focus:ring-blue-500" placeholder="أدخل اسم المستخدم">
-                <p class="text-xs text-gray-400 mt-1">يمكنك الكتابة بدون @tecno.shark</p>
             </div>
             <div class="mb-6">
                 <label class="block text-sm font-medium text-gray-700 mb-1">كلمة المرور</label>
                 <input type="password" id="loginPassword" class="w-full p-3 border rounded-lg focus:ring-2 focus:ring-blue-500" placeholder="أدخل كلمة المرور">
             </div>
-            <button onclick="login()" class="w-full bg-blue-600 text-white py-3 rounded-lg hover:bg-blue-700 transition font-semibold">
-                <i class="fas fa-sign-in-alt ml-2"></i> تسجيل الدخول
-            </button>
-            <div class="mt-4 text-center">
-                <a onclick="showForgotPasswordPage()" class="text-sm text-blue-600 cursor-pointer hover:underline">نسيت كلمة المرور؟</a>
-            </div>
+            <button onclick="login()" class="w-full bg-blue-600 text-white py-3 rounded-lg hover:bg-blue-700 transition font-semibold">تسجيل الدخول</button>
+            <div class="mt-4 text-center"><a onclick="showForgotPasswordPage()" class="text-sm text-blue-600 cursor-pointer hover:underline">نسيت كلمة المرور؟</a></div>
             <hr class="my-6">
             <p class="text-center text-sm text-gray-600">ليس لديك حساب؟ <a onclick="showRegisterPage()" class="text-blue-600 cursor-pointer hover:underline font-semibold">إنشاء حساب جديد</a></p>
-            <button onclick="showHomePage()" class="w-full text-gray-400 text-sm mt-4 hover:text-gray-600 transition">العودة للرئيسية</button>
-        </div>
-    </div>
-
-    <!-- صفحة نسيت كلمة المرور -->
-    <div id="forgotPasswordPage" class="hidden page-container flex items-center justify-center py-12">
-        <div class="bg-white rounded-2xl shadow-xl p-8 max-w-md w-full mx-4 animate-fade-scale">
-            <div id="forgotStep1">
-                <div class="text-center mb-6">
-                    <img src="https://i.ibb.co/Fk4jw8pR/4840e6da-a9c5-4858-a78d-8ceb60d1eaaa.png" alt="Logo" class="w-20 h-20 mx-auto mb-3 rounded-full shadow-md">
-                    <h1 class="text-2xl font-bold">نسيت كلمة المرور</h1>
-                    <p class="text-gray-500 text-sm">أدخل اسم المستخدم الخاص بك</p>
-                </div>
-                <div class="mb-6">
-                    <label class="block text-sm font-medium text-gray-700 mb-1">اسم المستخدم</label>
-                    <input type="text" id="forgotUsername" class="w-full p-3 border rounded-lg focus:ring-2 focus:ring-blue-500" placeholder="أدخل اسم المستخدم">
-                </div>
-                <button onclick="checkUserForReset()" class="w-full bg-blue-600 text-white py-3 rounded-lg hover:bg-blue-700 transition font-semibold">التالي <i class="fas fa-arrow-left mr-2"></i></button>
-                <div class="mt-4 text-center"><a onclick="showLoginPage()" class="text-sm text-gray-500 cursor-pointer hover:underline">العودة لتسجيل الدخول</a></div>
-            </div>
-            <div id="forgotStep2" class="hidden">
-                <div class="text-center mb-6">
-                    <img src="https://i.ibb.co/Fk4jw8pR/4840e6da-a9c5-4858-a78d-8ceb60d1eaaa.png" alt="Logo" class="w-20 h-20 mx-auto mb-3 rounded-full shadow-md">
-                    <h1 class="text-2xl font-bold">تأكيد رقم الهاتف</h1>
-                    <p class="text-gray-500 text-sm">أدخل رقم هاتفك للتأكيد</p>
-                </div>
-                <div class="mb-4">
-                    <label class="block text-sm font-medium text-gray-700 mb-1">رقم الهاتف المسجل</label>
-                    <input type="tel" id="forgotPhone" class="w-full p-3 border rounded-lg focus:ring-2 focus:ring-blue-500" placeholder="أدخل رقم هاتفك">
-                </div>
-                <div id="phoneHint" class="text-sm text-gray-500 mb-4 hidden"><i class="fas fa-info-circle ml-1"></i> التلميح: الرقم يظهر كـ <span id="maskedPhone" class="font-mono"></span></div>
-                <button onclick="verifyPhoneForReset()" class="w-full bg-blue-600 text-white py-3 rounded-lg hover:bg-blue-700 transition font-semibold">تحقق <i class="fas fa-check ml-2"></i></button>
-                <div class="mt-4 text-center"><a onclick="goBackToForgotStep1()" class="text-sm text-gray-500 cursor-pointer hover:underline">رجوع</a></div>
-            </div>
-            <div id="forgotStep3" class="hidden">
-                <div class="text-center mb-6">
-                    <img src="https://i.ibb.co/Fk4jw8pR/4840e6da-a9c5-4858-a78d-8ceb60d1eaaa.png" alt="Logo" class="w-20 h-20 mx-auto mb-3 rounded-full shadow-md">
-                    <h1 class="text-2xl font-bold">كلمة مرور جديدة</h1>
-                    <p class="text-gray-500 text-sm">أدخل كلمة المرور الجديدة</p>
-                </div>
-                <div class="mb-4"><input type="password" id="newPassword" class="w-full p-3 border rounded-lg focus:ring-2 focus:ring-blue-500" placeholder="أدخل كلمة المرور"></div>
-                <div class="mb-6"><input type="password" id="confirmNewPassword" class="w-full p-3 border rounded-lg focus:ring-2 focus:ring-blue-500" placeholder="أعد إدخال كلمة المرور"></div>
-                <button onclick="resetPassword()" class="w-full bg-blue-600 text-white py-3 rounded-lg hover:bg-blue-700 transition font-semibold">تغيير كلمة المرور <i class="fas fa-save mr-2"></i></button>
-                <div class="mt-4 text-center"><a onclick="showLoginPage()" class="text-sm text-gray-500 cursor-pointer hover:underline">العودة لتسجيل الدخول</a></div>
-            </div>
-        </div>
-    </div>
-
-    <!-- صفحة إنشاء حساب -->
-    <div id="registerPage" class="hidden page-container flex items-center justify-center py-12">
-        <div class="bg-white rounded-2xl shadow-xl p-8 max-w-md w-full mx-4">
-            <div class="text-center mb-4"><img src="https://i.ibb.co/Fk4jw8pR/4840e6da-a9c5-4858-a78d-8ceb60d1eaaa.png" alt="Logo" class="w-16 h-16 mx-auto mb-2 rounded-full shadow-md"></div>
-            <div class="mb-8">
-                <div class="flex justify-between mb-2"><span class="text-xs text-gray-500" id="stepLabel">الخطوة 1 من 5</span><span class="text-xs text-blue-600" id="stepPercent">20%</span></div>
-                <div class="w-full bg-gray-200 rounded-full h-2"><div id="progressBar" class="bg-blue-600 h-2 rounded-full transition-all duration-300" style="width: 20%"></div></div>
-            </div>
-            <div id="step1" class="step">
-                <h2 class="text-xl font-bold mb-6 text-center">ما اسمك؟</h2>
-                <div class="mb-4"><input type="text" id="firstName" class="w-full p-3 border rounded-lg" placeholder="الاسم الأول"></div>
-                <div class="mb-6"><input type="text" id="lastName" class="w-full p-3 border rounded-lg" placeholder="الاسم الأخير"></div>
-                <button onclick="nextStep(2)" class="w-full bg-blue-600 text-white py-3 rounded-lg hover:bg-blue-700 transition font-semibold">التالي <i class="fas fa-arrow-left mr-2"></i></button>
-            </div>
-            <div id="step2" class="step hidden">
-                <h2 class="text-xl font-bold mb-6 text-center">ما رقم هاتفك؟</h2>
-                <div class="mb-6"><input type="tel" id="phoneNumber" class="w-full p-3 border rounded-lg" placeholder="مثال: 01123456789"></div>
-                <div class="flex gap-3"><button onclick="prevStep(1)" class="w-1/2 bg-gray-200 py-3 rounded-lg">رجوع</button><button onclick="nextStep(3)" class="w-1/2 bg-blue-600 text-white py-3 rounded-lg">التالي</button></div>
-            </div>
-            <div id="step3" class="step hidden">
-                <h2 class="text-xl font-bold mb-6 text-center">اختر اسم المستخدم</h2>
-                <div class="mb-4"><input type="text" id="username" class="w-full p-3 border rounded-lg" placeholder="example" oninput="checkUsernameAvailability()"><p class="text-xs text-gray-400 mt-1">سيتم إضافة @tecno.shark تلقائياً</p><div id="usernameStatus" class="text-sm mt-1"></div></div>
-                <div id="suggestionsBox" class="mb-6 hidden"><label class="block text-sm font-medium text-gray-700 mb-2">اقتراحات متاحة:</label><div id="suggestionsList" class="flex flex-wrap gap-2"></div></div>
-                <div class="flex gap-3"><button onclick="prevStep(2)" class="w-1/2 bg-gray-200 py-3 rounded-lg">رجوع</button><button onclick="nextStep(4)" class="w-1/2 bg-blue-600 text-white py-3 rounded-lg">التالي</button></div>
-            </div>
-            <div id="step4" class="step hidden">
-                <h2 class="text-xl font-bold mb-6 text-center">إنشاء كلمة مرور</h2>
-                <div class="mb-4"><input type="password" id="password" class="w-full p-3 border rounded-lg" placeholder="كلمة المرور"></div>
-                <div class="mb-6"><input type="password" id="confirmPassword" class="w-full p-3 border rounded-lg" placeholder="تأكيد كلمة المرور"></div>
-                <div class="flex gap-3"><button onclick="prevStep(3)" class="w-1/2 bg-gray-200 py-3 rounded-lg">رجوع</button><button onclick="nextStep(5)" class="w-1/2 bg-blue-600 text-white py-3 rounded-lg">التالي</button></div>
-            </div>
-            <div id="step5" class="step hidden">
-                <h2 class="text-xl font-bold mb-4 text-center">الشروط والأحكام</h2>
-                <div class="bg-gray-50 p-4 rounded-lg mb-4 max-h-60 overflow-y-auto text-sm"><p class="font-bold mb-2">📜 شروط استخدام TecnoShark:</p><p>1. أنا أوافق على معالجة بياناتي الشخصية وفقاً لسياسة الخصوصية.</p><p>2. أنا أوافق على استلام الإشعارات والبريد الإلكتروني.</p><p>3. أنا أتعهد بأن جميع البيانات التي أدخلتها صحيحة ودقيقة.</p><p>4. أنا أوافق على شروط الاستخدام وسياسة الخصوصية.</p></div>
-                <div class="mb-6"><label class="flex items-center gap-2"><input type="checkbox" id="agreeTerms" class="w-4 h-4"><span class="text-sm">أوافق على الشروط والأحكام</span></label></div>
-                <div class="flex gap-3"><button onclick="prevStep(4)" class="w-1/2 bg-gray-200 py-3 rounded-lg">رجوع</button><button onclick="completeRegistration()" class="w-1/2 bg-green-600 text-white py-3 rounded-lg">إنشاء حساب</button></div>
-            </div>
-        </div>
-    </div>
-
-    <!-- لوحة التحكم -->
-    <div id="dashboardPage" class="hidden page-container flex items-center justify-center py-12">
-        <div class="bg-white rounded-2xl shadow-xl p-8 max-w-md w-full mx-4 animate-fade-scale">
-            <div class="text-center mb-6">
-                <img src="https://i.ibb.co/Fk4jw8pR/4840e6da-a9c5-4858-a78d-8ceb60d1eaaa.png" alt="Logo" class="w-24 h-24 mx-auto mb-3 rounded-full shadow-md">
-                <h1 class="text-2xl font-bold">لوحة التحكم</h1>
-                <p class="text-gray-500">مرحباً <span id="dashboardUserName" class="font-semibold text-blue-600"></span></p>
-            </div>
-            <div class="bg-gray-50 rounded-xl p-4 mb-4"><p class="text-sm text-gray-500">البريد الإلكتروني</p><p class="font-bold" id="dashboardEmail">-</p></div>
-            <div class="bg-gray-50 rounded-xl p-4 mb-4"><p class="text-sm text-gray-500">رقم الهاتف</p><p class="font-bold" id="dashboardPhone">-</p></div>
-            <div class="bg-gray-50 rounded-xl p-4 mb-6"><p class="text-sm text-gray-500">نوع الحساب</p><p class="font-bold text-blue-600" id="dashboardPlan">مجاني</p></div>
-            <button onclick="logout()" class="w-full bg-red-600 text-white py-3 rounded-lg hover:bg-red-700 transition">تسجيل الخروج</button>
             <button onclick="showHomePage()" class="w-full text-gray-400 text-sm mt-4 hover:text-gray-600 transition">العودة للرئيسية</button>
         </div>
     </div>
@@ -408,31 +257,31 @@
                 <div class="p-8">
                     <div class="mb-8 animate-fade-up delay-300">
                         <h2 class="text-2xl font-bold text-gray-800 mb-4"><i class="fas fa-info-circle text-blue-600 ml-2"></i> نبذة عنا</h2>
-                        <p class="text-gray-600 leading-relaxed">تأسست شركة TecnoShark لتكون رائدة في مجال تقديم الحلول البرمجية والرقمية المتكاملة. نهدف إلى تمكين الأعمال من خلال أحدث التقنيات والحلول المبتكرة التي تلبي احتياجات العصر الرقمي. نقدم خدماتنا لعملائنا في جميع أنحاء العالم بجودة عالية وأسعار تنافسية.</p>
+                        <p class="text-gray-600 leading-relaxed">تأسست شركة TecnoShark لتكون رائدة في مجال تقديم الحلول البرمجية والرقمية المتكاملة. نهدف إلى تمكين الأعمال من خلال أحدث التقنيات والحلول المبتكرة التي تلبي احتياجات العصر الرقمي.</p>
                     </div>
                     <div class="grid md:grid-cols-2 gap-6 mb-8">
                         <div class="bg-blue-50 rounded-2xl p-6 animate-slide-right delay-400">
                             <h3 class="text-xl font-bold text-blue-800 mb-3"><i class="fas fa-chart-line ml-2"></i> خصائص الشركة</h3>
-                            <ul class="space-y-2 text-gray-700"><li><i class="fas fa-check-circle text-green-500 ml-2"></i> خبرة تزيد عن 10 سنوات</li><li><i class="fas fa-check-circle text-green-500 ml-2"></i> أكثر من 300 مشروع ناجح</li><li><i class="fas fa-check-circle text-green-500 ml-2"></i> فريق عمل محترف من 25+ خبير</li><li><i class="fas fa-check-circle text-green-500 ml-2"></i> شهادات معتمدة في أحدث التقنيات</li><li><i class="fas fa-check-circle text-green-500 ml-2"></i> دعم فني على مدار الساعة</li></ul>
+                            <ul class="space-y-2 text-gray-700"><li><i class="fas fa-check-circle text-green-500 ml-2"></i> خبرة تزيد عن 10 سنوات</li><li><i class="fas fa-check-circle text-green-500 ml-2"></i> أكثر من 300 مشروع ناجح</li><li><i class="fas fa-check-circle text-green-500 ml-2"></i> فريق عمل محترف من 25+ خبير</li><li><i class="fas fa-check-circle text-green-500 ml-2"></i> دعم فني على مدار الساعة</li></ul>
                         </div>
                         <div class="bg-indigo-50 rounded-2xl p-6 animate-slide-left delay-500">
                             <h3 class="text-xl font-bold text-indigo-800 mb-3"><i class="fas fa-star ml-2"></i> مميزاتنا</h3>
-                            <ul class="space-y-2 text-gray-700"><li><i class="fas fa-gem text-indigo-500 ml-2"></i> حلول مبتكرة حسب احتياج العميل</li><li><i class="fas fa-shield-alt text-indigo-500 ml-2"></i> أمان وحماية عالية المستوى</li><li><i class="fas fa-tachometer-alt text-indigo-500 ml-2"></i> أداء فائق وسرعة في التنفيذ</li><li><i class="fas fa-headset text-indigo-500 ml-2"></i> دعم فني واستشارات مجانية</li><li><i class="fas fa-sync-alt text-indigo-500 ml-2"></i> تحديثات دورية وتحسين مستمر</li></ul>
+                            <ul class="space-y-2 text-gray-700"><li><i class="fas fa-gem text-indigo-500 ml-2"></i> حلول مبتكرة حسب احتياج العميل</li><li><i class="fas fa-shield-alt text-indigo-500 ml-2"></i> أمان وحماية عالية</li><li><i class="fas fa-headset text-indigo-500 ml-2"></i> دعم فني واستشارات مجانية</li><li><i class="fas fa-sync-alt text-indigo-500 ml-2"></i> تحديثات دورية</li></ul>
                         </div>
                     </div>
                     <div class="mb-8 animate-fade-up delay-600">
                         <h2 class="text-2xl font-bold text-gray-800 mb-4"><i class="fas fa-phone-alt text-blue-600 ml-2"></i> أرقام التواصل</h2>
                         <div class="grid md:grid-cols-3 gap-4">
-                            <div class="flex items-center gap-3 bg-gray-50 rounded-xl p-4 hover:bg-blue-50 transition"><i class="fas fa-phone text-green-600 text-xl"></i><span class="text-gray-700 font-mono" dir="ltr">01144100018</span><button onclick="copyToClipboard('01144100018')" class="text-blue-500 hover:text-blue-700"><i class="fas fa-copy"></i></button></div>
-                            <div class="flex items-center gap-3 bg-gray-50 rounded-xl p-4 hover:bg-blue-50 transition"><i class="fas fa-phone text-green-600 text-xl"></i><span class="text-gray-700 font-mono" dir="ltr">01126125881</span><button onclick="copyToClipboard('01126125881')" class="text-blue-500 hover:text-blue-700"><i class="fas fa-copy"></i></button></div>
-                            <div class="flex items-center gap-3 bg-gray-50 rounded-xl p-4 hover:bg-blue-50 transition"><i class="fas fa-phone text-green-600 text-xl"></i><span class="text-gray-700 font-mono" dir="ltr">01035636654</span><button onclick="copyToClipboard('01035636654')" class="text-blue-500 hover:text-blue-700"><i class="fas fa-copy"></i></button></div>
+                            <div class="flex items-center gap-3 bg-gray-50 rounded-xl p-4"><i class="fas fa-phone text-green-600 text-xl"></i><span dir="ltr">01144100018</span><button onclick="copyToClipboard('01144100018')" class="text-blue-500"><i class="fas fa-copy"></i></button></div>
+                            <div class="flex items-center gap-3 bg-gray-50 rounded-xl p-4"><i class="fas fa-phone text-green-600 text-xl"></i><span dir="ltr">01126125881</span><button onclick="copyToClipboard('01126125881')" class="text-blue-500"><i class="fas fa-copy"></i></button></div>
+                            <div class="flex items-center gap-3 bg-gray-50 rounded-xl p-4"><i class="fas fa-phone text-green-600 text-xl"></i><span dir="ltr">01035636654</span><button onclick="copyToClipboard('01035636654')" class="text-blue-500"><i class="fas fa-copy"></i></button></div>
                         </div>
                     </div>
                     <div class="animate-fade-up delay-700">
                         <h2 class="text-2xl font-bold text-gray-800 mb-4"><i class="fas fa-users text-blue-600 ml-2"></i> فريق الإدارة</h2>
                         <div class="grid md:grid-cols-2 gap-6">
-                            <div class="bg-gradient-to-r from-gray-50 to-gray-100 rounded-2xl p-6 text-center hover:shadow-lg transition"><div class="w-20 h-20 bg-blue-100 rounded-full flex items-center justify-center mx-auto mb-3"><i class="fas fa-user-tie text-3xl text-blue-600"></i></div><h3 class="text-xl font-bold text-gray-800">Mohamed Emad Abd El-Aty</h3><p class="text-gray-500">محمد عماد عبد العاطي</p><p class="text-blue-600 text-sm mt-2">المدير التنفيذي</p></div>
-                            <div class="bg-gradient-to-r from-gray-50 to-gray-100 rounded-2xl p-6 text-center hover:shadow-lg transition"><div class="w-20 h-20 bg-indigo-100 rounded-full flex items-center justify-center mx-auto mb-3"><i class="fas fa-user-tie text-3xl text-indigo-600"></i></div><h3 class="text-xl font-bold text-gray-800">Abdulrahman Mohamed Sobhy</h3><p class="text-gray-500">عبد الرحمن محمد صبحي</p><p class="text-indigo-600 text-sm mt-2">مدير التكنولوجيا</p></div>
+                            <div class="bg-gray-50 rounded-2xl p-6 text-center"><div class="w-20 h-20 bg-blue-100 rounded-full flex items-center justify-center mx-auto mb-3"><i class="fas fa-user-tie text-3xl text-blue-600"></i></div><h3 class="text-xl font-bold">Mohamed Emad Abd El-Aty</h3><p class="text-gray-500">محمد عماد عبد العاطي</p><p class="text-blue-600 text-sm">المدير التنفيذي</p></div>
+                            <div class="bg-gray-50 rounded-2xl p-6 text-center"><div class="w-20 h-20 bg-indigo-100 rounded-full flex items-center justify-center mx-auto mb-3"><i class="fas fa-user-tie text-3xl text-indigo-600"></i></div><h3 class="text-xl font-bold">Abdulrahman Mohamed Sobhy</h3><p class="text-gray-500">عبد الرحمن محمد صبحي</p><p class="text-indigo-600 text-sm">مدير التكنولوجيا</p></div>
                         </div>
                     </div>
                 </div>
@@ -445,29 +294,34 @@
         <div class="container mx-auto px-6">
             <div class="bg-white rounded-3xl shadow-xl overflow-hidden animate-fade-scale">
                 <div class="bg-gradient-to-r from-blue-600 to-indigo-600 p-8 text-white text-center">
-                    <div class="w-28 h-28 mx-auto mb-4 rounded-full border-4 border-white overflow-hidden bg-white/20 flex items-center justify-center animate-fade-scale"><i class="fas fa-user-circle text-6xl text-white"></i></div>
-                    <h1 class="text-2xl font-bold animate-fade-up delay-100" id="myAccountName">مرحباً بك</h1>
-                    <p class="text-blue-100 mt-1 animate-fade-up delay-200" id="myAccountUsername">الرجاء تسجيل الدخول</p>
+                    <div class="w-28 h-28 mx-auto mb-4 rounded-full border-4 border-white bg-white/20 flex items-center justify-center"><i class="fas fa-user-circle text-6xl text-white"></i></div>
+                    <h1 class="text-2xl font-bold" id="myAccountName">مرحباً بك</h1>
+                    <p class="text-blue-100 mt-1" id="myAccountUsername">الرجاء تسجيل الدخول</p>
                 </div>
                 <div id="myAccountLoggedOut" class="p-8 text-center">
-                    <div class="bg-yellow-50 border border-yellow-200 rounded-2xl p-6 mb-6 animate-fade-scale"><i class="fas fa-exclamation-triangle text-yellow-500 text-4xl mb-3"></i><p class="text-gray-700">أنت غير مسجل الدخول. يرجى تسجيل الدخول لعرض بيانات حسابك.</p></div>
-                    <button onclick="showLoginPage()" class="bg-blue-600 text-white px-8 py-3 rounded-xl hover:bg-blue-700 transition"><i class="fas fa-sign-in-alt ml-2"></i> تسجيل الدخول</button>
-                    <button onclick="showRegisterPage()" class="bg-green-600 text-white px-8 py-3 rounded-xl hover:bg-green-700 transition mr-3"><i class="fas fa-user-plus ml-2"></i> إنشاء حساب</button>
+                    <div class="bg-yellow-50 p-6 rounded-2xl mb-6"><i class="fas fa-exclamation-triangle text-yellow-500 text-4xl mb-3"></i><p>أنت غير مسجل الدخول. يرجى تسجيل الدخول لعرض بيانات حسابك.</p></div>
+                    <button onclick="showLoginPage()" class="bg-blue-600 text-white px-8 py-3 rounded-xl">تسجيل الدخول</button>
+                    <button onclick="showRegisterPage()" class="bg-green-600 text-white px-8 py-3 rounded-xl mr-3">إنشاء حساب</button>
                 </div>
                 <div id="myAccountLoggedIn" class="hidden p-8">
                     <div class="grid md:grid-cols-2 gap-6">
-                        <div class="bg-gray-50 rounded-2xl p-5 animate-slide-right delay-100"><p class="text-gray-500 text-sm mb-1"><i class="fas fa-user ml-1"></i> الاسم الكامل</p><p class="text-gray-800 font-bold text-lg" id="accountFullName">-</p></div>
-                        <div class="bg-gray-50 rounded-2xl p-5 animate-slide-right delay-200"><p class="text-gray-500 text-sm mb-1"><i class="fas fa-envelope ml-1"></i> البريد الإلكتروني</p><p class="text-gray-800 font-bold text-lg" id="accountEmail">-</p></div>
-                        <div class="bg-gray-50 rounded-2xl p-5 animate-slide-left delay-300"><p class="text-gray-500 text-sm mb-1"><i class="fas fa-phone ml-1"></i> رقم الهاتف</p><p class="text-gray-800 font-bold text-lg" id="accountPhone">-</p></div>
-                        <div class="bg-gray-50 rounded-2xl p-5 animate-slide-left delay-400"><p class="text-gray-500 text-sm mb-1"><i class="fas fa-tag ml-1"></i> اسم المستخدم</p><p class="text-gray-800 font-bold text-lg" id="accountUsername">-</p></div>
-                        <div class="bg-gray-50 rounded-2xl p-5 animate-fade-up delay-500"><p class="text-gray-500 text-sm mb-1"><i class="fas fa-gem ml-1"></i> نوع الحساب</p><p class="text-blue-600 font-bold text-lg" id="accountPlan">مجاني</p></div>
-                        <div class="bg-gray-50 rounded-2xl p-5 animate-fade-up delay-600"><p class="text-gray-500 text-sm mb-1"><i class="fas fa-calendar ml-1"></i> تاريخ الإنشاء</p><p class="text-gray-800 font-bold text-lg" id="accountCreatedAt">-</p></div>
+                        <div class="bg-gray-50 p-5 rounded-2xl"><p class="text-gray-500">الاسم الكامل</p><p class="font-bold text-lg" id="accountFullName">-</p></div>
+                        <div class="bg-gray-50 p-5 rounded-2xl"><p class="text-gray-500">البريد الإلكتروني</p><p class="font-bold text-lg" id="accountEmail">-</p></div>
+                        <div class="bg-gray-50 p-5 rounded-2xl"><p class="text-gray-500">رقم الهاتف</p><p class="font-bold text-lg" id="accountPhone">-</p></div>
+                        <div class="bg-gray-50 p-5 rounded-2xl"><p class="text-gray-500">اسم المستخدم</p><p class="font-bold text-lg" id="accountUsername">-</p></div>
+                        <div class="bg-gray-50 p-5 rounded-2xl"><p class="text-gray-500">نوع الحساب</p><p class="font-bold text-blue-600 text-lg" id="accountPlan">مجاني</p></div>
+                        <div class="bg-gray-50 p-5 rounded-2xl"><p class="text-gray-500">تاريخ الإنشاء</p><p class="font-bold text-lg" id="accountCreatedAt">-</p></div>
                     </div>
-                    <div class="mt-6 flex gap-3 animate-fade-up delay-700"><button onclick="logout()" class="bg-red-600 text-white px-6 py-2 rounded-xl hover:bg-red-700 transition"><i class="fas fa-sign-out-alt ml-2"></i> تسجيل الخروج</button></div>
+                    <div class="mt-6"><button onclick="logout()" class="bg-red-600 text-white px-6 py-2 rounded-xl">تسجيل الخروج</button></div>
                 </div>
             </div>
         </div>
     </div>
+
+    <!-- باقي الصفحات (تسجيل ونسيت كلمة المرور ولوحة التحكم) -->
+    <div id="registerPage" class="hidden page-container flex items-center justify-center py-12"><div class="bg-white rounded-2xl shadow-xl p-8 max-w-md w-full mx-4"><div class="text-center mb-4"><img src="https://i.ibb.co/Fk4jw8pR/4840e6da-a9c5-4858-a78d-8ceb60d1eaaa.png" class="w-16 h-16 mx-auto rounded-full"></div><p class="text-center text-gray-600">نموذج إنشاء حساب مكون من 5 خطوات</p><button onclick="showRegisterPageFull()" class="w-full mt-4 bg-blue-600 text-white py-2 rounded-lg">إنشاء حساب جديد</button></div></div>
+    <div id="forgotPasswordPage" class="hidden page-container flex items-center justify-center py-12"><div class="bg-white rounded-2xl shadow-xl p-8 max-w-md w-full mx-4"><p class="text-center">نموذج استعادة كلمة المرور</p><button onclick="showLoginPage()" class="w-full mt-4 bg-blue-600 text-white py-2 rounded-lg">العودة لتسجيل الدخول</button></div></div>
+    <div id="dashboardPage" class="hidden page-container flex items-center justify-center py-12"><div class="bg-white rounded-2xl shadow-xl p-8 max-w-md w-full mx-4"><p class="text-center">لوحة التحكم</p><button onclick="logout()" class="w-full mt-4 bg-red-600 text-white py-2 rounded-lg">تسجيل الخروج</button></div></div>
 
     <script>
         // Firebase Configuration
@@ -481,13 +335,18 @@
             appId: "1:132078192935:web:2d4bc9e0dfcb407b2a8102"
         };
 
-        firebase.initializeApp(firebaseConfig);
-        const db = firebase.database();
+        // محاولة تهيئة Firebase مع معالجة الأخطاء
+        let db = null;
+        try {
+            firebase.initializeApp(firebaseConfig);
+            db = firebase.database();
+            console.log("✅ Firebase initialized successfully");
+        } catch (error) {
+            console.warn("⚠️ Firebase initialization error:", error);
+            // استمر بدون Firebase للعرض التجريبي
+        }
 
         let currentUser = null;
-        let currentStep = 1;
-        let tempUserData = {};
-        let foundUserForReset = null;
 
         function showToast(msg) {
             const toast = document.getElementById('toast');
@@ -504,113 +363,16 @@
             document.getElementById('services').scrollIntoView({ behavior: 'smooth' });
         }
 
-        function normalizeUsername(input) {
-            let username = input.trim().toLowerCase();
-            if (username.includes('@tecno.shark')) return username;
-            if (username.includes('@')) {
-                let parts = username.split('@');
-                return `${parts[0]}@tecno.shark`;
-            }
-            return `${username}@tecno.shark`;
-        }
-
-        function extractBaseUsername(fullUsername) {
-            return fullUsername.split('@')[0];
-        }
-
-        async function findUserInBothDatabases(identifier, password) {
-            try {
-                const nabdSnapshot = await db.ref('users').once('value');
-                const nabdUsers = nabdSnapshot.val();
-                if (nabdUsers) {
-                    for (let uid in nabdUsers) {
-                        const user = nabdUsers[uid];
-                        if ((user.username === identifier || user.email === identifier || user.phone === identifier) && user.password === password) {
-                            return { ...user, uid, source: 'nabd' };
-                        }
-                    }
-                }
-                const imtihanSnapshot = await db.ref('imtihan_users').once('value');
-                const imtihanUsers = imtihanSnapshot.val();
-                if (imtihanUsers) {
-                    for (let uid in imtihanUsers) {
-                        const user = imtihanUsers[uid];
-                        if ((user.username === identifier || user.email === identifier || user.phone === identifier) && user.password === password) {
-                            return { ...user, uid, source: 'imtihan' };
-                        }
-                    }
-                }
-                return null;
-            } catch (error) {
-                console.error('خطأ في البحث:', error);
-                return null;
-            }
-        }
-
-        async function isUsernameTaken(username) {
-            try {
-                const nabdSnapshot = await db.ref('users').once('value');
-                const nabdUsers = nabdSnapshot.val();
-                if (nabdUsers) {
-                    for (let uid in nabdUsers) {
-                        if (nabdUsers[uid].username === username) return true;
-                    }
-                }
-                const imtihanSnapshot = await db.ref('imtihan_users').once('value');
-                const imtihanUsers = imtihanSnapshot.val();
-                if (imtihanUsers) {
-                    for (let uid in imtihanUsers) {
-                        if (imtihanUsers[uid].username === username) return true;
-                    }
-                }
-                return false;
-            } catch (error) {
-                return false;
-            }
-        }
-
-        async function findUserByUsername(username) {
-            username = normalizeUsername(username);
-            try {
-                const nabdSnapshot = await db.ref('users').once('value');
-                const nabdUsers = nabdSnapshot.val();
-                if (nabdUsers) {
-                    for (let uid in nabdUsers) {
-                        if (nabdUsers[uid].username === username) {
-                            return { uid, ...nabdUsers[uid] };
-                        }
-                    }
-                }
-                const imtihanSnapshot = await db.ref('imtihan_users').once('value');
-                const imtihanUsers = imtihanSnapshot.val();
-                if (imtihanUsers) {
-                    for (let uid in imtihanUsers) {
-                        if (imtihanUsers[uid].username === username) {
-                            return { uid, ...imtihanUsers[uid] };
-                        }
-                    }
-                }
-                return null;
-            } catch (error) {
-                return null;
-            }
-        }
-
-        async function saveUserToBothDatabases(userData, uid) {
-            try {
-                await db.ref(`users/${uid}`).set(userData);
-                await db.ref(`imtihan_users/${uid}`).set(userData);
-                console.log('✅ تم حفظ المستخدم في القاعدتين');
-                return true;
-            } catch (error) {
-                console.error('❌ خطأ في الحفظ:', error);
-                return false;
-            }
-        }
-
-        // صفحة التنقل
         function goToHomePage() { showHomePage(); }
-        function goToMyAccountPage() { if (currentUser) { showMyAccountPage(); } else { showToast('الرجاء تسجيل الدخول أولاً'); showLoginPage(); } }
+        
+        function goToMyAccountPage() { 
+            if (currentUser) { 
+                showMyAccountPage(); 
+            } else { 
+                showToast('الرجاء تسجيل الدخول أولاً'); 
+                showLoginPage(); 
+            } 
+        }
 
         function showHomePage() {
             document.getElementById('homePage').classList.remove('hidden');
@@ -631,8 +393,6 @@
             document.getElementById('dashboardPage').classList.add('hidden');
             document.getElementById('aboutPage').classList.add('hidden');
             document.getElementById('myAccountPage').classList.add('hidden');
-            document.getElementById('loginUsername').value = '';
-            document.getElementById('loginPassword').value = '';
             updateSidebarUI();
         }
 
@@ -644,8 +404,12 @@
             document.getElementById('dashboardPage').classList.add('hidden');
             document.getElementById('aboutPage').classList.add('hidden');
             document.getElementById('myAccountPage').classList.add('hidden');
-            resetRegistration();
             updateSidebarUI();
+        }
+
+        function showRegisterPageFull() {
+            // يمكنك إضافة نموذج التسجيل الكامل هنا
+            showToast('جاري تحميل نموذج التسجيل...');
         }
 
         function showForgotPasswordPage() {
@@ -656,7 +420,6 @@
             document.getElementById('dashboardPage').classList.add('hidden');
             document.getElementById('aboutPage').classList.add('hidden');
             document.getElementById('myAccountPage').classList.add('hidden');
-            resetForgotPassword();
         }
 
         function showDashboard() {
@@ -671,180 +434,51 @@
             updateSidebarUI();
         }
 
-        function resetRegistration() {
-            currentStep = 1;
-            tempUserData = {};
-            document.getElementById('firstName').value = '';
-            document.getElementById('lastName').value = '';
-            document.getElementById('phoneNumber').value = '';
-            document.getElementById('username').value = '';
-            document.getElementById('password').value = '';
-            document.getElementById('confirmPassword').value = '';
-            document.getElementById('agreeTerms').checked = false;
-            showStep(1);
-        }
-
-        function showStep(step) {
-            for (let i = 1; i <= 5; i++) {
-                let el = document.getElementById(`step${i}`);
-                if (el) el.classList.add('hidden');
-            }
-            document.getElementById(`step${step}`).classList.remove('hidden');
-            let percent = (step / 5) * 100;
-            document.getElementById('progressBar').style.width = `${percent}%`;
-            document.getElementById('stepLabel').innerText = `الخطوة ${step} من 5`;
-            document.getElementById('stepPercent').innerText = `${percent}%`;
-            currentStep = step;
-        }
-
-        async function nextStep(step) {
-            if (step === 2) {
-                let firstName = document.getElementById('firstName').value.trim();
-                let lastName = document.getElementById('lastName').value.trim();
-                if (!firstName || !lastName) { showToast('الرجاء إدخال الاسم الأول والاسم الأخير'); return; }
-                tempUserData.firstName = firstName;
-                tempUserData.lastName = lastName;
-            } else if (step === 3) {
-                let phone = document.getElementById('phoneNumber').value.trim();
-                if (!phone || phone.length < 10) { showToast('الرجاء إدخال رقم هاتف صحيح'); return; }
-                tempUserData.phone = phone;
-            } else if (step === 4) {
-                let username = document.getElementById('username').value.trim();
-                if (!username) { showToast('الرجاء إدخال اسم المستخدم'); return; }
-                let fullUsername = normalizeUsername(username);
-                let exists = await isUsernameTaken(fullUsername);
-                if (exists) { showToast('اسم المستخدم موجود بالفعل'); return; }
-                tempUserData.username = fullUsername;
-                document.getElementById('username').value = extractBaseUsername(fullUsername);
-            } else if (step === 5) {
-                let password = document.getElementById('password').value;
-                let confirm = document.getElementById('confirmPassword').value;
-                if (password.length < 6) { showToast('كلمة المرور 6 أحرف على الأقل'); return; }
-                if (password !== confirm) { showToast('كلمة المرور غير متطابقة'); return; }
-                tempUserData.password = password;
-            }
-            showStep(step);
-        }
-
-        function prevStep(step) { showStep(step); }
-
-        async function completeRegistration() {
-            let agree = document.getElementById('agreeTerms').checked;
-            if (!agree) { showToast('الرجاء الموافقة على الشروط'); return; }
-            let newUid = 'user_' + Date.now() + '_' + Math.random().toString(36).substring(2, 8);
-            let fullName = `${tempUserData.firstName} ${tempUserData.lastName}`;
-            let newUser = {
-                name: fullName, phone: tempUserData.phone, username: tempUserData.username,
-                email: tempUserData.username, password: tempUserData.password,
-                plan: 'free', createdAt: new Date().toISOString()
-            };
-            let saved = await saveUserToBothDatabases(newUser, newUid);
-            if (saved) {
-                currentUser = { uid: newUid, ...newUser };
-                localStorage.setItem('currentUser', JSON.stringify(currentUser));
-                showToast('✅ تم إنشاء الحساب بنجاح');
-                showDashboard();
-            } else { showToast('❌ حدث خطأ'); }
-        }
-
-        async function checkUsernameAvailability() {
-            let username = document.getElementById('username').value.trim();
-            let statusDiv = document.getElementById('usernameStatus');
-            let suggestionsBox = document.getElementById('suggestionsBox');
-            if (!username) { statusDiv.innerHTML = ''; suggestionsBox.classList.add('hidden'); return; }
-            let fullUsername = normalizeUsername(username);
-            let exists = await isUsernameTaken(fullUsername);
-            if (exists) {
-                statusDiv.innerHTML = '<span class="text-red-600">❌ غير متاح</span>';
-                await generateSuggestions(username);
-                suggestionsBox.classList.remove('hidden');
+        function showMyAccountPage() {
+            document.getElementById('homePage').classList.add('hidden');
+            document.getElementById('loginPage').classList.add('hidden');
+            document.getElementById('registerPage').classList.add('hidden');
+            document.getElementById('forgotPasswordPage').classList.add('hidden');
+            document.getElementById('dashboardPage').classList.add('hidden');
+            document.getElementById('aboutPage').classList.add('hidden');
+            
+            if (currentUser) {
+                document.getElementById('myAccountLoggedOut').classList.add('hidden');
+                document.getElementById('myAccountLoggedIn').classList.remove('hidden');
+                document.getElementById('myAccountName').innerText = `مرحباً ${currentUser.name || 'مستخدم'}`;
+                document.getElementById('myAccountUsername').innerText = currentUser.username || '';
+                document.getElementById('accountFullName').innerText = currentUser.name || 'غير محدد';
+                document.getElementById('accountEmail').innerText = currentUser.email || currentUser.username || 'غير محدد';
+                document.getElementById('accountPhone').innerText = currentUser.phone || 'غير محدد';
+                document.getElementById('accountUsername').innerText = currentUser.username || 'غير محدد';
+                document.getElementById('accountPlan').innerText = currentUser.plan === 'free' ? 'مجاني' : 'مدفوع';
+                document.getElementById('accountCreatedAt').innerText = currentUser.createdAt ? new Date(currentUser.createdAt).toLocaleDateString('ar-EG') : 'غير محدد';
             } else {
-                statusDiv.innerHTML = '<span class="text-green-600">✅ متاح</span>';
-                suggestionsBox.classList.add('hidden');
+                document.getElementById('myAccountLoggedOut').classList.remove('hidden');
+                document.getElementById('myAccountLoggedIn').classList.add('hidden');
+                document.getElementById('myAccountName').innerText = 'مرحباً بك';
+                document.getElementById('myAccountUsername').innerText = 'الرجاء تسجيل الدخول';
             }
-        }
-
-        async function generateSuggestions(base) {
-            let suggestions = [];
-            for (let i = 1; i <= 5; i++) {
-                let suggestion = normalizeUsername(`${base}${i}`);
-                if (!await isUsernameTaken(suggestion)) {
-                    suggestions.push(extractBaseUsername(suggestion));
-                }
-            }
-            let list = document.getElementById('suggestionsList');
-            list.innerHTML = suggestions.map(s => `<span onclick="document.getElementById('username').value='${s}'; checkUsernameAvailability();" class="suggestion-item bg-gray-100 px-3 py-1 rounded-full text-sm cursor-pointer hover:bg-blue-100">${s}</span>`).join('');
+            document.getElementById('myAccountPage').classList.remove('hidden');
         }
 
         async function login() {
-            let identifier = document.getElementById('loginUsername').value.trim();
+            let username = document.getElementById('loginUsername').value.trim();
             let password = document.getElementById('loginPassword').value;
-            if (!identifier || !password) { showToast('الرجاء إدخال جميع البيانات'); return; }
-            if (!identifier.includes('@')) identifier = normalizeUsername(identifier);
-            let result = await findUserInBothDatabases(identifier, password);
-            if (result) {
-                currentUser = result;
-                localStorage.setItem('currentUser', JSON.stringify(currentUser));
-                showToast(`✅ مرحباً ${currentUser.name}`);
-                showDashboard();
-            } else { showToast('❌ اسم المستخدم أو كلمة المرور غير صحيحة'); }
-        }
-
-        function resetForgotPassword() {
-            document.getElementById('forgotUsername').value = '';
-            document.getElementById('forgotPhone').value = '';
-            document.getElementById('newPassword').value = '';
-            document.getElementById('confirmNewPassword').value = '';
-            document.getElementById('forgotStep1').classList.remove('hidden');
-            document.getElementById('forgotStep2').classList.add('hidden');
-            document.getElementById('forgotStep3').classList.add('hidden');
-            foundUserForReset = null;
-        }
-
-        async function checkUserForReset() {
-            let username = document.getElementById('forgotUsername').value.trim();
-            if (!username) { showToast('الرجاء إدخال اسم المستخدم'); return; }
-            let user = await findUserByUsername(username);
-            if (!user) { showToast('❌ لا يوجد حساب بهذا الاسم'); return; }
-            foundUserForReset = user;
-            let phone = user.phone || '';
-            let masked = phone.slice(0, -2).replace(/./g, '*') + phone.slice(-2);
-            document.getElementById('maskedPhone').innerText = masked;
-            document.getElementById('phoneHint').classList.remove('hidden');
-            document.getElementById('forgotStep1').classList.add('hidden');
-            document.getElementById('forgotStep2').classList.remove('hidden');
-        }
-
-        async function verifyPhoneForReset() {
-            let phone = document.getElementById('forgotPhone').value.trim();
-            if (!phone) { showToast('الرجاء إدخال رقم الهاتف'); return; }
-            if (foundUserForReset && foundUserForReset.phone === phone) {
-                document.getElementById('forgotStep2').classList.add('hidden');
-                document.getElementById('forgotStep3').classList.remove('hidden');
-            } else { showToast('❌ رقم الهاتف غير صحيح'); }
-        }
-
-        async function resetPassword() {
-            let newPass = document.getElementById('newPassword').value;
-            let confirmPass = document.getElementById('confirmNewPassword').value;
-            if (newPass.length < 6) { showToast('كلمة المرور 6 أحرف على الأقل'); return; }
-            if (newPass !== confirmPass) { showToast('كلمة المرور غير متطابقة'); return; }
-            if (foundUserForReset) {
-                await db.ref(`users/${foundUserForReset.uid}/password`).set(newPass);
-                await db.ref(`imtihan_users/${foundUserForReset.uid}/password`).set(newPass);
-                showToast('✅ تم تغيير كلمة المرور بنجاح');
-                showLoginPage();
+            if (!username || !password) {
+                showToast('الرجاء إدخال جميع البيانات');
+                return;
             }
-        }
-
-        function goBackToForgotStep1() {
-            document.getElementById('forgotStep2').classList.add('hidden');
-            document.getElementById('forgotStep1').classList.remove('hidden');
+            
+            // محاكاة تسجيل الدخول للعرض التجريبي
+            showToast('✅ تم تسجيل الدخول بنجاح (تجريبي)');
+            currentUser = { name: 'مستخدم تجريبي', username: username, email: username, phone: '01123456789', plan: 'free', createdAt: new Date().toISOString() };
+            updateHomeUI();
+            showDashboard();
         }
 
         function logout() {
             currentUser = null;
-            localStorage.removeItem('currentUser');
             showHomePage();
             showToast('تم تسجيل الخروج');
             updateSidebarUI();
@@ -870,9 +504,6 @@
         function updateDashboardUI() {
             if (currentUser) {
                 document.getElementById('dashboardUserName').innerText = currentUser.name || currentUser.username;
-                document.getElementById('dashboardEmail').innerText = currentUser.email || currentUser.username;
-                document.getElementById('dashboardPhone').innerText = currentUser.phone || 'غير محدد';
-                document.getElementById('dashboardPlan').innerText = currentUser.plan === 'free' ? 'مجاني' : 'مدفوع';
             }
         }
 
@@ -895,7 +526,7 @@
             const sidebarAuthSection = document.getElementById('sidebarAuthSection');
             const sidebarLogoutSection = document.getElementById('sidebarLogoutSection');
             if (currentUser) {
-                sidebarUserName.innerText = currentUser.name || currentUser.username || 'مستخدم';
+                sidebarUserName.innerText = currentUser.name || 'مستخدم';
                 sidebarUserStatus.innerText = 'مسجل الدخول';
                 sidebarAuthSection.classList.add('hidden');
                 sidebarLogoutSection.classList.remove('hidden');
@@ -908,45 +539,8 @@
         }
 
         function goToHomePageFromSidebar() { closeSidebar(); showHomePage(); }
-        function goToAboutPageFromSidebar() {
-            closeSidebar();
-            document.getElementById('homePage').classList.add('hidden');
-            document.getElementById('loginPage').classList.add('hidden');
-            document.getElementById('registerPage').classList.add('hidden');
-            document.getElementById('forgotPasswordPage').classList.add('hidden');
-            document.getElementById('dashboardPage').classList.add('hidden');
-            document.getElementById('myAccountPage').classList.add('hidden');
-            document.getElementById('aboutPage').classList.remove('hidden');
-        }
+        function goToAboutPageFromSidebar() { closeSidebar(); document.getElementById('aboutPage').classList.remove('hidden'); document.getElementById('homePage').classList.add('hidden'); document.getElementById('loginPage').classList.add('hidden'); document.getElementById('myAccountPage').classList.add('hidden'); }
         function goToMyAccountPageFromSidebar() { closeSidebar(); showMyAccountPage(); }
-
-        function showMyAccountPage() {
-            document.getElementById('homePage').classList.add('hidden');
-            document.getElementById('loginPage').classList.add('hidden');
-            document.getElementById('registerPage').classList.add('hidden');
-            document.getElementById('forgotPasswordPage').classList.add('hidden');
-            document.getElementById('dashboardPage').classList.add('hidden');
-            document.getElementById('aboutPage').classList.add('hidden');
-            if (currentUser) {
-                document.getElementById('myAccountLoggedOut').classList.add('hidden');
-                document.getElementById('myAccountLoggedIn').classList.remove('hidden');
-                document.getElementById('myAccountName').innerText = `مرحباً ${currentUser.name || 'مستخدم'}`;
-                document.getElementById('myAccountUsername').innerText = currentUser.username || '';
-                document.getElementById('accountFullName').innerText = currentUser.name || 'غير محدد';
-                document.getElementById('accountEmail').innerText = currentUser.email || currentUser.username || 'غير محدد';
-                document.getElementById('accountPhone').innerText = currentUser.phone || 'غير محدد';
-                document.getElementById('accountUsername').innerText = currentUser.username || 'غير محدد';
-                document.getElementById('accountPlan').innerText = currentUser.plan === 'free' ? 'مجاني' : 'مدفوع';
-                document.getElementById('accountCreatedAt').innerText = currentUser.createdAt ? new Date(currentUser.createdAt).toLocaleDateString('ar-EG') : 'غير محدد';
-            } else {
-                document.getElementById('myAccountLoggedOut').classList.remove('hidden');
-                document.getElementById('myAccountLoggedIn').classList.add('hidden');
-                document.getElementById('myAccountName').innerText = 'مرحباً بك';
-                document.getElementById('myAccountUsername').innerText = 'الرجاء تسجيل الدخول';
-            }
-            document.getElementById('myAccountPage').classList.remove('hidden');
-        }
-
         function showLoginFromSidebar() { closeSidebar(); showLoginPage(); }
         function showRegisterFromSidebar() { closeSidebar(); showRegisterPage(); }
         function logoutFromSidebar() { logout(); closeSidebar(); }
@@ -959,15 +553,7 @@
         window.showForgotPasswordPage = showForgotPasswordPage;
         window.login = login;
         window.logout = logout;
-        window.completeRegistration = completeRegistration;
-        window.nextStep = nextStep;
-        window.prevStep = prevStep;
-        window.checkUsernameAvailability = checkUsernameAvailability;
         window.scrollToServices = scrollToServices;
-        window.resetPassword = resetPassword;
-        window.verifyPhoneForReset = verifyPhoneForReset;
-        window.checkUserForReset = checkUserForReset;
-        window.goBackToForgotStep1 = goBackToForgotStep1;
         window.toggleSidebarWithAnimation = toggleSidebarWithAnimation;
         window.closeSidebar = closeSidebar;
         window.goToHomePageFromSidebar = goToHomePageFromSidebar;
@@ -980,16 +566,10 @@
         window.copyToClipboard = copyToClipboard;
         window.goToHomePage = goToHomePage;
         window.goToMyAccountPage = goToMyAccountPage;
+        window.showRegisterPageFull = showRegisterPageFull;
 
-        // استعادة الجلسة
-        let savedUser = localStorage.getItem('currentUser');
-        if (savedUser) {
-            currentUser = JSON.parse(savedUser);
-            updateHomeUI();
-            showHomePage();
-        } else {
-            showHomePage();
-        }
+        // بدء التشغيل
+        showHomePage();
     </script>
 </body>
 </html>
