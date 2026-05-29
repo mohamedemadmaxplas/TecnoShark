@@ -518,7 +518,7 @@
     </div>
 
     <script>
-        // Firebase Configuration
+                // ==================== Firebase Configuration ====================
         const firebaseConfig = {
             apiKey: "AIzaSyAs3U2941_rNArLPpCYjKM9yAVQtiK-oDw",
             authDomain: "nabd-store-1.firebaseapp.com",
@@ -529,269 +529,930 @@
             appId: "1:132078192935:web:2d4bc9e0dfcb407b2a8102"
         };
 
-        // محاولة تهيئة Firebase مع معالجة الأخطاء
-        let db = null;
-        try {
-            firebase.initializeApp(firebaseConfig);
-            db = firebase.database();
-            console.log("✅ Firebase initialized successfully");
-        } catch (error) {
-            console.warn("⚠️ Firebase initialization error:", error);
-            // استمر بدون Firebase للعرض التجريبي
-        }
+        // تهيئة Firebase
+        firebase.initializeApp(firebaseConfig);
+        const db = firebase.database();
 
+        // ==================== المتغيرات العامة ====================
         let currentUser = null;
+        let currentStep = 1;
+        let tempUserData = {};
+        let foundUserForReset = null;
 
+        // ==================== دالة عرض الإشعارات ====================
         function showToast(msg) {
             const toast = document.getElementById('toast');
-            toast.textContent = msg;
-            toast.classList.remove('opacity-0');
-            toast.classList.add('opacity-100');
-            setTimeout(() => {
-                toast.classList.remove('opacity-100');
-                toast.classList.add('opacity-0');
-            }, 3000);
-        }
-        // ==================== دوال نسيت كلمة المرور ====================
-        let foundUserForReset = null;
-        
-        function resetForgotPassword() {
-            document.getElementById('forgotUsername').value = '';
-            document.getElementById('forgotPhone').value = '';
-            document.getElementById('newPassword').value = '';
-            document.getElementById('confirmNewPassword').value = '';
-            document.getElementById('forgotStep1').classList.remove('hidden');
-            document.getElementById('forgotStep2').classList.add('hidden');
-            document.getElementById('forgotStep3').classList.add('hidden');
-            foundUserForReset = null;
-        }
-
-        async function checkUserForReset() {
-            let username = document.getElementById('forgotUsername').value.trim();
-            if (!username) { showToast('الرجاء إدخال اسم المستخدم'); return; }
-            
-            // محاكاة البحث عن المستخدم
-            let user = null;
-            if (currentUser && currentUser.username === username) {
-                user = currentUser;
-            }
-            
-            if (!user) { 
-                showToast('❌ لا يوجد حساب بهذا الاسم'); 
-                return; 
-            }
-            
-            foundUserForReset = user;
-            let phone = user.phone || '';
-            let masked = phone.slice(0, -2).replace(/./g, '*') + phone.slice(-2);
-            document.getElementById('maskedPhone').innerText = masked;
-            document.getElementById('phoneHint').classList.remove('hidden');
-            document.getElementById('forgotStep1').classList.add('hidden');
-            document.getElementById('forgotStep2').classList.remove('hidden');
-        }
-
-        async function verifyPhoneForReset() {
-            let phone = document.getElementById('forgotPhone').value.trim();
-            if (!phone) { showToast('الرجاء إدخال رقم الهاتف'); return; }
-            if (foundUserForReset && foundUserForReset.phone === phone) {
-                document.getElementById('forgotStep2').classList.add('hidden');
-                document.getElementById('forgotStep3').classList.remove('hidden');
-            } else { 
-                showToast('❌ رقم الهاتف غير صحيح'); 
-            }
-        }
-
-        async function resetPassword() {
-            let newPass = document.getElementById('newPassword').value;
-            let confirmPass = document.getElementById('confirmNewPassword').value;
-            if (newPass.length < 6) { showToast('كلمة المرور 6 أحرف على الأقل'); return; }
-            if (newPass !== confirmPass) { showToast('كلمة المرور غير متطابقة'); return; }
-            if (foundUserForReset) {
-                foundUserForReset.password = newPass;
-                if (currentUser && currentUser.username === foundUserForReset.username) {
-                    currentUser.password = newPass;
-                    localStorage.setItem('currentUser', JSON.stringify(currentUser));
-                }
-                showToast('✅ تم تغيير كلمة المرور بنجاح');
-                showLoginPage();
-            }
-        }
-
-        function goBackToForgotStep1() {
-            document.getElementById('forgotStep2').classList.add('hidden');
-            document.getElementById('forgotStep1').classList.remove('hidden');
-        }
-
-        // ==================== تحديث دوال لوحة التحكم ====================
-        function updateDashboardUI() {
-            if (currentUser) {
-                document.getElementById('dashboardUserName').innerText = currentUser.name || currentUser.username;
-                document.getElementById('dashboardFullName').innerText = currentUser.name || 'غير محدد';
-                document.getElementById('dashboardEmail').innerText = currentUser.email || currentUser.username || 'غير محدد';
-                document.getElementById('dashboardPhone').innerText = currentUser.phone || 'غير محدد';
-                document.getElementById('dashboardUsername').innerText = currentUser.username || 'غير محدد';
-                document.getElementById('dashboardPlan').innerText = currentUser.plan === 'free' ? 'مجاني' : 'مدفوع';
-            }
-        }
-        function scrollToServices() {
-            document.getElementById('services').scrollIntoView({ behavior: 'smooth' });
-        }
-
-        function goToHomePage() { showHomePage(); }
-        
-        function goToMyAccountPage() { 
-            if (currentUser) { 
-                showMyAccountPage(); 
-            } else { 
-                showToast('الرجاء تسجيل الدخول أولاً'); 
-                showLoginPage(); 
-            } 
-        }
-
-        function showHomePage() {
-            document.getElementById('homePage').classList.remove('hidden');
-            document.getElementById('loginPage').classList.add('hidden');
-            document.getElementById('registerPage').classList.add('hidden');
-            document.getElementById('forgotPasswordPage').classList.add('hidden');
-            document.getElementById('dashboardPage').classList.add('hidden');
-            document.getElementById('aboutPage').classList.add('hidden');
-            document.getElementById('myAccountPage').classList.add('hidden');
-            updateHomeUI();
-        }
-
-        function showLoginPage() {
-            document.getElementById('homePage').classList.add('hidden');
-            document.getElementById('loginPage').classList.remove('hidden');
-            document.getElementById('registerPage').classList.add('hidden');
-            document.getElementById('forgotPasswordPage').classList.add('hidden');
-            document.getElementById('dashboardPage').classList.add('hidden');
-            document.getElementById('aboutPage').classList.add('hidden');
-            document.getElementById('myAccountPage').classList.add('hidden');
-            updateSidebarUI();
-        }
-
-        function showRegisterPage() {
-            document.getElementById('homePage').classList.add('hidden');
-            document.getElementById('loginPage').classList.add('hidden');
-            document.getElementById('registerPage').classList.remove('hidden');
-            document.getElementById('forgotPasswordPage').classList.add('hidden');
-            document.getElementById('dashboardPage').classList.add('hidden');
-            document.getElementById('aboutPage').classList.add('hidden');
-            document.getElementById('myAccountPage').classList.add('hidden');
-            updateSidebarUI();
-        }
-
-        function showRegisterPageFull() {
-            // يمكنك إضافة نموذج التسجيل الكامل هنا
-            showToast('جاري تحميل نموذج التسجيل...');
-        }
-
-        function showForgotPasswordPage() {
-            document.getElementById('homePage').classList.add('hidden');
-            document.getElementById('loginPage').classList.add('hidden');
-            document.getElementById('registerPage').classList.add('hidden');
-            document.getElementById('forgotPasswordPage').classList.remove('hidden');
-            document.getElementById('dashboardPage').classList.add('hidden');
-            document.getElementById('aboutPage').classList.add('hidden');
-            document.getElementById('myAccountPage').classList.add('hidden');
-        }
-
-        function showDashboard() {
-            document.getElementById('homePage').classList.add('hidden');
-            document.getElementById('loginPage').classList.add('hidden');
-            document.getElementById('registerPage').classList.add('hidden');
-            document.getElementById('forgotPasswordPage').classList.add('hidden');
-            document.getElementById('aboutPage').classList.add('hidden');
-            document.getElementById('myAccountPage').classList.add('hidden');
-            document.getElementById('dashboardPage').classList.remove('hidden');
-            updateDashboardUI();
-            updateSidebarUI();
-        }
-
-        function showMyAccountPage() {
-            document.getElementById('homePage').classList.add('hidden');
-            document.getElementById('loginPage').classList.add('hidden');
-            document.getElementById('registerPage').classList.add('hidden');
-            document.getElementById('forgotPasswordPage').classList.add('hidden');
-            document.getElementById('dashboardPage').classList.add('hidden');
-            document.getElementById('aboutPage').classList.add('hidden');
-            
-            if (currentUser) {
-                document.getElementById('myAccountLoggedOut').classList.add('hidden');
-                document.getElementById('myAccountLoggedIn').classList.remove('hidden');
-                document.getElementById('myAccountName').innerText = `مرحباً ${currentUser.name || 'مستخدم'}`;
-                document.getElementById('myAccountUsername').innerText = currentUser.username || '';
-                document.getElementById('accountFullName').innerText = currentUser.name || 'غير محدد';
-                document.getElementById('accountEmail').innerText = currentUser.email || currentUser.username || 'غير محدد';
-                document.getElementById('accountPhone').innerText = currentUser.phone || 'غير محدد';
-                document.getElementById('accountUsername').innerText = currentUser.username || 'غير محدد';
-                document.getElementById('accountPlan').innerText = currentUser.plan === 'free' ? 'مجاني' : 'مدفوع';
-                document.getElementById('accountCreatedAt').innerText = currentUser.createdAt ? new Date(currentUser.createdAt).toLocaleDateString('ar-EG') : 'غير محدد';
+            if (toast) {
+                toast.textContent = msg;
+                toast.classList.remove('opacity-0');
+                toast.classList.add('opacity-100');
+                setTimeout(() => {
+                    toast.classList.remove('opacity-100');
+                    toast.classList.add('opacity-0');
+                }, 3000);
             } else {
-                document.getElementById('myAccountLoggedOut').classList.remove('hidden');
-                document.getElementById('myAccountLoggedIn').classList.add('hidden');
-                document.getElementById('myAccountName').innerText = 'مرحباً بك';
-                document.getElementById('myAccountUsername').innerText = 'الرجاء تسجيل الدخول';
+                alert(msg);
             }
-            document.getElementById('myAccountPage').classList.remove('hidden');
         }
 
+    // ==================== إعادة تعريف الدوال المفقودة بشكل صريح ====================
+    
+    // دوال إنشاء الحساب
+    window.nextStep = async function(step) {
+        console.log('nextStep called with step:', step);
+        
+        if (step === 2) {
+            const firstName = document.getElementById('firstName')?.value.trim();
+            const lastName = document.getElementById('lastName')?.value.trim();
+            if (!firstName || !lastName) {
+                showToast('الرجاء إدخال الاسم الأول والاسم الأخير');
+                return;
+            }
+            window.tempUserData = window.tempUserData || {};
+            window.tempUserData.firstName = firstName;
+            window.tempUserData.lastName = lastName;
+        }
+        else if (step === 3) {
+            const phone = document.getElementById('phoneNumber')?.value.trim();
+            if (!phone || phone.length < 10) {
+                showToast('الرجاء إدخال رقم هاتف صحيح');
+                return;
+            }
+            window.tempUserData = window.tempUserData || {};
+            window.tempUserData.phone = phone;
+        }
+        else if (step === 4) {
+            const username = document.getElementById('username')?.value.trim();
+            if (!username) {
+                showToast('الرجاء إدخال اسم المستخدم');
+                return;
+            }
+            const fullUsername = normalizeUsername(username);
+            const exists = await isUsernameTaken(fullUsername);
+            if (exists) {
+                showToast('اسم المستخدم موجود بالفعل');
+                return;
+            }
+            window.tempUserData = window.tempUserData || {};
+            window.tempUserData.username = fullUsername;
+            const usernameInput = document.getElementById('username');
+            if (usernameInput) usernameInput.value = extractBaseUsername(fullUsername);
+        }
+        else if (step === 5) {
+            const password = document.getElementById('password')?.value;
+            const confirm = document.getElementById('confirmPassword')?.value;
+            if (password.length < 6) {
+                showToast('كلمة المرور 6 أحرف على الأقل');
+                return;
+            }
+            if (password !== confirm) {
+                showToast('كلمة المرور غير متطابقة');
+                return;
+            }
+            window.tempUserData = window.tempUserData || {};
+            window.tempUserData.password = password;
+        }
+        
+        // إظهار الخطوة التالية
+        for (let i = 1; i <= 5; i++) {
+            const el = document.getElementById(`step${i}`);
+            if (el) el.classList.add('hidden');
+        }
+        const nextStepEl = document.getElementById(`step${step}`);
+        if (nextStepEl) nextStepEl.classList.remove('hidden');
+        
+        const percent = (step / 5) * 100;
+        const progressBar = document.getElementById('progressBar');
+        const stepLabel = document.getElementById('stepLabel');
+        const stepPercent = document.getElementById('stepPercent');
+        if (progressBar) progressBar.style.width = `${percent}%`;
+        if (stepLabel) stepLabel.innerText = `الخطوة ${step} من 5`;
+        if (stepPercent) stepPercent.innerText = `${percent}%`;
+        window.currentStep = step;
+    };
+
+    window.prevStep = function(step) {
+        for (let i = 1; i <= 5; i++) {
+            const el = document.getElementById(`step${i}`);
+            if (el) el.classList.add('hidden');
+        }
+        const prevStepEl = document.getElementById(`step${step}`);
+        if (prevStepEl) prevStepEl.classList.remove('hidden');
+        
+        const percent = (step / 5) * 100;
+        const progressBar = document.getElementById('progressBar');
+        const stepLabel = document.getElementById('stepLabel');
+        const stepPercent = document.getElementById('stepPercent');
+        if (progressBar) progressBar.style.width = `${percent}%`;
+        if (stepLabel) stepLabel.innerText = `الخطوة ${step} من 5`;
+        if (stepPercent) stepPercent.innerText = `${percent}%`;
+        window.currentStep = step;
+    };
+
+    window.completeRegistration = async function() {
+        const agree = document.getElementById('agreeTerms')?.checked;
+        if (!agree) {
+            showToast('الرجاء الموافقة على الشروط');
+            return;
+        }
+        
+        if (!window.tempUserData || !window.tempUserData.firstName || !window.tempUserData.lastName || !window.tempUserData.phone || !window.tempUserData.username || !window.tempUserData.password) {
+            showToast('الرجاء إكمال جميع الخطوات');
+            return;
+        }
+        
+        const newUid = 'user_' + Date.now() + '_' + Math.random().toString(36).substring(2, 8);
+        const fullName = `${window.tempUserData.firstName} ${window.tempUserData.lastName}`;
+        const newUser = {
+            name: fullName,
+            phone: window.tempUserData.phone,
+            username: window.tempUserData.username,
+            email: window.tempUserData.username,
+            password: window.tempUserData.password,
+            plan: 'free',
+            createdAt: new Date().toISOString(),
+            lastLogin: new Date().toISOString()
+        };
+        
+        try {
+            await db.ref(`users/${newUid}`).set(newUser);
+            showToast('✅ تم إنشاء الحساب بنجاح');
+            window.currentUser = { uid: newUid, ...newUser };
+            localStorage.setItem('currentUser', JSON.stringify(window.currentUser));
+            showDashboard();
+        } catch (error) {
+            console.error('خطأ:', error);
+            showToast('❌ حدث خطأ في إنشاء الحساب');
+        }
+    };
+
+    window.checkUsernameAvailability = async function() {
+        const username = document.getElementById('username')?.value.trim();
+        const statusDiv = document.getElementById('usernameStatus');
+        const suggestionsBox = document.getElementById('suggestionsBox');
+        
+        if (!username) {
+            if (statusDiv) statusDiv.innerHTML = '';
+            if (suggestionsBox) suggestionsBox.classList.add('hidden');
+            return;
+        }
+        
+        const fullUsername = normalizeUsername(username);
+        let exists = false;
+        try {
+            const snapshot = await db.ref('users').once('value');
+            const users = snapshot.val();
+            if (users) {
+                for (let uid in users) {
+                    if (users[uid].username === fullUsername) {
+                        exists = true;
+                        break;
+                    }
+                }
+            }
+        } catch (error) {
+            console.error('خطأ:', error);
+        }
+        
+        if (exists) {
+            if (statusDiv) statusDiv.innerHTML = '<span class="text-red-600">❌ غير متاح</span>';
+            if (suggestionsBox) suggestionsBox.classList.remove('hidden');
+            // اقتراحات
+            const suggestions = [];
+            for (let i = 1; i <= 5; i++) {
+                suggestions.push(`${username}${i}`);
+            }
+            const list = document.getElementById('suggestionsList');
+            if (list) {
+                list.innerHTML = suggestions.map(s => `<span onclick="document.getElementById('username').value='${s}'; checkUsernameAvailability();" class="suggestion-item bg-gray-100 px-3 py-1 rounded-full text-sm cursor-pointer hover:bg-blue-100">${s}</span>`).join('');
+            }
+        } else {
+            if (statusDiv) statusDiv.innerHTML = '<span class="text-green-600">✅ متاح</span>';
+            if (suggestionsBox) suggestionsBox.classList.add('hidden');
+        }
+    };
+
+    // إعادة تعريف showToast إذا لم تكن موجودة
+    if (typeof window.showToast !== 'function') {
+        window.showToast = function(msg) {
+            const toast = document.getElementById('toast');
+            if (toast) {
+                toast.textContent = msg;
+                toast.classList.remove('opacity-0');
+                toast.classList.add('opacity-100');
+                setTimeout(() => {
+                    toast.classList.remove('opacity-100');
+                    toast.classList.add('opacity-0');
+                }, 3000);
+            } else {
+                alert(msg);
+            }
+        };
+    }
+
+    // إعادة تعريف normalizeUsername
+    if (typeof window.normalizeUsername !== 'function') {
+        window.normalizeUsername = function(input) {
+            let username = input.trim().toLowerCase();
+            if (username.includes('@tecno.shark')) return username;
+            if (username.includes('@')) {
+                let parts = username.split('@');
+                return `${parts[0]}@tecno.shark`;
+            }
+            return `${username}@tecno.shark`;
+        };
+    }
+
+    // إعادة تعريف extractBaseUsername
+    if (typeof window.extractBaseUsername !== 'function') {
+        window.extractBaseUsername = function(fullUsername) {
+            return fullUsername.split('@')[0];
+        };
+    }
+
+    console.log('✅ جميع الدوال تم تحميلها بنجاح');
+
+        // ==================== دالة التمرير للخدمات ====================
+        function scrollToServices() {
+            const services = document.getElementById('services');
+            if (services) services.scrollIntoView({ behavior: 'smooth' });
+        }
+
+        // ==================== دوال معالجة اسم المستخدم ====================
+        function normalizeUsername(input) {
+            let username = input.trim().toLowerCase();
+            if (username.includes('@tecno.shark')) return username;
+            if (username.includes('@')) {
+                let parts = username.split('@');
+                return `${parts[0]}@tecno.shark`;
+            }
+            return `${username}@tecno.shark`;
+        }
+
+        function extractBaseUsername(fullUsername) {
+            return fullUsername.split('@')[0];
+        }
+
+        // ==================== دوال Firebase الأساسية ====================
+        
+        // حفظ مستخدم جديد في Firebase
+        async function saveUserToFirebase(userData, uid) {
+            try {
+                await db.ref(`users/${uid}`).set(userData);
+                console.log('✅ تم حفظ المستخدم في Firebase');
+                return true;
+            } catch (error) {
+                console.error('❌ خطأ في حفظ المستخدم:', error);
+                showToast('خطأ في الاتصال بقاعدة البيانات');
+                return false;
+            }
+        }
+
+        // جلب جميع المستخدمين من Firebase
+        async function getAllUsersFromFirebase() {
+            try {
+                const snapshot = await db.ref('users').once('value');
+                return snapshot.val();
+            } catch (error) {
+                console.error('❌ خطأ في جلب المستخدمين:', error);
+                return null;
+            }
+        }
+
+        // البحث عن مستخدم بواسطة اسم المستخدم
+        async function findUserByUsername(username) {
+            username = normalizeUsername(username);
+            try {
+                const snapshot = await db.ref('users').once('value');
+                const users = snapshot.val();
+                if (users) {
+                    for (let uid in users) {
+                        if (users[uid].username === username) {
+                            return { uid, ...users[uid] };
+                        }
+                    }
+                }
+                return null;
+            } catch (error) {
+                console.error('خطأ في البحث:', error);
+                return null;
+            }
+        }
+
+        // البحث عن مستخدم بواسطة الهاتف
+        async function findUserByPhone(phone) {
+            try {
+                const snapshot = await db.ref('users').once('value');
+                const users = snapshot.val();
+                if (users) {
+                    for (let uid in users) {
+                        if (users[uid].phone === phone) {
+                            return { uid, ...users[uid] };
+                        }
+                    }
+                }
+                return null;
+            } catch (error) {
+                console.error('خطأ في البحث:', error);
+                return null;
+            }
+        }
+
+        // التحقق من وجود اسم المستخدم
+        async function isUsernameTaken(username) {
+            try {
+                const snapshot = await db.ref('users').once('value');
+                const users = snapshot.val();
+                if (users) {
+                    for (let uid in users) {
+                        if (users[uid].username === username) return true;
+                    }
+                }
+                return false;
+            } catch (error) {
+                console.error('خطأ:', error);
+                return false;
+            }
+        }
+
+        // التحقق من وجود رقم الهاتف
+        async function isPhoneTaken(phone) {
+            try {
+                const snapshot = await db.ref('users').once('value');
+                const users = snapshot.val();
+                if (users) {
+                    for (let uid in users) {
+                        if (users[uid].phone === phone) return true;
+                    }
+                }
+                return false;
+            } catch (error) {
+                console.error('خطأ:', error);
+                return false;
+            }
+        }
+
+        // تسجيل الدخول
+        async function loginUser(identifier, password) {
+            try {
+                const snapshot = await db.ref('users').once('value');
+                const users = snapshot.val();
+                if (users) {
+                    for (let uid in users) {
+                        const user = users[uid];
+                        if ((user.username === identifier || user.email === identifier || user.phone === identifier) && user.password === password) {
+                            return { uid, ...user };
+                        }
+                    }
+                }
+                return null;
+            } catch (error) {
+                console.error('خطأ في تسجيل الدخول:', error);
+                return null;
+            }
+        }
+
+        // تحديث كلمة المرور في Firebase
+        async function updatePasswordInFirebase(uid, newPassword) {
+            try {
+                await db.ref(`users/${uid}/password`).set(newPassword);
+                console.log('✅ تم تحديث كلمة المرور في Firebase');
+                return true;
+            } catch (error) {
+                console.error('❌ خطأ في تحديث كلمة المرور:', error);
+                return false;
+            }
+        }
+
+        // تحديث بيانات المستخدم في Firebase
+        async function updateUserInFirebase(uid, userData) {
+            try {
+                await db.ref(`users/${uid}`).update(userData);
+                console.log('✅ تم تحديث بيانات المستخدم في Firebase');
+                return true;
+            } catch (error) {
+                console.error('❌ خطأ في تحديث البيانات:', error);
+                return false;
+            }
+        }
+
+        // حذف مستخدم من Firebase
+        async function deleteUserFromFirebase(uid) {
+            try {
+                await db.ref(`users/${uid}`).remove();
+                console.log('✅ تم حذف المستخدم من Firebase');
+                return true;
+            } catch (error) {
+                console.error('❌ خطأ في حذف المستخدم:', error);
+                return false;
+            }
+        }
+
+        // ==================== دوال إنشاء حساب (5 خطوات) ====================
+        function resetRegistration() {
+            currentStep = 1;
+            tempUserData = {};
+            
+            const firstName = document.getElementById('firstName');
+            const lastName = document.getElementById('lastName');
+            const phoneNumber = document.getElementById('phoneNumber');
+            const username = document.getElementById('username');
+            const password = document.getElementById('password');
+            const confirmPassword = document.getElementById('confirmPassword');
+            const agreeTerms = document.getElementById('agreeTerms');
+            
+            if (firstName) firstName.value = '';
+            if (lastName) lastName.value = '';
+            if (phoneNumber) phoneNumber.value = '';
+            if (username) username.value = '';
+            if (password) password.value = '';
+            if (confirmPassword) confirmPassword.value = '';
+            if (agreeTerms) agreeTerms.checked = false;
+            
+            showStep(1);
+        }
+
+        function showStep(step) {
+            for (let i = 1; i <= 5; i++) {
+                const el = document.getElementById(`step${i}`);
+                if (el) el.classList.add('hidden');
+            }
+            
+            const currentStepEl = document.getElementById(`step${step}`);
+            if (currentStepEl) currentStepEl.classList.remove('hidden');
+            
+            const percent = (step / 5) * 100;
+            const progressBar = document.getElementById('progressBar');
+            const stepLabel = document.getElementById('stepLabel');
+            const stepPercent = document.getElementById('stepPercent');
+            
+            if (progressBar) progressBar.style.width = `${percent}%`;
+            if (stepLabel) stepLabel.innerText = `الخطوة ${step} من 5`;
+            if (stepPercent) stepPercent.innerText = `${percent}%`;
+            
+            currentStep = step;
+        }
+
+        async function nextStep(step) {
+            if (step === 2) {
+                const firstName = document.getElementById('firstName').value.trim();
+                const lastName = document.getElementById('lastName').value.trim();
+                if (!firstName || !lastName) {
+                    showToast('الرجاء إدخال الاسم الأول والاسم الأخير');
+                    return;
+                }
+                tempUserData.firstName = firstName;
+                tempUserData.lastName = lastName;
+            }
+            else if (step === 3) {
+                const phone = document.getElementById('phoneNumber').value.trim();
+                if (!phone || phone.length < 10) {
+                    showToast('الرجاء إدخال رقم هاتف صحيح');
+                    return;
+                }
+                const phoneExists = await isPhoneTaken(phone);
+                if (phoneExists) {
+                    showToast('رقم الهاتف مسجل بالفعل');
+                    return;
+                }
+                tempUserData.phone = phone;
+            }
+            else if (step === 4) {
+                const username = document.getElementById('username').value.trim();
+                if (!username) {
+                    showToast('الرجاء إدخال اسم المستخدم');
+                    return;
+                }
+                const fullUsername = normalizeUsername(username);
+                const exists = await isUsernameTaken(fullUsername);
+                if (exists) {
+                    showToast('اسم المستخدم موجود بالفعل');
+                    return;
+                }
+                tempUserData.username = fullUsername;
+                document.getElementById('username').value = extractBaseUsername(fullUsername);
+            }
+            else if (step === 5) {
+                const password = document.getElementById('password').value;
+                const confirm = document.getElementById('confirmPassword').value;
+                if (password.length < 6) {
+                    showToast('كلمة المرور 6 أحرف على الأقل');
+                    return;
+                }
+                if (password !== confirm) {
+                    showToast('كلمة المرور غير متطابقة');
+                    return;
+                }
+                tempUserData.password = password;
+            }
+            showStep(step);
+        }
+
+        function prevStep(step) {
+            showStep(step);
+        }
+
+        async function completeRegistration() {
+            const agree = document.getElementById('agreeTerms').checked;
+            if (!agree) {
+                showToast('الرجاء الموافقة على الشروط');
+                return;
+            }
+            
+            const newUid = 'user_' + Date.now() + '_' + Math.random().toString(36).substring(2, 8);
+            const fullName = `${tempUserData.firstName} ${tempUserData.lastName}`;
+            const newUser = {
+                name: fullName,
+                phone: tempUserData.phone,
+                username: tempUserData.username,
+                email: tempUserData.username,
+                password: tempUserData.password,
+                plan: 'free',
+                createdAt: new Date().toISOString(),
+                lastLogin: new Date().toISOString()
+            };
+            
+            const saved = await saveUserToFirebase(newUser, newUid);
+            if (saved) {
+                currentUser = { uid: newUid, ...newUser };
+                localStorage.setItem('currentUser', JSON.stringify(currentUser));
+                showToast('✅ تم إنشاء الحساب بنجاح');
+                showDashboard();
+            } else {
+                showToast('❌ حدث خطأ في إنشاء الحساب');
+            }
+        }
+
+        async function checkUsernameAvailability() {
+            const username = document.getElementById('username').value.trim();
+            const statusDiv = document.getElementById('usernameStatus');
+            const suggestionsBox = document.getElementById('suggestionsBox');
+            
+            if (!username) {
+                if (statusDiv) statusDiv.innerHTML = '';
+                if (suggestionsBox) suggestionsBox.classList.add('hidden');
+                return;
+            }
+            
+            const fullUsername = normalizeUsername(username);
+            const exists = await isUsernameTaken(fullUsername);
+            
+            if (exists) {
+                if (statusDiv) statusDiv.innerHTML = '<span class="text-red-600">❌ غير متاح</span>';
+                if (suggestionsBox) suggestionsBox.classList.remove('hidden');
+                await generateSuggestions(username);
+            } else {
+                if (statusDiv) statusDiv.innerHTML = '<span class="text-green-600">✅ متاح</span>';
+                if (suggestionsBox) suggestionsBox.classList.add('hidden');
+            }
+        }
+
+        async function generateSuggestions(base) {
+            const suggestions = [];
+            for (let i = 1; i <= 5; i++) {
+                const suggestion = normalizeUsername(`${base}${i}`);
+                if (!await isUsernameTaken(suggestion)) {
+                    suggestions.push(extractBaseUsername(suggestion));
+                }
+            }
+            const list = document.getElementById('suggestionsList');
+            if (list) {
+                list.innerHTML = suggestions.map(s => `<span onclick="document.getElementById('username').value='${s}'; checkUsernameAvailability();" class="suggestion-item bg-gray-100 px-3 py-1 rounded-full text-sm cursor-pointer hover:bg-blue-100">${s}</span>`).join('');
+            }
+        }
+
+        // ==================== دوال تسجيل الدخول ====================
         async function login() {
-            let username = document.getElementById('loginUsername').value.trim();
-            let password = document.getElementById('loginPassword').value;
-            if (!username || !password) {
+            let identifier = document.getElementById('loginUsername').value.trim();
+            const password = document.getElementById('loginPassword').value;
+            
+            if (!identifier || !password) {
                 showToast('الرجاء إدخال جميع البيانات');
                 return;
             }
             
-            // محاكاة تسجيل الدخول للعرض التجريبي
-            showToast('✅ تم تسجيل الدخول بنجاح (تجريبي)');
-            currentUser = { name: 'مستخدم تجريبي', username: username, email: username, phone: '01123456789', plan: 'free', createdAt: new Date().toISOString() };
-            updateHomeUI();
-            showDashboard();
+            if (!identifier.includes('@')) identifier = normalizeUsername(identifier);
+            
+            const result = await loginUser(identifier, password);
+            
+            if (result) {
+                currentUser = result;
+                localStorage.setItem('currentUser', JSON.stringify(currentUser));
+                await updateUserInFirebase(result.uid, { lastLogin: new Date().toISOString() });
+                showToast(`✅ مرحباً ${currentUser.name}`);
+                showDashboard();
+            } else {
+                showToast('❌ اسم المستخدم أو كلمة المرور غير صحيحة');
+            }
         }
 
+        // ==================== دوال نسيت كلمة المرور ====================
+        function resetForgotPassword() {
+            const forgotUsername = document.getElementById('forgotUsername');
+            const forgotPhone = document.getElementById('forgotPhone');
+            const newPassword = document.getElementById('newPassword');
+            const confirmNewPassword = document.getElementById('confirmNewPassword');
+            
+            if (forgotUsername) forgotUsername.value = '';
+            if (forgotPhone) forgotPhone.value = '';
+            if (newPassword) newPassword.value = '';
+            if (confirmNewPassword) confirmNewPassword.value = '';
+            
+            const forgotStep1 = document.getElementById('forgotStep1');
+            const forgotStep2 = document.getElementById('forgotStep2');
+            const forgotStep3 = document.getElementById('forgotStep3');
+            
+            if (forgotStep1) forgotStep1.classList.remove('hidden');
+            if (forgotStep2) forgotStep2.classList.add('hidden');
+            if (forgotStep3) forgotStep3.classList.add('hidden');
+            
+            foundUserForReset = null;
+        }
+
+        async function checkUserForReset() {
+            const username = document.getElementById('forgotUsername').value.trim();
+            if (!username) {
+                showToast('الرجاء إدخال اسم المستخدم');
+                return;
+            }
+            
+            const user = await findUserByUsername(username);
+            
+            if (!user) {
+                showToast('❌ لا يوجد حساب بهذا الاسم');
+                return;
+            }
+            
+            foundUserForReset = user;
+            const phone = user.phone || '';
+            const masked = phone.slice(0, -2).replace(/./g, '*') + phone.slice(-2);
+            
+            const maskedPhoneSpan = document.getElementById('maskedPhone');
+            const phoneHint = document.getElementById('phoneHint');
+            const forgotStep1 = document.getElementById('forgotStep1');
+            const forgotStep2 = document.getElementById('forgotStep2');
+            
+            if (maskedPhoneSpan) maskedPhoneSpan.innerText = masked;
+            if (phoneHint) phoneHint.classList.remove('hidden');
+            if (forgotStep1) forgotStep1.classList.add('hidden');
+            if (forgotStep2) forgotStep2.classList.remove('hidden');
+        }
+
+        async function verifyPhoneForReset() {
+            const phone = document.getElementById('forgotPhone').value.trim();
+            if (!phone) {
+                showToast('الرجاء إدخال رقم الهاتف');
+                return;
+            }
+            
+            if (foundUserForReset && foundUserForReset.phone === phone) {
+                const forgotStep2 = document.getElementById('forgotStep2');
+                const forgotStep3 = document.getElementById('forgotStep3');
+                
+                if (forgotStep2) forgotStep2.classList.add('hidden');
+                if (forgotStep3) forgotStep3.classList.remove('hidden');
+            } else {
+                showToast('❌ رقم الهاتف غير صحيح');
+            }
+        }
+
+        async function resetPassword() {
+            const newPass = document.getElementById('newPassword').value;
+            const confirmPass = document.getElementById('confirmNewPassword').value;
+            
+            if (newPass.length < 6) {
+                showToast('كلمة المرور 6 أحرف على الأقل');
+                return;
+            }
+            if (newPass !== confirmPass) {
+                showToast('كلمة المرور غير متطابقة');
+                return;
+            }
+            
+            if (foundUserForReset) {
+                const updated = await updatePasswordInFirebase(foundUserForReset.uid, newPass);
+                if (updated) {
+                    if (currentUser && currentUser.uid === foundUserForReset.uid) {
+                        currentUser.password = newPass;
+                        localStorage.setItem('currentUser', JSON.stringify(currentUser));
+                    }
+                    showToast('✅ تم تغيير كلمة المرور بنجاح');
+                    showLoginPage();
+                } else {
+                    showToast('❌ حدث خطأ في تغيير كلمة المرور');
+                }
+            }
+        }
+
+        function goBackToForgotStep1() {
+            const forgotStep2 = document.getElementById('forgotStep2');
+            const forgotStep1 = document.getElementById('forgotStep1');
+            
+            if (forgotStep2) forgotStep2.classList.add('hidden');
+            if (forgotStep1) forgotStep1.classList.remove('hidden');
+        }
+
+        // ==================== دوال تسجيل الخروج ====================
         function logout() {
             currentUser = null;
+            localStorage.removeItem('currentUser');
             showHomePage();
             showToast('تم تسجيل الخروج');
             updateSidebarUI();
         }
 
-        function updateHomeUI() {
-            let loginArea = document.getElementById('loginBtnAreaHome');
-            let userArea = document.getElementById('userAreaHome');
-            let userInitial = document.getElementById('userInitialHome');
-            let userName = document.getElementById('userNameHome');
+        // ==================== دوال التنقل بين الصفحات ====================
+        function goToHomePage() {
+            showHomePage();
+        }
+
+        function goToMyAccountPage() {
             if (currentUser) {
-                loginArea.classList.add('hidden');
-                userArea.classList.remove('hidden');
-                userInitial.innerText = (currentUser.name || 'U').charAt(0).toUpperCase();
-                userName.innerText = currentUser.name || currentUser.username;
+                showMyAccountPage();
             } else {
-                loginArea.classList.remove('hidden');
-                userArea.classList.add('hidden');
+                showToast('الرجاء تسجيل الدخول أولاً');
+                showLoginPage();
+            }
+        }
+
+        function showHomePage() {
+            const pages = ['homePage', 'loginPage', 'registerPage', 'forgotPasswordPage', 'dashboardPage', 'aboutPage', 'myAccountPage'];
+            pages.forEach(page => {
+                const el = document.getElementById(page);
+                if (el) el.classList.add('hidden');
+            });
+            const homePage = document.getElementById('homePage');
+            if (homePage) homePage.classList.remove('hidden');
+            updateHomeUI();
+        }
+
+        function showLoginPage() {
+            const pages = ['homePage', 'loginPage', 'registerPage', 'forgotPasswordPage', 'dashboardPage', 'aboutPage', 'myAccountPage'];
+            pages.forEach(page => {
+                const el = document.getElementById(page);
+                if (el) el.classList.add('hidden');
+            });
+            const loginPage = document.getElementById('loginPage');
+            if (loginPage) loginPage.classList.remove('hidden');
+            
+            const loginUsername = document.getElementById('loginUsername');
+            const loginPassword = document.getElementById('loginPassword');
+            if (loginUsername) loginUsername.value = '';
+            if (loginPassword) loginPassword.value = '';
+            
+            updateSidebarUI();
+        }
+
+        function showRegisterPage() {
+            const pages = ['homePage', 'loginPage', 'registerPage', 'forgotPasswordPage', 'dashboardPage', 'aboutPage', 'myAccountPage'];
+            pages.forEach(page => {
+                const el = document.getElementById(page);
+                if (el) el.classList.add('hidden');
+            });
+            const registerPage = document.getElementById('registerPage');
+            if (registerPage) registerPage.classList.remove('hidden');
+            
+            resetRegistration();
+            updateSidebarUI();
+        }
+
+        function showForgotPasswordPage() {
+            const pages = ['homePage', 'loginPage', 'registerPage', 'forgotPasswordPage', 'dashboardPage', 'aboutPage', 'myAccountPage'];
+            pages.forEach(page => {
+                const el = document.getElementById(page);
+                if (el) el.classList.add('hidden');
+            });
+            const forgotPasswordPage = document.getElementById('forgotPasswordPage');
+            if (forgotPasswordPage) forgotPasswordPage.classList.remove('hidden');
+            
+            resetForgotPassword();
+        }
+
+        function showDashboard() {
+            const pages = ['homePage', 'loginPage', 'registerPage', 'forgotPasswordPage', 'dashboardPage', 'aboutPage', 'myAccountPage'];
+            pages.forEach(page => {
+                const el = document.getElementById(page);
+                if (el) el.classList.add('hidden');
+            });
+            const dashboardPage = document.getElementById('dashboardPage');
+            if (dashboardPage) dashboardPage.classList.remove('hidden');
+            
+            updateDashboardUI();
+            updateSidebarUI();
+        }
+
+        function showAboutPage() {
+            const pages = ['homePage', 'loginPage', 'registerPage', 'forgotPasswordPage', 'dashboardPage', 'aboutPage', 'myAccountPage'];
+            pages.forEach(page => {
+                const el = document.getElementById(page);
+                if (el) el.classList.add('hidden');
+            });
+            const aboutPage = document.getElementById('aboutPage');
+            if (aboutPage) aboutPage.classList.remove('hidden');
+        }
+
+        function showMyAccountPage() {
+            const pages = ['homePage', 'loginPage', 'registerPage', 'forgotPasswordPage', 'dashboardPage', 'aboutPage', 'myAccountPage'];
+            pages.forEach(page => {
+                const el = document.getElementById(page);
+                if (el) el.classList.add('hidden');
+            });
+            
+            if (currentUser) {
+                const myAccountLoggedOut = document.getElementById('myAccountLoggedOut');
+                const myAccountLoggedIn = document.getElementById('myAccountLoggedIn');
+                const myAccountName = document.getElementById('myAccountName');
+                const myAccountUsername = document.getElementById('myAccountUsername');
+                const accountFullName = document.getElementById('accountFullName');
+                const accountEmail = document.getElementById('accountEmail');
+                const accountPhone = document.getElementById('accountPhone');
+                const accountUsername = document.getElementById('accountUsername');
+                const accountPlan = document.getElementById('accountPlan');
+                const accountCreatedAt = document.getElementById('accountCreatedAt');
+                
+                if (myAccountLoggedOut) myAccountLoggedOut.classList.add('hidden');
+                if (myAccountLoggedIn) myAccountLoggedIn.classList.remove('hidden');
+                if (myAccountName) myAccountName.innerText = `مرحباً ${currentUser.name || 'مستخدم'}`;
+                if (myAccountUsername) myAccountUsername.innerText = currentUser.username || '';
+                if (accountFullName) accountFullName.innerText = currentUser.name || 'غير محدد';
+                if (accountEmail) accountEmail.innerText = currentUser.email || currentUser.username || 'غير محدد';
+                if (accountPhone) accountPhone.innerText = currentUser.phone || 'غير محدد';
+                if (accountUsername) accountUsername.innerText = currentUser.username || 'غير محدد';
+                if (accountPlan) accountPlan.innerText = currentUser.plan === 'free' ? 'مجاني' : 'مدفوع';
+                if (accountCreatedAt) accountCreatedAt.innerText = currentUser.createdAt ? new Date(currentUser.createdAt).toLocaleDateString('ar-EG') : 'غير محدد';
+            } else {
+                const myAccountLoggedOut = document.getElementById('myAccountLoggedOut');
+                const myAccountLoggedIn = document.getElementById('myAccountLoggedIn');
+                const myAccountName = document.getElementById('myAccountName');
+                const myAccountUsername = document.getElementById('myAccountUsername');
+                
+                if (myAccountLoggedOut) myAccountLoggedOut.classList.remove('hidden');
+                if (myAccountLoggedIn) myAccountLoggedIn.classList.add('hidden');
+                if (myAccountName) myAccountName.innerText = 'مرحباً بك';
+                if (myAccountUsername) myAccountUsername.innerText = 'الرجاء تسجيل الدخول';
+            }
+            
+            const myAccountPage = document.getElementById('myAccountPage');
+            if (myAccountPage) myAccountPage.classList.remove('hidden');
+        }
+
+        // ==================== دوال تحديث واجهة المستخدم ====================
+        function updateHomeUI() {
+            const loginArea = document.getElementById('loginBtnAreaHome');
+            const userArea = document.getElementById('userAreaHome');
+            const userInitial = document.getElementById('userInitialHome');
+            const userName = document.getElementById('userNameHome');
+            
+            if (currentUser) {
+                if (loginArea) loginArea.classList.add('hidden');
+                if (userArea) userArea.classList.remove('hidden');
+                if (userInitial) userInitial.innerText = (currentUser.name || 'U').charAt(0).toUpperCase();
+                if (userName) userName.innerText = currentUser.name || currentUser.username;
+            } else {
+                if (loginArea) loginArea.classList.remove('hidden');
+                if (userArea) userArea.classList.add('hidden');
             }
             updateSidebarUI();
         }
 
         function updateDashboardUI() {
             if (currentUser) {
-                document.getElementById('dashboardUserName').innerText = currentUser.name || currentUser.username;
+                const dashboardUserName = document.getElementById('dashboardUserName');
+                const dashboardFullName = document.getElementById('dashboardFullName');
+                const dashboardEmail = document.getElementById('dashboardEmail');
+                const dashboardPhone = document.getElementById('dashboardPhone');
+                const dashboardUsername = document.getElementById('dashboardUsername');
+                const dashboardPlan = document.getElementById('dashboardPlan');
+                
+                if (dashboardUserName) dashboardUserName.innerText = currentUser.name || currentUser.username;
+                if (dashboardFullName) dashboardFullName.innerText = currentUser.name || 'غير محدد';
+                if (dashboardEmail) dashboardEmail.innerText = currentUser.email || currentUser.username || 'غير محدد';
+                if (dashboardPhone) dashboardPhone.innerText = currentUser.phone || 'غير محدد';
+                if (dashboardUsername) dashboardUsername.innerText = currentUser.username || 'غير محدد';
+                if (dashboardPlan) dashboardPlan.innerText = currentUser.plan === 'free' ? 'مجاني' : 'مدفوع';
             }
         }
 
-        // دوال السايد بار
+        // ==================== دوال السايد بار ====================
         function toggleSidebarWithAnimation(btn) {
             btn.classList.add('rotating');
-            setTimeout(() => { btn.classList.remove('rotating'); }, 400);
-            document.getElementById('sidebar').classList.toggle('active');
-            document.getElementById('overlay').classList.toggle('active');
+            setTimeout(() => {
+                btn.classList.remove('rotating');
+            }, 400);
+            
+            const sidebar = document.getElementById('sidebar');
+            const overlay = document.getElementById('overlay');
+            
+            if (sidebar) sidebar.classList.toggle('active');
+            if (overlay) overlay.classList.toggle('active');
         }
 
         function closeSidebar() {
-            document.getElementById('sidebar').classList.remove('active');
-            document.getElementById('overlay').classList.remove('active');
+            const sidebar = document.getElementById('sidebar');
+            const overlay = document.getElementById('overlay');
+            
+            if (sidebar) sidebar.classList.remove('active');
+            if (overlay) overlay.classList.remove('active');
         }
 
         function updateSidebarUI() {
@@ -799,56 +1460,116 @@
             const sidebarUserStatus = document.getElementById('sidebarUserStatus');
             const sidebarAuthSection = document.getElementById('sidebarAuthSection');
             const sidebarLogoutSection = document.getElementById('sidebarLogoutSection');
+            
             if (currentUser) {
-                sidebarUserName.innerText = currentUser.name || 'مستخدم';
-                sidebarUserStatus.innerText = 'مسجل الدخول';
-                sidebarAuthSection.classList.add('hidden');
-                sidebarLogoutSection.classList.remove('hidden');
+                if (sidebarUserName) sidebarUserName.innerText = currentUser.name || 'مستخدم';
+                if (sidebarUserStatus) sidebarUserStatus.innerText = 'مسجل الدخول';
+                if (sidebarAuthSection) sidebarAuthSection.classList.add('hidden');
+                if (sidebarLogoutSection) sidebarLogoutSection.classList.remove('hidden');
             } else {
-                sidebarUserName.innerText = 'زائر';
-                sidebarUserStatus.innerText = 'غير مسجل الدخول';
-                sidebarAuthSection.classList.remove('hidden');
-                sidebarLogoutSection.classList.add('hidden');
+                if (sidebarUserName) sidebarUserName.innerText = 'زائر';
+                if (sidebarUserStatus) sidebarUserStatus.innerText = 'غير مسجل الدخول';
+                if (sidebarAuthSection) sidebarAuthSection.classList.remove('hidden');
+                if (sidebarLogoutSection) sidebarLogoutSection.classList.add('hidden');
             }
         }
 
-        function goToHomePageFromSidebar() { closeSidebar(); showHomePage(); }
-        function goToAboutPageFromSidebar() { closeSidebar(); document.getElementById('aboutPage').classList.remove('hidden'); document.getElementById('homePage').classList.add('hidden'); document.getElementById('loginPage').classList.add('hidden'); document.getElementById('myAccountPage').classList.add('hidden'); }
-        function goToMyAccountPageFromSidebar() { closeSidebar(); showMyAccountPage(); }
-        function showLoginFromSidebar() { closeSidebar(); showLoginPage(); }
-        function showRegisterFromSidebar() { closeSidebar(); showRegisterPage(); }
-        function logoutFromSidebar() { logout(); closeSidebar(); }
-        function copyToClipboard(text) { navigator.clipboard.writeText(text).then(() => { showToast('✅ تم نسخ الرقم: ' + text); }); }
+        function goToHomePageFromSidebar() {
+            closeSidebar();
+            showHomePage();
+        }
 
-        // ربط الدوال
-        window.showLoginPage = showLoginPage;
-        window.showRegisterPage = showRegisterPage;
-        window.showHomePage = showHomePage;
-        window.showForgotPasswordPage = showForgotPasswordPage;
-        window.login = login;
-        window.logout = logout;
+        function goToAboutPageFromSidebar() {
+            closeSidebar();
+            showAboutPage();
+        }
+
+        function goToMyAccountPageFromSidebar() {
+            closeSidebar();
+            showMyAccountPage();
+        }
+
+        function showLoginFromSidebar() {
+            closeSidebar();
+            showLoginPage();
+        }
+
+        function showRegisterFromSidebar() {
+            closeSidebar();
+            showRegisterPage();
+        }
+
+        function logoutFromSidebar() {
+            logout();
+            closeSidebar();
+        }
+
+        function copyToClipboard(text) {
+            navigator.clipboard.writeText(text).then(() => {
+                showToast('✅ تم نسخ الرقم: ' + text);
+            });
+        }
+
+        // ==================== ربط جميع الدوال للنطاق العام ====================
+        window.showToast = showToast;
         window.scrollToServices = scrollToServices;
-        window.toggleSidebarWithAnimation = toggleSidebarWithAnimation;
-        window.closeSidebar = closeSidebar;
-        window.goToHomePageFromSidebar = goToHomePageFromSidebar;
-        window.goToAboutPageFromSidebar = goToAboutPageFromSidebar;
-        window.goToMyAccountPageFromSidebar = goToMyAccountPageFromSidebar;
-        window.showMyAccountPage = showMyAccountPage;
-        window.showLoginFromSidebar = showLoginFromSidebar;
-        window.showRegisterFromSidebar = showRegisterFromSidebar;
-        window.logoutFromSidebar = logoutFromSidebar;
-        window.copyToClipboard = copyToClipboard;
-                window.resetForgotPassword = resetForgotPassword;
+        window.normalizeUsername = normalizeUsername;
+        window.extractBaseUsername = extractBaseUsername;
+        window.saveUserToFirebase = saveUserToFirebase;
+        window.getAllUsersFromFirebase = getAllUsersFromFirebase;
+        window.findUserByUsername = findUserByUsername;
+        window.findUserByPhone = findUserByPhone;
+        window.isUsernameTaken = isUsernameTaken;
+        window.isPhoneTaken = isPhoneTaken;
+        window.loginUser = loginUser;
+        window.updatePasswordInFirebase = updatePasswordInFirebase;
+        window.updateUserInFirebase = updateUserInFirebase;
+        window.deleteUserFromFirebase = deleteUserFromFirebase;
+        window.resetRegistration = resetRegistration;
+        window.showStep = showStep;
+        window.nextStep = nextStep;
+        window.prevStep = prevStep;
+        window.completeRegistration = completeRegistration;
+        window.checkUsernameAvailability = checkUsernameAvailability;
+        window.generateSuggestions = generateSuggestions;
+        window.login = login;
+        window.resetForgotPassword = resetForgotPassword;
         window.checkUserForReset = checkUserForReset;
         window.verifyPhoneForReset = verifyPhoneForReset;
         window.resetPassword = resetPassword;
         window.goBackToForgotStep1 = goBackToForgotStep1;
+        window.logout = logout;
         window.goToHomePage = goToHomePage;
         window.goToMyAccountPage = goToMyAccountPage;
-        window.showRegisterPageFull = showRegisterPageFull;
+        window.showHomePage = showHomePage;
+        window.showLoginPage = showLoginPage;
+        window.showRegisterPage = showRegisterPage;
+        window.showForgotPasswordPage = showForgotPasswordPage;
+        window.showDashboard = showDashboard;
+        window.showAboutPage = showAboutPage;
+        window.showMyAccountPage = showMyAccountPage;
+        window.updateHomeUI = updateHomeUI;
+        window.updateDashboardUI = updateDashboardUI;
+        window.toggleSidebarWithAnimation = toggleSidebarWithAnimation;
+        window.closeSidebar = closeSidebar;
+        window.updateSidebarUI = updateSidebarUI;
+        window.goToHomePageFromSidebar = goToHomePageFromSidebar;
+        window.goToAboutPageFromSidebar = goToAboutPageFromSidebar;
+        window.goToMyAccountPageFromSidebar = goToMyAccountPageFromSidebar;
+        window.showLoginFromSidebar = showLoginFromSidebar;
+        window.showRegisterFromSidebar = showRegisterFromSidebar;
+        window.logoutFromSidebar = logoutFromSidebar;
+        window.copyToClipboard = copyToClipboard;
 
-        // بدء التشغيل
-        showHomePage();
+        // ==================== استعادة الجلسة ====================
+        const savedUser = localStorage.getItem('currentUser');
+        if (savedUser) {
+            currentUser = JSON.parse(savedUser);
+            updateHomeUI();
+            showHomePage();
+        } else {
+            showHomePage();
+        }
     </script>
 </body>
 </html>
