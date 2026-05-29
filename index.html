@@ -742,7 +742,32 @@
             messagingSenderId: "132078192935",
             appId: "1:132078192935:web:2d4bc9e0dfcb407b2a8102"
         };
-
+       // ==================== إعداد EmailJS ====================
+const EMAILJS_PUBLIC_KEY = 'AW1vq-SBqWiE1E_IE';       // ✅ Public Key الخاص بك
+const EMAILJS_SERVICE_GMAIL = 'service_lk9q2gb';       // خدمة Gmail
+const EMAILJS_SERVICE_OUTLOOK = 'service_4eykdpn';     // خدمة Outlook
+const EMAILJS_TEMPLATE_ID = 'template_2658cbg';        // ✅ Template ID الخاص بك
+        
+        // تهيئة EmailJS
+        emailjs.init(EMAILJS_PUBLIC_KEY);
+        
+        // دالة لتحديد الخدمة المناسبة حسب البريد المستلم
+        function getEmailServiceForRecipient(email) {
+            if (!email) return EMAILJS_SERVICE_GMAIL;
+            
+            const emailLower = email.toLowerCase();
+            
+            // حسابات Outlook و Hotmail
+            if (emailLower.includes('@outlook.com') || 
+                emailLower.includes('@hotmail.com') || 
+                emailLower.includes('@live.com') ||
+                emailLower.includes('@msn.com')) {
+                return EMAILJS_SERVICE_OUTLOOK;
+            }
+            
+            // جميع الحسابات الأخرى (Gmail, Yahoo, Custom, etc.)
+            return EMAILJS_SERVICE_GMAIL;
+        }
         // تهيئة Firebase
         firebase.initializeApp(firebaseConfig);
         const db = firebase.database();
@@ -1334,7 +1359,7 @@
             updateStorageInfo();
         }
         
-        // تحميل الرسائل من Firebase
+               // تحميل الرسائل من Firebase (بما في ذلك البريد الخارجي)
         async function loadMails() {
             if (!currentUser) {
                 showToast('الرجاء تسجيل الدخول أولاً');
@@ -1350,19 +1375,32 @@
                 if (allMessages) {
                     for (let uid in allMessages) {
                         const msg = allMessages[uid];
+                        const currentUserEmail = currentUser.email || currentUser.username;
+                        const currentUserBase = extractBaseUsername(currentUser.username);
+                        
                         if (currentMailBox === 'inbox') {
-                            if (msg.to === currentUser.username) {
+                            // استقبال: إذا كان المستلم هو البريد الحالي
+                            const isForMe = (msg.to === currentUser.username || 
+                                           msg.to === currentUserEmail ||
+                                           msg.to === currentUserBase ||
+                                           (msg.to && msg.to.includes(currentUserBase)));
+                            
+                            if (isForMe) {
                                 myMessages.push({ id: uid, ...msg });
                             }
                         } else {
-                            if (msg.from === currentUser.username) {
+                            // مرسلة: إذا كان المرسل هو المستخدم الحالي
+                            const isFromMe = (msg.from === currentUser.username || 
+                                            msg.from === currentUserEmail ||
+                                            msg.from === currentUserBase);
+                            
+                            if (isFromMe) {
                                 myMessages.push({ id: uid, ...msg });
                             }
                         }
                     }
                 }
                 
-                // ترتيب حسب التاريخ (الأحدث أولاً)
                 myMessages.sort((a, b) => new Date(b.timestamp) - new Date(a.timestamp));
                 renderMailList(myMessages);
                 updateUnreadCount(myMessages);
@@ -1373,7 +1411,7 @@
             }
         }
         
-        // عرض قائمة الرسائل
+                // عرض قائمة الرسائل
         function renderMailList(messages) {
             const mailList = document.getElementById('mailList');
             if (!mailList) return;
@@ -1393,10 +1431,11 @@
                     <div class="flex-1">
                         <div class="flex items-center gap-3">
                             <i class="fas ${currentMailBox === 'inbox' ? 'fa-envelope' : 'fa-paper-plane'} ${!msg.read ? 'text-blue-500' : 'text-gray-400'}"></i>
-                            <span class="font-medium">${currentMailBox === 'inbox' ? msg.from : msg.to}</span>
+                            <span class="font-medium">${currentMailBox === 'inbox' ? (msg.from || msg.fromEmail) : (msg.to || msg.toEmail)}</span>
+                            ${msg.isExternal ? '<span class="text-xs bg-gray-200 px-2 py-0.5 rounded-full text-gray-600">خارجي</span>' : ''}
                             <span class="text-sm text-gray-500">${msg.subject || 'بدون موضوع'}</span>
                         </div>
-                        <p class="text-sm text-gray-500 mt-1 line-clamp-1">${msg.body.substring(0, 80)}${msg.body.length > 80 ? '...' : ''}</p>
+                        <p class="text-sm text-gray-500 mt-1 line-clamp-1">${(msg.body || '').substring(0, 80)}${(msg.body || '').length > 80 ? '...' : ''}</p>
                     </div>
                     <div class="text-xs text-gray-400">
                         ${new Date(msg.timestamp).toLocaleDateString('ar-EG')}
@@ -1474,14 +1513,14 @@
             }
         }
         
-        // إرسال رسالة
+                       // إرسال رسالة مع دعم البريد الخارجي عبر EmailJS (Gmail + Outlook)
         async function sendMessage() {
             const to = document.getElementById('composeTo').value.trim();
             const subject = document.getElementById('composeSubject').value.trim();
             const body = document.getElementById('composeMessage').value.trim();
             
             if (!to) {
-                showToast('الرجاء إدخال اسم المستخدم المستلم');
+                showToast('الرجاء إدخال البريد الإلكتروني المستلم');
                 return;
             }
             if (!body) {
@@ -1489,29 +1528,83 @@
                 return;
             }
             
-            // التحقق من وجود المستخدم المستلم
-            const receiver = await findUserByUsername(normalizeUsername(to));
-            if (!receiver) {
-                showToast('❌ المستخدم غير موجود');
+            // التحقق من صيغة البريد الإلكتروني
+            const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+            if (!emailRegex.test(to)) {
+                showToast('❌ صيغة البريد الإلكتروني غير صحيحة');
                 return;
             }
             
+            // التحقق: هل المستخدم مسجل في المنصة أم لا؟
+            let receiver = null;
+            let isExternal = true;
+            let externalEmailSent = false;
+            
+            try {
+                receiver = await findUserByUsername(normalizeUsername(to));
+                if (receiver) {
+                    isExternal = false;
+                }
+            } catch (error) {
+                console.log('المستخدم غير مسجل في المنصة');
+            }
+            
+            // حفظ الرسالة في Firebase
             const newMessage = {
                 from: currentUser.username,
-                to: normalizeUsername(to),
-                subject: subject,
+                fromEmail: currentUser.email || currentUser.username,
+                fromName: currentUser.name || currentUser.username,
+                to: to,
+                toEmail: to,
+                subject: subject || 'بدون موضوع',
                 body: body,
                 timestamp: new Date().toISOString(),
-                read: false
+                read: false,
+                isExternal: isExternal
             };
             
             try {
+                // حفظ في Firebase أولاً
                 const newRef = db.ref('messages').push();
                 await newRef.set(newMessage);
-                showToast('✅ تم إرسال الرسالة بنجاح');
+                
+                // إرسال بريد إلكتروني حقيقي عبر EmailJS (للبريد الخارجي فقط)
+                if (isExternal && EMAILJS_TEMPLATE_ID !== 'YOUR_TEMPLATE_ID') {
+                    try {
+                        // اختيار الخدمة المناسبة حسب نوع البريد
+                        const serviceId = getEmailServiceForRecipient(to);
+                        const serviceName = serviceId === EMAILJS_SERVICE_GMAIL ? 'Gmail' : 'Outlook/Hotmail';
+                        
+                        const emailParams = {
+                            to_email: to,
+                            subject: subject || 'رسالة جديدة من TecnoShark',
+                            message: body,
+                            from_name: currentUser.name || currentUser.username,
+                            from_email: currentUser.email || currentUser.username,
+                            reply_to: currentUser.email || currentUser.username
+                        };
+                        
+                        await emailjs.send(serviceId, EMAILJS_TEMPLATE_ID, emailParams);
+                        externalEmailSent = true;
+                        showToast(`✅ تم إرسال الرسالة إلى ${to} (عبر ${serviceName})`);
+                        
+                    } catch (emailError) {
+                        console.error('خطأ في إرسال البريد عبر EmailJS:', emailError);
+                        showToast(`⚠️ تم حفظ الرسالة ولكن فشل إرسال الإشعار البريدي إلى ${to}`);
+                    }
+                } else if (isExternal) {
+                    showToast(`✅ تم حفظ الرسالة لإرسالها إلى ${to} (يلزم إعداد EmailJS للإشعار الفوري)`);
+                } else {
+                    showToast(`✅ تم إرسال الرسالة إلى ${receiver.name || to}`);
+                }
+                
                 closeComposeModal();
-                loadMails();
+                
+                if (currentMailBox === 'sent') {
+                    loadMails();
+                }
                 updateStorageInfo();
+                
             } catch (error) {
                 console.error('خطأ في الإرسال:', error);
                 showToast('❌ حدث خطأ في إرسال الرسالة');
