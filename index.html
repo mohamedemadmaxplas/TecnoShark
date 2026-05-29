@@ -318,10 +318,204 @@
         </div>
     </div>
 
-    <!-- باقي الصفحات (تسجيل ونسيت كلمة المرور ولوحة التحكم) -->
-    <div id="registerPage" class="hidden page-container flex items-center justify-center py-12"><div class="bg-white rounded-2xl shadow-xl p-8 max-w-md w-full mx-4"><div class="text-center mb-4"><img src="https://i.ibb.co/Fk4jw8pR/4840e6da-a9c5-4858-a78d-8ceb60d1eaaa.png" class="w-16 h-16 mx-auto rounded-full"></div><p class="text-center text-gray-600">نموذج إنشاء حساب مكون من 5 خطوات</p><button onclick="showRegisterPageFull()" class="w-full mt-4 bg-blue-600 text-white py-2 rounded-lg">إنشاء حساب جديد</button></div></div>
-    <div id="forgotPasswordPage" class="hidden page-container flex items-center justify-center py-12"><div class="bg-white rounded-2xl shadow-xl p-8 max-w-md w-full mx-4"><p class="text-center">نموذج استعادة كلمة المرور</p><button onclick="showLoginPage()" class="w-full mt-4 bg-blue-600 text-white py-2 rounded-lg">العودة لتسجيل الدخول</button></div></div>
-    <div id="dashboardPage" class="hidden page-container flex items-center justify-center py-12"><div class="bg-white rounded-2xl shadow-xl p-8 max-w-md w-full mx-4"><p class="text-center">لوحة التحكم</p><button onclick="logout()" class="w-full mt-4 bg-red-600 text-white py-2 rounded-lg">تسجيل الخروج</button></div></div>
+    <!-- ==================== صفحة إنشاء حساب (متكاملة 5 خطوات) ==================== -->
+    <div id="registerPage" class="hidden page-container flex items-center justify-center py-12">
+        <div class="bg-white rounded-2xl shadow-xl p-8 max-w-md w-full mx-4">
+            <div class="text-center mb-4">
+                <img src="https://i.ibb.co/Fk4jw8pR/4840e6da-a9c5-4858-a78d-8ceb60d1eaaa.png" alt="Logo" class="w-16 h-16 mx-auto mb-2 rounded-full shadow-md">
+            </div>
+            <div class="mb-8">
+                <div class="flex justify-between mb-2">
+                    <span class="text-xs text-gray-500" id="stepLabel">الخطوة 1 من 5</span>
+                    <span class="text-xs text-blue-600" id="stepPercent">20%</span>
+                </div>
+                <div class="w-full bg-gray-200 rounded-full h-2">
+                    <div id="progressBar" class="bg-blue-600 h-2 rounded-full transition-all duration-300" style="width: 20%"></div>
+                </div>
+            </div>
+            
+            <!-- الخطوة 1: الاسم -->
+            <div id="step1" class="step">
+                <h2 class="text-xl font-bold mb-6 text-center">ما اسمك؟</h2>
+                <div class="mb-4">
+                    <input type="text" id="firstName" class="w-full p-3 border rounded-lg focus:ring-2 focus:ring-blue-500" placeholder="الاسم الأول">
+                </div>
+                <div class="mb-6">
+                    <input type="text" id="lastName" class="w-full p-3 border rounded-lg focus:ring-2 focus:ring-blue-500" placeholder="الاسم الأخير">
+                </div>
+                <button onclick="nextStep(2)" class="w-full bg-blue-600 text-white py-3 rounded-lg hover:bg-blue-700 transition font-semibold">
+                    التالي <i class="fas fa-arrow-left mr-2"></i>
+                </button>
+            </div>
+            
+            <!-- الخطوة 2: رقم الهاتف -->
+            <div id="step2" class="step hidden">
+                <h2 class="text-xl font-bold mb-6 text-center">ما رقم هاتفك؟</h2>
+                <div class="mb-6">
+                    <input type="tel" id="phoneNumber" class="w-full p-3 border rounded-lg focus:ring-2 focus:ring-blue-500" placeholder="مثال: 01123456789">
+                </div>
+                <div class="flex gap-3">
+                    <button onclick="prevStep(1)" class="w-1/2 bg-gray-200 py-3 rounded-lg hover:bg-gray-300 transition">رجوع</button>
+                    <button onclick="nextStep(3)" class="w-1/2 bg-blue-600 text-white py-3 rounded-lg hover:bg-blue-700 transition">التالي</button>
+                </div>
+            </div>
+            
+            <!-- الخطوة 3: اسم المستخدم -->
+            <div id="step3" class="step hidden">
+                <h2 class="text-xl font-bold mb-6 text-center">اختر اسم المستخدم</h2>
+                <div class="mb-4">
+                    <input type="text" id="username" class="w-full p-3 border rounded-lg focus:ring-2 focus:ring-blue-500" placeholder="example" oninput="checkUsernameAvailability()">
+                    <p class="text-xs text-gray-400 mt-1">سيتم إضافة @tecno.shark تلقائياً</p>
+                    <div id="usernameStatus" class="text-sm mt-1"></div>
+                </div>
+                <div id="suggestionsBox" class="mb-6 hidden">
+                    <label class="block text-sm font-medium text-gray-700 mb-2">اقتراحات متاحة:</label>
+                    <div id="suggestionsList" class="flex flex-wrap gap-2"></div>
+                </div>
+                <div class="flex gap-3">
+                    <button onclick="prevStep(2)" class="w-1/2 bg-gray-200 py-3 rounded-lg hover:bg-gray-300 transition">رجوع</button>
+                    <button onclick="nextStep(4)" class="w-1/2 bg-blue-600 text-white py-3 rounded-lg hover:bg-blue-700 transition">التالي</button>
+                </div>
+            </div>
+            
+            <!-- الخطوة 4: كلمة المرور -->
+            <div id="step4" class="step hidden">
+                <h2 class="text-xl font-bold mb-6 text-center">إنشاء كلمة مرور</h2>
+                <div class="mb-4">
+                    <input type="password" id="password" class="w-full p-3 border rounded-lg focus:ring-2 focus:ring-blue-500" placeholder="كلمة المرور">
+                </div>
+                <div class="mb-6">
+                    <input type="password" id="confirmPassword" class="w-full p-3 border rounded-lg focus:ring-2 focus:ring-blue-500" placeholder="تأكيد كلمة المرور">
+                </div>
+                <div class="flex gap-3">
+                    <button onclick="prevStep(3)" class="w-1/2 bg-gray-200 py-3 rounded-lg hover:bg-gray-300 transition">رجوع</button>
+                    <button onclick="nextStep(5)" class="w-1/2 bg-blue-600 text-white py-3 rounded-lg hover:bg-blue-700 transition">التالي</button>
+                </div>
+            </div>
+            
+            <!-- الخطوة 5: الشروط والأحكام -->
+            <div id="step5" class="step hidden">
+                <h2 class="text-xl font-bold mb-4 text-center">الشروط والأحكام</h2>
+                <div class="bg-gray-50 p-4 rounded-lg mb-4 max-h-60 overflow-y-auto text-sm">
+                    <p class="font-bold mb-2">📜 شروط استخدام TecnoShark:</p>
+                    <p>1. أنا أوافق على معالجة بياناتي الشخصية وفقاً لسياسة الخصوصية.</p>
+                    <p>2. أنا أوافق على استلام الإشعارات والبريد الإلكتروني.</p>
+                    <p>3. أنا أتعهد بأن جميع البيانات التي أدخلتها صحيحة ودقيقة.</p>
+                    <p>4. أنا أوافق على شروط الاستخدام وسياسة الخصوصية.</p>
+                </div>
+                <div class="mb-6">
+                    <label class="flex items-center gap-2">
+                        <input type="checkbox" id="agreeTerms" class="w-4 h-4"> 
+                        <span class="text-sm">أوافق على الشروط والأحكام</span>
+                    </label>
+                </div>
+                <div class="flex gap-3">
+                    <button onclick="prevStep(4)" class="w-1/2 bg-gray-200 py-3 rounded-lg hover:bg-gray-300 transition">رجوع</button>
+                    <button onclick="completeRegistration()" class="w-1/2 bg-green-600 text-white py-3 rounded-lg hover:bg-green-700 transition">إنشاء حساب</button>
+                </div>
+            </div>
+        </div>
+    </div>
+        <!-- ==================== صفحة نسيت كلمة المرور ==================== -->
+    <div id="forgotPasswordPage" class="hidden page-container flex items-center justify-center py-12">
+        <div class="bg-white rounded-2xl shadow-xl p-8 max-w-md w-full mx-4">
+            <!-- الخطوة 1: إدخال اسم المستخدم -->
+            <div id="forgotStep1">
+                <div class="text-center mb-6">
+                    <img src="https://i.ibb.co/Fk4jw8pR/4840e6da-a9c5-4858-a78d-8ceb60d1eaaa.png" alt="Logo" class="w-20 h-20 mx-auto mb-3 rounded-full shadow-md">
+                    <h1 class="text-2xl font-bold">نسيت كلمة المرور</h1>
+                    <p class="text-gray-500 text-sm">أدخل اسم المستخدم الخاص بك</p>
+                </div>
+                <div class="mb-6">
+                    <label class="block text-sm font-medium text-gray-700 mb-1">اسم المستخدم</label>
+                    <input type="text" id="forgotUsername" class="w-full p-3 border rounded-lg focus:ring-2 focus:ring-blue-500" placeholder="أدخل اسم المستخدم">
+                </div>
+                <button onclick="checkUserForReset()" class="w-full bg-blue-600 text-white py-3 rounded-lg hover:bg-blue-700 transition font-semibold">
+                    التالي <i class="fas fa-arrow-left mr-2"></i>
+                </button>
+                <div class="mt-4 text-center">
+                    <a onclick="showLoginPage()" class="text-sm text-gray-500 cursor-pointer hover:underline">العودة لتسجيل الدخول</a>
+                </div>
+            </div>
+            
+            <!-- الخطوة 2: تأكيد رقم الهاتف -->
+            <div id="forgotStep2" class="hidden">
+                <div class="text-center mb-6">
+                    <img src="https://i.ibb.co/Fk4jw8pR/4840e6da-a9c5-4858-a78d-8ceb60d1eaaa.png" alt="Logo" class="w-20 h-20 mx-auto mb-3 rounded-full shadow-md">
+                    <h1 class="text-2xl font-bold">تأكيد رقم الهاتف</h1>
+                    <p class="text-gray-500 text-sm">أدخل رقم هاتفك للتأكيد</p>
+                </div>
+                <div class="mb-4">
+                    <label class="block text-sm font-medium text-gray-700 mb-1">رقم الهاتف المسجل</label>
+                    <input type="tel" id="forgotPhone" class="w-full p-3 border rounded-lg focus:ring-2 focus:ring-blue-500" placeholder="أدخل رقم هاتفك">
+                </div>
+                <div id="phoneHint" class="text-sm text-gray-500 mb-4 hidden">
+                    <i class="fas fa-info-circle ml-1"></i> التلميح: الرقم يظهر كـ <span id="maskedPhone" class="font-mono"></span>
+                </div>
+                <button onclick="verifyPhoneForReset()" class="w-full bg-blue-600 text-white py-3 rounded-lg hover:bg-blue-700 transition font-semibold">
+                    تحقق <i class="fas fa-check ml-2"></i>
+                </button>
+                <div class="mt-4 text-center">
+                    <a onclick="goBackToForgotStep1()" class="text-sm text-gray-500 cursor-pointer hover:underline">رجوع</a>
+                </div>
+            </div>
+            
+            <!-- الخطوة 3: إدخال كلمة المرور الجديدة -->
+            <div id="forgotStep3" class="hidden">
+                <div class="text-center mb-6">
+                    <img src="https://i.ibb.co/Fk4jw8pR/4840e6da-a9c5-4858-a78d-8ceb60d1eaaa.png" alt="Logo" class="w-20 h-20 mx-auto mb-3 rounded-full shadow-md">
+                    <h1 class="text-2xl font-bold">كلمة مرور جديدة</h1>
+                    <p class="text-gray-500 text-sm">أدخل كلمة المرور الجديدة</p>
+                </div>
+                <div class="mb-4">
+                    <label class="block text-sm font-medium text-gray-700 mb-1">كلمة المرور الجديدة</label>
+                    <input type="password" id="newPassword" class="w-full p-3 border rounded-lg focus:ring-2 focus:ring-blue-500" placeholder="أدخل كلمة المرور">
+                </div>
+                <div class="mb-6">
+                    <label class="block text-sm font-medium text-gray-700 mb-1">تأكيد كلمة المرور</label>
+                    <input type="password" id="confirmNewPassword" class="w-full p-3 border rounded-lg focus:ring-2 focus:ring-blue-500" placeholder="أعد إدخال كلمة المرور">
+                </div>
+                <button onclick="resetPassword()" class="w-full bg-blue-600 text-white py-3 rounded-lg hover:bg-blue-700 transition font-semibold">
+                    تغيير كلمة المرور <i class="fas fa-save mr-2"></i>
+                </button>
+                <div class="mt-4 text-center">
+                    <a onclick="showLoginPage()" class="text-sm text-gray-500 cursor-pointer hover:underline">العودة لتسجيل الدخول</a>
+                </div>
+            </div>
+        </div>
+    </div>
+        <!-- ==================== لوحة التحكم ==================== -->
+    <div id="dashboardPage" class="hidden page-container flex items-center justify-center py-12">
+        <div class="bg-white rounded-2xl shadow-xl p-8 max-w-md w-full mx-4 animate-fade-scale">
+            <div class="text-center mb-6">
+                <img src="https://i.ibb.co/Fk4jw8pR/4840e6da-a9c5-4858-a78d-8ceb60d1eaaa.png" alt="Logo" class="w-24 h-24 mx-auto mb-3 rounded-full shadow-md">
+                <h1 class="text-2xl font-bold">لوحة التحكم</h1>
+                <p class="text-gray-500">مرحباً <span id="dashboardUserName" class="font-semibold text-blue-600"></span></p>
+            </div>
+            <div class="bg-gray-50 rounded-xl p-4 mb-4">
+                <p class="text-sm text-gray-500">الاسم الكامل</p>
+                <p class="font-bold" id="dashboardFullName">-</p>
+            </div>
+            <div class="bg-gray-50 rounded-xl p-4 mb-4">
+                <p class="text-sm text-gray-500">البريد الإلكتروني</p>
+                <p class="font-bold" id="dashboardEmail">-</p>
+            </div>
+            <div class="bg-gray-50 rounded-xl p-4 mb-4">
+                <p class="text-sm text-gray-500">رقم الهاتف</p>
+                <p class="font-bold" id="dashboardPhone">-</p>
+            </div>
+            <div class="bg-gray-50 rounded-xl p-4 mb-4">
+                <p class="text-sm text-gray-500">اسم المستخدم</p>
+                <p class="font-bold" id="dashboardUsername">-</p>
+            </div>
+            <div class="bg-gray-50 rounded-xl p-4 mb-6">
+                <p class="text-sm text-gray-500">نوع الحساب</p>
+                <p class="font-bold text-blue-600" id="dashboardPlan">مجاني</p>
+            </div>
+            <button onclick="logout()" class="w-full bg-red-600 text-white py-3 rounded-lg hover:bg-red-700 transition">تسجيل الخروج</button>
+            <button onclick="showHomePage()" class="w-full text-gray-400 text-sm mt-4 hover:text-gray-600 transition">العودة للرئيسية</button>
+        </div>
+    </div>
 
     <script>
         // Firebase Configuration
@@ -358,7 +552,87 @@
                 toast.classList.add('opacity-0');
             }, 3000);
         }
+        // ==================== دوال نسيت كلمة المرور ====================
+        let foundUserForReset = null;
+        
+        function resetForgotPassword() {
+            document.getElementById('forgotUsername').value = '';
+            document.getElementById('forgotPhone').value = '';
+            document.getElementById('newPassword').value = '';
+            document.getElementById('confirmNewPassword').value = '';
+            document.getElementById('forgotStep1').classList.remove('hidden');
+            document.getElementById('forgotStep2').classList.add('hidden');
+            document.getElementById('forgotStep3').classList.add('hidden');
+            foundUserForReset = null;
+        }
 
+        async function checkUserForReset() {
+            let username = document.getElementById('forgotUsername').value.trim();
+            if (!username) { showToast('الرجاء إدخال اسم المستخدم'); return; }
+            
+            // محاكاة البحث عن المستخدم
+            let user = null;
+            if (currentUser && currentUser.username === username) {
+                user = currentUser;
+            }
+            
+            if (!user) { 
+                showToast('❌ لا يوجد حساب بهذا الاسم'); 
+                return; 
+            }
+            
+            foundUserForReset = user;
+            let phone = user.phone || '';
+            let masked = phone.slice(0, -2).replace(/./g, '*') + phone.slice(-2);
+            document.getElementById('maskedPhone').innerText = masked;
+            document.getElementById('phoneHint').classList.remove('hidden');
+            document.getElementById('forgotStep1').classList.add('hidden');
+            document.getElementById('forgotStep2').classList.remove('hidden');
+        }
+
+        async function verifyPhoneForReset() {
+            let phone = document.getElementById('forgotPhone').value.trim();
+            if (!phone) { showToast('الرجاء إدخال رقم الهاتف'); return; }
+            if (foundUserForReset && foundUserForReset.phone === phone) {
+                document.getElementById('forgotStep2').classList.add('hidden');
+                document.getElementById('forgotStep3').classList.remove('hidden');
+            } else { 
+                showToast('❌ رقم الهاتف غير صحيح'); 
+            }
+        }
+
+        async function resetPassword() {
+            let newPass = document.getElementById('newPassword').value;
+            let confirmPass = document.getElementById('confirmNewPassword').value;
+            if (newPass.length < 6) { showToast('كلمة المرور 6 أحرف على الأقل'); return; }
+            if (newPass !== confirmPass) { showToast('كلمة المرور غير متطابقة'); return; }
+            if (foundUserForReset) {
+                foundUserForReset.password = newPass;
+                if (currentUser && currentUser.username === foundUserForReset.username) {
+                    currentUser.password = newPass;
+                    localStorage.setItem('currentUser', JSON.stringify(currentUser));
+                }
+                showToast('✅ تم تغيير كلمة المرور بنجاح');
+                showLoginPage();
+            }
+        }
+
+        function goBackToForgotStep1() {
+            document.getElementById('forgotStep2').classList.add('hidden');
+            document.getElementById('forgotStep1').classList.remove('hidden');
+        }
+
+        // ==================== تحديث دوال لوحة التحكم ====================
+        function updateDashboardUI() {
+            if (currentUser) {
+                document.getElementById('dashboardUserName').innerText = currentUser.name || currentUser.username;
+                document.getElementById('dashboardFullName').innerText = currentUser.name || 'غير محدد';
+                document.getElementById('dashboardEmail').innerText = currentUser.email || currentUser.username || 'غير محدد';
+                document.getElementById('dashboardPhone').innerText = currentUser.phone || 'غير محدد';
+                document.getElementById('dashboardUsername').innerText = currentUser.username || 'غير محدد';
+                document.getElementById('dashboardPlan').innerText = currentUser.plan === 'free' ? 'مجاني' : 'مدفوع';
+            }
+        }
         function scrollToServices() {
             document.getElementById('services').scrollIntoView({ behavior: 'smooth' });
         }
@@ -564,6 +838,11 @@
         window.showRegisterFromSidebar = showRegisterFromSidebar;
         window.logoutFromSidebar = logoutFromSidebar;
         window.copyToClipboard = copyToClipboard;
+                window.resetForgotPassword = resetForgotPassword;
+        window.checkUserForReset = checkUserForReset;
+        window.verifyPhoneForReset = verifyPhoneForReset;
+        window.resetPassword = resetPassword;
+        window.goBackToForgotStep1 = goBackToForgotStep1;
         window.goToHomePage = goToHomePage;
         window.goToMyAccountPage = goToMyAccountPage;
         window.showRegisterPageFull = showRegisterPageFull;
