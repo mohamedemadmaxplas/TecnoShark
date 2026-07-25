@@ -5401,7 +5401,7 @@ function showHomePage() {
             navigator.clipboard.writeText(text).then(() => { showToast('✅ تم نسخ: ' + text); });
         }
 
-   async function login() {
+ async function login() {
     let identifier = document.getElementById('loginUsername').value.trim();
     const password = document.getElementById('loginPassword').value;
     
@@ -5411,35 +5411,73 @@ function showHomePage() {
     }
     
     try {
+        // ✅ تحويل اسم المستخدم إلى بريد إلكتروني إذا لزم الأمر
         let email = identifier;
         if (!identifier.includes('@')) {
             email = `${identifier}@tecno.com`;
         }
         
+        showToast('⏳ جاري تسجيل الدخول...');
+        
+        // ✅ محاولة تسجيل الدخول
         const userCredential = await auth.signInWithEmailAndPassword(email, password);
         const user = userCredential.user;
         
+        console.log('✅ تم تسجيل الدخول بنجاح، UID:', user.uid);
+        
+        // ✅ جلب البيانات من Database
         const snapshot = await db.ref(`users/${user.uid}`).once('value');
         const userData = snapshot.val();
         
-        currentUser = {
-            uid: user.uid,
-            name: userData?.name || user.displayName || 'مستخدم',
-            username: userData?.username || email,
-            email: userData?.email || email,
-            phone: userData?.phone || '',
-            plan: userData?.plan || 'free',
-            ...userData
-        };
+        if (userData) {
+            // ✅ تحديث currentUser من Database
+            currentUser = {
+                uid: user.uid,
+                name: userData.name || user.displayName || 'مستخدم',
+                username: userData.username || email,
+                email: userData.email || email,
+                phone: userData.phone || '',
+                plan: userData.plan || 'free',
+                createdAt: userData.createdAt || new Date().toISOString(),
+                ...userData
+            };
+        } else {
+            // ✅ إذا لم توجد بيانات في Database، استخدم بيانات Authentication
+            currentUser = {
+                uid: user.uid,
+                name: user.displayName || 'مستخدم',
+                username: email,
+                email: user.email || email,
+                phone: '',
+                plan: 'free',
+                createdAt: new Date().toISOString()
+            };
+            
+            // ✅ حفظ البيانات في Database إذا لم تكن موجودة
+            await db.ref(`users/${user.uid}`).set({
+                name: currentUser.name,
+                username: currentUser.username,
+                email: currentUser.email,
+                phone: currentUser.phone,
+                plan: currentUser.plan,
+                createdAt: currentUser.createdAt,
+                uid: user.uid
+            });
+        }
         
+        // ✅ حفظ في localStorage
         localStorage.setItem('currentUser', JSON.stringify(currentUser));
+        
+        // ✅ تحديث آخر تسجيل دخول
         await db.ref(`users/${user.uid}/lastLogin`).set(new Date().toISOString());
         
         showToast(`✅ مرحباً ${currentUser.name}`);
         showDashboard();
+        updateHomeUI();
+        updateSidebarUI();
         
     } catch (error) {
-        console.error('خطأ في تسجيل الدخول:', error);
+        console.error('❌ خطأ في تسجيل الدخول:', error);
         handleAuthError(error);
     }
 }
@@ -5594,7 +5632,7 @@ auth.onAuthStateChanged(async (user) => {
 
         function prevStep(step) { showStep(step); }
 
-       async function completeRegistration() {
+     async function completeRegistration() {
     const agree = document.getElementById('agreeTerms').checked;
     if (!agree) { 
         showToast('❌ الرجاء الموافقة على الشروط'); 
@@ -5605,10 +5643,19 @@ auth.onAuthStateChanged(async (user) => {
     const email = tempUserData.username; // username@tecno.com
     const password = tempUserData.password;
     
+    if (!email || !password) {
+        showToast('❌ البيانات غير مكتملة');
+        return;
+    }
+    
     try {
+        showToast('⏳ جاري إنشاء الحساب...');
+        
         // ✅ إنشاء حساب في Firebase Authentication
         const userCredential = await auth.createUserWithEmailAndPassword(email, password);
         const user = userCredential.user;
+        
+        console.log('✅ تم إنشاء الحساب، UID:', user.uid);
         
         // ✅ تحديث الاسم في Authentication
         await user.updateProfile({
@@ -5618,7 +5665,7 @@ auth.onAuthStateChanged(async (user) => {
         // ✅ حفظ بيانات إضافية في Database
         await db.ref(`users/${user.uid}`).set({
             name: fullName,
-            phone: tempUserData.phone,
+            phone: tempUserData.phone || '',
             username: email,
             email: email,
             plan: 'free',
@@ -5633,20 +5680,50 @@ auth.onAuthStateChanged(async (user) => {
             name: fullName,
             username: email,
             email: email,
-            phone: tempUserData.phone,
-            plan: 'free'
+            phone: tempUserData.phone || '',
+            plan: 'free',
+            createdAt: new Date().toISOString()
         };
         
         localStorage.setItem('currentUser', JSON.stringify(currentUser));
+        
         showToast('✅ تم إنشاء الحساب بنجاح');
         showDashboard();
+        updateHomeUI();
+        updateSidebarUI();
         
     } catch (error) {
-        console.error('خطأ في إنشاء الحساب:', error);
+        console.error('❌ خطأ في إنشاء الحساب:', error);
         handleAuthError(error);
     }
 }
-
+// ==================== التأكد من بيانات المستخدم ====================
+async function ensureUserData() {
+    if (!currentUser || !currentUser.uid) return false;
+    
+    try {
+        const snapshot = await db.ref(`users/${currentUser.uid}`).once('value');
+        const userData = snapshot.val();
+        
+        if (!userData) {
+            console.warn('⚠️ لا توجد بيانات للمستخدم في Database');
+            return false;
+        }
+        
+        // ✅ تحديث currentUser من Database
+        currentUser = {
+            uid: currentUser.uid,
+            ...userData
+        };
+        
+        localStorage.setItem('currentUser', JSON.stringify(currentUser));
+        return true;
+        
+    } catch (error) {
+        console.error('❌ خطأ في جلب بيانات المستخدم:', error);
+        return false;
+    }
+}
         async function checkUsernameAvailability() {
             const username = document.getElementById('username').value.trim();
             const statusDiv = document.getElementById('usernameStatus');
