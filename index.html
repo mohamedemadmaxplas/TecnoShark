@@ -6059,14 +6059,14 @@ function updateLocalParticipantSpeaking(isSpeaking) {
     }
 }
 
-// ==================== 6. بدء تحديث مؤشرات الصوت ====================
+// ==================== بدء تحديث مؤشرات الصوت (معدل) ====================
 function startAudioIndicators() {
     if (audioUpdateInterval) {
         clearInterval(audioUpdateInterval);
     }
     
     audioUpdateInterval = setInterval(() => {
-        updateAudioIndicators();
+        updateAudioIndicator();  // ✅ استخدم updateAudioIndicator (مفرد)
     }, 100); // تحديث كل 100ms
 }
 
