@@ -6459,10 +6459,16 @@ function cleanOldAudioData() {
                 document.getElementById('createMeetingModal').classList.remove('active');
             }
         }
-// ==================== إنشاء اجتماع جديد (معدل مع غرفة الانتظار) ====================
+// ==================== إنشاء اجتماع جديد (معدل) ====================
 async function createNewMeeting(event) {
     event.preventDefault();
-    if (!currentUser) return;
+    
+    // التحقق من تسجيل الدخول
+    if (!currentUser) {
+        showToast('❌ الرجاء تسجيل الدخول أولاً');
+        showLoginPage();
+        return;
+    }
     
     const title = document.getElementById('meetingTitleInput').value.trim();
     const date = document.getElementById('meetingDateInput').value;
@@ -6494,7 +6500,7 @@ async function createNewMeeting(event) {
             screenShare: document.getElementById('meetScreenShare').checked,
             chat: document.getElementById('meetChat').checked,
             recording: document.getElementById('meetRecording').checked,
-            waitingRoom: document.getElementById('meetWaitingRoom').checked  // غرفة الانتظار
+            waitingRoom: document.getElementById('meetWaitingRoom').checked
         },
         participants: {
             [currentUser.uid]: {
@@ -6506,7 +6512,7 @@ async function createNewMeeting(event) {
                 videoEnabled: true
             }
         },
-        pendingParticipants: {}  // قائمة الانتظار
+        pendingParticipants: {}
     };
     
     try {
@@ -6515,8 +6521,8 @@ async function createNewMeeting(event) {
         closeCreateMeetingModal();
         loadMeetings();
         
-        // فتح غرفة الاجتماع
-        joinMeetingRoom(meetingId);
+        // فتح غرفة الاجتماع باستخدام WebRTC
+        await joinMeetingRoom(meetingId);
     } catch (error) {
         console.error('خطأ في إنشاء الاجتماع:', error);
         showToast('❌ حدث خطأ في إنشاء الاجتماع');
@@ -6578,7 +6584,703 @@ function showScreenShareUI() {
         moveParticipantsToSide();
     }, 100);
 }
+// ==================== WebRTC Manager Class (جديد بالكامل) ====================
+class WebRTCManager {
+    constructor() {
+        this.peerConnections = {};
+        this.localStream = null;
+        this.screenStream = null;
+        this.roomId = null;
+        this.isHost = false;
+        this.participants = {};
+        this.isScreenSharing = false;
+    }
 
+    async initMeeting(roomId, isHost) {
+        this.roomId = roomId;
+        this.isHost = isHost;
+        await this.startLocalMedia();
+        this.listenForSignaling();
+        if (isHost) {
+            this.listenForParticipants();
+        }
+    }
+
+    async startLocalMedia() {
+        try {
+            const constraints = {
+                video: { facingMode: 'user', width: { ideal: 640 }, height: { ideal: 480 } },
+                audio: { echoCancellation: true, noiseSuppression: true, autoGainControl: true }
+            };
+            this.localStream = await navigator.mediaDevices.getUserMedia(constraints);
+            const videoElement = document.getElementById('localVideo');
+            if (videoElement) {
+                videoElement.srcObject = this.localStream;
+                videoElement.play().catch(e => console.log('فيديو محلي:', e));
+            }
+            const hasVideo = this.localStream.getVideoTracks().length > 0;
+            const hasAudio = this.localStream.getAudioTracks().length > 0;
+            updateDeviceStatus(hasVideo, hasAudio);
+            return true;
+        } catch (error) {
+            console.error('خطأ في تشغيل الكاميرا:', error);
+            try {
+                const audioOnly = await navigator.mediaDevices.getUserMedia({ audio: true });
+                this.localStream = audioOnly;
+                updateDeviceStatus(false, true);
+                showToast('⚠️ تم تشغيل المايك فقط');
+                return true;
+            } catch (audioError) {
+                updateDeviceStatus(false, false);
+                return false;
+            }
+        }
+    }
+
+    async startScreenShare() {
+        try {
+            const constraints = { video: { cursor: 'always', displaySurface: 'monitor' }, audio: false };
+            this.screenStream = await navigator.mediaDevices.getDisplayMedia(constraints);
+            this.isScreenSharing = true;
+            const screenElement = document.getElementById('screenShareVideo');
+            if (screenElement) {
+                screenElement.srcObject = this.screenStream;
+                screenElement.play().catch(e => console.log('شاشة:', e));
+            }
+            this.screenStream.getTracks().forEach(track => {
+                Object.values(this.peerConnections).forEach(pc => {
+                    try { pc.addTrack(track, this.screenStream); } catch(e) {}
+                });
+            });
+            this.updateParticipantStatus('screenSharing', true);
+            showScreenShareUI();
+            showToast('🖥️ جاري مشاركة الشاشة');
+            this.screenStream.getVideoTracks()[0].onended = () => this.stopScreenShare();
+            return true;
+        } catch (error) {
+            console.error('خطأ في مشاركة الشاشة:', error);
+            if (error.name !== 'AbortError' && error.name !== 'NotAllowedError') {
+                showToast('❌ تعذر مشاركة الشاشة');
+            }
+            return false;
+        }
+    }
+
+    stopScreenShare() {
+        if (this.screenStream) {
+            this.screenStream.getTracks().forEach(track => { track.stop(); track.enabled = false; });
+            this.screenStream = null;
+        }
+        this.isScreenSharing = false;
+        const screenElement = document.getElementById('screenShareVideo');
+        if (screenElement) screenElement.srcObject = null;
+        hideScreenShareUI();
+        this.updateParticipantStatus('screenSharing', false);
+        showToast('🖥️ تم إيقاف مشاركة الشاشة');
+    }
+
+    async createPeerConnection(targetUid) {
+        if (this.peerConnections[targetUid]) return this.peerConnections[targetUid];
+        const configuration = {
+            iceServers: [
+                { urls: 'stun:stun.l.google.com:19302' },
+                { urls: 'stun:stun1.l.google.com:19302' },
+                { urls: 'stun:stun2.l.google.com:19302' }
+            ]
+        };
+        const pc = new RTCPeerConnection(configuration);
+        this.peerConnections[targetUid] = pc;
+        if (this.localStream) {
+            this.localStream.getTracks().forEach(track => {
+                try { pc.addTrack(track, this.localStream); } catch(e) {}
+            });
+        }
+        if (this.screenStream) {
+            this.screenStream.getTracks().forEach(track => {
+                try { pc.addTrack(track, this.screenStream); } catch(e) {}
+            });
+        }
+        pc.ontrack = (event) => {
+            const stream = event.streams[0];
+            if (stream) this.displayRemoteStream(targetUid, stream);
+        };
+        pc.onicecandidate = (event) => {
+            if (event.candidate) this.sendIceCandidate(targetUid, event.candidate);
+        };
+        pc.oniceconnectionstatechange = () => {
+            const state = pc.iceConnectionState;
+            console.log(`🔗 حالة الاتصال مع ${targetUid}: ${state}`);
+            if (state === 'disconnected' || state === 'failed') this.handleDisconnection(targetUid);
+        };
+        pc.onconnectionstatechange = () => {
+            console.log(`🔗 حالة الاتصال العامة مع ${targetUid}: ${pc.connectionState}`);
+        };
+        return pc;
+    }
+
+    displayRemoteStream(uid, stream) {
+        let videoElement = document.getElementById(`remoteVideo_${uid}`);
+        if (!videoElement) {
+            const grid = document.getElementById('participantsGrid');
+            if (grid) {
+                const wrapper = document.createElement('div');
+                wrapper.className = 'participant-mini';
+                wrapper.id = `participant_${uid}`;
+                videoElement = document.createElement('video');
+                videoElement.id = `remoteVideo_${uid}`;
+                videoElement.autoplay = true;
+                videoElement.playsInline = true;
+                wrapper.appendChild(videoElement);
+                const nameTag = document.createElement('div');
+                nameTag.className = 'name-tag';
+                nameTag.innerText = this.participants[uid]?.name || 'مشارك';
+                wrapper.appendChild(nameTag);
+                grid.appendChild(wrapper);
+            }
+        }
+        if (videoElement) {
+            videoElement.srcObject = stream;
+            videoElement.play().catch(e => console.log('تشغيل الفيديو البعيد:', e));
+        }
+    }
+
+    async sendOffer(targetUid) {
+        try {
+            const pc = await this.createPeerConnection(targetUid);
+            const offer = await pc.createOffer({ offerToReceiveAudio: true, offerToReceiveVideo: true });
+            await pc.setLocalDescription(offer);
+            const signalingRef = db.ref(`meetings/${this.roomId}/signaling/${targetUid}`);
+            await signalingRef.update({ offer: { sdp: offer.sdp, type: offer.type }, timestamp: Date.now() });
+            console.log('✅ تم إرسال العرض إلى:', targetUid);
+        } catch (error) {
+            console.error('خطأ في إرسال العرض:', error);
+        }
+    }
+
+    async sendAnswer(targetUid) {
+        try {
+            const pc = await this.createPeerConnection(targetUid);
+            const answer = await pc.createAnswer();
+            await pc.setLocalDescription(answer);
+            const signalingRef = db.ref(`meetings/${this.roomId}/signaling/${targetUid}`);
+            await signalingRef.update({ answer: { sdp: answer.sdp, type: answer.type }, timestamp: Date.now() });
+            console.log('✅ تم إرسال الإجابة إلى:', targetUid);
+        } catch (error) {
+            console.error('خطأ في إرسال الإجابة:', error);
+        }
+    }
+
+    sendIceCandidate(targetUid, candidate) {
+        const candidatesRef = db.ref(`meetings/${this.roomId}/signaling/${targetUid}/candidates`);
+        candidatesRef.push({
+            candidate: candidate.candidate,
+            sdpMLineIndex: candidate.sdpMLineIndex,
+            sdpMid: candidate.sdpMid,
+            timestamp: Date.now()
+        });
+    }
+
+    listenForSignaling() {
+        if (!this.roomId || !currentUser) return;
+        const signalingRef = db.ref(`meetings/${this.roomId}/signaling/${currentUser.uid}`);
+        signalingRef.child('offer').on('value', async (snapshot) => {
+            const data = snapshot.val();
+            if (!data) return;
+            const targetUid = snapshot.ref.parent.key;
+            if (targetUid === currentUser.uid) return;
+            try {
+                const pc = await this.createPeerConnection(targetUid);
+                await pc.setRemoteDescription(new RTCSessionDescription(data.offer));
+                await this.sendAnswer(targetUid);
+            } catch (error) {
+                console.error('خطأ في معالجة العرض:', error);
+            }
+        });
+        signalingRef.child('answer').on('value', async (snapshot) => {
+            const data = snapshot.val();
+            if (!data) return;
+            const targetUid = snapshot.ref.parent.key;
+            if (targetUid === currentUser.uid) return;
+            try {
+                const pc = this.peerConnections[targetUid];
+                if (pc) await pc.setRemoteDescription(new RTCSessionDescription(data.answer));
+            } catch (error) {
+                console.error('خطأ في معالجة الإجابة:', error);
+            }
+        });
+        signalingRef.child('candidates').on('child_added', async (snapshot) => {
+            const data = snapshot.val();
+            if (!data) return;
+            const targetUid = snapshot.ref.parent.parent.key;
+            if (targetUid === currentUser.uid) return;
+            try {
+                const pc = this.peerConnections[targetUid];
+                if (pc) await pc.addIceCandidate(new RTCIceCandidate(data));
+            } catch (error) {
+                console.log('خطأ في إضافة مرشح ICE:', error);
+            }
+        });
+    }
+
+    listenForParticipants() {
+        if (!this.roomId) return;
+        const participantsRef = db.ref(`meetings/${this.roomId}/participants`);
+        participantsRef.on('child_added', (snapshot) => {
+            const uid = snapshot.key;
+            if (uid === currentUser?.uid) return;
+            const participant = snapshot.val();
+            console.log('👤 مشارك جديد:', participant.name);
+            this.participants[uid] = participant;
+            setTimeout(() => this.sendOffer(uid), 1000);
+        });
+    }
+
+    updateParticipantStatus(key, value) {
+        if (!this.roomId || !currentUser) return;
+        db.ref(`meetings/${this.roomId}/participants/${currentUser.uid}`).update({ [key]: value });
+    }
+
+    handleDisconnection(uid) {
+        const videoElement = document.getElementById(`remoteVideo_${uid}`);
+        if (videoElement) {
+            const wrapper = videoElement.parentElement;
+            if (wrapper) wrapper.remove();
+        }
+        if (this.peerConnections[uid]) {
+            this.peerConnections[uid].close();
+            delete this.peerConnections[uid];
+        }
+        if (this.roomId) {
+            db.ref(`meetings/${this.roomId}/participants/${uid}`).remove();
+        }
+    }
+
+    async leaveMeeting() {
+        if (this.localStream) {
+            this.localStream.getTracks().forEach(track => { track.stop(); track.enabled = false; });
+            this.localStream = null;
+        }
+        if (this.screenStream) {
+            this.screenStream.getTracks().forEach(track => { track.stop(); track.enabled = false; });
+            this.screenStream = null;
+            this.isScreenSharing = false;
+        }
+        Object.values(this.peerConnections).forEach(pc => { try { pc.close(); } catch(e) {} });
+        this.peerConnections = {};
+        if (this.roomId && currentUser) {
+            await db.ref(`meetings/${this.roomId}/participants/${currentUser.uid}`).remove();
+            await db.ref(`meetings/${this.roomId}/signaling/${currentUser.uid}`).remove();
+        }
+        this.roomId = null;
+        this.isHost = false;
+        this.participants = {};
+    }
+
+    toggleMic() {
+        if (!this.localStream) return false;
+        const audioTracks = this.localStream.getAudioTracks();
+        if (audioTracks.length === 0) return false;
+        const enabled = audioTracks[0].enabled;
+        audioTracks[0].enabled = !enabled;
+        this.updateParticipantStatus('micEnabled', !enabled);
+        return !enabled;
+    }
+
+    toggleVideo() {
+        if (!this.localStream) return false;
+        const videoTracks = this.localStream.getVideoTracks();
+        if (videoTracks.length === 0) return false;
+        const enabled = videoTracks[0].enabled;
+        videoTracks[0].enabled = !enabled;
+        this.updateParticipantStatus('videoEnabled', !enabled);
+        return !enabled;
+    }
+}
+
+// ==================== إنشاء مدير WebRTC (جديد) ====================
+const webRTCManager = new WebRTCManager();
+
+// ==================== دوال واجهة الشير سكرين (جديد) ====================
+function showScreenShareUI() {
+    const wrapper = document.getElementById('screenShareWrapper');
+    if (wrapper) {
+        wrapper.style.display = 'block';
+        const video = wrapper.querySelector('video');
+        if (video && webRTCManager.screenStream) {
+            video.srcObject = webRTCManager.screenStream;
+            video.play().catch(e => console.log('شاشة:', e));
+        }
+    }
+}
+
+function hideScreenShareUI() {
+    const wrapper = document.getElementById('screenShareWrapper');
+    if (wrapper) {
+        wrapper.style.display = 'none';
+        const video = wrapper.querySelector('video');
+        if (video) video.srcObject = null;
+    }
+}
+
+// ==================== دوال شاشة الانتظار (جديد) ====================
+function showWaitingScreen(meetingId, userName) {
+    const existing = document.getElementById('waitingScreen');
+    if (existing) existing.remove();
+    const waitingDiv = document.createElement('div');
+    waitingDiv.id = 'waitingScreen';
+    waitingDiv.style.cssText = `
+        position: fixed; top: 0; left: 0; width: 100vw; height: 100vh;
+        background: linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f3460 100%);
+        display: flex; flex-direction: column; align-items: center; justify-content: center;
+        z-index: 2000; padding: 20px;
+    `;
+    waitingDiv.innerHTML = `
+        <div style="text-align: center; max-width: 400px; width: 100%;">
+            <div style="font-size: 60px; margin-bottom: 20px;">⏳</div>
+            <h2 style="color: #fff; font-size: 24px; margin-bottom: 10px;">في انتظار الموافقة</h2>
+            <p style="color: rgba(255,255,255,0.7); font-size: 16px; margin-bottom: 20px;">
+                مرحباً <strong style="color: #60a5fa;">${userName}</strong>
+            </p>
+            <p style="color: rgba(255,255,255,0.5); font-size: 14px; margin-bottom: 30px;">
+                ينتظر منشئ الاجتماع الموافقة على دخولك
+            </p>
+            <div style="display: flex; justify-content: center; gap: 10px; margin-bottom: 30px;">
+                <div style="width: 12px; height: 12px; background: #60a5fa; border-radius: 50%; animation: waitingPulse 1.5s ease-in-out infinite;"></div>
+                <div style="width: 12px; height: 12px; background: #60a5fa; border-radius: 50%; animation: waitingPulse 1.5s ease-in-out 0.3s infinite;"></div>
+                <div style="width: 12px; height: 12px; background: #60a5fa; border-radius: 50%; animation: waitingPulse 1.5s ease-in-out 0.6s infinite;"></div>
+            </div>
+            <button onclick="cancelJoinRequest('${meetingId}')" style="
+                background: rgba(255,255,255,0.1); border: 1px solid rgba(255,255,255,0.2);
+                color: #fff; padding: 10px 30px; border-radius: 30px; cursor: pointer; font-size: 14px;
+                transition: all 0.3s;
+            " onmouseover="this.style.background='rgba(255,255,255,0.2)'" onmouseout="this.style.background='rgba(255,255,255,0.1)'">
+                <i class="fas fa-times"></i> إلغاء الطلب
+            </button>
+        </div>
+        <style>
+            @keyframes waitingPulse {
+                0%, 100% { transform: scale(1); opacity: 1; }
+                50% { transform: scale(1.5); opacity: 0.5; }
+            }
+        </style>
+    `;
+    document.body.appendChild(waitingDiv);
+    startWaitingListener(meetingId);
+}
+
+function startWaitingListener(meetingId) {
+    const pendingRef = db.ref(`meetings/${meetingId}/pendingParticipants/${currentUser.uid}`);
+    pendingRef.on('value', (snapshot) => {
+        const data = snapshot.val();
+        if (!data) {
+            pendingRef.off();
+            db.ref(`meetings/${meetingId}/participants/${currentUser.uid}`).once('value').then(participantSnap => {
+                if (participantSnap.val()) {
+                    removeWaitingScreen();
+                    showToast('✅ تمت الموافقة على انضمامك');
+                    joinMeetingRoom(meetingId);
+                } else {
+                    removeWaitingScreen();
+                    showToast('❌ تم رفض طلب الانضمام');
+                    setTimeout(() => goToMeetingsRoom(), 2000);
+                }
+            });
+        }
+    });
+    db.ref(`meetings/${meetingId}/status`).on('value', (snapshot) => {
+        const status = snapshot.val();
+        if (status === 'ended') {
+            pendingRef.off();
+            removeWaitingScreen();
+            showToast('❌ تم إنهاء الاجتماع');
+            setTimeout(() => goToMeetingsRoom(), 2000);
+        }
+    });
+}
+
+function removeWaitingScreen() {
+    const waiting = document.getElementById('waitingScreen');
+    if (waiting) waiting.remove();
+    if (currentRoomMeetingId) {
+        db.ref(`meetings/${currentRoomMeetingId}/pendingParticipants/${currentUser?.uid}`).off();
+        db.ref(`meetings/${currentRoomMeetingId}/status`).off();
+    }
+}
+
+async function cancelJoinRequest(meetingId) {
+    if (!currentUser) return;
+    try {
+        await db.ref(`meetings/${meetingId}/pendingParticipants/${currentUser.uid}`).remove();
+        removeWaitingScreen();
+        showToast('✅ تم إلغاء طلب الدخول');
+        goToMeetingsRoom();
+    } catch (error) {
+        showToast('❌ حدث خطأ في إلغاء الطلب');
+    }
+}
+
+async function requestJoinMeeting(meetingId) {
+    try {
+        const snapshot = await db.ref(`meetings/${meetingId}`).once('value');
+        const meeting = snapshot.val();
+        if (!meeting) {
+            showToast('❌ الاجتماع غير موجود');
+            return;
+        }
+        const userName = currentUser?.name || currentUser?.username || 'مستخدم';
+        const pending = meeting.pendingParticipants || {};
+        pending[currentUser.uid] = {
+            name: userName,
+            requestedAt: new Date().toISOString(),
+            isGuest: currentUser.isGuest || false
+        };
+        await db.ref(`meetings/${meetingId}/pendingParticipants`).set(pending);
+        showWaitingScreen(meetingId, userName);
+        showToast('⏳ جاري طلب الانضمام... في انتظار موافقة المنشئ');
+    } catch (error) {
+        console.error('خطأ في طلب الانضمام:', error);
+        showToast('❌ حدث خطأ في طلب الانضمام');
+    }
+}
+
+// ==================== دوال إشعارات طلب الدخول للمنشئ (جديد) ====================
+function showJoinRequestNotification(meetingId, userId, userName) {
+    db.ref(`meetings/${meetingId}`).once('value').then(snapshot => {
+        const meeting = snapshot.val();
+        if (!meeting || meeting.creatorId !== currentUser?.uid) return;
+        const notification = document.createElement('div');
+        notification.id = `joinRequest_${userId}`;
+        notification.style.cssText = `
+            position: fixed; top: 80px; right: 20px;
+            background: rgba(26, 26, 46, 0.95); backdrop-filter: blur(12px);
+            border: 1px solid rgba(59, 130, 246, 0.3); border-radius: 16px;
+            padding: 16px 20px; z-index: 1500; max-width: 350px; width: 90%;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.5); animation: slideInRight 0.5s ease;
+            color: #fff;
+        `;
+        notification.innerHTML = `
+            <div style="display: flex; align-items: center; gap: 12px; margin-bottom: 12px;">
+                <div style="width: 40px; height: 40px; border-radius: 50%; background: #2563eb; display: flex; align-items: center; justify-content: center; font-size: 18px; font-weight: bold;">
+                    ${(userName || 'U').charAt(0).toUpperCase()}
+                </div>
+                <div style="flex: 1;">
+                    <div style="font-weight: bold; font-size: 14px;">${userName}</div>
+                    <div style="font-size: 12px; color: rgba(255,255,255,0.6);">يريد الانضمام إلى الاجتماع</div>
+                </div>
+            </div>
+            <div style="display: flex; gap: 10px;">
+                <button onclick="approveJoinRequest('${meetingId}', '${userId}')" style="
+                    flex: 1; background: #22c55e; border: none; color: #fff;
+                    padding: 8px 16px; border-radius: 12px; cursor: pointer; font-size: 14px;
+                    font-weight: bold; transition: all 0.3s;
+                " onmouseover="this.style.background='#16a34a'" onmouseout="this.style.background='#22c55e'">
+                    <i class="fas fa-check"></i> قبول
+                </button>
+                <button onclick="rejectJoinRequest('${meetingId}', '${userId}')" style="
+                    flex: 1; background: #dc3545; border: none; color: #fff;
+                    padding: 8px 16px; border-radius: 12px; cursor: pointer; font-size: 14px;
+                    font-weight: bold; transition: all 0.3s;
+                " onmouseover="this.style.background='#b02a37'" onmouseout="this.style.background='#dc3545'">
+                    <i class="fas fa-times"></i> رفض
+                </button>
+            </div>
+        `;
+        document.body.appendChild(notification);
+        setTimeout(() => {
+            const el = document.getElementById(`joinRequest_${userId}`);
+            if (el) {
+                el.style.opacity = '0';
+                el.style.transform = 'translateX(50px)';
+                el.style.transition = 'all 0.5s ease';
+                setTimeout(() => { if (el.parentNode) el.remove(); }, 500);
+            }
+        }, 30000);
+    });
+}
+
+function listenForJoinRequests(meetingId) {
+    const pendingRef = db.ref(`meetings/${meetingId}/pendingParticipants`);
+    pendingRef.on('child_added', (snapshot) => {
+        const userId = snapshot.key;
+        const userData = snapshot.val();
+        db.ref(`meetings/${meetingId}/creatorId`).once('value').then(creatorSnap => {
+            const creatorId = creatorSnap.val();
+            if (creatorId === currentUser?.uid && userId !== currentUser?.uid) {
+                showJoinRequestNotification(meetingId, userId, userData.name);
+            }
+        });
+    });
+}
+
+async function approveJoinRequest(meetingId, userId) {
+    try {
+        const snapshot = await db.ref(`meetings/${meetingId}`).once('value');
+        const meeting = snapshot.val();
+        if (!meeting) return;
+        const pending = meeting.pendingParticipants || {};
+        const userData = pending[userId];
+        if (!userData) return;
+        delete pending[userId];
+        await db.ref(`meetings/${meetingId}/pendingParticipants`).set(pending);
+        const participants = meeting.participants || {};
+        participants[userId] = {
+            name: userData.name || 'مستخدم',
+            joinedAt: new Date().toISOString(),
+            isHost: false,
+            isGuest: userData.isGuest || false,
+            micEnabled: true,
+            videoEnabled: true
+        };
+        await db.ref(`meetings/${meetingId}/participants`).set(participants);
+        const notif = document.getElementById(`joinRequest_${userId}`);
+        if (notif) notif.remove();
+        showToast(`✅ تمت الموافقة على انضمام ${userData.name}`);
+        updateMeetingUI(participants);
+    } catch (error) {
+        console.error('خطأ في الموافقة على الانضمام:', error);
+        showToast('❌ حدث خطأ');
+    }
+}
+
+async function rejectJoinRequest(meetingId, userId) {
+    try {
+        const snapshot = await db.ref(`meetings/${meetingId}`).once('value');
+        const meeting = snapshot.val();
+        if (!meeting) return;
+        const pending = meeting.pendingParticipants || {};
+        const userData = pending[userId];
+        if (!userData) return;
+        delete pending[userId];
+        await db.ref(`meetings/${meetingId}/pendingParticipants`).set(pending);
+        const notif = document.getElementById(`joinRequest_${userId}`);
+        if (notif) notif.remove();
+        showToast(`❌ تم رفض انضمام ${userData.name}`);
+    } catch (error) {
+        console.error('خطأ في رفض الانضمام:', error);
+        showToast('❌ حدث خطأ');
+    }
+}
+
+// ==================== تحديث واجهة الاجتماع (جديد) ====================
+function updateMeetingUI(participants) {
+    const grid = document.getElementById('participantsGrid');
+    if (!grid) return;
+    grid.innerHTML = '';
+    if (!participants) {
+        grid.innerHTML = '<div class="text-white/50 text-center p-4">لا يوجد مشاركون</div>';
+        return;
+    }
+    const names = Object.keys(participants);
+    names.forEach((uid) => {
+        const p = participants[uid];
+        const isLocal = uid === currentUser?.uid;
+        const isHost = p.isHost;
+        const isGuest = p.isGuest;
+        const wrapper = document.createElement('div');
+        wrapper.className = 'participant-mini';
+        wrapper.id = `participant_${uid}`;
+        wrapper.dataset.uid = uid;
+        const initial = (p.name || 'U').charAt(0).toUpperCase();
+        wrapper.innerHTML = `
+            ${isLocal ? `<video id="localVideo" autoplay muted playsinline></video>` : `<video id="remoteVideo_${uid}" autoplay playsinline></video>`}
+            <div class="avatar-placeholder">${initial}</div>
+            <div class="name-tag">${p.name} ${isHost ? '👑' : ''} ${isGuest ? '👤' : ''}</div>
+            <div class="status-icons-mini">
+                <span class="icon-mini ${p.micEnabled !== false ? 'active' : 'inactive'}">
+                    <i class="fas ${p.micEnabled !== false ? 'fa-microphone' : 'fa-microphone-slash'}"></i>
+                </span>
+                <span class="icon-mini ${p.videoEnabled !== false ? 'active' : 'inactive'}">
+                    <i class="fas ${p.videoEnabled !== false ? 'fa-video' : 'fa-video-slash'}"></i>
+                </span>
+            </div>
+        `;
+        grid.appendChild(wrapper);
+    });
+}
+
+// ==================== دوال التحكم في الاجتماع (جديد) ====================
+function roomToggleMic() {
+    const result = webRTCManager.toggleMic();
+    const micBtn = document.getElementById('roomMicBtn');
+    if (result) {
+        micBtn.classList.remove('inactive');
+        micBtn.classList.add('active');
+        micBtn.innerHTML = '<i class="fas fa-microphone"></i>';
+        micBtn.title = 'كتم الصوت';
+        showToast('🎤 تم تفعيل المايك');
+    } else {
+        micBtn.classList.remove('active');
+        micBtn.classList.add('inactive');
+        micBtn.innerHTML = '<i class="fas fa-microphone-slash"></i>';
+        micBtn.title = 'تفعيل المايك';
+        showToast('🔇 تم كتم المايك');
+    }
+}
+
+function roomToggleVideo() {
+    const result = webRTCManager.toggleVideo();
+    const videoBtn = document.getElementById('roomVideoBtn');
+    const placeholder = document.getElementById('videoPlaceholder');
+    if (result) {
+        videoBtn.classList.remove('inactive');
+        videoBtn.classList.add('active');
+        videoBtn.innerHTML = '<i class="fas fa-video"></i>';
+        videoBtn.title = 'إيقاف الكاميرا';
+        if (placeholder) placeholder.style.display = 'none';
+        showToast('📹 تم تفعيل الكاميرا');
+    } else {
+        videoBtn.classList.remove('active');
+        videoBtn.classList.add('inactive');
+        videoBtn.innerHTML = '<i class="fas fa-video-slash"></i>';
+        videoBtn.title = 'تفعيل الكاميرا';
+        if (placeholder) placeholder.style.display = 'flex';
+        showToast('📹 تم إيقاف الكاميرا');
+    }
+}
+
+async function roomToggleScreenShare() {
+    if (webRTCManager.isScreenSharing) {
+        webRTCManager.stopScreenShare();
+        const screenBtn = document.getElementById('roomScreenBtn');
+        screenBtn.classList.remove('active');
+        screenBtn.innerHTML = '<i class="fas fa-desktop"></i>';
+        screenBtn.title = 'مشاركة الشاشة';
+    } else {
+        const screenBtn = document.getElementById('roomScreenBtn');
+        screenBtn.classList.add('active');
+        screenBtn.innerHTML = '<i class="fas fa-desktop"></i>';
+        screenBtn.title = 'إيقاف مشاركة الشاشة';
+        await webRTCManager.startScreenShare();
+    }
+}
+
+// ==================== تحديث حالة الأجهزة (جديد) ====================
+function updateDeviceStatus(hasCamera, hasMic) {
+    const micBtn = document.getElementById('roomMicBtn');
+    const videoBtn = document.getElementById('roomVideoBtn');
+    if (micBtn) {
+        if (hasMic) {
+            micBtn.classList.remove('inactive', 'no-device');
+            micBtn.classList.add('active');
+            micBtn.innerHTML = '<i class="fas fa-microphone"></i>';
+        } else {
+            micBtn.classList.remove('active');
+            micBtn.classList.add('inactive', 'no-device');
+            micBtn.innerHTML = '<i class="fas fa-microphone-slash"></i>';
+        }
+    }
+    if (videoBtn) {
+        if (hasCamera) {
+            videoBtn.classList.remove('inactive', 'no-device');
+            videoBtn.classList.add('active');
+            videoBtn.innerHTML = '<i class="fas fa-video"></i>';
+        } else {
+            videoBtn.classList.remove('active');
+            videoBtn.classList.add('inactive', 'no-device');
+            videoBtn.innerHTML = '<i class="fas fa-video-slash"></i>';
+        }
+    }
+}
 // ==================== 3. إضافة شير سكرين للواجهة ====================
 function addScreenShareToUI() {
     const container = document.getElementById('meetingRoomPage');
@@ -8119,44 +8821,36 @@ document.addEventListener('DOMContentLoaded', function() {
         // ==================== دوال غرفة الاجتماع الفعلية (WebRTC) ====================
         let currentRoomMeetingId = null;
         let roomChatMessages = [];
-// ==================== الانضمام للاجتماع (مع WebRTC) ====================
+// ==================== الانضمام للاجتماع (معدل) ====================
 async function joinMeetingRoom(meetingId) {
     try {
+        // التحقق من تسجيل الدخول أولاً
+        if (!currentUser) {
+            showToast('❌ الرجاء تسجيل الدخول أولاً');
+            showLoginPage();
+            return;
+        }
+        
         const snapshot = await db.ref(`meetings/${meetingId}`).once('value');
         const meeting = snapshot.val();
+        
         if (!meeting) {
             showToast('❌ الاجتماع غير موجود');
             return;
         }
         
         // التحقق من غرفة الانتظار
-        if (meeting.settings?.waitingRoom && meeting.creatorId !== currentUser?.uid) {
+        if (meeting.settings?.waitingRoom && meeting.creatorId !== currentUser.uid) {
             const pending = meeting.pendingParticipants || {};
-            const isPending = pending[currentUser?.uid];
-            
-            if (isPending) {
-                showWaitingScreen(meetingId, currentUser.name || currentUser.username);
-                return;
-            }
-            
-            if (!meeting.participants?.[currentUser?.uid]) {
+            if (!pending[currentUser.uid] && !meeting.participants?.[currentUser.uid]) {
                 await requestJoinMeeting(meetingId);
                 return;
             }
         }
         
-        currentRoomMeetingId = meetingId;
-        showSpecificPage('meetingRoomPage');
-        
-        // تعيين عنوان الاجتماع
-        const titleEl = document.getElementById('roomMeetingTitle');
-        if (titleEl) titleEl.innerText = meeting.title || 'الاجتماع';
-        
-        const linkEl = document.getElementById('roomMeetingLink');
-        if (linkEl) linkEl.innerText = meeting.meetingId || meetingId;
-        
-        // تشغيل الكاميرا والمايك
-        await startLocalStream();
+        // تهيئة WebRTC
+        const isHost = meeting.creatorId === currentUser.uid;
+        await webRTCManager.initMeeting(meetingId, isHost);
         
         // إضافة المشارك
         if (!meeting.participants) meeting.participants = {};
@@ -8164,7 +8858,7 @@ async function joinMeetingRoom(meetingId) {
             meeting.participants[currentUser.uid] = {
                 name: currentUser.name || currentUser.username,
                 joinedAt: new Date().toISOString(),
-                isHost: meeting.creatorId === currentUser.uid,
+                isHost: isHost,
                 isGuest: currentUser.isGuest || false,
                 micEnabled: true,
                 videoEnabled: true
@@ -8172,42 +8866,38 @@ async function joinMeetingRoom(meetingId) {
             await db.ref(`meetings/${meetingId}/participants`).set(meeting.participants);
         }
         
-        // تخزين المشاركين
-        window.roomParticipants = meeting.participants;
+        // عرض صفحة الاجتماع
+        currentRoomMeetingId = meetingId;
+        showSpecificPage('meetingRoomPage');
         
-        // بدء الاستماع للإشارات (Signaling)
-        listenForSignaling(meetingId);
+        // تحديث واجهة الاجتماع
+        document.getElementById('roomMeetingTitle').innerText = meeting.title || 'الاجتماع';
+        document.getElementById('roomMeetingLink').innerText = meeting.meetingId || meetingId;
         
-        // إرسال عروض للمشاركين الحاليين
-        const participantIds = Object.keys(meeting.participants);
-        for (const uid of participantIds) {
-            if (uid !== currentUser.uid) {
-                await sendOffer(uid);
-            }
+        // الاستماع للمشاركين (للمنشئ)
+        if (isHost) {
+            webRTCManager.listenForParticipants();
+            listenForJoinRequests(meetingId);
         }
-        
-        // إنشاء التخطيط
-        createMeetingLayout(meeting.participants);
-        updateHeaderParticipantsInfo(meeting.participants);
-        loadRoomChatMessages(meetingId);
         
         // تحديث حالة الاجتماع
         if (meeting.status !== 'live') {
             await db.ref(`meetings/${meetingId}/status`).set('live');
         }
         
+        // تحديث واجهة المشاركين
+        updateMeetingUI(meeting.participants);
+        
         // الاستماع لتحديثات المشاركين
-        listenForParticipantUpdates(meetingId);
-        
-        // الاستماع لطلبات الدخول (للمنشئ)
-        if (meeting.creatorId === currentUser?.uid) {
-            listenForJoinRequests(meetingId);
-        }
-        
-        // بدء إرسال مستوى الصوت
-        setInterval(() => {
-            sendAudioLevel();
-        }, 200);
+        const participantsRef = db.ref(`meetings/${meetingId}/participants`);
+        participantsRef.on('value', (snapshot) => {
+            const participants = snapshot.val();
+            if (participants) {
+                window.roomParticipants = participants;
+                updateMeetingUI(participants);
+                updateHeaderParticipantsInfo(participants);
+            }
+        });
         
         showToast('✅ مرحباً بك في الاجتماع');
         
@@ -8580,101 +9270,37 @@ function updateRoomParticipants(participants) {
         }
 
         
-// ==================== تشغيل الكاميرا والمايك (مع كشف الأجهزة) ====================
+// ==================== تشغيل الكاميرا والمايك (معدل) ====================
 async function startLocalStream() {
-    let hasCamera = false;
-    let hasMic = false;
-    
+    // تم استبدال هذه الدالة بـ startLocalMedia في WebRTCManager
+    // لكن نحتفظ بها للتوافق مع الكود القديم
     try {
-        // التحقق من وجود أجهزة
-        const devices = await navigator.mediaDevices.enumerateDevices();
-        const videoDevices = devices.filter(d => d.kind === 'videoinput');
-        const audioDevices = devices.filter(d => d.kind === 'audioinput');
-        
-        hasCamera = videoDevices.length > 0;
-        hasMic = audioDevices.length > 0;
-        
-        // بناء القيود حسب الأجهزة المتاحة
         const constraints = {
-            video: hasCamera ? {
-                facingMode: 'user',
-                width: { ideal: 640 },
-                height: { ideal: 480 }
-            } : false,
-            audio: hasMic ? {
-                echoCancellation: true,
-                noiseSuppression: true,
-                autoGainControl: true
-            } : false
+            video: { facingMode: 'user', width: { ideal: 640 }, height: { ideal: 480 } },
+            audio: { echoCancellation: true, noiseSuppression: true, autoGainControl: true }
         };
-        
+        localStream = await navigator.mediaDevices.getUserMedia(constraints);
+        const videoElement = document.getElementById('localVideo');
+        if (videoElement) {
+            videoElement.srcObject = localStream;
+            videoElement.play();
+        }
+        const hasVideo = localStream.getVideoTracks().length > 0;
+        const hasAudio = localStream.getAudioTracks().length > 0;
+        updateDeviceStatus(hasVideo, hasAudio);
+        return true;
+    } catch (error) {
+        console.error('خطأ في تشغيل الكاميرا:', error);
         try {
-            localStream = await navigator.mediaDevices.getUserMedia(constraints);
-            
-            hasCamera = localStream.getVideoTracks().length > 0;
-            hasMic = localStream.getAudioTracks().length > 0;
-            
-            // عرض الفيديو إذا كانت الكاميرا متاحة
-            const videoElement = document.getElementById('localVideo');
-            if (videoElement && hasCamera) {
-                videoElement.srcObject = localStream;
-                videoElement.play();
-            }
-            
-            // تحديث حالة الأجهزة
-            updateDeviceStatus(hasCamera, hasMic);
-            
-            // تشغيل مؤشر الصوت إذا كان المايك متاحاً
-            if (hasMic) {
-                startAudioVisualizer();
-                // بدء تحديث مؤشر الصوت
-                setInterval(updateAudioIndicator, 100);
-            }
-            
-            const msg = hasCamera && hasMic ? '✅ تم تشغيل الكاميرا والمايك' :
-                       hasCamera ? '✅ تم تشغيل الكاميرا فقط (لا يوجد مايك)' :
-                       hasMic ? '✅ تم تشغيل المايك فقط (لا توجد كاميرا)' :
-                       '⚠️ لا توجد كاميرا أو مايك متصل';
-            showToast(msg);
+            const audioOnly = await navigator.mediaDevices.getUserMedia({ audio: true });
+            localStream = audioOnly;
+            updateDeviceStatus(false, true);
+            showToast('⚠️ تم تشغيل المايك فقط');
             return true;
-            
-        } catch (error) {
-            console.error('خطأ في تشغيل الأجهزة:', error);
-            
-            // محاولة تشغيل الصوت فقط إذا فشلت الكاميرا
-            if (hasMic && !hasCamera) {
-                try {
-                    const audioOnly = await navigator.mediaDevices.getUserMedia({ audio: true });
-                    localStream = audioOnly;
-                    hasMic = true;
-                    hasCamera = false;
-                    updateDeviceStatus(false, true);
-                    showToast('⚠️ تم تشغيل المايك فقط (تعذر تشغيل الكاميرا)');
-                    return true;
-                } catch (audioError) {
-                    showToast('❌ تعذر تشغيل المايك');
-                    updateDeviceStatus(false, false);
-                    return false;
-                }
-            }
-            
-            // إذا كان الخطأ بسبب رفض الإذن
-            if (error.name === 'NotAllowedError' || error.name === 'PermissionDeniedError') {
-                showToast('⚠️ تم رفض إذن الكاميرا والمايك');
-            } else if (error.name === 'NotFoundError') {
-                showToast('⚠️ لا توجد كاميرا أو مايك متصل');
-            } else {
-                showToast('❌ حدث خطأ في تشغيل الكاميرا والمايك');
-            }
-            
+        } catch (audioError) {
             updateDeviceStatus(false, false);
             return false;
         }
-        
-    } catch (error) {
-        console.error('خطأ في فحص الأجهزة:', error);
-        updateDeviceStatus(false, false);
-        return false;
     }
 }
 // ==================== تحديث حالة الأجهزة في الواجهة ====================
@@ -9122,27 +9748,10 @@ async function roomToggleScreenShare() {
     }
 }
 
-// ==================== إيقاف مشاركة الشاشة (مُصلح) ====================
+// ==================== إيقاف مشاركة الشاشة (معدل) ====================
 function stopScreenShare() {
-    // إغلاق العرض الكامل أولاً
-    closeScreenFullscreen();
-    
-    // إيقاف تدفق الشير سكرين
-    if (screenStream) {
-        try {
-            screenStream.getTracks().forEach(track => {
-                track.stop();
-                track.enabled = false;
-            });
-        } catch (error) {
-            console.log('خطأ في إيقاف تدفق الشير:', error);
-        }
-        screenStream = null;
-    }
-    
-    isScreenSharing = false;
-    isScreenSharingMode = false;
-    isScreenFullscreen = false;
+    // استخدام WebRTC Manager
+    webRTCManager.stopScreenShare();
     
     // تحديث واجهة زر الشير سكرين
     const screenBtn = document.getElementById('roomScreenBtn');
@@ -9152,46 +9761,31 @@ function stopScreenShare() {
         screenBtn.title = 'مشاركة الشاشة';
     }
     
-    // تحديث التخطيط
-    const participants = window.roomParticipants || {};
-    createMeetingLayout(participants);
+    // إغلاق العرض الكامل
+    closeScreenFullscreen();
     
     showToast('🖥️ تم إيقاف مشاركة الشاشة');
 }
 
        
 
-       // ==================== مغادرة الاجتماع ====================
+      // ==================== مغادرة الاجتماع (معدل) ====================
 async function leaveMeetingRoom() {
-    if (currentRoomMeetingId) {
-        try {
-            // إزالة المستخدم من المشاركين
-            const snapshot = await db.ref(`meetings/${currentRoomMeetingId}/participants`).once('value');
-            const participants = snapshot.val();
-            if (participants && participants[currentUser.uid]) {
-                delete participants[currentUser.uid];
-                await db.ref(`meetings/${currentRoomMeetingId}/participants`).set(participants);
-            }
-        } catch (error) {
-            console.error('خطأ في مغادرة الاجتماع:', error);
-        }
-    }
+    // استخدام WebRTC Manager لمغادرة الاجتماع
+    await webRTCManager.leaveMeeting();
     
-    // إيقاف الكاميرا والمايك
-    if (localStream) {
-        localStream.getTracks().forEach(track => track.stop());
-        localStream = null;
-    }
-    if (screenStream) {
-        screenStream.getTracks().forEach(track => track.stop());
-        screenStream = null;
-        isScreenSharing = false;
-    }
+    // إزالة المشاركين من واجهة المستخدم
+    const grid = document.getElementById('participantsGrid');
+    if (grid) grid.innerHTML = '';
     
+    // إعادة تعيين المتغيرات
     currentRoomMeetingId = null;
     window.roomParticipants = {};
+    
+    // إغلاق لوحة الشات
     document.getElementById('roomChatPanel').classList.remove('active');
     
+    // العودة إلى صفحة الاجتماعات
     showSpecificPage('meetingsRoomPage');
     loadMeetings();
     showToast('✅ تم مغادرة الاجتماع');
