@@ -4414,7 +4414,28 @@ function showToast(msg) {
             if (overlay) overlay.remove();
             logoClicked = false;
         }
-
+function goToMyAccountPage() {
+    showSpecificPage('myAccountPage');
+    updateSidebarUI();
+    // تحديث بيانات الحساب إذا كان المستخدم مسجل دخول
+    if (currentUser) {
+        document.getElementById('myAccountLoggedOut').classList.add('hidden');
+        document.getElementById('myAccountLoggedIn').classList.remove('hidden');
+        document.getElementById('myAccountName').innerText = `مرحباً ${currentUser.name || 'مستخدم'}`;
+        document.getElementById('myAccountUsername').innerText = currentUser.username || '';
+        document.getElementById('accountFullName').innerText = currentUser.name || 'غير محدد';
+        document.getElementById('accountEmail').innerText = currentUser.email || currentUser.username || 'غير محدد';
+        document.getElementById('accountPhone').innerText = currentUser.phone || 'غير محدد';
+        document.getElementById('accountUsername').innerText = currentUser.username || 'غير محدد';
+        document.getElementById('accountPlan').innerText = currentUser.plan === 'free' ? 'مجاني' : 'مدفوع';
+        document.getElementById('accountCreatedAt').innerText = currentUser.createdAt ? new Date(currentUser.createdAt).toLocaleDateString('ar-EG') : 'غير محدد';
+    } else {
+        document.getElementById('myAccountLoggedOut').classList.remove('hidden');
+        document.getElementById('myAccountLoggedIn').classList.add('hidden');
+        document.getElementById('myAccountName').innerText = 'مرحباً بك';
+        document.getElementById('myAccountUsername').innerText = 'الرجاء تسجيل الدخول';
+    }
+}
         function verifyAdminPasswordFromModal() {
             const input = document.getElementById('adminPasswordInputModal');
             const password = input.value.trim();
