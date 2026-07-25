@@ -9,6 +9,8 @@
     <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-database-compat.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@3/dist/email.min.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-auth-compat.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@3/dist/email.min.js"></script>
     <style>
         /* تأكيد ظهور المحتوى */
         #loginPage:not(.hidden),
@@ -4292,23 +4294,31 @@
     </div>
 
     <script>
-        const firebaseConfig = {
-  apiKey: "AIzaSyD54ifCxvtFuj-445hikUBzI2Q1DkSsVNk",
-  authDomain: "tecnoshark-990a3.firebaseapp.com",
-  databaseURL: "https://tecnoshark-990a3-default-rtdb.firebaseio.com",
-  projectId: "tecnoshark-990a3",
-  storageBucket: "tecnoshark-990a3.firebasestorage.app",
-  messagingSenderId: "992104462106",
-  appId: "1:992104462106:web:f52bb0144276f9a7589ea3",
-  measurementId: "G-MV48NBJJ41"
+        // ==================== تهيئة Firebase ====================
+const firebaseConfig = {
+    apiKey: "AIzaSyD54ifCxvtFuj-445hikUBzI2Q1DkSsVNk",
+    authDomain: "tecnoshark-990a3.firebaseapp.com",
+    databaseURL: "https://tecnoshark-990a3-default-rtdb.firebaseio.com",
+    projectId: "tecnoshark-990a3",
+    storageBucket: "tecnoshark-990a3.firebasestorage.app",
+    messagingSenderId: "992104462106",
+    appId: "1:992104462106:web:f52bb0144276f9a7589ea3",
+    measurementId: "G-MV48NBJJ41"
 };
 
-        firebase.initializeApp(firebaseConfig);
-        const auth = firebase.auth();
-        auth.useDeviceLanguage();
+firebase.initializeApp(firebaseConfig);
 
-    console.log('✅ Firebase Authentication initialized');
-        const db = firebase.database();
+// ✅ تعريف auth بعد initializeApp
+const auth = firebase.auth();
+auth.useDeviceLanguage();
+
+// تعريف db
+const db = firebase.database();
+
+console.log('✅ Firebase initialized');
+console.log('✅ Firebase Auth initialized');
+
+    
 // الاستماع لتغييرات حالة تسجيل الدخول
 auth.onAuthStateChanged(async (user) => {
     if (user) {
@@ -5467,7 +5477,7 @@ async function resetPasswordViaEmail() {
         handleAuthError(error);
     }
 }
-        async function login() {
+      async function login() {
     let identifier = document.getElementById('loginUsername').value.trim();
     const password = document.getElementById('loginPassword').value;
     
@@ -5477,10 +5487,7 @@ async function resetPasswordViaEmail() {
     }
     
     try {
-        // ✅ تسجيل الدخول باستخدام Authentication
         let email = identifier;
-        
-        // إذا كان المستخدم أدخل اسم مستخدم فقط، حوله إلى بريد إلكتروني
         if (!identifier.includes('@')) {
             email = `${identifier}@tecno.com`;
         }
@@ -5488,7 +5495,6 @@ async function resetPasswordViaEmail() {
         const userCredential = await auth.signInWithEmailAndPassword(email, password);
         const user = userCredential.user;
         
-        // ✅ جلب البيانات الإضافية من Database
         const snapshot = await db.ref(`users/${user.uid}`).once('value');
         const userData = snapshot.val();
         
@@ -5541,7 +5547,7 @@ function handleAuthError(error) {
     
     showToast(message);
 }
-        function logout() {
+      function logout() {
     auth.signOut().then(() => {
         currentUser = null;
         localStorage.removeItem('currentUser');
