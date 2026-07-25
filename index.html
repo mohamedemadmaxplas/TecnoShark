@@ -3846,15 +3846,19 @@ async function createNewMeeting(event) {
 let isScreenFullscreen = false;
 let screenShareElement = null;
 
-// ==================== 3. عرض واجهة شير سكرين ====================
+// ==================== عرض واجهة شير سكرين (معدل) ====================
 function showScreenShareUI() {
     const content = document.querySelector('.meeting-content');
-    if (!content) return;
+    if (!content) {
+        showToast('❌ خطأ في عرض شير سكرين');
+        return;
+    }
     
-    // إزالة الواجهة القديمة
+    // إزالة الواجهة القديمة للشير سكرين
     const oldScreen = content.querySelector('.with-screen-share');
     if (oldScreen) oldScreen.remove();
     
+    // إخفاء الواجهة العادية
     const oldNoScreen = content.querySelector('.no-screen-share');
     if (oldNoScreen) oldNoScreen.style.display = 'none';
     
@@ -3886,11 +3890,13 @@ function showScreenShareUI() {
     const video = document.getElementById('screenShareVideo');
     if (video && screenStream) {
         video.srcObject = screenStream;
-        video.play();
+        video.play().catch(e => console.log('فيديو شير سكرين:', e));
     }
     
     // نقل البطاقات إلى الجانب
-    moveParticipantsToSide();
+    setTimeout(() => {
+        moveParticipantsToSide();
+    }, 100);
 }
 
 // ==================== 3. إضافة شير سكرين للواجهة ====================
@@ -3943,34 +3949,39 @@ function addScreenShareToUI() {
     moveParticipantsToSide();
 }
 
-// ==================== 4. نقل البطاقات إلى الجانب ====================
+// ==================== نقل البطاقات إلى الجانب (معدل) ====================
 function moveParticipantsToSide() {
     const side = document.getElementById('participantsSide');
-    if (!side) return;
+    if (!side) {
+        // إذا لم يكن هناك جانب، حاول إيجاده
+        const screenDiv = document.querySelector('.with-screen-share');
+        if (screenDiv) {
+            const newSide = screenDiv.querySelector('.participants-side');
+            if (newSide) {
+                // استمر باستخدام newSide
+                side = newSide;
+            } else {
+                return;
+            }
+        } else {
+            return;
+        }
+    }
     
     side.innerHTML = '';
     
-    // الحصول على جميع بطاقات المشاركين
-    const allCards = document.querySelectorAll('.participant-mini');
-    const mainCard = document.getElementById('mainParticipantMini');
+    // الحصول على جميع بطاقات المشاركين من الـ grid
+    const grid = document.getElementById('participantsGrid');
+    if (!grid) return;
     
-    // إضافة البطاقة الرئيسية أولاً
-    if (mainCard) {
-        const clone = mainCard.cloneNode(true);
-        clone.id = 'mainParticipantMini';
+    const cards = grid.querySelectorAll('.participant-mini');
+    
+    // إضافة جميع البطاقات إلى الجانب
+    cards.forEach(card => {
+        const clone = card.cloneNode(true);
         clone.style.maxHeight = '100px';
         clone.style.minHeight = '60px';
         side.appendChild(clone);
-    }
-    
-    // إضافة باقي البطاقات
-    allCards.forEach(card => {
-        if (card.id !== 'mainParticipantMini' && card.id !== 'mainParticipant') {
-            const clone = card.cloneNode(true);
-            clone.style.maxHeight = '100px';
-            clone.style.minHeight = '60px';
-            side.appendChild(clone);
-        }
     });
 }
 
@@ -4081,51 +4092,86 @@ function closeScreenFullscreen() {
     }
     isScreenFullscreen = false;
 }
-// ==================== 9. إنشاء البطاقات في الوضع العادي ====================
+// ==================== إنشاء التخطيط العادي (معدل) ====================
 function createNormalLayout() {
     const content = document.querySelector('.meeting-content');
-    if (!content) return;
+    if (!content) {
+        // إذا لم يكن هناك meeting-content، حاول إنشائه
+        const roomPage = document.getElementById('meetingRoomPage');
+        if (!roomPage) return;
+        
+        // البحث عن أي محتوى موجود
+        const existing = roomPage.querySelector('.p-4');
+        const newContent = document.createElement('div');
+        newContent.className = 'meeting-content';
+        
+        if (existing) {
+            // نقل المحتوى
+            while (existing.firstChild) {
+                newContent.appendChild(existing.firstChild);
+            }
+            existing.parentNode.replaceChild(newContent, existing);
+        } else {
+            roomPage.appendChild(newContent);
+        }
+        
+        // إعادة تعيين المتغير content
+        content = newContent;
+    }
     
-    // إزالة أي واجهة قديمة
+    // إزالة أي تخطيط قديم
     const oldScreen = content.querySelector('.with-screen-share');
     if (oldScreen) oldScreen.remove();
     
     const oldNoScreen = content.querySelector('.no-screen-share');
-    if (oldNoScreen) oldNoScreen.remove();
+    if (oldNoScreen) {
+        // إذا كان موجوداً، قم بتحديثه بدلاً من إعادة إنشائه
+        return;
+    }
     
-    // إنشاء الوضع العادي
+    // إنشاء التخطيط العادي
     const normalDiv = document.createElement('div');
     normalDiv.className = 'no-screen-share';
     
-    normalDiv.innerHTML = `
-        <div class="main-video-wrapper" id="mainVideoContainer">
-            <video id="localVideo" autoplay muted playsinline></video>
-            <div class="avatar-placeholder" id="videoPlaceholder">
-                <i class="fas fa-user"></i>
-            </div>
-            <div class="name-tag" id="localNameTag">أنت</div>
-            <div class="mic-indicator" id="micIndicator">
-                <span class="bar"></span>
-                <span class="bar"></span>
-                <span class="bar"></span>
-                <span class="bar"></span>
-                <span class="bar"></span>
-            </div>
-            <div class="status-icons">
-                <span class="icon active" id="micStatusIcon" title="المايك">
-                    <i class="fas fa-microphone"></i>
-                </span>
-                <span class="icon active" id="videoStatusIcon" title="الكاميرا">
-                    <i class="fas fa-video"></i>
-                </span>
-            </div>
+    // إنشاء حاوية الفيديو الرئيسية
+    const mainVideo = document.createElement('div');
+    mainVideo.className = 'main-video-wrapper';
+    mainVideo.id = 'mainVideoContainer';
+    mainVideo.innerHTML = `
+        <video id="localVideo" autoplay muted playsinline></video>
+        <div class="avatar-placeholder" id="videoPlaceholder">
+            <i class="fas fa-user"></i>
         </div>
-        <div class="participants-grid-wrapper" id="participantsGridWrapper">
-            <div class="participants-grid" id="participantsGrid">
-                <!-- سيتم إضافة البطاقات هنا -->
-            </div>
+        <div class="name-tag" id="localNameTag">أنت</div>
+        <div class="mic-indicator" id="micIndicator">
+            <span class="bar"></span>
+            <span class="bar"></span>
+            <span class="bar"></span>
+            <span class="bar"></span>
+            <span class="bar"></span>
+        </div>
+        <div class="status-icons">
+            <span class="icon active" id="micStatusIcon" title="المايك">
+                <i class="fas fa-microphone"></i>
+            </span>
+            <span class="icon active" id="videoStatusIcon" title="الكاميرا">
+                <i class="fas fa-video"></i>
+            </span>
         </div>
     `;
+    
+    // إنشاء حاوية البطاقات
+    const participantsWrapper = document.createElement('div');
+    participantsWrapper.className = 'participants-grid-wrapper';
+    participantsWrapper.id = 'participantsGridWrapper';
+    
+    const participantsGrid = document.createElement('div');
+    participantsGrid.className = 'participants-grid';
+    participantsGrid.id = 'participantsGrid';
+    participantsWrapper.appendChild(participantsGrid);
+    
+    normalDiv.appendChild(mainVideo);
+    normalDiv.appendChild(participantsWrapper);
     
     content.appendChild(normalDiv);
 }
@@ -4711,8 +4757,7 @@ document.addEventListener('DOMContentLoaded', function() {
         // ==================== دوال غرفة الاجتماع الفعلية (WebRTC) ====================
         let currentRoomMeetingId = null;
         let roomChatMessages = [];
-
-       // ==================== الانضمام للاجتماع (معدل) ====================
+// ==================== الانضمام للاجتماع (معدل - إصلاح الخطأ) ====================
 async function joinMeetingRoom(meetingId) {
     try {
         const snapshot = await db.ref(`meetings/${meetingId}`).once('value');
@@ -4722,33 +4767,107 @@ async function joinMeetingRoom(meetingId) {
             return;
         }
         
+        // التحقق من غرفة الانتظار
+        if (meeting.settings?.waitingRoom && meeting.creatorId !== currentUser?.uid) {
+            const pending = meeting.pendingParticipants || {};
+            const isPending = pending[currentUser?.uid];
+            
+            if (!isPending && !meeting.participants?.[currentUser?.uid]) {
+                await requestJoinMeeting(meetingId);
+                return;
+            }
+        }
+        
         currentRoomMeetingId = meetingId;
         showSpecificPage('meetingRoomPage');
         
-        // إنشاء التخطيط الأساسي
+        // الحصول على صفحة الغرفة
         const roomPage = document.getElementById('meetingRoomPage');
-        if (roomPage) {
-            // إضافة meeting-content إذا لم يكن موجوداً
-            let content = roomPage.querySelector('.meeting-content');
-            if (!content) {
-                content = document.createElement('div');
-                content.className = 'meeting-content';
-                // نقل محتوى الصفحة إلى meeting-content
-                const existingContent = roomPage.querySelector('.p-4');
-                if (existingContent) {
-                    roomPage.insertBefore(content, existingContent);
-                    content.appendChild(existingContent);
-                } else {
-                    roomPage.appendChild(content);
-                }
-            }
-            
-            // إنشاء التخطيط العادي
-            createNormalLayout();
+        if (!roomPage) {
+            showToast('❌ خطأ في تحميل صفحة الاجتماع');
+            return;
         }
         
-        document.getElementById('roomMeetingTitle').innerText = meeting.title;
-        document.getElementById('roomMeetingLink').innerText = meeting.meetingId;
+        // البحث عن المحتوى الموجود
+        let existingContent = roomPage.querySelector('.p-4');
+        let content = roomPage.querySelector('.meeting-content');
+        
+        // إذا لم يكن هناك meeting-content، قم بإنشائه
+        if (!content) {
+            content = document.createElement('div');
+            content.className = 'meeting-content';
+            
+            // إذا كان هناك محتوى موجود، انقله إلى داخل meeting-content
+            if (existingContent) {
+                // انقل محتوى .p-4 إلى meeting-content
+                while (existingContent.firstChild) {
+                    content.appendChild(existingContent.firstChild);
+                }
+                // استبدل .p-4 بـ meeting-content
+                existingContent.parentNode.replaceChild(content, existingContent);
+            } else {
+                // إذا لم يكن هناك محتوى، أضف meeting-content مباشرة
+                roomPage.appendChild(content);
+            }
+        }
+        
+        // إنشاء التخطيط العادي إذا لم يكن موجوداً
+        let normalLayout = content.querySelector('.no-screen-share');
+        if (!normalLayout) {
+            // إزالة أي تخطيط قديم
+            const oldScreen = content.querySelector('.with-screen-share');
+            if (oldScreen) oldScreen.remove();
+            
+            normalLayout = document.createElement('div');
+            normalLayout.className = 'no-screen-share';
+            
+            // إنشاء حاوية الفيديو الرئيسية
+            const mainVideo = document.createElement('div');
+            mainVideo.className = 'main-video-wrapper';
+            mainVideo.id = 'mainVideoContainer';
+            mainVideo.innerHTML = `
+                <video id="localVideo" autoplay muted playsinline></video>
+                <div class="avatar-placeholder" id="videoPlaceholder">
+                    <i class="fas fa-user"></i>
+                </div>
+                <div class="name-tag" id="localNameTag">أنت</div>
+                <div class="mic-indicator" id="micIndicator">
+                    <span class="bar"></span>
+                    <span class="bar"></span>
+                    <span class="bar"></span>
+                    <span class="bar"></span>
+                    <span class="bar"></span>
+                </div>
+                <div class="status-icons">
+                    <span class="icon active" id="micStatusIcon" title="المايك">
+                        <i class="fas fa-microphone"></i>
+                    </span>
+                    <span class="icon active" id="videoStatusIcon" title="الكاميرا">
+                        <i class="fas fa-video"></i>
+                    </span>
+                </div>
+            `;
+            
+            // إنشاء حاوية البطاقات
+            const participantsWrapper = document.createElement('div');
+            participantsWrapper.className = 'participants-grid-wrapper';
+            participantsWrapper.id = 'participantsGridWrapper';
+            
+            const participantsGrid = document.createElement('div');
+            participantsGrid.className = 'participants-grid';
+            participantsGrid.id = 'participantsGrid';
+            participantsWrapper.appendChild(participantsGrid);
+            
+            normalLayout.appendChild(mainVideo);
+            normalLayout.appendChild(participantsWrapper);
+            
+            // إضافة التخطيط إلى المحتوى
+            content.appendChild(normalLayout);
+        }
+        
+        // تعيين عنوان الاجتماع
+        document.getElementById('roomMeetingTitle').innerText = meeting.title || 'الاجتماع';
+        document.getElementById('roomMeetingLink').innerText = meeting.meetingId || meetingId;
         
         // محاولة تشغيل الكاميرا والمايك
         await startLocalStream();
@@ -4775,15 +4894,18 @@ async function joinMeetingRoom(meetingId) {
         // تحديث حالة الاجتماع
         if (meeting.status !== 'live') {
             await db.ref(`meetings/${meetingId}/status`).set('live');
-            document.getElementById('roomMeetingStatus').className = 'meeting-status status-live text-xs';
-            document.getElementById('roomMeetingStatus').innerText = 'حية 🔴';
+            const statusEl = document.getElementById('roomMeetingStatus');
+            if (statusEl) {
+                statusEl.className = 'meeting-status status-live text-xs';
+                statusEl.innerText = 'حية 🔴';
+            }
         }
         
         showToast('✅ مرحباً بك في الاجتماع');
         
     } catch (error) {
         console.error('خطأ في الانضمام للاجتماع:', error);
-        showToast('❌ حدث خطأ في الانضمام للاجتماع');
+        showToast('❌ حدث خطأ في الانضمام للاجتماع: ' + error.message);
     }
 }
 // ==================== طلب الانضمام للاجتماع ====================
