@@ -4506,7 +4506,9 @@ let isScreenSharingMode = false;
 let participantCards = {};
 let localParticipantId = null;
 
-// ==================== إنشاء تخطيط غرفة الاجتماع (مع تقسيم ديناميكي) ====================
+// ==================== دوال التخطيط الموحدة ====================
+
+// ==================== إنشاء تخطيط غرفة الاجتماع ====================
 function createMeetingLayout(participants) {
     const container = document.getElementById('meetingMainContainer');
     if (!container) return;
@@ -4516,69 +4518,12 @@ function createMeetingLayout(participants) {
     const participantCount = Object.keys(participants || {}).length;
     
     // إذا كان هناك شير سكرين
-    if (isScreenSharing && screenStream) {
-        // صف المشاركين في الأعلى
-        const topRow = document.createElement('div');
-        topRow.className = 'participants-top-row';
-        topRow.id = 'participantsTopRow';
-        container.appendChild(topRow);
-        
-        // حاوية الشاشة المشتركة
-        const screenWrapper = document.createElement('div');
-        screenWrapper.className = 'screen-share-wrapper';
-        screenWrapper.id = 'screenShareWrapper';
-        screenWrapper.innerHTML = `
-            <video id="screenShareVideo" autoplay playsinline></video>
-            <div class="screen-controls-overlay">
-                <button onclick="toggleScreenFullscreen()" class="fullscreen-btn">
-                    <i class="fas fa-expand"></i> عرض كامل
-                </button>
-                <button onclick="stopScreenShare()" class="stop-screen-btn">
-                    <i class="fas fa-stop"></i> إيقاف
-                </button>
-            </div>
-        `;
-        const video = screenWrapper.querySelector('#screenShareVideo');
-        if (video && screenStream) {
-            video.srcObject = screenStream;
-            video.play();
-        }
-        container.appendChild(screenWrapper);
-        
-        // تحديث صف المشاركين
-        updateParticipantsRow(participants || {});
-        
+    if (webRTCManager.isScreenSharing) {
+        // وضع شير سكرين - صف علوي + شاشة كبيرة
+        createScreenShareLayout(container, participants);
     } else {
-        // لا يوجد شير سكرين - شبكة ديناميكية
-        const gridDiv = document.createElement('div');
-        gridDiv.className = 'meeting-grid-layout';
-        
-        // تحديد حجم الشبكة حسب عدد المشاركين
-        if (participantCount <= 1) {
-            gridDiv.classList.add('grid-1');
-        } else if (participantCount === 2) {
-            gridDiv.classList.add('grid-2');
-        } else if (participantCount === 3) {
-            gridDiv.classList.add('grid-3');
-        } else if (participantCount === 4) {
-            gridDiv.classList.add('grid-4');
-        } else if (participantCount <= 6) {
-            gridDiv.classList.add('grid-6');
-        } else if (participantCount <= 9) {
-            gridDiv.classList.add('grid-9');
-        } else {
-            gridDiv.classList.add('grid-more');
-        }
-        
-        // إضافة بطاقات المشاركين
-        const names = Object.keys(participants || {});
-        names.forEach((uid, index) => {
-            const p = participants[uid];
-            const card = createFullParticipantCard(p, uid, index);
-            gridDiv.appendChild(card);
-        });
-        
-        container.appendChild(gridDiv);
+        // وضع شبكة عادي
+        createGridLayout(container, participants);
     }
     
     // تحديث معلومات الرأس
@@ -4646,13 +4591,14 @@ function createFullParticipantCard(participant, uid, index) {
     
     return div;
 }
-// ==================== إنشاء تخطيط الشبكة ====================
+// ==================== إنشاء تخطيط الشبكة (بدون شير سكرين) ====================
 function createGridLayout(container, participants) {
     const gridDiv = document.createElement('div');
     gridDiv.className = 'meeting-grid-layout';
     
     const count = Object.keys(participants || {}).length;
     
+    // اختيار الشبكة المناسبة حسب عدد المشاركين
     if (count <= 1) {
         gridDiv.classList.add('grid-1');
     } else if (count === 2) {
@@ -4661,12 +4607,15 @@ function createGridLayout(container, participants) {
         gridDiv.classList.add('grid-3');
     } else if (count === 4) {
         gridDiv.classList.add('grid-4');
-    } else if (count === 5) {
-        gridDiv.classList.add('grid-5');
-    } else {
+    } else if (count <= 6) {
         gridDiv.classList.add('grid-6');
+    } else if (count <= 9) {
+        gridDiv.classList.add('grid-9');
+    } else {
+        gridDiv.classList.add('grid-more');
     }
     
+    // إضافة بطاقات المشاركين
     const names = Object.keys(participants || {});
     names.forEach((uid, index) => {
         const p = participants[uid];
@@ -4679,59 +4628,37 @@ function createGridLayout(container, participants) {
 
 // ==================== إنشاء تخطيط شير سكرين ====================
 function createScreenShareLayout(container, participants) {
-    const layoutDiv = document.createElement('div');
-    layoutDiv.className = 'screen-share-layout';
+    // صف المشاركين في الأعلى
+    const topRow = document.createElement('div');
+    topRow.className = 'participants-top-row';
+    topRow.id = 'participantsTopRow';
+    container.appendChild(topRow);
     
-    const screenMain = document.createElement('div');
-    screenMain.className = 'screen-main';
-    screenMain.id = 'screenMainContainer';
-    
-    let screenVideoHtml = '';
-    if (screenStream) {
-        screenVideoHtml = `<video id="screenShareVideo" autoplay playsinline></video>`;
-    } else {
-        screenVideoHtml = `
-            <div style="display:flex;align-items:center;justify-content:center;height:100%;color:rgba(255,255,255,0.3);flex-direction:column;gap:10px;">
-                <i class="fas fa-desktop" style="font-size:48px;"></i>
-                <p>لا توجد شاشة مشتركة</p>
-            </div>
-        `;
-    }
-    
-    screenMain.innerHTML = `
-        ${screenVideoHtml}
+    // حاوية الشاشة المشتركة
+    const screenWrapper = document.createElement('div');
+    screenWrapper.className = 'screen-share-wrapper';
+    screenWrapper.id = 'screenShareWrapper';
+    screenWrapper.innerHTML = `
+        <video id="screenShareVideo" autoplay playsinline></video>
         <div class="screen-controls-overlay">
             <button onclick="toggleScreenFullscreen()" class="fullscreen-btn">
                 <i class="fas fa-expand"></i> عرض كامل
             </button>
-            <button onclick="stopScreenShare()" class="stop-btn">
+            <button onclick="webRTCManager.stopScreenShare()" class="stop-screen-btn">
                 <i class="fas fa-stop"></i> إيقاف
             </button>
         </div>
     `;
     
-    const miniDiv = document.createElement('div');
-    miniDiv.className = 'mini-participants';
-    miniDiv.id = 'miniParticipantsContainer';
-    
-    const names = Object.keys(participants || {});
-    names.forEach((uid, index) => {
-        const p = participants[uid];
-        const miniCard = createMiniParticipantCard(p, uid, index);
-        miniDiv.appendChild(miniCard);
-    });
-    
-    layoutDiv.appendChild(screenMain);
-    layoutDiv.appendChild(miniDiv);
-    container.appendChild(layoutDiv);
-    
-    if (screenStream) {
-        const video = document.getElementById('screenShareVideo');
-        if (video) {
-            video.srcObject = screenStream;
-            video.play();
-        }
+    const video = screenWrapper.querySelector('#screenShareVideo');
+    if (video && webRTCManager.screenStream) {
+        video.srcObject = webRTCManager.screenStream;
+        video.play().catch(e => console.log('شاشة:', e));
     }
+    container.appendChild(screenWrapper);
+    
+    // تحديث صف المشاركين
+    updateParticipantsRow(participants || {});
 }
 
 // ==================== إنشاء بطاقة مشارك للشبكة ====================
@@ -7161,41 +7088,13 @@ async function rejectJoinRequest(meetingId, userId) {
     }
 }
 
-// ==================== تحديث واجهة الاجتماع (جديد) ====================
+// ==================== تحديث واجهة المشاركين ====================
 function updateMeetingUI(participants) {
-    const grid = document.getElementById('participantsGrid');
-    if (!grid) return;
-    grid.innerHTML = '';
-    if (!participants) {
-        grid.innerHTML = '<div class="text-white/50 text-center p-4">لا يوجد مشاركون</div>';
-        return;
-    }
-    const names = Object.keys(participants);
-    names.forEach((uid) => {
-        const p = participants[uid];
-        const isLocal = uid === currentUser?.uid;
-        const isHost = p.isHost;
-        const isGuest = p.isGuest;
-        const wrapper = document.createElement('div');
-        wrapper.className = 'participant-mini';
-        wrapper.id = `participant_${uid}`;
-        wrapper.dataset.uid = uid;
-        const initial = (p.name || 'U').charAt(0).toUpperCase();
-        wrapper.innerHTML = `
-            ${isLocal ? `<video id="localVideo" autoplay muted playsinline></video>` : `<video id="remoteVideo_${uid}" autoplay playsinline></video>`}
-            <div class="avatar-placeholder">${initial}</div>
-            <div class="name-tag">${p.name} ${isHost ? '👑' : ''} ${isGuest ? '👤' : ''}</div>
-            <div class="status-icons-mini">
-                <span class="icon-mini ${p.micEnabled !== false ? 'active' : 'inactive'}">
-                    <i class="fas ${p.micEnabled !== false ? 'fa-microphone' : 'fa-microphone-slash'}"></i>
-                </span>
-                <span class="icon-mini ${p.videoEnabled !== false ? 'active' : 'inactive'}">
-                    <i class="fas ${p.videoEnabled !== false ? 'fa-video' : 'fa-video-slash'}"></i>
-                </span>
-            </div>
-        `;
-        grid.appendChild(wrapper);
-    });
+    // تحديث التخطيط بالكامل
+    createMeetingLayout(participants);
+    
+    // تحديث معلومات الرأس
+    updateHeaderParticipantsInfo(participants || {});
 }
 
 // ==================== دوال التحكم في الاجتماع (جديد) ====================
@@ -8437,7 +8336,7 @@ function openInBrowser(meetingId) {
         window.location.href = webLink;
     }
 }
-// ==================== إنشاء بطاقة مشارك للشبكة ====================
+// ==================== إنشاء بطاقة مشارك ====================
 function createParticipantCard(participant, uid, index) {
     const div = document.createElement('div');
     div.className = 'participant-card';
@@ -8445,36 +8344,29 @@ function createParticipantCard(participant, uid, index) {
     div.dataset.uid = uid;
     
     const initial = (participant.name || 'U').charAt(0).toUpperCase();
-    const isHost = participant.isHost ? '👑' : '';
+    const isHost = participant.isHost;
     const isLocal = uid === currentUser?.uid;
     
-    // ألوان مميزة لكل مشارك
-    const colors = [
-        { bg: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)', avatar: '#764ba2' },
-        { bg: 'linear-gradient(135deg, #f093fb 0%, #f5576c 100%)', avatar: '#f5576c' },
-        { bg: 'linear-gradient(135deg, #4facfe 0%, #00f2fe 100%)', avatar: '#4facfe' },
-        { bg: 'linear-gradient(135deg, #43e97b 0%, #38f9d7 100%)', avatar: '#43e97b' },
-        { bg: 'linear-gradient(135deg, #fa709a 0%, #fee140 100%)', avatar: '#fa709a' },
-    ];
+    // ألوان مميزة
+    const colors = ['#667eea', '#f5576c', '#4facfe', '#43e97b', '#fa709a', '#a18cd1'];
     const color = colors[index % colors.length];
     
     const micEnabled = participant.micEnabled !== false;
     const videoEnabled = participant.videoEnabled !== false;
     
+    // فيديو محلي أو عن بعد
     let videoHtml = '';
-    if (isLocal && localStream) {
+    if (isLocal && webRTCManager.localStream) {
         videoHtml = `<video id="localVideo" autoplay muted playsinline></video>`;
-    } else {
+    } else if (!isLocal) {
         videoHtml = `<video id="remoteVideo_${uid}" autoplay playsinline></video>`;
     }
     
     div.innerHTML = `
         ${videoHtml}
-        <div class="card-bg" style="background: ${color.bg}; opacity: 0.85;"></div>
+        <div class="card-bg" style="background: ${color}; opacity: 0.7;"></div>
         <div class="card-content">
-            <div class="avatar-placeholder" style="background: ${color.avatar};">
-                ${initial}
-            </div>
+            <div class="avatar-placeholder">${initial}</div>
             <div class="participant-name">
                 ${isHost ? '<span class="host-badge">👑</span>' : ''}
                 ${participant.name}
@@ -8490,19 +8382,19 @@ function createParticipantCard(participant, uid, index) {
         </div>
     `;
     
-    participantCards[uid] = div;
-    
-    if (isLocal && localStream) {
+    // تعيين الفيديو المحلي
+    if (isLocal && webRTCManager.localStream) {
         const video = div.querySelector('video');
         if (video) {
-            video.srcObject = localStream;
-            video.play();
+            video.srcObject = webRTCManager.localStream;
+            video.play().catch(e => console.log('فيديو محلي:', e));
         }
     }
     
     return div;
 }
-// ==================== إنشاء بطاقة مشارك صغيرة للصف العلوي ====================
+
+// ==================== إنشاء بطاقة مصغرة (لشير سكرين) ====================
 function createMiniParticipantCard(participant, uid, index) {
     const div = document.createElement('div');
     div.className = 'participant-mini-card';
@@ -8513,15 +8405,14 @@ function createMiniParticipantCard(participant, uid, index) {
     const isHost = participant.isHost;
     const isLocal = uid === currentUser?.uid;
     
-    // ألوان مميزة
-    const colors = ['#667eea', '#f5576c', '#4facfe', '#43e97b', '#fa709a', '#a18cd1', '#fccb90', '#d57eeb'];
+    const colors = ['#667eea', '#f5576c', '#4facfe', '#43e97b', '#fa709a', '#a18cd1'];
     const color = colors[index % colors.length];
     
     const micEnabled = participant.micEnabled !== false;
     const videoEnabled = participant.videoEnabled !== false;
     
     let videoHtml = '';
-    if (isLocal && localStream) {
+    if (isLocal && webRTCManager.localStream) {
         videoHtml = `<video id="localVideoMini" autoplay muted playsinline></video>`;
     } else if (!isLocal) {
         videoHtml = `<video id="remoteMiniVideo_${uid}" autoplay playsinline></video>`;
@@ -8529,9 +8420,7 @@ function createMiniParticipantCard(participant, uid, index) {
     
     div.innerHTML = `
         ${videoHtml}
-        <div class="mini-avatar" style="background: ${color};">
-            ${initial}
-        </div>
+        <div class="mini-avatar" style="background: ${color};">${initial}</div>
         <div class="mini-name">${participant.name}</div>
         ${isHost ? '<div class="mini-badge">👑</div>' : ''}
         <div class="mini-status">
@@ -8542,13 +8431,12 @@ function createMiniParticipantCard(participant, uid, index) {
                 <i class="fas ${videoEnabled ? 'fa-video' : 'fa-video-slash'}"></i>
             </span>
         </div>
-        ${!micEnabled ? '<div class="mini-mic-off"><i class="fas fa-microphone-slash"></i></div>' : ''}
     `;
     
-    if (isLocal && localStream) {
+    if (isLocal && webRTCManager.localStream) {
         const video = div.querySelector('video');
         if (video) {
-            video.srcObject = localStream;
+            video.srcObject = webRTCManager.localStream;
             video.play().catch(e => console.log('فيديو ميني:', e));
         }
     }
@@ -8559,7 +8447,7 @@ function createMiniParticipantCard(participant, uid, index) {
     
     return div;
 }
-// ==================== تحديث صف المشاركين (مع تقسيم ديناميكي) ====================
+// ==================== تحديث صف المشاركين (لشير سكرين) ====================
 function updateParticipantsRow(participants) {
     const row = document.getElementById('participantsTopRow');
     if (!row) return;
@@ -8569,14 +8457,12 @@ function updateParticipantsRow(participants) {
     const names = Object.keys(participants || {});
     const count = names.length;
     
-    // تحديد حجم البطاقات حسب عدد المشاركين
-    let cardClass = '';
+    // تحديد حجم البطاقات
+    let cardClass = 'flex-1 min-w-[100px] max-w-[180px]';
     if (count <= 2) {
         cardClass = 'flex-1 min-w-[140px] max-w-[200px]';
     } else if (count <= 4) {
         cardClass = 'flex-1 min-w-[120px] max-w-[180px]';
-    } else {
-        cardClass = 'flex-1 min-w-[100px] max-w-[150px]';
     }
     
     names.forEach((uid, index) => {
@@ -8586,10 +8472,17 @@ function updateParticipantsRow(participants) {
         row.appendChild(card);
     });
     
-    // إذا كان المستخدم هو المنشئ، أضف زر إدارة المشاركين
-    const isHost = currentUser && window.roomParticipants?.[currentUser.uid]?.isHost;
+    // زر إدارة المشاركين للمنشئ
+    const isHost = currentUser && participants?.[currentUser.uid]?.isHost;
     if (isHost) {
-        addHostControls(row);
+        const hostBtn = document.createElement('button');
+        hostBtn.className = 'host-control-btn';
+        hostBtn.innerHTML = `
+            <i class="fas fa-users-cog"></i>
+            <span style="font-size:10px;display:block;">إدارة</span>
+        `;
+        hostBtn.onclick = showParticipantsManagement;
+        row.appendChild(hostBtn);
     }
 }
 
@@ -8737,7 +8630,7 @@ async function removeParticipant(uid) {
         showToast('❌ حدث خطأ في إخراج المشارك');
     }
 }
-// ==================== تحديث معلومات المشاركين في الرأس ====================
+// ==================== تحديث معلومات الرأس ====================
 function updateHeaderParticipantsInfo(participants) {
     const container = document.getElementById('headerParticipantsInfo');
     if (!container) return;
@@ -8821,16 +8714,17 @@ document.addEventListener('DOMContentLoaded', function() {
         // ==================== دوال غرفة الاجتماع الفعلية (WebRTC) ====================
         let currentRoomMeetingId = null;
         let roomChatMessages = [];
-// ==================== الانضمام للاجتماع (معدل) ====================
+// ==================== الانضمام للاجتماع (معدل بالكامل) ====================
 async function joinMeetingRoom(meetingId) {
     try {
-        // التحقق من تسجيل الدخول أولاً
+        // ✅ التحقق من تسجيل الدخول أولاً
         if (!currentUser) {
             showToast('❌ الرجاء تسجيل الدخول أولاً');
             showLoginPage();
             return;
         }
         
+        // ✅ جلب بيانات الاجتماع من Firebase
         const snapshot = await db.ref(`meetings/${meetingId}`).once('value');
         const meeting = snapshot.val();
         
@@ -8839,20 +8733,28 @@ async function joinMeetingRoom(meetingId) {
             return;
         }
         
-        // التحقق من غرفة الانتظار
+        // ✅ التحقق من غرفة الانتظار (إذا كانت مفعلة والمستخدم ليس المنشئ)
         if (meeting.settings?.waitingRoom && meeting.creatorId !== currentUser.uid) {
             const pending = meeting.pendingParticipants || {};
-            if (!pending[currentUser.uid] && !meeting.participants?.[currentUser.uid]) {
+            // إذا كان المستخدم في قائمة الانتظار، أظهر شاشة الانتظار
+            if (pending[currentUser.uid]) {
+                showWaitingScreen(meetingId, currentUser.name || currentUser.username);
+                return;
+            }
+            // إذا لم يكن المستخدم مشاركاً ولا في قائمة الانتظار، اطلب الانضمام
+            if (!meeting.participants?.[currentUser.uid]) {
                 await requestJoinMeeting(meetingId);
                 return;
             }
         }
         
-        // تهيئة WebRTC
+        // ✅ تحديد إذا كان المستخدم هو المنشئ
         const isHost = meeting.creatorId === currentUser.uid;
+        
+        // ✅ تهيئة WebRTC Manager
         await webRTCManager.initMeeting(meetingId, isHost);
         
-        // إضافة المشارك
+        // ✅ إضافة المشارك إلى قائمة المشاركين
         if (!meeting.participants) meeting.participants = {};
         if (!meeting.participants[currentUser.uid]) {
             meeting.participants[currentUser.uid] = {
@@ -8861,52 +8763,91 @@ async function joinMeetingRoom(meetingId) {
                 isHost: isHost,
                 isGuest: currentUser.isGuest || false,
                 micEnabled: true,
-                videoEnabled: true
+                videoEnabled: true,
+                screenSharing: false
             };
             await db.ref(`meetings/${meetingId}/participants`).set(meeting.participants);
         }
         
-        // عرض صفحة الاجتماع
+        // ✅ حفظ معرف الاجتماع الحالي
         currentRoomMeetingId = meetingId;
+        
+        // ✅ عرض صفحة غرفة الاجتماع
         showSpecificPage('meetingRoomPage');
         
-        // تحديث واجهة الاجتماع
-        document.getElementById('roomMeetingTitle').innerText = meeting.title || 'الاجتماع';
-        document.getElementById('roomMeetingLink').innerText = meeting.meetingId || meetingId;
+        // ✅ تحديث عنوان الاجتماع في الواجهة
+        const titleEl = document.getElementById('roomMeetingTitle');
+        if (titleEl) titleEl.innerText = meeting.title || 'الاجتماع';
         
-        // الاستماع للمشاركين (للمنشئ)
-        if (isHost) {
-            webRTCManager.listenForParticipants();
-            listenForJoinRequests(meetingId);
-        }
+        const linkEl = document.getElementById('roomMeetingLink');
+        if (linkEl) linkEl.innerText = meeting.meetingId || meetingId;
         
-        // تحديث حالة الاجتماع
+        // ✅ تحديث حالة الاجتماع إلى "حي" إذا لم تكن كذلك
         if (meeting.status !== 'live') {
             await db.ref(`meetings/${meetingId}/status`).set('live');
         }
         
-        // تحديث واجهة المشاركين
+        // ✅ تحديث واجهة المشاركين (التخطيط)
         updateMeetingUI(meeting.participants);
         
-        // الاستماع لتحديثات المشاركين
+        // ✅ الاستماع للمشاركين الجدد (للمنشئ فقط)
+        if (isHost) {
+            // الاستماع للمشاركين الجدد لإرسال العروض
+            webRTCManager.listenForParticipants();
+            // الاستماع لطلبات الانضمام
+            listenForJoinRequests(meetingId);
+        }
+        
+        // ✅ الاستماع لتحديثات المشاركين (لجميع المستخدمين)
         const participantsRef = db.ref(`meetings/${meetingId}/participants`);
         participantsRef.on('value', (snapshot) => {
             const participants = snapshot.val();
             if (participants) {
                 window.roomParticipants = participants;
+                // ✅ تحديث واجهة المشاركين عند تغير القائمة
                 updateMeetingUI(participants);
                 updateHeaderParticipantsInfo(participants);
+                
+                // ✅ تحديث بطاقات المشاركين في وضع شير سكرين
+                if (webRTCManager.isScreenSharing) {
+                    updateParticipantsRow(participants);
+                }
             }
         });
         
-        showToast('✅ مرحباً بك في الاجتماع');
+        // ✅ تحميل رسائل الشات
+        loadRoomChatMessages(meetingId);
+        
+        // ✅ بدء الاستماع لرسائل الشات الجديدة
+        const chatRef = db.ref(`meetings/${meetingId}/chatMessages`);
+        chatRef.on('child_added', (snapshot) => {
+            const message = snapshot.val();
+            if (message) {
+                roomChatMessages.push({ id: snapshot.key, ...message });
+                roomChatMessages.sort((a, b) => new Date(a.timestamp) - new Date(b.timestamp));
+                renderRoomChatMessages();
+            }
+        });
+        
+        // ✅ بدء إرسال مستوى الصوت (للمؤشرات الصوتية)
+        setInterval(() => {
+            sendAudioLevel();
+        }, 200);
+        
+        // ✅ بدء تحديث مؤشرات الصوت
+        startAudioIndicators();
+        
+        // ✅ رسالة ترحيب
+        showToast(`✅ مرحباً بك في "${meeting.title}"`);
+        
+        // ✅ إذا كان هناك شاشة انتظار مفتوحة، أغلقها
+        removeWaitingScreen();
         
     } catch (error) {
-        console.error('خطأ في الانضمام للاجتماع:', error);
+        console.error('❌ خطأ في الانضمام للاجتماع:', error);
         showToast('❌ حدث خطأ في الانضمام للاجتماع');
     }
 }
-
 // ==================== الاستماع لتحديثات المشاركين ====================
 function listenForParticipantUpdates(meetingId) {
     const participantsRef = db.ref(`meetings/${meetingId}/participants`);
