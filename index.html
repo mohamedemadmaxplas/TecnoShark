@@ -4292,19 +4292,23 @@
     </div>
 
     <script>
-        // ==================== Firebase Configuration ====================
-        const firebaseConfig = {
-            apiKey: "AIzaSyAs3U2941_rNArLPpCYjKM9yAVQtiK-oDw",
-            authDomain: "nabd-store-1.firebaseapp.com",
-            databaseURL: "https://nabd-store-1-default-rtdb.firebaseio.com",
-            projectId: "nabd-store-1",
-            storageBucket: "nabd-store-1.firebasestorage.app",
-            messagingSenderId: "132078192935",
-            appId: "1:132078192935:web:2d4bc9e0dfcb407b2a8102"
-        };
+      // ==================== Firebase Configuration (بدون Storage) ====================
+const firebaseConfig = {
+    apiKey: "AIzaSyD54ifCxvtFuj-445hikUBzI2Q1DkSsVNk",
+    authDomain: "tecnoshark-990a3.firebaseapp.com",
+    projectId: "tecnoshark-990a3",
+    storageBucket: "tecnoshark-990a3.firebasestorage.app",
+    messagingSenderId: "992104462106",
+    appId: "1:992104462106:web:f52bb0144276f9a7589ea3",
+    measurementId: "G-MV48NBJJ41"
+};
 
-        firebase.initializeApp(firebaseConfig);
-        const db = firebase.database();
+// تهيئة Firebase (بدون Storage)
+firebase.initializeApp(firebaseConfig);
+const db = firebase.database();
+
+console.log('✅ Firebase initialized (بدون Storage)');
+console.log('✅ WebRTC سينقل الصوت والصورة مباشرة بين المستخدمين');
 
         // ==================== EmailJS Configuration ====================
         const EMAILJS_PUBLIC_KEY = 'AW1vq-SBqWiE1E_IE';
@@ -6808,9 +6812,10 @@ async function rejectJoinRequest(meetingId, userId) {
         showToast('❌ حدث خطأ');
     }
 }
-// ==================== نظام WebRTC لنقل الوسائط ====================
+// ==================== نظام WebRTC (بدون Storage) ====================
 let peerConnections = {};
 let remoteStreams = {};
+
 
 // ==================== إنشاء اتصال WebRTC ====================
 async function createPeerConnection(targetUid) {
@@ -6820,8 +6825,12 @@ async function createPeerConnection(targetUid) {
     
     const configuration = {
         iceServers: [
+            // STUN servers - مجانية ولا تحتاج تخزين
             { urls: 'stun:stun.l.google.com:19302' },
-            { urls: 'stun:stun1.l.google.com:19302' }
+            { urls: 'stun:stun1.l.google.com:19302' },
+            { urls: 'stun:stun2.l.google.com:19302' },
+            { urls: 'stun:stun3.l.google.com:19302' },
+            { urls: 'stun:stun4.l.google.com:19302' }
         ]
     };
     
@@ -6851,22 +6860,47 @@ async function createPeerConnection(targetUid) {
         }
     };
     
+    // مراقبة حالة الاتصال
+    pc.onconnectionstatechange = () => {
+        console.log(`حالة الاتصال مع ${targetUid}:`, pc.connectionState);
+        if (pc.connectionState === 'failed' || pc.connectionState === 'disconnected') {
+            console.log(`⚠️ فقدان الاتصال مع ${targetUid}، محاولة إعادة...`);
+            setTimeout(() => reconnectPeer(targetUid), 3000);
+        }
+    };
+    
+    // مراقبة حالة ICE
+    pc.oniceconnectionstatechange = () => {
+        console.log(`حالة ICE مع ${targetUid}:`, pc.iceConnectionState);
+    };
+    
     return pc;
+}
+
+// ==================== إعادة الاتصال ====================
+function reconnectPeer(targetUid) {
+    if (peerConnections[targetUid]) {
+        peerConnections[targetUid].close();
+        delete peerConnections[targetUid];
+    }
+    if (remoteStreams[targetUid]) {
+        delete remoteStreams[targetUid];
+    }
+    sendOffer(targetUid);
 }
 
 // ==================== عرض البث البعيد ====================
 function displayRemoteStream(uid, stream) {
-    // عرض في البطاقة الكبيرة (وضع 2x2)
+    // عرض في البطاقة الكبيرة
     const videoElement = document.getElementById(`remoteVideo_${uid}`);
     if (videoElement) {
         videoElement.srcObject = stream;
         videoElement.play().catch(e => console.log('تشغيل الفيديو البعيد:', e));
-        // إخفاء الـ avatar
         const avatar = videoElement.closest('.participant-card')?.querySelector('.avatar-placeholder');
         if (avatar) avatar.style.display = 'none';
     }
     
-    // عرض في البطاقة المصغرة (وضع شير سكرين)
+    // عرض في البطاقة المصغرة
     const miniVideo = document.getElementById(`remoteMiniVideo_${uid}`);
     if (miniVideo) {
         miniVideo.srcObject = stream;
@@ -6876,17 +6910,21 @@ function displayRemoteStream(uid, stream) {
     }
 }
 
-// ==================== إرسال عرض (Offer) ====================
+// ==================== إرسال عرض (Offer) - فقط Database ====================
 async function sendOffer(targetUid) {
     try {
         const pc = await createPeerConnection(targetUid);
-        const offer = await pc.createOffer();
+        const offer = await pc.createOffer({
+            offerToReceiveAudio: true,
+            offerToReceiveVideo: true
+        });
         await pc.setLocalDescription(offer);
         
-        // حفظ العرض في Firebase
+        // حفظ العرض في Firebase Database (وليس Storage)
         await db.ref(`meetings/${currentRoomMeetingId}/signaling/${targetUid}/offer`).set({
             sdp: offer.sdp,
-            type: offer.type
+            type: offer.type,
+            timestamp: Date.now()
         });
         
         console.log('✅ تم إرسال العرض إلى:', targetUid);
@@ -6895,17 +6933,18 @@ async function sendOffer(targetUid) {
     }
 }
 
-// ==================== إرسال إجابة (Answer) ====================
+// ==================== إرسال إجابة (Answer) - فقط Database ====================
 async function sendAnswer(targetUid) {
     try {
         const pc = await createPeerConnection(targetUid);
         const answer = await pc.createAnswer();
         await pc.setLocalDescription(answer);
         
-        // حفظ الإجابة في Firebase
+        // حفظ الإجابة في Firebase Database (وليس Storage)
         await db.ref(`meetings/${currentRoomMeetingId}/signaling/${targetUid}/answer`).set({
             sdp: answer.sdp,
-            type: answer.type
+            type: answer.type,
+            timestamp: Date.now()
         });
         
         console.log('✅ تم إرسال الإجابة إلى:', targetUid);
@@ -6914,16 +6953,17 @@ async function sendAnswer(targetUid) {
     }
 }
 
-// ==================== إرسال مرشح ICE ====================
+// ==================== إرسال مرشح ICE - فقط Database ====================
 function sendIceCandidate(targetUid, candidate) {
     db.ref(`meetings/${currentRoomMeetingId}/signaling/${targetUid}/candidates`).push({
         candidate: candidate.candidate,
         sdpMLineIndex: candidate.sdpMLineIndex,
-        sdpMid: candidate.sdpMid
+        sdpMid: candidate.sdpMid,
+        timestamp: Date.now()
     });
 }
 
-// ==================== الاستماع للإشارات (Signaling) ====================
+// ==================== الاستماع للإشارات (Signaling) - فقط Database ====================
 function listenForSignaling(meetingId) {
     const signalingRef = db.ref(`meetings/${meetingId}/signaling/${currentUser.uid}`);
     
@@ -6932,9 +6972,16 @@ function listenForSignaling(meetingId) {
         const data = snapshot.val();
         if (!data) return;
         
-        const pc = await createPeerConnection(snapshot.ref.parent.key);
-        await pc.setRemoteDescription(new RTCSessionDescription(data));
-        await sendAnswer(snapshot.ref.parent.key);
+        try {
+            const pc = await createPeerConnection(snapshot.ref.parent.key);
+            await pc.setRemoteDescription(new RTCSessionDescription({
+                sdp: data.sdp,
+                type: data.type
+            }));
+            await sendAnswer(snapshot.ref.parent.key);
+        } catch (error) {
+            console.error('خطأ في معالجة العرض:', error);
+        }
     });
     
     // الاستماع للإجابات
@@ -6942,9 +6989,16 @@ function listenForSignaling(meetingId) {
         const data = snapshot.val();
         if (!data) return;
         
-        const pc = peerConnections[snapshot.ref.parent.key];
-        if (pc) {
-            await pc.setRemoteDescription(new RTCSessionDescription(data));
+        try {
+            const pc = peerConnections[snapshot.ref.parent.key];
+            if (pc) {
+                await pc.setRemoteDescription(new RTCSessionDescription({
+                    sdp: data.sdp,
+                    type: data.type
+                }));
+            }
+        } catch (error) {
+            console.error('خطأ في معالجة الإجابة:', error);
         }
     });
     
@@ -6953,13 +7007,17 @@ function listenForSignaling(meetingId) {
         const data = snapshot.val();
         if (!data) return;
         
-        const pc = peerConnections[snapshot.ref.parent.key];
-        if (pc) {
-            try {
-                await pc.addIceCandidate(new RTCIceCandidate(data));
-            } catch (error) {
-                console.log('خطأ في إضافة مرشح ICE:', error);
+        try {
+            const pc = peerConnections[snapshot.ref.parent.parent.key];
+            if (pc) {
+                await pc.addIceCandidate(new RTCIceCandidate({
+                    candidate: data.candidate,
+                    sdpMLineIndex: data.sdpMLineIndex,
+                    sdpMid: data.sdpMid
+                }));
             }
+        } catch (error) {
+            console.log('خطأ في إضافة مرشح ICE:', error);
         }
     });
 }
@@ -7969,7 +8027,7 @@ document.addEventListener('DOMContentLoaded', function() {
         // ==================== دوال غرفة الاجتماع الفعلية (WebRTC) ====================
         let currentRoomMeetingId = null;
         let roomChatMessages = [];
-// ==================== الانضمام للاجتماع (مع WebRTC) ====================
+// ==================== الانضمام للاجتماع (مع WebRTC بدون Storage) ====================
 async function joinMeetingRoom(meetingId) {
     try {
         const snapshot = await db.ref(`meetings/${meetingId}`).once('value');
@@ -7979,22 +8037,6 @@ async function joinMeetingRoom(meetingId) {
             return;
         }
         
-        // التحقق من غرفة الانتظار
-        if (meeting.settings?.waitingRoom && meeting.creatorId !== currentUser?.uid) {
-            const pending = meeting.pendingParticipants || {};
-            const isPending = pending[currentUser?.uid];
-            
-            if (isPending) {
-                showWaitingScreen(meetingId, currentUser.name || currentUser.username);
-                return;
-            }
-            
-            if (!meeting.participants?.[currentUser?.uid]) {
-                await requestJoinMeeting(meetingId);
-                return;
-            }
-        }
-        
         currentRoomMeetingId = meetingId;
         showSpecificPage('meetingRoomPage');
         
@@ -8002,10 +8044,7 @@ async function joinMeetingRoom(meetingId) {
         const titleEl = document.getElementById('roomMeetingTitle');
         if (titleEl) titleEl.innerText = meeting.title || 'الاجتماع';
         
-        const linkEl = document.getElementById('roomMeetingLink');
-        if (linkEl) linkEl.innerText = meeting.meetingId || meetingId;
-        
-        // تشغيل الكاميرا والمايك
+        // تشغيل الكاميرا والمايك (سيقوم بإرسال العروض تلقائياً)
         await startLocalStream();
         
         // إضافة المشارك
@@ -8028,14 +8067,6 @@ async function joinMeetingRoom(meetingId) {
         // بدء الاستماع للإشارات (Signaling)
         listenForSignaling(meetingId);
         
-        // إرسال عروض للمشاركين الحاليين
-        const participantIds = Object.keys(meeting.participants);
-        for (const uid of participantIds) {
-            if (uid !== currentUser.uid) {
-                await sendOffer(uid);
-            }
-        }
-        
         // إنشاء التخطيط
         createMeetingLayout(meeting.participants);
         updateHeaderParticipantsInfo(meeting.participants);
@@ -8048,16 +8079,6 @@ async function joinMeetingRoom(meetingId) {
         
         // الاستماع لتحديثات المشاركين
         listenForParticipantUpdates(meetingId);
-        
-        // الاستماع لطلبات الدخول (للمنشئ)
-        if (meeting.creatorId === currentUser?.uid) {
-            listenForJoinRequests(meetingId);
-        }
-        
-        // بدء إرسال مستوى الصوت
-        setInterval(() => {
-            sendAudioLevel();
-        }, 200);
         
         showToast('✅ مرحباً بك في الاجتماع');
         
@@ -8430,7 +8451,7 @@ function updateRoomParticipants(participants) {
         }
 
         
-// ==================== تشغيل الكاميرا والمايك (مع كشف الأجهزة) ====================
+// ==================== تشغيل الكاميرا والمايك ====================
 async function startLocalStream() {
     let hasCamera = false;
     let hasMic = false;
@@ -8444,7 +8465,6 @@ async function startLocalStream() {
         hasCamera = videoDevices.length > 0;
         hasMic = audioDevices.length > 0;
         
-        // بناء القيود حسب الأجهزة المتاحة
         const constraints = {
             video: hasCamera ? {
                 facingMode: 'user',
@@ -8464,7 +8484,7 @@ async function startLocalStream() {
             hasCamera = localStream.getVideoTracks().length > 0;
             hasMic = localStream.getAudioTracks().length > 0;
             
-            // عرض الفيديو إذا كانت الكاميرا متاحة
+            // عرض الفيديو المحلي
             const videoElement = document.getElementById('localVideo');
             if (videoElement && hasCamera) {
                 videoElement.srcObject = localStream;
@@ -8474,47 +8494,35 @@ async function startLocalStream() {
             // تحديث حالة الأجهزة
             updateDeviceStatus(hasCamera, hasMic);
             
-            // تشغيل مؤشر الصوت إذا كان المايك متاحاً
+            // تشغيل مؤشر الصوت
             if (hasMic) {
                 startAudioVisualizer();
-                // بدء تحديث مؤشر الصوت
                 setInterval(updateAudioIndicator, 100);
             }
             
+            // بعد الحصول على الـ stream، إرسال عروض لجميع المشاركين
+            const participants = window.roomParticipants || {};
+            const participantIds = Object.keys(participants);
+            for (const uid of participantIds) {
+                if (uid !== currentUser?.uid) {
+                    await sendOffer(uid);
+                }
+            }
+            
             const msg = hasCamera && hasMic ? '✅ تم تشغيل الكاميرا والمايك' :
-                       hasCamera ? '✅ تم تشغيل الكاميرا فقط (لا يوجد مايك)' :
-                       hasMic ? '✅ تم تشغيل المايك فقط (لا توجد كاميرا)' :
-                       '⚠️ لا توجد كاميرا أو مايك متصل';
+                       hasCamera ? '✅ تم تشغيل الكاميرا فقط' :
+                       hasMic ? '✅ تم تشغيل المايك فقط' :
+                       '⚠️ لا توجد كاميرا أو مايك';
             showToast(msg);
             return true;
             
         } catch (error) {
             console.error('خطأ في تشغيل الأجهزة:', error);
             
-            // محاولة تشغيل الصوت فقط إذا فشلت الكاميرا
-            if (hasMic && !hasCamera) {
-                try {
-                    const audioOnly = await navigator.mediaDevices.getUserMedia({ audio: true });
-                    localStream = audioOnly;
-                    hasMic = true;
-                    hasCamera = false;
-                    updateDeviceStatus(false, true);
-                    showToast('⚠️ تم تشغيل المايك فقط (تعذر تشغيل الكاميرا)');
-                    return true;
-                } catch (audioError) {
-                    showToast('❌ تعذر تشغيل المايك');
-                    updateDeviceStatus(false, false);
-                    return false;
-                }
-            }
-            
-            // إذا كان الخطأ بسبب رفض الإذن
-            if (error.name === 'NotAllowedError' || error.name === 'PermissionDeniedError') {
+            if (error.name === 'NotAllowedError') {
                 showToast('⚠️ تم رفض إذن الكاميرا والمايك');
             } else if (error.name === 'NotFoundError') {
                 showToast('⚠️ لا توجد كاميرا أو مايك متصل');
-            } else {
-                showToast('❌ حدث خطأ في تشغيل الكاميرا والمايك');
             }
             
             updateDeviceStatus(false, false);
@@ -8928,7 +8936,7 @@ styleSheet.textContent = `
     }
 `;
 document.head.appendChild(styleSheet);
-       // ==================== مشاركة الشاشة ====================
+    // ==================== مشاركة الشاشة (بدون Storage) ====================
 async function roomToggleScreenShare() {
     if (isScreenSharing) {
         stopScreenShare();
@@ -8948,6 +8956,15 @@ async function roomToggleScreenShare() {
         isScreenSharing = true;
         isScreenSharingMode = true;
         
+        // إضافة مسار الشاشة إلى جميع الاتصالات
+        const screenTrack = screenStream.getVideoTracks()[0];
+        Object.keys(peerConnections).forEach(uid => {
+            const pc = peerConnections[uid];
+            if (pc) {
+                pc.addTrack(screenTrack, screenStream);
+            }
+        });
+        
         // تحديث التخطيط
         const participants = window.roomParticipants || {};
         createMeetingLayout(participants);
@@ -8966,45 +8983,34 @@ async function roomToggleScreenShare() {
         
     } catch (error) {
         console.error('خطأ في مشاركة الشاشة:', error);
-        if (error.name !== 'AbortError' && error.name !== 'NotAllowedError') {
+        if (error.name !== 'AbortError') {
             showToast('❌ تعذر مشاركة الشاشة');
         }
     }
 }
 
-// ==================== إيقاف مشاركة الشاشة (مُصلح) ====================
+// ==================== إيقاف مشاركة الشاشة ====================
 function stopScreenShare() {
-    // إغلاق العرض الكامل أولاً
-    closeScreenFullscreen();
-    
-    // إيقاف تدفق الشير سكرين
     if (screenStream) {
-        try {
-            screenStream.getTracks().forEach(track => {
-                track.stop();
-                track.enabled = false;
-            });
-        } catch (error) {
-            console.log('خطأ في إيقاف تدفق الشير:', error);
-        }
+        screenStream.getTracks().forEach(track => track.stop());
         screenStream = null;
     }
     
     isScreenSharing = false;
     isScreenSharingMode = false;
-    isScreenFullscreen = false;
     
-    // تحديث واجهة زر الشير سكرين
-    const screenBtn = document.getElementById('roomScreenBtn');
-    if (screenBtn) {
-        screenBtn.classList.remove('active');
-        screenBtn.innerHTML = '<i class="fas fa-desktop"></i>';
-        screenBtn.title = 'مشاركة الشاشة';
-    }
+    // إغلاق العرض الكامل
+    closeScreenFullscreen();
     
     // تحديث التخطيط
     const participants = window.roomParticipants || {};
     createMeetingLayout(participants);
+    
+    const screenBtn = document.getElementById('roomScreenBtn');
+    if (screenBtn) {
+        screenBtn.classList.remove('active');
+        screenBtn.innerHTML = '<i class="fas fa-desktop"></i>';
+    }
     
     showToast('🖥️ تم إيقاف مشاركة الشاشة');
 }
@@ -9046,13 +9052,16 @@ async function leaveMeetingRoom() {
     loadMeetings();
     showToast('✅ تم مغادرة الاجتماع');
 }
-// ==================== الخروج التلقائي عند إغلاق التبويب أو البرنامج ====================
+// ==================== الخروج التلقائي عند إغلاق التبويب ====================
 window.addEventListener('beforeunload', function() {
     if (currentRoomMeetingId && currentUser) {
-        // محاولة إزالة المستخدم من المشاركين قبل إغلاق الصفحة
         try {
-            const participantsRef = db.ref(`meetings/${currentRoomMeetingId}/participants/${currentUser.uid}`);
-            participantsRef.remove();
+            // إزالة المستخدم من المشاركين
+            db.ref(`meetings/${currentRoomMeetingId}/participants/${currentUser.uid}`).remove();
+            
+            // إزالة إشارات Signaling
+            db.ref(`meetings/${currentRoomMeetingId}/signaling/${currentUser.uid}`).remove();
+            
             console.log('✅ تم إزالة المستخدم من الاجتماع تلقائياً');
         } catch (error) {
             console.error('خطأ في إزالة المستخدم:', error);
@@ -9060,27 +9069,13 @@ window.addEventListener('beforeunload', function() {
     }
 });
 
-// ==================== إضافة مستمع عند إغلاق التبويب (بديل) ====================
+// ==================== مستمع عند إغلاق التبويب (بديل) ====================
 document.addEventListener('visibilitychange', function() {
     if (document.hidden && currentRoomMeetingId && currentUser) {
-        // المستخدم غادر التبويب
         try {
-            const participantsRef = db.ref(`meetings/${currentRoomMeetingId}/participants/${currentUser.uid}`);
-            participantsRef.remove();
-            console.log('✅ تم إزالة المستخدم من الاجتماع (غادر التبويب)');
-        } catch (error) {
-            console.error('خطأ في إزالة المستخدم:', error);
-        }
-    }
-});
-
-// ==================== إضافة مستمع عند إغلاق المتصفح ====================
-window.addEventListener('pagehide', function() {
-    if (currentRoomMeetingId && currentUser) {
-        try {
-            const participantsRef = db.ref(`meetings/${currentRoomMeetingId}/participants/${currentUser.uid}`);
-            participantsRef.remove();
-            console.log('✅ تم إزالة المستخدم من الاجتماع (إغلاق المتصفح)');
+            db.ref(`meetings/${currentRoomMeetingId}/participants/${currentUser.uid}`).remove();
+            db.ref(`meetings/${currentRoomMeetingId}/signaling/${currentUser.uid}`).remove();
+            console.log('✅ تم إزالة المستخدم (غادر التبويب)');
         } catch (error) {
             console.error('خطأ في إزالة المستخدم:', error);
         }
