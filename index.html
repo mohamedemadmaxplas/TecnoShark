@@ -2502,6 +2502,717 @@
         font-size: 11px;
     }
 }
+/* ==================== غرفة الاجتماع الجديدة ==================== */
+.meeting-room {
+    background: #1a1a2e;
+    height: 100vh;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+}
+
+/* ==================== رأس الاجتماع ==================== */
+.meeting-header {
+    background: rgba(0,0,0,0.6);
+    backdrop-filter: blur(10px);
+    padding: 10px 20px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 10px;
+    border-bottom: 1px solid rgba(255,255,255,0.05);
+    flex-shrink: 0;
+}
+
+.meeting-header .meeting-title {
+    color: #fff;
+    font-size: 16px;
+    font-weight: bold;
+}
+
+.meeting-header .meeting-title i {
+    color: #3b82f6;
+    margin-left: 8px;
+}
+
+.meeting-header .meeting-status {
+    color: #22c55e;
+    font-size: 12px;
+    display: flex;
+    align-items: center;
+    gap: 5px;
+}
+
+.meeting-header .meeting-status .dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: #22c55e;
+    animation: pulse-dot 1.5s infinite;
+}
+
+@keyframes pulse-dot {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.3; }
+}
+
+.meeting-header .meeting-controls-header {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+}
+
+.meeting-header .meeting-controls-header button {
+    background: none;
+    border: none;
+    color: rgba(255,255,255,0.6);
+    cursor: pointer;
+    transition: all 0.3s;
+    font-size: 14px;
+}
+
+.meeting-header .meeting-controls-header button:hover {
+    color: #fff;
+}
+
+.meeting-header .meeting-controls-header .leave-btn-header {
+    background: #dc3545;
+    color: #fff;
+    padding: 6px 16px;
+    border-radius: 20px;
+    font-size: 13px;
+}
+
+.meeting-header .meeting-controls-header .leave-btn-header:hover {
+    background: #b02a37;
+    color: #fff;
+}
+
+.meeting-header .participants-info {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    color: rgba(255,255,255,0.6);
+    font-size: 13px;
+}
+
+.meeting-header .participants-info .avatar-group {
+    display: flex;
+}
+
+.meeting-header .participants-info .avatar-group .avatar-mini {
+    width: 28px;
+    height: 28px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 11px;
+    font-weight: bold;
+    color: #fff;
+    margin-right: -6px;
+    border: 2px solid #1a1a2e;
+}
+
+/* ==================== حاوية المحتوى الرئيسي ==================== */
+.meeting-main-container {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    padding: 10px;
+    gap: 10px;
+    height: calc(100vh - 130px);
+    overflow: hidden;
+}
+
+/* ==================== صف المشاركين في الأعلى ==================== */
+.participants-top-row {
+    display: flex;
+    gap: 8px;
+    overflow-x: auto;
+    padding: 4px 0;
+    flex-shrink: 0;
+    max-height: 160px;
+    min-height: 80px;
+}
+
+.participants-top-row .participant-mini-card {
+    position: relative;
+    min-width: 140px;
+    max-width: 200px;
+    flex: 1;
+    aspect-ratio: 16/9;
+    border-radius: 12px;
+    overflow: hidden;
+    flex-shrink: 0;
+    cursor: pointer;
+    border: 2px solid rgba(255,255,255,0.08);
+    transition: all 0.3s ease;
+    background: #0f3460;
+}
+
+.participants-top-row .participant-mini-card:hover {
+    transform: scale(1.02);
+    border-color: rgba(59, 130, 246, 0.4);
+}
+
+.participants-top-row .participant-mini-card video {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.participants-top-row .participant-mini-card .mini-avatar {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 16px;
+    font-weight: bold;
+    color: #fff;
+    background: rgba(0,0,0,0.5);
+    border: 2px solid rgba(255,255,255,0.2);
+    z-index: 1;
+}
+
+.participants-top-row .participant-mini-card .mini-name {
+    position: absolute;
+    bottom: 6px;
+    left: 50%;
+    transform: translateX(-50%);
+    background: rgba(0,0,0,0.7);
+    color: #fff;
+    padding: 2px 12px;
+    border-radius: 12px;
+    font-size: 10px;
+    backdrop-filter: blur(5px);
+    white-space: nowrap;
+    z-index: 2;
+}
+
+.participants-top-row .participant-mini-card .mini-status {
+    position: absolute;
+    top: 6px;
+    right: 6px;
+    display: flex;
+    gap: 3px;
+    z-index: 2;
+}
+
+.participants-top-row .participant-mini-card .mini-status .mini-icon {
+    width: 18px;
+    height: 18px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #fff;
+    font-size: 8px;
+    background: rgba(0,0,0,0.6);
+}
+
+.participants-top-row .participant-mini-card .mini-status .mini-icon.active {
+    background: rgba(34, 197, 94, 0.7);
+}
+
+.participants-top-row .participant-mini-card .mini-status .mini-icon.inactive {
+    background: rgba(239, 68, 68, 0.7);
+}
+
+.participants-top-row .participant-mini-card.speaking {
+    border-color: #22c55e;
+    box-shadow: 0 0 20px rgba(34, 197, 94, 0.2);
+}
+
+.participants-top-row .participant-mini-card .mini-badge {
+    position: absolute;
+    top: 6px;
+    left: 6px;
+    background: #f59e0b;
+    color: #000;
+    font-size: 8px;
+    padding: 1px 8px;
+    border-radius: 10px;
+    font-weight: bold;
+    z-index: 2;
+}
+
+.participants-top-row .participant-mini-card .mini-mic-off {
+    position: absolute;
+    bottom: 30px;
+    left: 50%;
+    transform: translateX(-50%);
+    background: rgba(239, 68, 68, 0.8);
+    color: #fff;
+    font-size: 14px;
+    padding: 2px 10px;
+    border-radius: 12px;
+    z-index: 2;
+}
+
+/* ==================== حاوية الشاشة المشتركة ==================== */
+.screen-share-wrapper {
+    flex: 1;
+    position: relative;
+    background: #0a0a1a;
+    border-radius: 16px;
+    overflow: hidden;
+    min-height: 200px;
+    border: 2px solid rgba(59, 130, 246, 0.2);
+}
+
+.screen-share-wrapper video {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+}
+
+.screen-share-wrapper .screen-placeholder {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 100%;
+    color: rgba(255,255,255,0.2);
+    flex-direction: column;
+    gap: 15px;
+}
+
+.screen-share-wrapper .screen-placeholder i {
+    font-size: 64px;
+}
+
+.screen-share-wrapper .screen-placeholder p {
+    font-size: 18px;
+}
+
+.screen-share-wrapper .screen-controls-overlay {
+    position: absolute;
+    bottom: 20px;
+    left: 50%;
+    transform: translateX(-50%);
+    display: flex;
+    gap: 10px;
+    z-index: 10;
+    background: rgba(0,0,0,0.7);
+    padding: 8px 20px;
+    border-radius: 30px;
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(255,255,255,0.05);
+}
+
+.screen-share-wrapper .screen-controls-overlay button {
+    padding: 6px 18px;
+    border: none;
+    border-radius: 20px;
+    color: #fff;
+    cursor: pointer;
+    font-size: 12px;
+    font-weight: bold;
+    transition: all 0.3s;
+}
+
+.screen-share-wrapper .screen-controls-overlay button:hover {
+    transform: scale(1.05);
+}
+
+.screen-share-wrapper .screen-controls-overlay .fullscreen-btn {
+    background: #3b82f6;
+}
+
+.screen-share-wrapper .screen-controls-overlay .fullscreen-btn:hover {
+    background: #2563eb;
+}
+
+.screen-share-wrapper .screen-controls-overlay .stop-screen-btn {
+    background: #dc3545;
+}
+
+.screen-share-wrapper .screen-controls-overlay .stop-screen-btn:hover {
+    background: #b02a37;
+}
+
+/* ==================== العرض الكامل ==================== */
+.screen-share-fullscreen {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    z-index: 9999;
+    background: #0a0a1a;
+    display: none;
+    flex-direction: column;
+}
+
+.screen-share-fullscreen.active {
+    display: flex;
+}
+
+.screen-share-fullscreen video {
+    flex: 1;
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+}
+
+.screen-share-fullscreen .fullscreen-controls {
+    position: absolute;
+    bottom: 30px;
+    left: 50%;
+    transform: translateX(-50%);
+    display: flex;
+    gap: 12px;
+    z-index: 10;
+    background: rgba(0,0,0,0.8);
+    padding: 10px 24px;
+    border-radius: 40px;
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(255,255,255,0.1);
+}
+
+.screen-share-fullscreen .fullscreen-controls button {
+    padding: 6px 20px;
+    border: none;
+    border-radius: 25px;
+    color: #fff;
+    cursor: pointer;
+    font-size: 13px;
+    font-weight: bold;
+    transition: all 0.3s;
+}
+
+.screen-share-fullscreen .fullscreen-controls button:hover {
+    transform: scale(1.05);
+}
+
+.screen-share-fullscreen .fullscreen-controls .close-fullscreen-btn {
+    background: rgba(255,255,255,0.1);
+}
+
+.screen-share-fullscreen .fullscreen-controls .close-fullscreen-btn:hover {
+    background: rgba(255,255,255,0.2);
+}
+
+.screen-share-fullscreen .fullscreen-controls .stop-fullscreen-btn {
+    background: #dc3545;
+}
+
+.screen-share-fullscreen .fullscreen-controls .stop-fullscreen-btn:hover {
+    background: #b02a37;
+}
+
+/* ==================== أزرار التحكم السفلية ==================== */
+.meeting-controls-bottom {
+    background: rgba(0,0,0,0.85);
+    backdrop-filter: blur(10px);
+    border-top: 1px solid rgba(255,255,255,0.05);
+    padding: 8px 20px;
+    display: flex;
+    justify-content: center;
+    gap: 10px;
+    flex-wrap: wrap;
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    z-index: 50;
+    flex-shrink: 0;
+}
+
+.meeting-controls-bottom button {
+    width: 48px;
+    height: 48px;
+    border-radius: 50%;
+    border: none;
+    background: rgba(255,255,255,0.06);
+    color: #fff;
+    font-size: 16px;
+    transition: all 0.2s;
+    cursor: pointer;
+    backdrop-filter: blur(5px);
+    border: 1px solid rgba(255,255,255,0.05);
+}
+
+.meeting-controls-bottom button:hover {
+    background: rgba(255,255,255,0.12);
+    transform: scale(1.05);
+}
+
+.meeting-controls-bottom button.active {
+    background: #3b82f6;
+    border-color: #3b82f6;
+}
+
+.meeting-controls-bottom button.inactive {
+    background: #dc3545;
+    border-color: #dc3545;
+}
+
+.meeting-controls-bottom button.leave-btn-bottom {
+    background: #dc3545;
+    border-color: #dc3545;
+    width: auto;
+    padding: 0 20px;
+    border-radius: 30px;
+    font-size: 14px;
+    font-weight: bold;
+}
+
+.meeting-controls-bottom button.leave-btn-bottom:hover {
+    background: #b02a37;
+    transform: scale(1.05);
+}
+
+.meeting-controls-bottom button.leave-btn-bottom i {
+    margin-left: 8px;
+}
+
+/* ==================== شات الاجتماع ==================== */
+.meeting-chat-panel {
+    position: fixed;
+    bottom: 80px;
+    right: 20px;
+    width: 320px;
+    max-width: 90vw;
+    background: rgba(26, 26, 46, 0.95);
+    backdrop-filter: blur(10px);
+    border-radius: 16px;
+    box-shadow: 0 10px 40px rgba(0,0,0,0.5);
+    max-height: 400px;
+    overflow: hidden;
+    z-index: 20;
+    display: none;
+    border: 1px solid rgba(255,255,255,0.08);
+}
+
+.meeting-chat-panel.active {
+    display: flex;
+    flex-direction: column;
+}
+
+/* ==================== التوافق مع الشاشات الصغيرة ==================== */
+@media (max-width: 768px) {
+    .participants-top-row .participant-mini-card {
+        min-width: 100px;
+        max-width: 140px;
+    }
+    
+    .meeting-controls-bottom button {
+        width: 40px;
+        height: 40px;
+        font-size: 14px;
+    }
+    
+    .meeting-header .meeting-title {
+        font-size: 13px;
+    }
+    
+    .screen-share-wrapper .screen-controls-overlay {
+        padding: 4px 12px;
+        gap: 4px;
+    }
+    
+    .screen-share-wrapper .screen-controls-overlay button {
+        padding: 4px 10px;
+        font-size: 10px;
+    }
+}
+/* ==================== تخطيط الشبكة 2x2 ==================== */
+.meeting-grid-layout {
+    display: grid;
+    gap: 10px;
+    flex: 1;
+    height: 100%;
+    width: 100%;
+}
+
+.meeting-grid-layout.grid-1 {
+    grid-template-columns: 1fr;
+    grid-template-rows: 1fr;
+}
+
+.meeting-grid-layout.grid-2 {
+    grid-template-columns: 1fr 1fr;
+    grid-template-rows: 1fr;
+}
+
+.meeting-grid-layout.grid-3 {
+    grid-template-columns: 1fr 1fr;
+    grid-template-rows: 1fr 1fr;
+}
+.meeting-grid-layout.grid-3 .participant-card:last-child {
+    grid-column: span 2;
+}
+
+.meeting-grid-layout.grid-4 {
+    grid-template-columns: 1fr 1fr;
+    grid-template-rows: 1fr 1fr;
+}
+
+/* ==================== بطاقة المشارك في الشبكة ==================== */
+.participant-card {
+    position: relative;
+    border-radius: 16px;
+    overflow: hidden;
+    min-height: 150px;
+    border: 2px solid rgba(255,255,255,0.08);
+    transition: all 0.3s ease;
+    background: #1a1a2e;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.3);
+}
+
+.participant-card video {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    z-index: 1;
+}
+
+.participant-card .participant-name {
+    position: absolute;
+    bottom: 15px;
+    left: 50%;
+    transform: translateX(-50%);
+    background: rgba(0,0,0,0.7);
+    color: #fff;
+    padding: 5px 18px;
+    border-radius: 20px;
+    font-size: 13px;
+    font-weight: bold;
+    backdrop-filter: blur(5px);
+    z-index: 3;
+    white-space: nowrap;
+    border: 1px solid rgba(255,255,255,0.05);
+}
+
+.participant-card.speaking {
+    border-color: #22c55e;
+    box-shadow: 0 0 30px rgba(34, 197, 94, 0.3);
+    animation: speakingPulse 1.5s ease-in-out infinite;
+}
+
+@keyframes speakingPulse {
+    0%, 100% { box-shadow: 0 0 20px rgba(34, 197, 94, 0.2); }
+    50% { box-shadow: 0 0 40px rgba(34, 197, 94, 0.5); }
+}
+
+/* ==================== زر عدم وجود جهاز ==================== */
+.meeting-controls-bottom button.no-device {
+    background: #92400e !important;
+    opacity: 0.7;
+    cursor: not-allowed;
+}
+
+.meeting-controls-bottom button.no-device:hover {
+    transform: none !important;
+    opacity: 0.7 !important;
+}
+
+/* ==================== مؤشر الصوت في البطاقة ==================== */
+.audio-indicator {
+    position: absolute;
+    bottom: 60px;
+    left: 50%;
+    transform: translateX(-50%);
+    display: flex;
+    gap: 3px;
+    align-items: flex-end;
+    height: 25px;
+    z-index: 3;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+}
+
+.audio-indicator .bar {
+    width: 4px;
+    background: rgba(34, 197, 94, 0.2);
+    border-radius: 2px;
+    transition: all 0.1s ease;
+}
+
+.audio-indicator .bar.active {
+    background: #22c55e;
+}
+/* ==================== العرض الكامل للشاشة ==================== */
+.screen-share-fullscreen {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    z-index: 9999;
+    background: #0a0a1a;
+    display: none;
+    flex-direction: column;
+}
+
+.screen-share-fullscreen.active {
+    display: flex !important;
+}
+
+.screen-share-fullscreen video {
+    flex: 1;
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+    background: #0a0a1a;
+}
+
+.screen-share-fullscreen .fullscreen-controls {
+    position: absolute;
+    bottom: 30px;
+    left: 50%;
+    transform: translateX(-50%);
+    display: flex;
+    gap: 12px;
+    z-index: 10;
+    background: rgba(0, 0, 0, 0.85);
+    padding: 12px 24px;
+    border-radius: 50px;
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.screen-share-fullscreen .fullscreen-controls button {
+    padding: 8px 22px;
+    border: none;
+    border-radius: 30px;
+    color: #fff;
+    cursor: pointer;
+    font-size: 14px;
+    font-weight: bold;
+    transition: all 0.3s ease;
+}
+
+.screen-share-fullscreen .fullscreen-controls button:hover {
+    transform: scale(1.05);
+}
+
+.screen-share-fullscreen .fullscreen-controls .close-fullscreen-btn {
+    background: rgba(255, 255, 255, 0.1);
+}
+
+.screen-share-fullscreen .fullscreen-controls .close-fullscreen-btn:hover {
+    background: rgba(255, 255, 255, 0.2);
+}
+
+.screen-share-fullscreen .fullscreen-controls .stop-fullscreen-btn {
+    background: #dc3545;
+}
+
+.screen-share-fullscreen .fullscreen-controls .stop-fullscreen-btn:hover {
+    background: #b02a37;
+}
     </style>
 </head>
 <body class="bg-gradient-to-br from-blue-50 to-indigo-100 min-h-screen">
@@ -3149,38 +3860,41 @@
         </div>
     </div>
 
-  <!-- ==================== غرفة الاجتماع الفعلية (مع الكاميرا والمايك) ==================== -->
+ <!-- ==================== غرفة الاجتماع ==================== -->
 <div id="meetingRoomPage" class="hidden page-container">
     <div class="meeting-room">
-        <!-- رأس الغرفة -->
-        <div class="bg-black/30 backdrop-blur-sm p-4 flex justify-between items-center flex-wrap gap-3">
-            <div class="flex items-center gap-3">
-                <button onclick="leaveMeetingRoom()" class="text-white/70 hover:text-white transition text-sm">
-                    <i class="fas fa-arrow-right ml-1"></i> خروج
-                </button>
-                <h3 id="roomMeetingTitle" class="text-white font-bold text-lg">الاجتماع</h3>
-                <span id="roomMeetingStatus" class="meeting-status status-live text-xs">حية</span>
+        <!-- رأس الاجتماع -->
+        <div class="meeting-header">
+            <div class="meeting-title">
+                <i class="fas fa-video"></i>
+                <span id="roomMeetingTitle">الاجتماع</span>
+                <span class="meeting-status">
+                    <span class="dot"></span> حية
+                </span>
             </div>
-            <div class="flex items-center gap-3">
-                <div class="participants-bar" id="roomParticipantsBar">
-                    <span class="text-white/50 text-xs">المشاركون:</span>
-                    <span class="participant-avatar active" id="roomOwnerAvatar" title="المالك">أ</span>
+            <div class="participants-info" id="headerParticipantsInfo">
+                <span>1 مشارك</span>
+                <div class="avatar-group">
+                    <div class="avatar-mini" style="background: #667eea;">أ</div>
                 </div>
-                <span id="roomParticipantCount" class="text-white/50 text-xs">1 مشارك</span>
             </div>
-            <div class="text-white/50 text-xs">
-                <i class="fas fa-link ml-1"></i>
-                <span id="roomMeetingLink" class="text-blue-400 cursor-pointer hover:underline" onclick="copyMeetingLink()">نسخ الرابط</span>
+            <div class="meeting-controls-header">
+                <span id="roomMeetingLink" class="text-white/50 text-xs cursor-pointer hover:text-white" onclick="copyMeetingLink()">
+                    <i class="fas fa-link"></i> نسخ الرابط
+                </span>
+                <button onclick="leaveMeetingRoom()" class="leave-btn-header">
+                    <i class="fas fa-sign-out-alt"></i> خروج
+                </button>
             </div>
         </div>
         
-        <!-- حاوية الاجتماع الرئيسية -->
+        <!-- حاوية المحتوى الرئيسي -->
         <div class="meeting-main-container" id="meetingMainContainer">
             <!-- سيتم إنشاء المحتوى ديناميكياً بواسطة JavaScript -->
         </div>
         
-        <!-- أزرار التحكم في غرفة الاجتماع -->
-        <div class="meeting-controls">
+        <!-- أزرار التحكم السفلية -->
+        <div class="meeting-controls-bottom">
             <button onclick="roomToggleMic()" id="roomMicBtn" class="active" title="كتم الصوت">
                 <i class="fas fa-microphone"></i>
             </button>
@@ -3199,8 +3913,8 @@
             <button onclick="roomToggleChat()" id="roomChatBtn" title="الشات">
                 <i class="fas fa-comment"></i>
             </button>
-            <button onclick="leaveMeetingRoom()" class="leave-btn" title="إنهاء المكالمة">
-                <i class="fas fa-phone-slash"></i>
+            <button onclick="leaveMeetingRoom()" class="leave-btn-bottom" title="إنهاء المكالمة">
+                <i class="fas fa-phone-slash"></i> إنهاء
             </button>
         </div>
         
@@ -3535,20 +4249,140 @@ let isScreenSharingMode = false;
 let participantCards = {};
 let localParticipantId = null;
 
-// ==================== إنشاء تخطيط غرفة الاجتماع ====================
+// ==================== إنشاء تخطيط غرفة الاجتماع (مُصلح) ====================
 function createMeetingLayout(participants) {
     const container = document.getElementById('meetingMainContainer');
     if (!container) return;
     
     container.innerHTML = '';
     
-    if (isScreenSharingMode) {
-        createScreenShareLayout(container, participants || {});
+    const participantCount = Object.keys(participants || {}).length;
+    
+    // إذا كان هناك شير سكرين - عرض صف علوي + شاشة
+    if (isScreenSharing && screenStream) {
+        // صف المشاركين في الأعلى
+        const topRow = document.createElement('div');
+        topRow.className = 'participants-top-row';
+        topRow.id = 'participantsTopRow';
+        container.appendChild(topRow);
+        
+        // حاوية الشاشة المشتركة
+        const screenWrapper = document.createElement('div');
+        screenWrapper.className = 'screen-share-wrapper';
+        screenWrapper.id = 'screenShareWrapper';
+        screenWrapper.innerHTML = `
+            <video id="screenShareVideo" autoplay playsinline></video>
+            <div class="screen-controls-overlay">
+                <button onclick="toggleScreenFullscreen()" class="fullscreen-btn">
+                    <i class="fas fa-expand"></i> عرض كامل
+                </button>
+                <button onclick="stopScreenShare()" class="stop-screen-btn">
+                    <i class="fas fa-stop"></i> إيقاف
+                </button>
+            </div>
+        `;
+        const video = screenWrapper.querySelector('#screenShareVideo');
+        if (video && screenStream) {
+            video.srcObject = screenStream;
+            video.play();
+        }
+        container.appendChild(screenWrapper);
+        
+        // تحديث صف المشاركين
+        updateParticipantsRow(participants || {});
+        
     } else {
-        createGridLayout(container, participants || {});
+        // لا يوجد شير سكرين - عرض شبكة 2x2
+        const gridDiv = document.createElement('div');
+        gridDiv.className = 'meeting-grid-layout';
+        
+        // تحديد حجم الشبكة حسب عدد المشاركين
+        if (participantCount <= 1) {
+            gridDiv.classList.add('grid-1');
+        } else if (participantCount === 2) {
+            gridDiv.classList.add('grid-2');
+        } else if (participantCount === 3) {
+            gridDiv.classList.add('grid-3');
+        } else {
+            gridDiv.classList.add('grid-4');
+        }
+        
+        // إضافة بطاقات المشاركين (بطاقات كبيرة)
+        const names = Object.keys(participants || {});
+        names.forEach((uid, index) => {
+            const p = participants[uid];
+            const card = createFullParticipantCard(p, uid, index);
+            gridDiv.appendChild(card);
+        });
+        
+        container.appendChild(gridDiv);
     }
+    
+    // تحديث معلومات الرأس
+    updateHeaderParticipantsInfo(participants || {});
 }
-
+// ==================== إنشاء بطاقة مشارك كبيرة للشبكة 2x2 ====================
+function createFullParticipantCard(participant, uid, index) {
+    const div = document.createElement('div');
+    div.className = 'participant-card';
+    div.id = `participant_${uid}`;
+    div.dataset.uid = uid;
+    
+    const initial = (participant.name || 'U').charAt(0).toUpperCase();
+    const isHost = participant.isHost;
+    const isLocal = uid === currentUser?.uid;
+    
+    const colors = ['#667eea', '#f5576c', '#4facfe', '#43e97b', '#fa709a', '#a18cd1'];
+    const color = colors[index % colors.length];
+    
+    const micEnabled = participant.micEnabled !== false;
+    const videoEnabled = participant.videoEnabled !== false;
+    
+    let videoHtml = '';
+    if (isLocal && localStream) {
+        videoHtml = `<video id="localVideo" autoplay muted playsinline></video>`;
+    } else if (!isLocal) {
+        videoHtml = `<video id="remoteVideo_${uid}" autoplay playsinline></video>`;
+    }
+    
+    div.innerHTML = `
+        ${videoHtml}
+        <div class="card-bg" style="background: ${color}; opacity: 0.7; position: absolute; top: 0; left: 0; width: 100%; height: 100%; z-index: 0;"></div>
+        <div class="card-content" style="position: relative; z-index: 1; width: 100%; height: 100%; display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 10px;">
+            <div class="avatar-placeholder" style="width: 70px; height: 70px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 28px; font-weight: bold; color: #fff; background: rgba(0,0,0,0.4); border: 3px solid rgba(255,255,255,0.3);">
+                ${initial}
+            </div>
+            <div class="participant-name" style="position: absolute; bottom: 15px; left: 50%; transform: translateX(-50%); background: rgba(0,0,0,0.7); color: #fff; padding: 5px 18px; border-radius: 20px; font-size: 13px; font-weight: bold; backdrop-filter: blur(5px); z-index: 3; white-space: nowrap;">
+                ${isHost ? '👑 ' : ''}${participant.name}
+            </div>
+        </div>
+        <div class="status-icons" style="position: absolute; top: 12px; right: 12px; display: flex; gap: 6px; z-index: 3;">
+            <span class="icon ${micEnabled ? 'active' : 'inactive'}" style="width: 30px; height: 30px; border-radius: 50%; display: flex; align-items: center; justify-content: center; color: #fff; font-size: 13px; background: rgba(0,0,0,0.6); backdrop-filter: blur(5px);">
+                <i class="fas ${micEnabled ? 'fa-microphone' : 'fa-microphone-slash'}"></i>
+            </span>
+            <span class="icon ${videoEnabled ? 'active' : 'inactive'}" style="width: 30px; height: 30px; border-radius: 50%; display: flex; align-items: center; justify-content: center; color: #fff; font-size: 13px; background: rgba(0,0,0,0.6); backdrop-filter: blur(5px);">
+                <i class="fas ${videoEnabled ? 'fa-video' : 'fa-video-slash'}"></i>
+            </span>
+        </div>
+        <div class="audio-indicator" style="position: absolute; bottom: 60px; left: 50%; transform: translateX(-50%); display: flex; gap: 3px; align-items: flex-end; height: 25px; z-index: 3; opacity: 0; transition: opacity 0.3s;">
+            <span class="bar" style="width: 4px; background: rgba(34, 197, 94, 0.3); border-radius: 2px; transition: all 0.1s; height: 4px;"></span>
+            <span class="bar" style="width: 4px; background: rgba(34, 197, 94, 0.3); border-radius: 2px; transition: all 0.1s; height: 8px;"></span>
+            <span class="bar" style="width: 4px; background: rgba(34, 197, 94, 0.3); border-radius: 2px; transition: all 0.1s; height: 12px;"></span>
+            <span class="bar" style="width: 4px; background: rgba(34, 197, 94, 0.3); border-radius: 2px; transition: all 0.1s; height: 16px;"></span>
+            <span class="bar" style="width: 4px; background: rgba(34, 197, 94, 0.3); border-radius: 2px; transition: all 0.1s; height: 20px;"></span>
+        </div>
+    `;
+    
+    if (isLocal && localStream) {
+        const video = div.querySelector('video');
+        if (video) {
+            video.srcObject = localStream;
+            video.play().catch(e => console.log('فيديو محلي:', e));
+        }
+    }
+    
+    return div;
+}
 // ==================== إنشاء تخطيط الشبكة ====================
 function createGridLayout(container, participants) {
     const gridDiv = document.createElement('div');
@@ -3750,12 +4584,34 @@ function updateMeetingLayout(participants) {
     const container = document.getElementById('meetingMainContainer');
     if (!container) return;
     
-    container.innerHTML = '';
+    // تحديث صف المشاركين فقط دون إعادة إنشاء كل شيء
+    updateParticipantsRow(participants || {});
+    updateHeaderParticipantsInfo(participants || {});
     
-    if (isScreenSharingMode) {
-        createScreenShareLayout(container, participants || {});
-    } else {
-        createGridLayout(container, participants || {});
+    // إذا كان هناك شير سكرين، تأكد من تحديثه
+    if (isScreenSharing && screenStream) {
+        const wrapper = document.getElementById('screenShareWrapper');
+        if (wrapper) {
+            let video = wrapper.querySelector('video');
+            if (!video) {
+                wrapper.innerHTML = `
+                    <video id="screenShareVideo" autoplay playsinline></video>
+                    <div class="screen-controls-overlay">
+                        <button onclick="toggleScreenFullscreen()" class="fullscreen-btn">
+                            <i class="fas fa-expand"></i> عرض كامل
+                        </button>
+                        <button onclick="stopScreenShare()" class="stop-screen-btn">
+                            <i class="fas fa-stop"></i> إيقاف
+                        </button>
+                    </div>
+                `;
+                video = wrapper.querySelector('video');
+                if (video) {
+                    video.srcObject = screenStream;
+                    video.play();
+                }
+            }
+        }
     }
 }
 
@@ -3841,71 +4697,126 @@ function updateSpeakingIndicator(uid, isSpeaking) {
 
 
 
-// ==================== فتح الشاشة الكاملة ====================
+// ==================== فتح العرض الكامل (مُصلح بالكامل) ====================
 function openScreenFullscreen() {
-    closeScreenFullscreen();
+    // التأكد من عدم وجود عرض كامل مفتوح
+    const existing = document.getElementById('screenShareFullscreen');
+    if (existing) {
+        existing.remove();
+    }
     
+    // الحصول على فيديو الشير سكرين
     const screenVideo = document.getElementById('screenShareVideo');
     let videoSrc = null;
     
-    if (screenVideo) {
+    if (screenVideo && screenVideo.srcObject) {
         videoSrc = screenVideo.srcObject;
     } else {
-        const anyScreenVideo = document.querySelector('.screen-main video');
-        if (anyScreenVideo) {
-            videoSrc = anyScreenVideo.srcObject;
+        // محاولة البحث عن أي فيديو شير سكرين
+        const anyVideo = document.querySelector('.screen-share-wrapper video, .screen-main video');
+        if (anyVideo && anyVideo.srcObject) {
+            videoSrc = anyVideo.srcObject;
         }
     }
     
+    if (!videoSrc) {
+        showToast('❌ لا توجد شاشة مشتركة');
+        return;
+    }
+    
+    // إنشاء عنصر العرض الكامل
     const fullDiv = document.createElement('div');
     fullDiv.className = 'screen-share-fullscreen active';
     fullDiv.id = 'screenShareFullscreen';
     
     fullDiv.innerHTML = `
-        <div class="fullscreen-video-wrapper">
-            <video id="fullscreenVideo" autoplay playsinline></video>
-            <div class="fullscreen-controls">
-                <button onclick="closeScreenFullscreen()" class="close-fullscreen-btn">
-                    <i class="fas fa-compress"></i> تصغير
-                </button>
-                <button onclick="stopScreenShare()" class="stop-fullscreen-btn">
-                    <i class="fas fa-stop"></i> إيقاف المشاركة
-                </button>
-            </div>
-        </div>
+        <video id="fullscreenVideo" autoplay playsinline></video>
+       <!-- داخل fullscreen-controls -->
+<div class="fullscreen-controls">
+    <button onclick="closeScreenFullscreen()" class="close-fullscreen-btn">
+        <i class="fas fa-compress"></i> تصغير
+    </button>
+    <button onclick="stopScreenShare()" class="stop-fullscreen-btn">
+        <i class="fas fa-stop"></i> إيقاف المشاركة
+    </button>
+</div>
     `;
     
+    // إضافة إلى الصفحة
+    document.body.appendChild(fullDiv);
+    
+    // تعيين مصدر الفيديو
     const fullVideo = fullDiv.querySelector('#fullscreenVideo');
     if (fullVideo && videoSrc) {
-        fullVideo.srcObject = videoSrc;
-        fullVideo.play();
-    } else {
-        const wrapper = fullDiv.querySelector('.fullscreen-video-wrapper');
-        wrapper.innerHTML = `
-            <div style="display:flex;align-items:center;justify-content:center;height:100%;color:rgba(255,255,255,0.3);flex-direction:column;gap:10px;">
-                <i class="fas fa-desktop" style="font-size:64px;"></i>
-                <p>لا توجد شاشة مشتركة</p>
-                <button onclick="closeScreenFullscreen()" style="background:rgba(255,255,255,0.1);border:none;color:#fff;padding:8px 24px;border-radius:20px;cursor:pointer;margin-top:10px;">
-                    إغلاق
-                </button>
-            </div>
-        `;
+        // إنشاء مسار فيديو جديد لتجنب مشاكل الإزالة
+        try {
+            // استخدام نفس المصدر ولكن مع clone
+            fullVideo.srcObject = videoSrc;
+            fullVideo.play().catch(e => {
+                console.log('خطأ في تشغيل الفيديو الكامل:', e);
+                // محاولة إعادة التشغيل
+                setTimeout(() => {
+                    fullVideo.play().catch(e2 => console.log('فشل إعادة التشغيل:', e2));
+                }, 100);
+            });
+        } catch (error) {
+            console.error('خطأ في تعيين الفيديو:', error);
+        }
     }
     
-    document.body.appendChild(fullDiv);
+    // إضافة مستمع للضغط على ESC
+    document.addEventListener('keydown', function escHandler(e) {
+        if (e.key === 'Escape') {
+            closeScreenFullscreen();
+            document.removeEventListener('keydown', escHandler);
+        }
+    });
+    
+    showToast('🖥️ تم تكبير الشاشة');
 }
 
-// ==================== إغلاق الشاشة الكاملة ====================
+// ==================== إغلاق العرض الكامل (مُصلح بالكامل) ====================
 function closeScreenFullscreen() {
     const fullDiv = document.getElementById('screenShareFullscreen');
-    if (fullDiv) {
-        const video = fullDiv.querySelector('video');
-        if (video) {
-            video.pause();
-            video.srcObject = null;
-        }
-        fullDiv.remove();
+    if (!fullDiv) {
+        return;
     }
+    
+    // إيقاف الفيديو بشكل صحيح
+    const video = fullDiv.querySelector('video');
+    if (video) {
+        try {
+            // إيقاف التشغيل
+            video.pause();
+            // إزالة المصدر
+            video.srcObject = null;
+            // إزالة أي مسارات
+            video.load();
+        } catch (error) {
+            console.log('خطأ في إيقاف الفيديو:', error);
+        }
+    }
+    
+    // إزالة العنصر
+    fullDiv.remove();
+    
+    // إزالة مستمع ESC
+    document.removeEventListener('keydown', function(e) {
+        if (e.key === 'Escape') {
+            closeScreenFullscreen();
+        }
+    });
+    
+    // تحديث واجهة الشير سكرين
+    setTimeout(() => {
+        // التأكد من أن فيديو الشير سكرين لا يزال يعمل
+        const screenVideo = document.getElementById('screenShareVideo');
+        if (screenVideo && screenVideo.srcObject) {
+            screenVideo.play().catch(e => console.log('إعادة تشغيل الشير سكرين:', e));
+        }
+    }, 200);
+    
+    showToast('✅ تم تصغير الشاشة');
 }
         function activateAdminAccount() {
             if (currentUser) {
@@ -4695,13 +5606,98 @@ let audioLevels = {};
 let speakingParticipants = {};
 let audioUpdateInterval = null;
 
-// ==================== 2. تحديث مؤشرات الصوت ====================
-function updateAudioIndicators() {
-    // تحديث مؤشر الصوت للمستخدم المحلي
-    updateLocalAudioIndicator();
+// ==================== تحديث مؤشر الصوت ====================
+function updateAudioIndicator() {
+    if (!localStream) return;
     
-    // تحديث مؤشرات الصوت للمشاركين الآخرين
-    updateRemoteAudioIndicators();
+    const audioTracks = localStream.getAudioTracks();
+    if (audioTracks.length === 0 || !audioTracks[0].enabled) {
+        // المايك مكتوم أو غير موجود
+        hideAllAudioIndicators();
+        return;
+    }
+    
+    try {
+        if (!analyser || !dataArray) return;
+        
+        analyser.getByteFrequencyData(dataArray);
+        let sum = 0;
+        for (let i = 0; i < dataArray.length; i++) {
+            sum += dataArray[i];
+        }
+        const average = sum / dataArray.length;
+        const level = Math.min(average / 128, 1);
+        const isSpeaking = level > 0.05;
+        
+        // تحديث البطاقة الكبيرة (في وضع 2x2)
+        const localCard = document.getElementById(`participant_${currentUser?.uid}`);
+        if (localCard) {
+            const indicator = localCard.querySelector('.audio-indicator');
+            const bars = indicator ? indicator.querySelectorAll('.bar') : [];
+            
+            if (isSpeaking) {
+                // إظهار المؤشر
+                indicator.style.opacity = '1';
+                localCard.classList.add('speaking');
+                
+                // تحديث الأعمدة حسب مستوى الصوت
+                const activeBars = Math.floor(level * bars.length);
+                bars.forEach((bar, index) => {
+                    if (index < activeBars) {
+                        bar.style.height = `${4 + (index * 4)}px`;
+                        bar.style.background = '#22c55e';
+                    } else {
+                        bar.style.height = `${4 + (index * 4)}px`;
+                        bar.style.background = 'rgba(34, 197, 94, 0.2)';
+                    }
+                });
+            } else {
+                indicator.style.opacity = '0';
+                localCard.classList.remove('speaking');
+                bars.forEach(bar => {
+                    bar.style.background = 'rgba(34, 197, 94, 0.2)';
+                });
+            }
+        }
+        
+        // تحديث البطاقة المصغرة (في وضع شير سكرين)
+        const localMini = document.getElementById(`mini_${currentUser?.uid}`);
+        if (localMini) {
+            if (isSpeaking) {
+                localMini.classList.add('speaking');
+            } else {
+                localMini.classList.remove('speaking');
+            }
+        }
+        
+        // تحديث المؤشر في الرأس (الدائرة الخضراء)
+        const statusDot = document.querySelector('.meeting-status .dot');
+        if (statusDot) {
+            if (isSpeaking) {
+                statusDot.style.background = '#22c55e';
+                statusDot.style.boxShadow = '0 0 20px rgba(34, 197, 94, 0.5)';
+            } else {
+                statusDot.style.background = '#22c55e';
+                statusDot.style.boxShadow = 'none';
+            }
+        }
+        
+    } catch (error) {
+        // console.log('خطأ في مؤشر الصوت:', error);
+    }
+}
+
+// ==================== إخفاء جميع مؤشرات الصوت ====================
+function hideAllAudioIndicators() {
+    document.querySelectorAll('.audio-indicator').forEach(el => {
+        el.style.opacity = '0';
+    });
+    document.querySelectorAll('.participant-card.speaking').forEach(el => {
+        el.classList.remove('speaking');
+    });
+    document.querySelectorAll('.participant-mini-card.speaking').forEach(el => {
+        el.classList.remove('speaking');
+    });
 }
 
 // ==================== 3. تحديث مؤشر الصوت المحلي ====================
@@ -5620,7 +6616,40 @@ async function rejectJoinRequest(meetingId, userId) {
         showToast('❌ حدث خطأ');
     }
 }
+// ==================== معالجة أخطاء الفيديو ====================
+document.addEventListener('DOMContentLoaded', function() {
+    // معالجة أخطاء تشغيل الفيديو
+    document.addEventListener('error', function(e) {
+        if (e.target.tagName === 'VIDEO') {
+            console.log('خطأ في الفيديو:', e);
+            // محاولة إعادة التشغيل
+            setTimeout(() => {
+                try {
+                    e.target.play();
+                } catch (err) {
+                    console.log('فشل إعادة التشغيل');
+                }
+            }, 500);
+        }
+    }, true);
+});
 
+// ==================== دالة مساعدة لإعادة تعيين فيديو الشير ====================
+function resetScreenShareVideo() {
+    const video = document.getElementById('screenShareVideo');
+    if (video && screenStream) {
+        try {
+            video.pause();
+            video.srcObject = null;
+            setTimeout(() => {
+                video.srcObject = screenStream;
+                video.play().catch(e => console.log('إعادة تشغيل:', e));
+            }, 100);
+        } catch (error) {
+            console.log('خطأ في إعادة تعيين الفيديو:', error);
+        }
+    }
+}
 // ==================== 8. الاستماع لطلبات الدخول الجديدة (للمنشئ) ====================
 function listenForJoinRequests(meetingId) {
     const pendingRef = db.ref(`meetings/${meetingId}/pendingParticipants`);
@@ -5655,7 +6684,7 @@ function removeScreenShareFromUI() {
 }
 
 
-// ==================== تبديل الشاشة الكاملة ====================
+// ==================== تبديل العرض الكامل (مُصلح) ====================
 function toggleScreenFullscreen() {
     const fullscreen = document.getElementById('screenShareFullscreen');
     if (fullscreen && fullscreen.classList.contains('active')) {
@@ -5667,14 +6696,7 @@ function toggleScreenFullscreen() {
 
 
 
-// ==================== 8. إغلاق العرض الكامل ====================
-function closeScreenFullscreen() {
-    const fullDiv = document.getElementById('screenFullscreen');
-    if (fullDiv) {
-        fullDiv.remove();
-    }
-    isScreenFullscreen = false;
-}
+
 // ==================== إنشاء التخطيط العادي (معدل) ====================
 function createNormalLayout() {
     const content = document.querySelector('.meeting-content');
@@ -6095,70 +7117,7 @@ async function joinAsGuest(meetingId) {
     await joinMeetingRoom(meetingId);
 }
 
-// ==================== 4. تحديث حالة الأجهزة (علامة تعجب) ====================
-function updateDeviceStatus(hasCamera, hasMic) {
-    // تحديث أيقونة المايك
-    const micIcon = document.getElementById('micStatusIcon');
-    const micBtn = document.getElementById('roomMicBtn');
-    
-    if (micIcon) {
-        if (hasMic) {
-            micIcon.className = 'icon active';
-            micIcon.innerHTML = '<i class="fas fa-microphone"></i>';
-            micIcon.title = 'المايك متصل';
-            micIcon.style.background = '';
-        } else {
-            micIcon.className = 'icon warning';
-            micIcon.innerHTML = '<i class="fas fa-exclamation-triangle"></i>';
-            micIcon.title = 'لا يوجد مايك';
-            micIcon.style.background = 'rgba(234, 179, 8, 0.8)';
-        }
-    }
-    
-    if (micBtn) {
-        if (hasMic) {
-            micBtn.classList.remove('inactive', 'no-device');
-            micBtn.classList.add('active');
-            micBtn.innerHTML = '<i class="fas fa-microphone"></i>';
-        } else {
-            micBtn.classList.remove('active');
-            micBtn.classList.add('inactive', 'no-device');
-            micBtn.innerHTML = '<i class="fas fa-exclamation-triangle"></i>';
-            micBtn.title = 'لا يوجد مايك';
-        }
-    }
-    
-    // تحديث أيقونة الكاميرا
-    const videoIcon = document.getElementById('videoStatusIcon');
-    const videoBtn = document.getElementById('roomVideoBtn');
-    
-    if (videoIcon) {
-        if (hasCamera) {
-            videoIcon.className = 'icon active';
-            videoIcon.innerHTML = '<i class="fas fa-video"></i>';
-            videoIcon.title = 'الكاميرا متصلة';
-            videoIcon.style.background = '';
-        } else {
-            videoIcon.className = 'icon warning';
-            videoIcon.innerHTML = '<i class="fas fa-exclamation-triangle"></i>';
-            videoIcon.title = 'لا توجد كاميرا';
-            videoIcon.style.background = 'rgba(234, 179, 8, 0.8)';
-        }
-    }
-    
-    if (videoBtn) {
-        if (hasCamera) {
-            videoBtn.classList.remove('inactive', 'no-device');
-            videoBtn.classList.add('active');
-            videoBtn.innerHTML = '<i class="fas fa-video"></i>';
-        } else {
-            videoBtn.classList.remove('active');
-            videoBtn.classList.add('inactive', 'no-device');
-            videoBtn.innerHTML = '<i class="fas fa-exclamation-triangle"></i>';
-            videoBtn.title = 'لا توجد كاميرا';
-        }
-    }
-}
+
 
 // ==================== 5. كشف نوع الجهاز ====================
 function isMobileDevice() {
@@ -6344,24 +7303,19 @@ function createParticipantCard(participant, uid, index) {
     
     return div;
 }
-// ==================== إنشاء بطاقة مصغرة للشير سكرين ====================
+// ==================== إنشاء بطاقة مشارك صغيرة للصف العلوي ====================
 function createMiniParticipantCard(participant, uid, index) {
     const div = document.createElement('div');
-    div.className = 'participant-mini';
+    div.className = 'participant-mini-card';
     div.id = `mini_${uid}`;
     div.dataset.uid = uid;
     
     const initial = (participant.name || 'U').charAt(0).toUpperCase();
-    const isHost = participant.isHost ? '👑' : '';
+    const isHost = participant.isHost;
     const isLocal = uid === currentUser?.uid;
     
-    const colors = [
-        { bg: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)', avatar: '#764ba2' },
-        { bg: 'linear-gradient(135deg, #f093fb 0%, #f5576c 100%)', avatar: '#f5576c' },
-        { bg: 'linear-gradient(135deg, #4facfe 0%, #00f2fe 100%)', avatar: '#4facfe' },
-        { bg: 'linear-gradient(135deg, #43e97b 0%, #38f9d7 100%)', avatar: '#43e97b' },
-        { bg: 'linear-gradient(135deg, #fa709a 0%, #fee140 100%)', avatar: '#fa709a' },
-    ];
+    // ألوان مميزة
+    const colors = ['#667eea', '#f5576c', '#4facfe', '#43e97b', '#fa709a', '#a18cd1', '#fccb90', '#d57eeb'];
     const color = colors[index % colors.length];
     
     const micEnabled = participant.micEnabled !== false;
@@ -6370,19 +7324,17 @@ function createMiniParticipantCard(participant, uid, index) {
     let videoHtml = '';
     if (isLocal && localStream) {
         videoHtml = `<video id="localVideoMini" autoplay muted playsinline></video>`;
-    } else {
+    } else if (!isLocal) {
         videoHtml = `<video id="remoteMiniVideo_${uid}" autoplay playsinline></video>`;
     }
     
     div.innerHTML = `
         ${videoHtml}
-        <div class="card-bg" style="background: ${color.bg}; opacity: 0.7; position: absolute; top: 0; left: 0; width: 100%; height: 100%; z-index: 0;"></div>
-        <div class="mini-avatar" style="background: ${color.avatar}; z-index: 1;">
+        <div class="mini-avatar" style="background: ${color};">
             ${initial}
         </div>
-        <div class="mini-name">
-            ${isHost ? '👑 ' : ''}${participant.name}
-        </div>
+        <div class="mini-name">${participant.name}</div>
+        ${isHost ? '<div class="mini-badge">👑</div>' : ''}
         <div class="mini-status">
             <span class="mini-icon ${micEnabled ? 'active' : 'inactive'}">
                 <i class="fas ${micEnabled ? 'fa-microphone' : 'fa-microphone-slash'}"></i>
@@ -6391,21 +7343,60 @@ function createMiniParticipantCard(participant, uid, index) {
                 <i class="fas ${videoEnabled ? 'fa-video' : 'fa-video-slash'}"></i>
             </span>
         </div>
+        ${!micEnabled ? '<div class="mini-mic-off"><i class="fas fa-microphone-slash"></i></div>' : ''}
     `;
     
     if (isLocal && localStream) {
         const video = div.querySelector('video');
         if (video) {
             video.srcObject = localStream;
-            video.play();
+            video.play().catch(e => console.log('فيديو ميني:', e));
         }
     }
     
     div.onclick = () => {
-        showToast(`👤 ${participant.name} ${isHost}`);
+        showToast(`👤 ${participant.name} ${isHost ? '(المالك)' : ''}`);
     };
     
     return div;
+}
+// ==================== تحديث صف المشاركين ====================
+function updateParticipantsRow(participants) {
+    const row = document.getElementById('participantsTopRow');
+    if (!row) return;
+    
+    row.innerHTML = '';
+    
+    const names = Object.keys(participants || {});
+    names.forEach((uid, index) => {
+        const p = participants[uid];
+        const card = createMiniParticipantCard(p, uid, index);
+        row.appendChild(card);
+    });
+}
+// ==================== تحديث معلومات المشاركين في الرأس ====================
+function updateHeaderParticipantsInfo(participants) {
+    const container = document.getElementById('headerParticipantsInfo');
+    if (!container) return;
+    
+    const names = Object.keys(participants || {});
+    const count = names.length;
+    const colors = ['#667eea', '#f5576c', '#4facfe', '#43e97b', '#fa709a', '#a18cd1'];
+    
+    let html = `<span>${count} مشارك</span>`;
+    html += `<div class="avatar-group">`;
+    names.slice(0, 4).forEach((uid, index) => {
+        const p = participants[uid];
+        const initial = (p.name || 'U').charAt(0).toUpperCase();
+        const color = colors[index % colors.length];
+        html += `<div class="avatar-mini" style="background: ${color};">${initial}</div>`;
+    });
+    if (count > 4) {
+        html += `<div class="avatar-mini" style="background: #333;">+${count - 4}</div>`;
+    }
+    html += `</div>`;
+    
+    container.innerHTML = html;
 }
 // ==================== 12. عرض رسالة تثبيت التطبيق ====================
 function showAppInstallPrompt(storeLink) {
@@ -6467,8 +7458,7 @@ document.addEventListener('DOMContentLoaded', function() {
         // ==================== دوال غرفة الاجتماع الفعلية (WebRTC) ====================
         let currentRoomMeetingId = null;
         let roomChatMessages = [];
-// ==================== الانضمام للاجتماع (كامل مع نظام الانتظار) ====================
-// ==================== الانضمام للاجتماع (نسخة معدلة) ====================
+// ==================== الانضمام للاجتماع (نسخة مُحسّنة) ====================
 async function joinMeetingRoom(meetingId) {
     try {
         const snapshot = await db.ref(`meetings/${meetingId}`).once('value');
@@ -6527,30 +7517,22 @@ async function joinMeetingRoom(meetingId) {
         // إنشاء التخطيط
         createMeetingLayout(meeting.participants);
         
-        // تحديث المشاركين
-        updateRoomParticipants(meeting.participants);
+        // تحديث المشاركين في الرأس
+        updateHeaderParticipantsInfo(meeting.participants);
         loadRoomChatMessages(meetingId);
         
         // تحديث حالة الاجتماع
         if (meeting.status !== 'live') {
             await db.ref(`meetings/${meetingId}/status`).set('live');
-            const statusEl = document.getElementById('roomMeetingStatus');
-            if (statusEl) {
-                statusEl.className = 'meeting-status status-live text-xs';
-                statusEl.innerText = 'حية 🔴';
-            }
-        }
-        
-        // بدء الاستماع لطلبات الدخول (إذا كان المستخدم هو المنشئ)
-        if (meeting.creatorId === currentUser?.uid) {
-            listenForJoinRequests(meetingId);
         }
         
         // بدء الاستماع لتحديثات المشاركين
         listenForParticipantUpdates(meetingId);
         
-        // بدء مؤشرات الصوت
-        startAudioIndicators();
+        // بدء الاستماع لطلبات الدخول (إذا كان المستخدم هو المنشئ)
+        if (meeting.creatorId === currentUser?.uid) {
+            listenForJoinRequests(meetingId);
+        }
         
         // بدء إرسال مستوى الصوت
         setInterval(() => {
@@ -6561,7 +7543,7 @@ async function joinMeetingRoom(meetingId) {
         
     } catch (error) {
         console.error('خطأ في الانضمام للاجتماع:', error);
-        showToast('❌ حدث خطأ في الانضمام للاجتماع: ' + error.message);
+        showToast('❌ حدث خطأ في الانضمام للاجتماع');
     }
 }
 
@@ -6573,9 +7555,9 @@ function listenForParticipantUpdates(meetingId) {
         const participants = snapshot.val();
         if (participants) {
             window.roomParticipants = participants;
-            // تحديث التخطيط
-            createMeetingLayout(participants);
-            updateRoomParticipants(participants);
+            // تحديث صف المشاركين فقط
+            updateParticipantsRow(participants);
+            updateHeaderParticipantsInfo(participants);
         }
     });
 }
@@ -6928,6 +7910,7 @@ function updateRoomParticipants(participants) {
         }
 
         
+// ==================== تشغيل الكاميرا والمايك (مع كشف الأجهزة) ====================
 async function startLocalStream() {
     let hasCamera = false;
     let hasMic = false;
@@ -6955,17 +7938,9 @@ async function startLocalStream() {
             } : false
         };
         
-        // إذا لم توجد كاميرا ولا مايك
-        if (!hasCamera && !hasMic) {
-            showToast('❌ لا توجد كاميرا أو مايك في هذا الجهاز');
-            updateDeviceStatus(false, false);
-            return false;
-        }
-        
         try {
             localStream = await navigator.mediaDevices.getUserMedia(constraints);
             
-            // تحديث حالة الأجهزة
             hasCamera = localStream.getVideoTracks().length > 0;
             hasMic = localStream.getAudioTracks().length > 0;
             
@@ -6974,22 +7949,22 @@ async function startLocalStream() {
             if (videoElement && hasCamera) {
                 videoElement.srcObject = localStream;
                 videoElement.play();
-                document.getElementById('videoPlaceholder').style.display = 'none';
-            } else if (videoElement) {
-                document.getElementById('videoPlaceholder').style.display = 'flex';
             }
             
-            // تحديث حالة الأجهزة في الواجهة
+            // تحديث حالة الأجهزة
             updateDeviceStatus(hasCamera, hasMic);
             
             // تشغيل مؤشر الصوت إذا كان المايك متاحاً
             if (hasMic) {
                 startAudioVisualizer();
+                // بدء تحديث مؤشر الصوت
+                setInterval(updateAudioIndicator, 100);
             }
             
             const msg = hasCamera && hasMic ? '✅ تم تشغيل الكاميرا والمايك' :
                        hasCamera ? '✅ تم تشغيل الكاميرا فقط (لا يوجد مايك)' :
-                       '✅ تم تشغيل المايك فقط (لا توجد كاميرا)';
+                       hasMic ? '✅ تم تشغيل المايك فقط (لا توجد كاميرا)' :
+                       '⚠️ لا توجد كاميرا أو مايك متصل';
             showToast(msg);
             return true;
             
@@ -7012,19 +7987,12 @@ async function startLocalStream() {
                     return false;
                 }
             }
-            // بعد تشغيل المايك بنجاح
-    if (hasMic) {
-        startAudioIndicators();
-        // بدء إرسال مستوى الصوت
-        setInterval(() => {
-            sendAudioLevel();
-        }, 200);
-    }
+            
             // إذا كان الخطأ بسبب رفض الإذن
             if (error.name === 'NotAllowedError' || error.name === 'PermissionDeniedError') {
-                showToast('⚠️ تم رفض إذن الكاميرا والمايك. الرجاء منح الإذن من المتصفح');
+                showToast('⚠️ تم رفض إذن الكاميرا والمايك');
             } else if (error.name === 'NotFoundError') {
-                showToast('❌ لا توجد كاميرا أو مايك متصلة بالجهاز');
+                showToast('⚠️ لا توجد كاميرا أو مايك متصل');
             } else {
                 showToast('❌ حدث خطأ في تشغيل الكاميرا والمايك');
             }
@@ -7141,16 +8109,16 @@ function updateDeviceStatus(hasCamera, hasMic) {
             animationFrame = requestAnimationFrame(updateAudioVisualizer);
         }
 
-   // ==================== كتم وإلغاء كتم المايك (نسخة معدلة) ====================
+  // ==================== كتم وإلغاء كتم المايك (مع علامة التعجب) ====================
 function roomToggleMic() {
     if (!localStream) {
-        showToast('❌ المايك غير متاح');
+        showToast('❌ لا يوجد مايك متصل');
         return;
     }
     
     const audioTracks = localStream.getAudioTracks();
     if (audioTracks.length === 0) {
-        showToast('❌ لا توجد مسارات صوتية');
+        showToast('❌ لا يوجد مايك متصل');
         return;
     }
     
@@ -7158,15 +8126,24 @@ function roomToggleMic() {
     audioTracks[0].enabled = !enabled;
     
     const micBtn = document.getElementById('roomMicBtn');
+    const micIcon = micBtn.querySelector('i');
     
     if (enabled) {
+        // كتم الصوت
+        micBtn.classList.remove('active', 'no-device');
+        micBtn.classList.add('inactive');
+        micBtn.style.background = '#dc3545';
+        micIcon.className = 'fas fa-microphone-slash';
+        micBtn.title = 'المايك مكتوم';
+        showToast('🔇 تم كتم المايك');
+    } else {
+        // إلغاء كتم الصوت
         micBtn.classList.remove('inactive', 'no-device');
         micBtn.classList.add('active');
+        micBtn.style.background = '';
+        micIcon.className = 'fas fa-microphone';
+        micBtn.title = 'كتم الصوت';
         showToast('🎤 تم تفعيل المايك');
-    } else {
-        micBtn.classList.remove('active');
-        micBtn.classList.add('inactive');
-        showToast('🔇 تم كتم المايك');
     }
     
     // تحديث حالة المستخدم في Firebase
@@ -7175,16 +8152,16 @@ function roomToggleMic() {
     }
 }
 
-// ==================== إيقاف/تشغيل الكاميرا (نسخة معدلة) ====================
+// ==================== إيقاف/تشغيل الكاميرا (مع علامة التعجب) ====================
 function roomToggleVideo() {
     if (!localStream) {
-        showToast('❌ الكاميرا غير متاحة');
+        showToast('❌ لا توجد كاميرا متصلة');
         return;
     }
     
     const videoTracks = localStream.getVideoTracks();
     if (videoTracks.length === 0) {
-        showToast('❌ لا توجد مسارات فيديو');
+        showToast('❌ لا توجد كاميرا متصلة');
         return;
     }
     
@@ -7192,18 +8169,27 @@ function roomToggleVideo() {
     videoTracks[0].enabled = !enabled;
     
     const videoBtn = document.getElementById('roomVideoBtn');
+    const videoIcon = videoBtn.querySelector('i');
     const placeholder = document.getElementById('videoPlaceholder');
     
     if (enabled) {
-        videoBtn.classList.remove('inactive', 'no-device');
-        videoBtn.classList.add('active');
-        if (placeholder) placeholder.style.display = 'none';
-        showToast('📹 تم تفعيل الكاميرا');
-    } else {
-        videoBtn.classList.remove('active');
+        // إيقاف الكاميرا
+        videoBtn.classList.remove('active', 'no-device');
         videoBtn.classList.add('inactive');
+        videoBtn.style.background = '#dc3545';
+        videoIcon.className = 'fas fa-video-slash';
+        videoBtn.title = 'الكاميرا متوقفة';
         if (placeholder) placeholder.style.display = 'flex';
         showToast('📹 تم إيقاف الكاميرا');
+    } else {
+        // تشغيل الكاميرا
+        videoBtn.classList.remove('inactive', 'no-device');
+        videoBtn.classList.add('active');
+        videoBtn.style.background = '';
+        videoIcon.className = 'fas fa-video';
+        videoBtn.title = 'إيقاف الكاميرا';
+        if (placeholder) placeholder.style.display = 'none';
+        showToast('📹 تم تفعيل الكاميرا');
     }
     
     // تحديث حالة المستخدم في Firebase
@@ -7422,7 +8408,7 @@ styleSheet.textContent = `
     }
 `;
 document.head.appendChild(styleSheet);
-        // ==================== مشاركة الشاشة (نسخة معدلة) ====================
+       // ==================== مشاركة الشاشة ====================
 async function roomToggleScreenShare() {
     if (isScreenSharing) {
         stopScreenShare();
@@ -7440,29 +8426,16 @@ async function roomToggleScreenShare() {
         
         screenStream = await navigator.mediaDevices.getDisplayMedia(screenConstraints);
         isScreenSharing = true;
-        
-        // تفعيل وضع شير سكرين
         isScreenSharingMode = true;
         
         // تحديث التخطيط
         const participants = window.roomParticipants || {};
-        const container = document.getElementById('meetingMainContainer');
-        if (container) {
-            createScreenShareLayout(container, participants);
-        }
-        
-        // تعيين مصدر الفيديو
-        const video = document.getElementById('screenShareVideo');
-        if (video) {
-            video.srcObject = screenStream;
-            video.play();
-        }
+        createMeetingLayout(participants);
         
         const screenBtn = document.getElementById('roomScreenBtn');
         if (screenBtn) {
             screenBtn.classList.add('active');
             screenBtn.innerHTML = '<i class="fas fa-desktop"></i>';
-            screenBtn.title = 'إيقاف مشاركة الشاشة';
         }
         
         showToast('🖥️ جاري مشاركة الشاشة');
@@ -7474,15 +8447,26 @@ async function roomToggleScreenShare() {
     } catch (error) {
         console.error('خطأ في مشاركة الشاشة:', error);
         if (error.name !== 'AbortError' && error.name !== 'NotAllowedError') {
-            showToast('❌ تعذر مشاركة الشاشة. الرجاء منح الإذن');
+            showToast('❌ تعذر مشاركة الشاشة');
         }
     }
 }
 
-// ==================== إيقاف مشاركة الشاشة (نسخة معدلة) ====================
+// ==================== إيقاف مشاركة الشاشة (مُصلح) ====================
 function stopScreenShare() {
+    // إغلاق العرض الكامل أولاً
+    closeScreenFullscreen();
+    
+    // إيقاف تدفق الشير سكرين
     if (screenStream) {
-        screenStream.getTracks().forEach(track => track.stop());
+        try {
+            screenStream.getTracks().forEach(track => {
+                track.stop();
+                track.enabled = false;
+            });
+        } catch (error) {
+            console.log('خطأ في إيقاف تدفق الشير:', error);
+        }
         screenStream = null;
     }
     
@@ -7490,25 +8474,7 @@ function stopScreenShare() {
     isScreenSharingMode = false;
     isScreenFullscreen = false;
     
-    // إغلاق العرض الكامل
-    closeScreenFullscreen();
-    
-    // العودة إلى تخطيط الشبكة
-    const participants = window.roomParticipants || {};
-    const container = document.getElementById('meetingMainContainer');
-    if (container) {
-        createMeetingLayout(participants);
-    }
-    
-    // العودة إلى الكاميرا
-    if (localStream) {
-        const videoElement = document.getElementById('localVideo');
-        if (videoElement) {
-            videoElement.srcObject = localStream;
-            videoElement.play();
-        }
-    }
-    
+    // تحديث واجهة زر الشير سكرين
     const screenBtn = document.getElementById('roomScreenBtn');
     if (screenBtn) {
         screenBtn.classList.remove('active');
@@ -7516,47 +8482,90 @@ function stopScreenShare() {
         screenBtn.title = 'مشاركة الشاشة';
     }
     
+    // تحديث التخطيط
+    const participants = window.roomParticipants || {};
+    createMeetingLayout(participants);
+    
     showToast('🖥️ تم إيقاف مشاركة الشاشة');
 }
 
        
 
-        async function leaveMeetingRoom() {
-            if (currentRoomMeetingId) {
-                try {
-                    const snapshot = await db.ref(`meetings/${currentRoomMeetingId}/participants`).once('value');
-                    const participants = snapshot.val();
-                    if (participants && participants[currentUser.uid]) {
-                        delete participants[currentUser.uid];
-                        await db.ref(`meetings/${currentRoomMeetingId}/participants`).set(participants);
-                    }
-                } catch (error) {
-                    console.error('خطأ في مغادرة الاجتماع:', error);
-                }
+       // ==================== مغادرة الاجتماع ====================
+async function leaveMeetingRoom() {
+    if (currentRoomMeetingId) {
+        try {
+            // إزالة المستخدم من المشاركين
+            const snapshot = await db.ref(`meetings/${currentRoomMeetingId}/participants`).once('value');
+            const participants = snapshot.val();
+            if (participants && participants[currentUser.uid]) {
+                delete participants[currentUser.uid];
+                await db.ref(`meetings/${currentRoomMeetingId}/participants`).set(participants);
             }
-            
-            // إيقاف الكاميرا والمايك
-            if (localStream) {
-                localStream.getTracks().forEach(track => track.stop());
-                localStream = null;
-            }
-            if (screenStream) {
-                screenStream.getTracks().forEach(track => track.stop());
-                screenStream = null;
-                isScreenSharing = false;
-            }
-            if (animationFrame) {
-                cancelAnimationFrame(animationFrame);
-                animationFrame = null;
-            }
-            
-            currentRoomMeetingId = null;
-            document.getElementById('roomChatPanel').classList.remove('active');
-            showSpecificPage('meetingsRoomPage');
-            loadMeetings();
-            showToast('تم مغادرة الاجتماع');
+        } catch (error) {
+            console.error('خطأ في مغادرة الاجتماع:', error);
         }
+    }
+    
+    // إيقاف الكاميرا والمايك
+    if (localStream) {
+        localStream.getTracks().forEach(track => track.stop());
+        localStream = null;
+    }
+    if (screenStream) {
+        screenStream.getTracks().forEach(track => track.stop());
+        screenStream = null;
+        isScreenSharing = false;
+    }
+    
+    currentRoomMeetingId = null;
+    window.roomParticipants = {};
+    document.getElementById('roomChatPanel').classList.remove('active');
+    
+    showSpecificPage('meetingsRoomPage');
+    loadMeetings();
+    showToast('✅ تم مغادرة الاجتماع');
+}
+// ==================== الخروج التلقائي عند إغلاق التبويب أو البرنامج ====================
+window.addEventListener('beforeunload', function() {
+    if (currentRoomMeetingId && currentUser) {
+        // محاولة إزالة المستخدم من المشاركين قبل إغلاق الصفحة
+        try {
+            const participantsRef = db.ref(`meetings/${currentRoomMeetingId}/participants/${currentUser.uid}`);
+            participantsRef.remove();
+            console.log('✅ تم إزالة المستخدم من الاجتماع تلقائياً');
+        } catch (error) {
+            console.error('خطأ في إزالة المستخدم:', error);
+        }
+    }
+});
 
+// ==================== إضافة مستمع عند إغلاق التبويب (بديل) ====================
+document.addEventListener('visibilitychange', function() {
+    if (document.hidden && currentRoomMeetingId && currentUser) {
+        // المستخدم غادر التبويب
+        try {
+            const participantsRef = db.ref(`meetings/${currentRoomMeetingId}/participants/${currentUser.uid}`);
+            participantsRef.remove();
+            console.log('✅ تم إزالة المستخدم من الاجتماع (غادر التبويب)');
+        } catch (error) {
+            console.error('خطأ في إزالة المستخدم:', error);
+        }
+    }
+});
+
+// ==================== إضافة مستمع عند إغلاق المتصفح ====================
+window.addEventListener('pagehide', function() {
+    if (currentRoomMeetingId && currentUser) {
+        try {
+            const participantsRef = db.ref(`meetings/${currentRoomMeetingId}/participants/${currentUser.uid}`);
+            participantsRef.remove();
+            console.log('✅ تم إزالة المستخدم من الاجتماع (إغلاق المتصفح)');
+        } catch (error) {
+            console.error('خطأ في إزالة المستخدم:', error);
+        }
+    }
+});
         // ==================== دوال التذاكر ====================
         let currentTickets = [];
         let currentTicketFilter = 'all';
