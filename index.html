@@ -3213,6 +3213,192 @@
 .screen-share-fullscreen .fullscreen-controls .stop-fullscreen-btn:hover {
     background: #b02a37;
 }
+/* ==================== تقسيمات الشبكة حسب عدد الأعضاء ==================== */
+.meeting-grid-layout.grid-1 {
+    grid-template-columns: 1fr;
+    grid-template-rows: 1fr;
+}
+
+.meeting-grid-layout.grid-2 {
+    grid-template-columns: 1fr 1fr;
+    grid-template-rows: 1fr;
+}
+
+.meeting-grid-layout.grid-3 {
+    grid-template-columns: 1fr 1fr;
+    grid-template-rows: 1fr 1fr;
+}
+.meeting-grid-layout.grid-3 .participant-card:last-child {
+    grid-column: span 2;
+}
+
+.meeting-grid-layout.grid-4 {
+    grid-template-columns: 1fr 1fr;
+    grid-template-rows: 1fr 1fr;
+}
+
+.meeting-grid-layout.grid-6 {
+    grid-template-columns: 1fr 1fr 1fr;
+    grid-template-rows: 1fr 1fr;
+}
+
+.meeting-grid-layout.grid-9 {
+    grid-template-columns: 1fr 1fr 1fr;
+    grid-template-rows: 1fr 1fr 1fr;
+}
+
+.meeting-grid-layout.grid-more {
+    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+    grid-auto-rows: 1fr;
+}
+
+/* ==================== بطاقة المشارك ==================== */
+.participant-card {
+    position: relative;
+    border-radius: 16px;
+    overflow: hidden;
+    min-height: 150px;
+    border: 2px solid rgba(255,255,255,0.08);
+    transition: all 0.3s ease;
+    background: #1a1a2e;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.3);
+}
+
+.participant-card video {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    z-index: 1;
+}
+
+/* ==================== زر التحكم للمنشئ ==================== */
+.host-control-btn {
+    background: rgba(59,130,246,0.2) !important;
+    border: 1px solid rgba(59,130,246,0.3) !important;
+    color: #60a5fa !important;
+    padding: 4px 10px !important;
+    border-radius: 12px !important;
+    cursor: pointer !important;
+    transition: all 0.3s !important;
+    font-size: 12px !important;
+    display: flex !important;
+    flex-direction: column !important;
+    align-items: center !important;
+    justify-content: center !important;
+    min-width: 50px !important;
+    margin-right: 5px !important;
+}
+
+.host-control-btn:hover {
+    background: rgba(59,130,246,0.4) !important;
+}
+
+/* ==================== بطاقات صف المشاركين ==================== */
+.participants-top-row .participant-mini-card {
+    position: relative;
+    border-radius: 12px;
+    overflow: hidden;
+    flex-shrink: 0;
+    cursor: pointer;
+    border: 2px solid rgba(255,255,255,0.08);
+    transition: all 0.3s ease;
+    background: #0f3460;
+}
+
+.participants-top-row .participant-mini-card:hover {
+    transform: scale(1.02);
+    border-color: rgba(59, 130, 246, 0.4);
+}
+
+.participants-top-row .participant-mini-card video {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.participants-top-row .participant-mini-card .mini-avatar {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 16px;
+    font-weight: bold;
+    color: #fff;
+    background: rgba(0,0,0,0.5);
+    border: 2px solid rgba(255,255,255,0.2);
+    z-index: 1;
+}
+
+.participants-top-row .participant-mini-card .mini-name {
+    position: absolute;
+    bottom: 6px;
+    left: 50%;
+    transform: translateX(-50%);
+    background: rgba(0,0,0,0.7);
+    color: #fff;
+    padding: 2px 12px;
+    border-radius: 12px;
+    font-size: 10px;
+    backdrop-filter: blur(5px);
+    white-space: nowrap;
+    z-index: 2;
+}
+
+.participants-top-row .participant-mini-card .mini-status {
+    position: absolute;
+    top: 6px;
+    right: 6px;
+    display: flex;
+    gap: 3px;
+    z-index: 2;
+}
+
+.participants-top-row .participant-mini-card .mini-status .mini-icon {
+    width: 18px;
+    height: 18px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #fff;
+    font-size: 8px;
+    background: rgba(0,0,0,0.6);
+}
+
+.participants-top-row .participant-mini-card .mini-status .mini-icon.active {
+    background: rgba(34, 197, 94, 0.7);
+}
+
+.participants-top-row .participant-mini-card .mini-status .mini-icon.inactive {
+    background: rgba(239, 68, 68, 0.7);
+}
+
+.participants-top-row .participant-mini-card.speaking {
+    border-color: #22c55e;
+    box-shadow: 0 0 20px rgba(34, 197, 94, 0.2);
+}
+
+.participants-top-row .participant-mini-card .mini-badge {
+    position: absolute;
+    top: 6px;
+    left: 6px;
+    background: #f59e0b;
+    color: #000;
+    font-size: 8px;
+    padding: 1px 8px;
+    border-radius: 10px;
+    font-weight: bold;
+    z-index: 2;
+}
     </style>
 </head>
 <body class="bg-gradient-to-br from-blue-50 to-indigo-100 min-h-screen">
@@ -4249,7 +4435,7 @@ let isScreenSharingMode = false;
 let participantCards = {};
 let localParticipantId = null;
 
-// ==================== إنشاء تخطيط غرفة الاجتماع (مُصلح) ====================
+// ==================== إنشاء تخطيط غرفة الاجتماع (مع تقسيم ديناميكي) ====================
 function createMeetingLayout(participants) {
     const container = document.getElementById('meetingMainContainer');
     if (!container) return;
@@ -4258,7 +4444,7 @@ function createMeetingLayout(participants) {
     
     const participantCount = Object.keys(participants || {}).length;
     
-    // إذا كان هناك شير سكرين - عرض صف علوي + شاشة
+    // إذا كان هناك شير سكرين
     if (isScreenSharing && screenStream) {
         // صف المشاركين في الأعلى
         const topRow = document.createElement('div');
@@ -4292,7 +4478,7 @@ function createMeetingLayout(participants) {
         updateParticipantsRow(participants || {});
         
     } else {
-        // لا يوجد شير سكرين - عرض شبكة 2x2
+        // لا يوجد شير سكرين - شبكة ديناميكية
         const gridDiv = document.createElement('div');
         gridDiv.className = 'meeting-grid-layout';
         
@@ -4303,11 +4489,17 @@ function createMeetingLayout(participants) {
             gridDiv.classList.add('grid-2');
         } else if (participantCount === 3) {
             gridDiv.classList.add('grid-3');
-        } else {
+        } else if (participantCount === 4) {
             gridDiv.classList.add('grid-4');
+        } else if (participantCount <= 6) {
+            gridDiv.classList.add('grid-6');
+        } else if (participantCount <= 9) {
+            gridDiv.classList.add('grid-9');
+        } else {
+            gridDiv.classList.add('grid-more');
         }
         
-        // إضافة بطاقات المشاركين (بطاقات كبيرة)
+        // إضافة بطاقات المشاركين
         const names = Object.keys(participants || {});
         names.forEach((uid, index) => {
             const p = participants[uid];
@@ -6616,6 +6808,161 @@ async function rejectJoinRequest(meetingId, userId) {
         showToast('❌ حدث خطأ');
     }
 }
+// ==================== نظام WebRTC لنقل الوسائط ====================
+let peerConnections = {};
+let remoteStreams = {};
+
+// ==================== إنشاء اتصال WebRTC ====================
+async function createPeerConnection(targetUid) {
+    if (peerConnections[targetUid]) {
+        return peerConnections[targetUid];
+    }
+    
+    const configuration = {
+        iceServers: [
+            { urls: 'stun:stun.l.google.com:19302' },
+            { urls: 'stun:stun1.l.google.com:19302' }
+        ]
+    };
+    
+    const pc = new RTCPeerConnection(configuration);
+    peerConnections[targetUid] = pc;
+    
+    // إضافة مسارات الصوت والصورة المحلية
+    if (localStream) {
+        localStream.getTracks().forEach(track => {
+            pc.addTrack(track, localStream);
+        });
+    }
+    
+    // استقبال المسارات البعيدة
+    pc.ontrack = (event) => {
+        const stream = event.streams[0];
+        if (stream) {
+            remoteStreams[targetUid] = stream;
+            displayRemoteStream(targetUid, stream);
+        }
+    };
+    
+    // معالجة المرشحات ICE
+    pc.onicecandidate = (event) => {
+        if (event.candidate) {
+            sendIceCandidate(targetUid, event.candidate);
+        }
+    };
+    
+    return pc;
+}
+
+// ==================== عرض البث البعيد ====================
+function displayRemoteStream(uid, stream) {
+    // عرض في البطاقة الكبيرة (وضع 2x2)
+    const videoElement = document.getElementById(`remoteVideo_${uid}`);
+    if (videoElement) {
+        videoElement.srcObject = stream;
+        videoElement.play().catch(e => console.log('تشغيل الفيديو البعيد:', e));
+        // إخفاء الـ avatar
+        const avatar = videoElement.closest('.participant-card')?.querySelector('.avatar-placeholder');
+        if (avatar) avatar.style.display = 'none';
+    }
+    
+    // عرض في البطاقة المصغرة (وضع شير سكرين)
+    const miniVideo = document.getElementById(`remoteMiniVideo_${uid}`);
+    if (miniVideo) {
+        miniVideo.srcObject = stream;
+        miniVideo.play().catch(e => console.log('تشغيل الفيديو المصغر:', e));
+        const miniAvatar = miniVideo.closest('.participant-mini-card')?.querySelector('.mini-avatar');
+        if (miniAvatar) miniAvatar.style.display = 'none';
+    }
+}
+
+// ==================== إرسال عرض (Offer) ====================
+async function sendOffer(targetUid) {
+    try {
+        const pc = await createPeerConnection(targetUid);
+        const offer = await pc.createOffer();
+        await pc.setLocalDescription(offer);
+        
+        // حفظ العرض في Firebase
+        await db.ref(`meetings/${currentRoomMeetingId}/signaling/${targetUid}/offer`).set({
+            sdp: offer.sdp,
+            type: offer.type
+        });
+        
+        console.log('✅ تم إرسال العرض إلى:', targetUid);
+    } catch (error) {
+        console.error('خطأ في إرسال العرض:', error);
+    }
+}
+
+// ==================== إرسال إجابة (Answer) ====================
+async function sendAnswer(targetUid) {
+    try {
+        const pc = await createPeerConnection(targetUid);
+        const answer = await pc.createAnswer();
+        await pc.setLocalDescription(answer);
+        
+        // حفظ الإجابة في Firebase
+        await db.ref(`meetings/${currentRoomMeetingId}/signaling/${targetUid}/answer`).set({
+            sdp: answer.sdp,
+            type: answer.type
+        });
+        
+        console.log('✅ تم إرسال الإجابة إلى:', targetUid);
+    } catch (error) {
+        console.error('خطأ في إرسال الإجابة:', error);
+    }
+}
+
+// ==================== إرسال مرشح ICE ====================
+function sendIceCandidate(targetUid, candidate) {
+    db.ref(`meetings/${currentRoomMeetingId}/signaling/${targetUid}/candidates`).push({
+        candidate: candidate.candidate,
+        sdpMLineIndex: candidate.sdpMLineIndex,
+        sdpMid: candidate.sdpMid
+    });
+}
+
+// ==================== الاستماع للإشارات (Signaling) ====================
+function listenForSignaling(meetingId) {
+    const signalingRef = db.ref(`meetings/${meetingId}/signaling/${currentUser.uid}`);
+    
+    // الاستماع للعروض
+    signalingRef.child('offer').on('value', async (snapshot) => {
+        const data = snapshot.val();
+        if (!data) return;
+        
+        const pc = await createPeerConnection(snapshot.ref.parent.key);
+        await pc.setRemoteDescription(new RTCSessionDescription(data));
+        await sendAnswer(snapshot.ref.parent.key);
+    });
+    
+    // الاستماع للإجابات
+    signalingRef.child('answer').on('value', async (snapshot) => {
+        const data = snapshot.val();
+        if (!data) return;
+        
+        const pc = peerConnections[snapshot.ref.parent.key];
+        if (pc) {
+            await pc.setRemoteDescription(new RTCSessionDescription(data));
+        }
+    });
+    
+    // الاستماع للمرشحات ICE
+    signalingRef.child('candidates').on('child_added', async (snapshot) => {
+        const data = snapshot.val();
+        if (!data) return;
+        
+        const pc = peerConnections[snapshot.ref.parent.key];
+        if (pc) {
+            try {
+                await pc.addIceCandidate(new RTCIceCandidate(data));
+            } catch (error) {
+                console.log('خطأ في إضافة مرشح ICE:', error);
+            }
+        }
+    });
+}
 // ==================== معالجة أخطاء الفيديو ====================
 document.addEventListener('DOMContentLoaded', function() {
     // معالجة أخطاء تشغيل الفيديو
@@ -7360,7 +7707,7 @@ function createMiniParticipantCard(participant, uid, index) {
     
     return div;
 }
-// ==================== تحديث صف المشاركين ====================
+// ==================== تحديث صف المشاركين (مع تقسيم ديناميكي) ====================
 function updateParticipantsRow(participants) {
     const row = document.getElementById('participantsTopRow');
     if (!row) return;
@@ -7368,11 +7715,175 @@ function updateParticipantsRow(participants) {
     row.innerHTML = '';
     
     const names = Object.keys(participants || {});
+    const count = names.length;
+    
+    // تحديد حجم البطاقات حسب عدد المشاركين
+    let cardClass = '';
+    if (count <= 2) {
+        cardClass = 'flex-1 min-w-[140px] max-w-[200px]';
+    } else if (count <= 4) {
+        cardClass = 'flex-1 min-w-[120px] max-w-[180px]';
+    } else {
+        cardClass = 'flex-1 min-w-[100px] max-w-[150px]';
+    }
+    
     names.forEach((uid, index) => {
         const p = participants[uid];
         const card = createMiniParticipantCard(p, uid, index);
+        card.className = `participant-mini-card ${cardClass}`;
         row.appendChild(card);
     });
+    
+    // إذا كان المستخدم هو المنشئ، أضف زر إدارة المشاركين
+    const isHost = currentUser && window.roomParticipants?.[currentUser.uid]?.isHost;
+    if (isHost) {
+        addHostControls(row);
+    }
+}
+
+// ==================== إضافة زر تحكم المنشئ ====================
+function addHostControls(row) {
+    const hostBtn = document.createElement('button');
+    hostBtn.className = 'host-control-btn';
+    hostBtn.innerHTML = `
+        <i class="fas fa-users-cog"></i>
+        <span style="font-size:10px;display:block;">إدارة</span>
+    `;
+    hostBtn.style.cssText = `
+        background: rgba(59,130,246,0.2);
+        border: 1px solid rgba(59,130,246,0.3);
+        color: #60a5fa;
+        padding: 4px 10px;
+        border-radius: 12px;
+        cursor: pointer;
+        transition: all 0.3s;
+        font-size: 12px;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        min-width: 50px;
+        margin-right: 5px;
+    `;
+    hostBtn.onmouseover = () => {
+        hostBtn.style.background = 'rgba(59,130,246,0.4)';
+    };
+    hostBtn.onmouseout = () => {
+        hostBtn.style.background = 'rgba(59,130,246,0.2)';
+    };
+    hostBtn.onclick = showParticipantsManagement;
+    row.appendChild(hostBtn);
+}
+// ==================== عرض نافذة إدارة المشاركين ====================
+function showParticipantsManagement() {
+    const participants = window.roomParticipants || {};
+    const names = Object.keys(participants);
+    
+    // إزالة نافذة قديمة
+    const existing = document.getElementById('participantsManagementModal');
+    if (existing) existing.remove();
+    
+    const modal = document.createElement('div');
+    modal.id = 'participantsManagementModal';
+    modal.className = 'fixed inset-0 bg-black/70 flex items-center justify-center z-[2000] animate-fade-scale';
+    modal.onclick = function(e) {
+        if (e.target === this) this.remove();
+    };
+    
+    let html = `
+        <div class="bg-white rounded-3xl p-6 max-w-md w-full mx-4 shadow-2xl" onclick="event.stopPropagation()">
+            <div class="flex justify-between items-center mb-4">
+                <h3 class="text-xl font-bold text-gray-800">
+                    <i class="fas fa-users-cog text-blue-600 ml-2"></i> إدارة المشاركين
+                </h3>
+                <button onclick="this.closest('#participantsManagementModal').remove()" class="text-gray-400 hover:text-gray-600">
+                    <i class="fas fa-times text-xl"></i>
+                </button>
+            </div>
+            <div class="max-h-96 overflow-y-auto">
+    `;
+    
+    names.forEach((uid) => {
+        const p = participants[uid];
+        const isHost = p.isHost;
+        const isCurrentUser = uid === currentUser?.uid;
+        const initial = (p.name || 'U').charAt(0).toUpperCase();
+        
+        html += `
+            <div class="flex items-center justify-between p-3 border-b hover:bg-gray-50 rounded-lg">
+                <div class="flex items-center gap-3">
+                    <div class="w-10 h-10 rounded-full bg-blue-100 flex items-center justify-center font-bold text-blue-600">
+                        ${initial}
+                    </div>
+                    <div>
+                        <p class="font-bold text-gray-800">${p.name}</p>
+                        <p class="text-xs text-gray-500">${isHost ? '👑 المنشئ' : isCurrentUser ? 'أنت' : 'مشارك'}</p>
+                    </div>
+                </div>
+                <div>
+                    ${!isHost && !isCurrentUser ? `
+                        <button onclick="removeParticipant('${uid}')" class="bg-red-500 text-white px-3 py-1 rounded-lg hover:bg-red-600 transition text-sm">
+                            <i class="fas fa-user-minus"></i> إخراج
+                        </button>
+                    ` : isCurrentUser ? `
+                        <span class="text-xs text-green-500">● أنت</span>
+                    ` : `
+                        <span class="text-xs text-yellow-500">👑 المنشئ</span>
+                    `}
+                </div>
+            </div>
+        `;
+    });
+    
+    html += `
+            </div>
+            <div class="mt-4 text-center">
+                <button onclick="this.closest('#participantsManagementModal').remove()" class="text-gray-400 text-sm hover:text-gray-600">
+                    إغلاق
+                </button>
+            </div>
+        </div>
+    `;
+    
+    modal.innerHTML = html;
+    document.body.appendChild(modal);
+}
+
+// ==================== إخراج مشارك من الاجتماع ====================
+async function removeParticipant(uid) {
+    if (!confirm('هل أنت متأكد من إخراج هذا المشارك من الاجتماع؟')) return;
+    
+    try {
+        const participantsRef = db.ref(`meetings/${currentRoomMeetingId}/participants/${uid}`);
+        await participantsRef.remove();
+        
+        // إغلاق اتصال WebRTC
+        if (peerConnections[uid]) {
+            peerConnections[uid].close();
+            delete peerConnections[uid];
+        }
+        if (remoteStreams[uid]) {
+            delete remoteStreams[uid];
+        }
+        
+        showToast('✅ تم إخراج المشارك من الاجتماع');
+        
+        // تحديث القائمة
+        const modal = document.getElementById('participantsManagementModal');
+        if (modal) modal.remove();
+        
+        // تحديث المشاركين
+        const snapshot = await db.ref(`meetings/${currentRoomMeetingId}/participants`).once('value');
+        const participants = snapshot.val();
+        if (participants) {
+            window.roomParticipants = participants;
+            createMeetingLayout(participants);
+        }
+        
+    } catch (error) {
+        console.error('خطأ في إخراج المشارك:', error);
+        showToast('❌ حدث خطأ في إخراج المشارك');
+    }
 }
 // ==================== تحديث معلومات المشاركين في الرأس ====================
 function updateHeaderParticipantsInfo(participants) {
@@ -7458,7 +7969,7 @@ document.addEventListener('DOMContentLoaded', function() {
         // ==================== دوال غرفة الاجتماع الفعلية (WebRTC) ====================
         let currentRoomMeetingId = null;
         let roomChatMessages = [];
-// ==================== الانضمام للاجتماع (نسخة مُحسّنة) ====================
+// ==================== الانضمام للاجتماع (مع WebRTC) ====================
 async function joinMeetingRoom(meetingId) {
     try {
         const snapshot = await db.ref(`meetings/${meetingId}`).once('value');
@@ -7494,7 +8005,7 @@ async function joinMeetingRoom(meetingId) {
         const linkEl = document.getElementById('roomMeetingLink');
         if (linkEl) linkEl.innerText = meeting.meetingId || meetingId;
         
-        // محاولة تشغيل الكاميرا والمايك
+        // تشغيل الكاميرا والمايك
         await startLocalStream();
         
         // إضافة المشارك
@@ -7511,13 +8022,22 @@ async function joinMeetingRoom(meetingId) {
             await db.ref(`meetings/${meetingId}/participants`).set(meeting.participants);
         }
         
-        // تخزين المشاركين في متغير عام
+        // تخزين المشاركين
         window.roomParticipants = meeting.participants;
+        
+        // بدء الاستماع للإشارات (Signaling)
+        listenForSignaling(meetingId);
+        
+        // إرسال عروض للمشاركين الحاليين
+        const participantIds = Object.keys(meeting.participants);
+        for (const uid of participantIds) {
+            if (uid !== currentUser.uid) {
+                await sendOffer(uid);
+            }
+        }
         
         // إنشاء التخطيط
         createMeetingLayout(meeting.participants);
-        
-        // تحديث المشاركين في الرأس
         updateHeaderParticipantsInfo(meeting.participants);
         loadRoomChatMessages(meetingId);
         
@@ -7526,10 +8046,10 @@ async function joinMeetingRoom(meetingId) {
             await db.ref(`meetings/${meetingId}/status`).set('live');
         }
         
-        // بدء الاستماع لتحديثات المشاركين
+        // الاستماع لتحديثات المشاركين
         listenForParticipantUpdates(meetingId);
         
-        // بدء الاستماع لطلبات الدخول (إذا كان المستخدم هو المنشئ)
+        // الاستماع لطلبات الدخول (للمنشئ)
         if (meeting.creatorId === currentUser?.uid) {
             listenForJoinRequests(meetingId);
         }
