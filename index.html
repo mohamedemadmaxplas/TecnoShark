@@ -4304,8 +4304,48 @@
 };
 
         firebase.initializeApp(firebaseConfig);
-        const db = firebase.database();
+        const auth = firebase.auth();
+        auth.useDeviceLanguage();
 
+    console.log('✅ Firebase Authentication initialized');
+        const db = firebase.database();
+// الاستماع لتغييرات حالة تسجيل الدخول
+auth.onAuthStateChanged(async (user) => {
+    if (user) {
+        // المستخدم مسجل الدخول
+        console.log('✅ مستخدم مسجل:', user.uid);
+        
+        // جلب البيانات الإضافية من Database
+        try {
+            const snapshot = await db.ref(`users/${user.uid}`).once('value');
+            const userData = snapshot.val();
+            
+            if (userData) {
+                currentUser = {
+                    uid: user.uid,
+                    name: userData.name || user.displayName || 'مستخدم',
+                    username: userData.username || user.email,
+                    email: user.email,
+                    phone: userData.phone || '',
+                    plan: userData.plan || 'free',
+                    ...userData
+                };
+                localStorage.setItem('currentUser', JSON.stringify(currentUser));
+                updateHomeUI();
+                updateSidebarUI();
+            }
+        } catch (error) {
+            console.error('خطأ في جلب بيانات المستخدم:', error);
+        }
+    } else {
+        // المستخدم غير مسجل الدخول
+        console.log('👤 لا يوجد مستخدم مسجل');
+        currentUser = null;
+        localStorage.removeItem('currentUser');
+        updateHomeUI();
+        updateSidebarUI();
+    }
+});
         // ==================== EmailJS Configuration ====================
         const EMAILJS_PUBLIC_KEY = 'AW1vq-SBqWiE1E_IE';
         const EMAILJS_SERVICE_ID = 'service_lk9q2gb';
@@ -5410,50 +5450,109 @@ function showHomePage() {
         function copyToClipboard(text) {
             navigator.clipboard.writeText(text).then(() => { showToast('✅ تم نسخ: ' + text); });
         }
-
-        // ==================== دوال تسجيل الدخول Firebase ====================
+async function resetPasswordViaEmail() {
+    const email = document.getElementById('forgotUsername').value.trim();
+    
+    if (!email) {
+        showToast('❌ الرجاء إدخال البريد الإلكتروني');
+        return;
+    }
+    
+    try {
+        await auth.sendPasswordResetEmail(email);
+        showToast('✅ تم إرسال رابط إعادة تعيين كلمة المرور إلى بريدك');
+        showLoginPage();
+    } catch (error) {
+        console.error('خطأ في إعادة تعيين كلمة المرور:', error);
+        handleAuthError(error);
+    }
+}
         async function login() {
-            let identifier = document.getElementById('loginUsername').value.trim();
-            const password = document.getElementById('loginPassword').value;
-            if (!identifier || !password) { showToast('الرجاء إدخال جميع البيانات'); return; }
-            
-            try {
-                const snapshot = await db.ref('users').once('value');
-                const users = snapshot.val();
-                let found = null;
-                if (users) {
-                    for (let uid in users) {
-                        const user = users[uid];
-                        if ((user.username === identifier || user.email === identifier || user.phone === identifier) && user.password === password) {
-                            found = { uid, ...user };
-                            break;
-                        }
-                    }
-                }
-                
-                if (found) {
-                    currentUser = found;
-                    localStorage.setItem('currentUser', JSON.stringify(currentUser));
-                    await db.ref(`users/${found.uid}/lastLogin`).set(new Date().toISOString());
-                    showToast(`✅ مرحباً ${currentUser.name}`);
-                    showDashboard();
-                } else {
-                    showToast('❌ اسم المستخدم أو كلمة المرور غير صحيحة');
-                }
-            } catch (error) {
-                console.error('خطأ في تسجيل الدخول:', error);
-                showToast('❌ حدث خطأ في تسجيل الدخول');
-            }
+    let identifier = document.getElementById('loginUsername').value.trim();
+    const password = document.getElementById('loginPassword').value;
+    
+    if (!identifier || !password) { 
+        showToast('❌ الرجاء إدخال جميع البيانات'); 
+        return; 
+    }
+    
+    try {
+        // ✅ تسجيل الدخول باستخدام Authentication
+        let email = identifier;
+        
+        // إذا كان المستخدم أدخل اسم مستخدم فقط، حوله إلى بريد إلكتروني
+        if (!identifier.includes('@')) {
+            email = `${identifier}@tecno.com`;
         }
-
+        
+        const userCredential = await auth.signInWithEmailAndPassword(email, password);
+        const user = userCredential.user;
+        
+        // ✅ جلب البيانات الإضافية من Database
+        const snapshot = await db.ref(`users/${user.uid}`).once('value');
+        const userData = snapshot.val();
+        
+        currentUser = {
+            uid: user.uid,
+            name: userData?.name || user.displayName || 'مستخدم',
+            username: userData?.username || email,
+            email: userData?.email || email,
+            phone: userData?.phone || '',
+            plan: userData?.plan || 'free',
+            ...userData
+        };
+        
+        localStorage.setItem('currentUser', JSON.stringify(currentUser));
+        await db.ref(`users/${user.uid}/lastLogin`).set(new Date().toISOString());
+        
+        showToast(`✅ مرحباً ${currentUser.name}`);
+        showDashboard();
+        
+    } catch (error) {
+        console.error('خطأ في تسجيل الدخول:', error);
+        handleAuthError(error);
+    }
+}
+function handleAuthError(error) {
+    let message = '❌ حدث خطأ';
+    
+    switch (error.code) {
+        case 'auth/email-already-in-use':
+            message = '❌ هذا البريد الإلكتروني مستخدم بالفعل';
+            break;
+        case 'auth/invalid-email':
+            message = '❌ البريد الإلكتروني غير صحيح';
+            break;
+        case 'auth/weak-password':
+            message = '❌ كلمة المرور ضعيفة (6 أحرف على الأقل)';
+            break;
+        case 'auth/user-not-found':
+            message = '❌ لا يوجد حساب بهذا البريد';
+            break;
+        case 'auth/wrong-password':
+            message = '❌ كلمة المرور غير صحيحة';
+            break;
+        case 'auth/too-many-requests':
+            message = '❌ محاولات كثيرة، حاول لاحقاً';
+            break;
+        default:
+            message = `❌ ${error.message}`;
+    }
+    
+    showToast(message);
+}
         function logout() {
-            currentUser = null;
-            localStorage.removeItem('currentUser');
-            showHomePage();
-            showToast('تم تسجيل الخروج');
-            updateSidebarUI();
-        }
-
+    auth.signOut().then(() => {
+        currentUser = null;
+        localStorage.removeItem('currentUser');
+        showHomePage();
+        showToast('✅ تم تسجيل الخروج');
+        updateSidebarUI();
+    }).catch((error) => {
+        console.error('خطأ في تسجيل الخروج:', error);
+        showToast('❌ حدث خطأ في تسجيل الخروج');
+    });
+}
         // ==================== دوال إنشاء حساب ====================
         function resetRegistration() {
             currentStep = 1;
@@ -5511,34 +5610,58 @@ function showHomePage() {
 
         function prevStep(step) { showStep(step); }
 
-        async function completeRegistration() {
-            const agree = document.getElementById('agreeTerms').checked;
-            if (!agree) { showToast('الرجاء الموافقة على الشروط'); return; }
-            
-            const newUid = 'user_' + Date.now() + '_' + Math.random().toString(36).substring(2, 8);
-            const fullName = `${tempUserData.firstName} ${tempUserData.lastName}`;
-            const newUser = {
-                name: fullName,
-                phone: tempUserData.phone,
-                username: tempUserData.username,
-                email: tempUserData.username,
-                password: tempUserData.password,
-                plan: 'free',
-                createdAt: new Date().toISOString(),
-                lastLogin: new Date().toISOString()
-            };
-            
-            try {
-                await db.ref(`users/${newUid}`).set(newUser);
-                currentUser = { uid: newUid, ...newUser };
-                localStorage.setItem('currentUser', JSON.stringify(currentUser));
-                showToast('✅ تم إنشاء الحساب بنجاح');
-                showDashboard();
-            } catch (error) {
-                console.error('خطأ في إنشاء الحساب:', error);
-                showToast('❌ حدث خطأ في إنشاء الحساب');
-            }
-        }
+      async function completeRegistration() {
+    const agree = document.getElementById('agreeTerms').checked;
+    if (!agree) { 
+        showToast('❌ الرجاء الموافقة على الشروط'); 
+        return; 
+    }
+    
+    const fullName = `${tempUserData.firstName} ${tempUserData.lastName}`;
+    const email = tempUserData.username; // username@tecno.com
+    const password = tempUserData.password;
+    
+    try {
+        // ✅ إنشاء حساب في Firebase Authentication
+        const userCredential = await auth.createUserWithEmailAndPassword(email, password);
+        const user = userCredential.user;
+        
+        // ✅ تحديث الاسم في Authentication
+        await user.updateProfile({
+            displayName: fullName
+        });
+        
+        // ✅ حفظ بيانات إضافية في Database
+        await db.ref(`users/${user.uid}`).set({
+            name: fullName,
+            phone: tempUserData.phone,
+            username: email,
+            email: email,
+            plan: 'free',
+            createdAt: new Date().toISOString(),
+            lastLogin: new Date().toISOString(),
+            uid: user.uid
+        });
+        
+        // ✅ تعيين المستخدم الحالي
+        currentUser = {
+            uid: user.uid,
+            name: fullName,
+            username: email,
+            email: email,
+            phone: tempUserData.phone,
+            plan: 'free'
+        };
+        
+        localStorage.setItem('currentUser', JSON.stringify(currentUser));
+        showToast('✅ تم إنشاء الحساب بنجاح');
+        showDashboard();
+        
+    } catch (error) {
+        console.error('خطأ في إنشاء الحساب:', error);
+        handleAuthError(error);
+    }
+}
 
         async function checkUsernameAvailability() {
             const username = document.getElementById('username').value.trim();
