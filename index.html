@@ -4296,6 +4296,36 @@
     </div>
 
     <script>
+        // ==================== تهيئة LiveKit ====================
+// التأكد من تحميل LiveKit
+if (typeof LiveKit === 'undefined' && typeof window.LiveKit !== 'undefined') {
+    window.LiveKit = window.LiveKit;
+}
+
+// تفكيك LiveKit من window أو من global
+const LiveKitLib = (typeof LiveKit !== 'undefined') ? LiveKit : window.LiveKit;
+
+if (!LiveKitLib) {
+    console.error('❌ LiveKit not loaded! Please check the CDN link.');
+    alert('⚠️ LiveKit library not loaded. Please refresh the page.');
+} else {
+    console.log('✅ LiveKit loaded successfully');
+}
+
+// استخراج الدوال المهمة
+const {
+    Room,
+    RoomEvent,
+    Track,
+    VideoPresets,
+    ConnectionState,
+    createLocalTracks,
+    createLocalVideoTrack,
+    createLocalAudioTrack,
+    LocalTrack
+} = LiveKitLib;
+
+console.log('✅ LiveKit functions extracted successfully');
        // ==================== تهيئة Firebase ====================
 const firebaseConfig = {
     apiKey: "AIzaSyD54ifCxvtFuj-445hikUBzI2Q1DkSsVNk",
@@ -6276,6 +6306,7 @@ const LIVEKIT_URL = 'wss://tecnosherk-meet-83dxkxag.livekit.cloud';
 const LIVEKIT_API_KEY = 'APIcPTrP2xF2SQ';
 const LIVEKIT_API_SECRET = '6yYjFcSfSAbCLaSd7fABxpFkp6722KvRFgPBBfXkNU9D';
 
+
 // ==================== 2. متغيرات LiveKit ====================
 let liveKitRoom = null;
 let liveKitTracks = [];
@@ -6313,7 +6344,7 @@ function generateLiveKitToken(meetingId, userName, userId) {
 // ==================== 4. الاتصال بـ LiveKit ====================
 async function connectToLiveKit(meetingId, userName, userId) {
     try {
-        liveKitRoom = new LiveKit.Room({
+        liveKitRoom = new window.LiveKit.Room({
             adaptiveStream: true,
             dynacast: true,
             stopLocalTrackOnUnpublish: true
