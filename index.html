@@ -17,7 +17,7 @@
 <script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@3/dist/email.min.js"></script>
 
 <!-- ==================== LiveKit ==================== -->
-<script src="https://unpkg.com/livekit-client@1.15.0/dist/livekit-client.umd.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/livekit-client/1.13.0/livekit-client.umd.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jsonwebtoken/9.0.0/jwt.min.js"></script>
 
 <!-- ==================== jsonwebtoken ==================== -->
@@ -4344,106 +4344,74 @@ let screenShareLiveKitTrack = null;
 let isMicEnabledLiveKit = true;
 let isVideoEnabledLiveKit = true;
 let currentLiveKitMeetingId = null;
-// ==================== تهيئة LiveKit (نسخة نهائية) ====================
+// ==================== تهيئة LiveKit (نسخة مبسطة) ====================
 console.log('🔍 Loading LiveKit...');
 
-// محاولة تحميل LiveKit من عدة أماكن
-function getLiveKitLib() {
-    // 1. من window
+// محاولة الحصول على LiveKit من أي مكان
+var LiveKitLib = null;
+
+try {
+    // من window
     if (typeof window !== 'undefined' && window.LiveKit) {
-        return window.LiveKit;
+        LiveKitLib = window.LiveKit;
+        console.log('✅ LiveKit from window');
     }
-    // 2. من global
-    if (typeof LiveKit !== 'undefined') {
-        return LiveKit;
+    // من global
+    else if (typeof LiveKit !== 'undefined') {
+        LiveKitLib = LiveKit;
+        console.log('✅ LiveKit from global');
     }
-    // 3. من window.LiveKitLib (إذا كان موجود)
-    if (typeof window !== 'undefined' && window.LiveKitLib) {
-        return window.LiveKitLib;
-    }
-    return null;
+} catch (e) {
+    console.warn('⚠️ Error accessing LiveKit:', e);
 }
 
-// تعيين LiveKitLib
-window.LiveKitLib = getLiveKitLib();
-
-if (window.LiveKitLib) {
-    console.log('✅ LiveKit loaded successfully');
-    initLiveKitFunctions();
-} else {
-    console.warn('⚠️ LiveKit not found, trying alternative load...');
+// إذا وجدنا LiveKit
+if (LiveKitLib) {
+    window.LiveKitLib = LiveKitLib;
     
-    // محاولة تحميل من CDN آخر
-    var script = document.createElement('script');
-    script.src = 'https://cdnjs.cloudflare.com/ajax/libs/livekit-client/1.14.0/livekit-client.umd.min.js';
-    script.async = false;
-    
-    script.onload = function() {
-        window.LiveKitLib = window.LiveKit || LiveKit;
-        if (window.LiveKitLib) {
-            console.log('✅ LiveKit loaded from fallback CDN');
-            initLiveKitFunctions();
-        } else {
-            console.error('❌ LiveKit still not available after fallback');
-            showLiveKitError();
-        }
-    };
-    
-    script.onerror = function() {
-        console.error('❌ Failed to load LiveKit from all CDNs');
-        showLiveKitError();
-    };
-    
-    document.head.appendChild(script);
-}
-
-function initLiveKitFunctions() {
-    if (!window.LiveKitLib) {
-        console.warn('⚠️ LiveKitLib not ready');
-        return;
-    }
-    
+    // استخراج الدوال
     try {
-        window.LiveKitRoom = window.LiveKitLib.Room;
-        window.LiveKitRoomEvent = window.LiveKitLib.RoomEvent;
-        window.LiveKitTrack = window.LiveKitLib.Track;
-        window.LiveKitVideoPresets = window.LiveKitLib.VideoPresets;
-        window.LiveKitCreateLocalTracks = window.LiveKitLib.createLocalTracks;
-        window.LiveKitLocalTrack = window.LiveKitLib.LocalTrack;
-        window.LiveKitConnectionState = window.LiveKitLib.ConnectionState;
+        window.LiveKitRoom = LiveKitLib.Room;
+        window.LiveKitRoomEvent = LiveKitLib.RoomEvent;
+        window.LiveKitTrack = LiveKitLib.Track;
+        window.LiveKitVideoPresets = LiveKitLib.VideoPresets;
+        window.LiveKitCreateLocalTracks = LiveKitLib.createLocalTracks;
+        window.LiveKitLocalTrack = LiveKitLib.LocalTrack;
+        window.LiveKitConnectionState = LiveKitLib.ConnectionState;
         
         console.log('✅ LiveKit functions ready');
         console.log('📦 Room:', typeof window.LiveKitRoom);
         console.log('📦 createLocalTracks:', typeof window.LiveKitCreateLocalTracks);
-    } catch (error) {
-        console.error('❌ Error extracting LiveKit functions:', error);
+    } catch (e) {
+        console.error('❌ Error extracting functions:', e);
     }
-}
-
-function showLiveKitError() {
+} else {
+    console.error('❌ LiveKit NOT available');
+    
+    // عرض رسالة للمستخدم
     var toast = document.getElementById('toast');
     if (toast) {
-        toast.textContent = '⚠️ تعذر تحميل LiveKit. يرجى تحديث الصفحة أو التحقق من الاتصال بالإنترنت.';
+        toast.textContent = '⚠️ تعذر تحميل LiveKit. سيتم استخدام وضع الطوارئ.';
         toast.classList.remove('opacity-0');
         toast.classList.add('opacity-100');
         setTimeout(function() {
             toast.classList.remove('opacity-100');
             toast.classList.add('opacity-0');
-        }, 5000);
+        }, 4000);
     }
+    
+    // محاولة تحميل ديناميكي بديل
+    var script = document.createElement('script');
+    script.src = 'https://cdnjs.cloudflare.com/ajax/libs/livekit-client/1.13.0/livekit-client.umd.min.js';
+    script.onload = function() {
+        console.log('✅ LiveKit loaded dynamically!');
+        location.reload();
+    };
+    script.onerror = function() {
+        console.error('❌ All CDN attempts failed');
+    };
+    document.head.appendChild(script);
 }
-
-// محاولة ثانية بعد 3 ثواني إذا لم يتم التحميل
-setTimeout(function() {
-    if (!window.LiveKitLib) {
-        var lib = getLiveKitLib();
-        if (lib) {
-            window.LiveKitLib = lib;
-            console.log('✅ LiveKit found after waiting');
-            initLiveKitFunctions();
-        }
-    }
-}, 3000);
         // ==================== EmailJS Configuration ====================
         const EMAILJS_PUBLIC_KEY = 'AW1vq-SBqWiE1E_IE';
         const EMAILJS_SERVICE_ID = 'service_lk9q2gb';
