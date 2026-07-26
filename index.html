@@ -5,13 +5,17 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>TecnoShark | منصة البرمجيات والحلول الرقمية</title>
     <script src="https://cdn.tailwindcss.com"></script>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-database-compat.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@3/dist/email.min.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-auth-compat.js"></script>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+<!-- Firebase -->
+<script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-database-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-auth-compat.js"></script>
+
+<!-- EmailJS -->
 <script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@3/dist/email.min.js"></script>
-<!-- ==================== مكتبات LiveKit ==================== -->
+
+<!-- ⚠️ LiveKit - تأكد من وجوده -->
 <script src="https://cdn.jsdelivr.net/npm/livekit-client@1.15.0/dist/livekit-client.umd.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/jsonwebtoken@9.0.0/dist/jwt.min.js"></script>
     <style>
@@ -4297,19 +4301,82 @@
     </div>
 
     <script>
-       // ==================== حل سريع لـ LiveKit ====================
-if (typeof LiveKit === 'undefined' && typeof window.LiveKit === 'undefined') {
-    document.write('<script src="https://cdn.jsdelivr.net/npm/livekit-client@1.15.0/dist/livekit-client.umd.min.js"><\/script>');
-    document.write('<script>window.LiveKitLib = window.LiveKit || LiveKit; console.log("✅ LiveKit loaded");<\/script>');
-} else {
-    window.LiveKitLib = window.LiveKit || LiveKit;
-    console.log('✅ LiveKit already loaded');
+      // ==================== تهيئة LiveKit ====================
+console.log('🔍 Loading LiveKit...');
+
+// تعريف LiveKitLib من window أو global
+let LiveKitLib = null;
+
+// محاولة 1: من window
+if (typeof window !== 'undefined' && window.LiveKit) {
+    LiveKitLib = window.LiveKit;
+    console.log('✅ LiveKit loaded from window');
 }
 
-// إذا كان LiveKit لا يزال غير معرّف، استخدم window
-if (!window.LiveKitLib) {
-    window.LiveKitLib = window.LiveKit || LiveKit || {};
-    console.warn('⚠️ Using fallback for LiveKit');
+// محاولة 2: من global
+if (!LiveKitLib && typeof LiveKit !== 'undefined') {
+    LiveKitLib = LiveKit;
+    console.log('✅ LiveKit loaded from global');
+}
+
+// إذا لم يتم تحميله، انتظر قليلاً وحاول مرة أخرى
+if (!LiveKitLib) {
+    console.warn('⚠️ LiveKit not yet loaded, waiting...');
+    
+    // محاولة التحميل بعد 1 ثانية
+    setTimeout(function() {
+        if (typeof window.LiveKit !== 'undefined') {
+            LiveKitLib = window.LiveKit;
+            console.log('✅ LiveKit loaded after waiting');
+            window.LiveKitLib = LiveKitLib;
+            initLiveKitFunctions();
+        } else if (typeof LiveKit !== 'undefined') {
+            LiveKitLib = LiveKit;
+            console.log('✅ LiveKit loaded after waiting (global)');
+            window.LiveKitLib = LiveKitLib;
+            initLiveKitFunctions();
+        } else {
+            console.error('❌ LiveKit still not available');
+            // محاولة تحميل ديناميكي بدون document.write
+            var script = document.createElement('script');
+            script.src = 'https://cdn.jsdelivr.net/npm/livekit-client@1.15.0/dist/livekit-client.umd.min.js';
+            script.async = false;
+            script.onload = function() {
+                LiveKitLib = window.LiveKit || LiveKit;
+                window.LiveKitLib = LiveKitLib;
+                console.log('✅ LiveKit loaded dynamically');
+                initLiveKitFunctions();
+            };
+            script.onerror = function() {
+                alert('⚠️ فشل تحميل LiveKit. يرجى تحديث الصفحة.');
+            };
+            document.head.appendChild(script);
+        }
+    }, 1500);
+} else {
+    window.LiveKitLib = LiveKitLib;
+    initLiveKitFunctions();
+}
+
+// ==================== استخراج دوال LiveKit ====================
+function initLiveKitFunctions() {
+    if (!window.LiveKitLib) {
+        console.warn('⚠️ LiveKitLib not ready');
+        return;
+    }
+    
+    try {
+        window.LiveKitRoom = window.LiveKitLib.Room;
+        window.LiveKitRoomEvent = window.LiveKitLib.RoomEvent;
+        window.LiveKitTrack = window.LiveKitLib.Track;
+        window.LiveKitVideoPresets = window.LiveKitLib.VideoPresets;
+        window.LiveKitCreateLocalTracks = window.LiveKitLib.createLocalTracks;
+        window.LiveKitLocalTrack = window.LiveKitLib.LocalTrack;
+        
+        console.log('✅ LiveKit functions extracted successfully');
+    } catch (error) {
+        console.error('❌ Error extracting LiveKit functions:', error);
+    }
 }
         // ==================== بيانات LiveKit ====================
 const LIVEKIT_URL = 'wss://tecnosherk-meet-83dxkxag.livekit.cloud';
@@ -4348,32 +4415,7 @@ const db = firebase.database();
 
 console.log('✅ Firebase initialized');
 console.log('✅ Firebase Auth initialized');
-// ==================== تهيئة LiveKit ====================
-console.log('🔍 Loading LiveKit...');
 
-// محاولة التحميل من window
-let LiveKitLib = window.LiveKit || LiveKit || null;
-
-if (!LiveKitLib) {
-    console.warn('⚠️ LiveKit not found, trying to load...');
-    const script = document.createElement('script');
-    script.src = 'https://cdn.jsdelivr.net/npm/livekit-client@1.15.0/dist/livekit-client.umd.min.js';
-    script.async = false;
-    script.onload = function() {
-        LiveKitLib = window.LiveKit;
-        console.log('✅ LiveKit loaded dynamically');
-        location.reload();
-    };
-    script.onerror = function() {
-        alert('⚠️ فشل تحميل LiveKit، يرجى تحديث الصفحة');
-    };
-    document.head.appendChild(script);
-} else {
-    console.log('✅ LiveKit already loaded');
-}
-
-// تعريف LiveKitLib عالمياً
-window.LiveKitLib = LiveKitLib;
         // ==================== EmailJS Configuration ====================
         const EMAILJS_PUBLIC_KEY = 'AW1vq-SBqWiE1E_IE';
         const EMAILJS_SERVICE_ID = 'service_lk9q2gb';
