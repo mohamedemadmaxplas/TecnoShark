@@ -4313,95 +4313,8 @@
     </div>
 
     <script>
-     // ==================== تهيئة LiveKit باستخدام ES Module ====================
-console.log('🔍 Loading LiveKit via ES Module...');
-
-// تعريف المتغيرات
-window.LiveKitLib = null;
-window._liveKitLoaded = false;
-
-// محاولة تحميل LiveKit باستخدام import()
-async function loadLiveKit() {
-    try {
-        // محاولة التحميل من importmap
-        const LiveKit = await import('livekit-client');
-        console.log('✅ LiveKit loaded via ES Module');
+   
         
-        window.LiveKitLib = LiveKit;
-        window._liveKitLoaded = true;
-        
-        // استخراج الدوال
-        window.LiveKitRoom = LiveKit.Room;
-        window.LiveKitRoomEvent = LiveKit.RoomEvent;
-        window.LiveKitTrack = LiveKit.Track;
-        window.LiveKitVideoPresets = LiveKit.VideoPresets;
-        window.LiveKitCreateLocalTracks = LiveKit.createLocalTracks;
-        window.LiveKitLocalTrack = LiveKit.LocalTrack;
-        window.LiveKitConnectionState = LiveKit.ConnectionState;
-        
-        console.log('✅ LiveKit functions extracted successfully');
-        return true;
-    } catch (error) {
-        console.error('❌ Error loading LiveKit via ES Module:', error);
-        return false;
-    }
-}
-
-// تشغيل التحميل
-loadLiveKit().then(success => {
-    if (!success) {
-        console.warn('⚠️ LiveKit ES Module failed, trying UMD fallback...');
-        // محاولة تحميل UMD كحل أخير
-        var script = document.createElement('script');
-        script.src = 'https://unpkg.com/livekit-client@1.15.0/dist/livekit-client.umd.min.js';
-        script.async = false;
-        script.onload = function() {
-            if (typeof LiveKit !== 'undefined' || typeof window.LiveKit !== 'undefined') {
-                window.LiveKitLib = window.LiveKit || LiveKit;
-                console.log('✅ LiveKit loaded via UMD fallback');
-                initLiveKitFunctions();
-                // إعادة تحميل الصفحة لتطبيق التغييرات
-                setTimeout(function() { location.reload(); }, 1000);
-            }
-        };
-        script.onerror = function() {
-            console.error('❌ All LiveKit loading methods failed');
-            // عرض رسالة للمستخدم
-            document.getElementById('toast')?.innerHTML = '⚠️ تعذر تحميل مكتبة LiveKit. يرجى تحديث الصفحة.';
-        };
-        document.head.appendChild(script);
-    }
-});
-
-function initLiveKitFunctions() {
-    if (!window.LiveKitLib) return;
-    try {
-        window.LiveKitRoom = window.LiveKitLib.Room;
-        window.LiveKitRoomEvent = window.LiveKitLib.RoomEvent;
-        window.LiveKitTrack = window.LiveKitLib.Track;
-        window.LiveKitVideoPresets = window.LiveKitLib.VideoPresets;
-        window.LiveKitCreateLocalTracks = window.LiveKitLib.createLocalTracks;
-        window.LiveKitLocalTrack = window.LiveKitLib.LocalTrack;
-        window.LiveKitConnectionState = window.LiveKitLib.ConnectionState;
-        console.log('✅ LiveKit functions initialized');
-    } catch (e) {
-        console.error('❌ init error:', e);
-    }
-}
-        // ==================== بيانات LiveKit ====================
-const LIVEKIT_URL = 'wss://tecnosherk-meet-83dxkxag.livekit.cloud';
-const LIVEKIT_API_KEY = 'APIcPTrP2xF2SQ';
-const LIVEKIT_API_SECRET = '6yYjFcSfSAbCLaSd7fABxpFkp6722KvRFgPBBfXkNU9D';
-
-// ==================== متغيرات LiveKit ====================
-let liveKitRoom = null;
-let liveKitTracks = [];
-let liveKitParticipants = {};
-let isScreenSharingLiveKit = false;
-let screenShareLiveKitTrack = null;
-let isMicEnabledLiveKit = true;
-let isVideoEnabledLiveKit = true;
-let currentLiveKitMeetingId = null;
        // ==================== تهيئة Firebase ====================
 const firebaseConfig = {
     apiKey: "AIzaSyD54ifCxvtFuj-445hikUBzI2Q1DkSsVNk",
@@ -4425,7 +4338,124 @@ const db = firebase.database();
 
 console.log('✅ Firebase initialized');
 console.log('✅ Firebase Auth initialized');
+// ==================== بيانات LiveKit ====================
+const LIVEKIT_URL = 'wss://tecnosherk-meet-83dxkxag.livekit.cloud';
+const LIVEKIT_API_KEY = 'APIcPTrP2xF2SQ';
+const LIVEKIT_API_SECRET = '6yYjFcSfSAbCLaSd7fABxpFkp6722KvRFgPBBfXkNU9D';
 
+// ==================== متغيرات LiveKit ====================
+let liveKitRoom = null;
+let liveKitTracks = [];
+let liveKitParticipants = {};
+let isScreenSharingLiveKit = false;
+let screenShareLiveKitTrack = null;
+let isMicEnabledLiveKit = true;
+let isVideoEnabledLiveKit = true;
+let currentLiveKitMeetingId = null;
+// ==================== تهيئة LiveKit (نسخة آمنة) ====================
+console.log('🔍 Loading LiveKit...');
+
+// تعريف المتغيرات
+window.LiveKitLib = null;
+window._liveKitLoaded = false;
+
+// محاولة تحميل LiveKit من أماكن مختلفة
+function getLiveKitFromWindow() {
+    if (typeof window !== 'undefined' && window.LiveKit) {
+        return window.LiveKit;
+    }
+    if (typeof LiveKit !== 'undefined') {
+        return LiveKit;
+    }
+    return null;
+}
+
+// تهيئة الدوال بعد التحميل
+function initLiveKitFunctions() {
+    var lib = window.LiveKitLib || getLiveKitFromWindow();
+    if (!lib) {
+        console.warn('⚠️ LiveKitLib not available');
+        return;
+    }
+    
+    window.LiveKitLib = lib;
+    
+    try {
+        window.LiveKitRoom = lib.Room;
+        window.LiveKitRoomEvent = lib.RoomEvent;
+        window.LiveKitTrack = lib.Track;
+        window.LiveKitVideoPresets = lib.VideoPresets;
+        window.LiveKitCreateLocalTracks = lib.createLocalTracks;
+        window.LiveKitLocalTrack = lib.LocalTrack;
+        window.LiveKitConnectionState = lib.ConnectionState;
+        
+        console.log('✅ LiveKit functions extracted');
+        return true;
+    } catch (error) {
+        console.error('❌ Error extracting LiveKit functions:', error);
+        return false;
+    }
+}
+
+// محاولة التحميل الفورية
+var LiveKitLib = getLiveKitFromWindow();
+
+if (LiveKitLib) {
+    console.log('✅ LiveKit already loaded');
+    window.LiveKitLib = LiveKitLib;
+    initLiveKitFunctions();
+} else {
+    console.warn('⚠️ LiveKit not found, trying to load...');
+    
+    // محاولة تحميل ديناميكي
+    var script = document.createElement('script');
+    script.src = 'https://unpkg.com/livekit-client@1.15.0/dist/livekit-client.umd.min.js';
+    script.async = false;
+    
+    script.onload = function() {
+        var lib = getLiveKitFromWindow();
+        if (lib) {
+            window.LiveKitLib = lib;
+            console.log('✅ LiveKit loaded dynamically');
+            initLiveKitFunctions();
+            // إعادة تحميل الصفحة لتطبيق التغييرات
+            setTimeout(function() {
+                location.reload();
+            }, 500);
+        } else {
+            console.error('❌ LiveKit loaded but not available');
+            showLiveKitError();
+        }
+    };
+    
+    script.onerror = function() {
+        console.error('❌ Failed to load LiveKit from CDN');
+        showLiveKitError();
+    };
+    
+    document.head.appendChild(script);
+}
+
+// دالة عرض الخطأ
+function showLiveKitError() {
+    var toast = document.getElementById('toast');
+    if (toast) {
+        toast.textContent = '⚠️ تعذر تحميل LiveKit. يرجى تحديث الصفحة.';
+        toast.classList.remove('opacity-0');
+        toast.classList.add('opacity-100');
+        setTimeout(function() {
+            toast.classList.remove('opacity-100');
+            toast.classList.add('opacity-0');
+        }, 5000);
+    }
+}
+
+// دالة للتحقق من جاهزية LiveKit (يتم استدعاؤها من أماكن أخرى)
+function isLiveKitReady() {
+    return window.LiveKitLib !== null && typeof window.LiveKitRoom !== 'undefined';
+}
+
+console.log('🔍 LiveKit initialization complete');
         // ==================== EmailJS Configuration ====================
         const EMAILJS_PUBLIC_KEY = 'AW1vq-SBqWiE1E_IE';
         const EMAILJS_SERVICE_ID = 'service_lk9q2gb';
