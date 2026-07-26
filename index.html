@@ -16,8 +16,15 @@
 <script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@3/dist/email.min.js"></script>
 
 <!-- ⚠️ LiveKit - تأكد من وجوده -->
-<script src="https://cdn.jsdelivr.net/npm/livekit-client@1.15.0/dist/livekit-client.umd.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/jsonwebtoken@9.0.0/dist/jwt.min.js"></script>
+<!-- ==================== LiveKit باستخدام importmap ==================== -->
+<script type="importmap">
+{
+    "imports": {
+        "livekit-client": "https://cdn.jsdelivr.net/npm/livekit-client@1.15.0/dist/livekit-client.esm.min.js",
+        "livekit-client/": "https://cdn.jsdelivr.net/npm/livekit-client@1.15.0/dist/"
+    }
+}
+</script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/livekit-client/1.15.0/livekit-client.umd.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jsonwebtoken/9.0.0/jwt.min.js"></script>
 <!-- ==================== مكتبات LiveKit ==================== -->
@@ -4306,86 +4313,69 @@
     </div>
 
     <script>
-      // ==================== تهيئة LiveKit (النسخة النهائية) ====================
-console.log('🔍 Loading LiveKit...');
+     // ==================== تهيئة LiveKit باستخدام ES Module ====================
+console.log('🔍 Loading LiveKit via ES Module...');
 
-// محاولة الحصول على LiveKit من عدة أماكن
-function getLiveKit() {
-    // من window
-    if (typeof window !== 'undefined' && window.LiveKit) {
-        return window.LiveKit;
-    }
-    // من global
-    if (typeof LiveKit !== 'undefined') {
-        return LiveKit;
-    }
-    // من window.LiveKitLib (إذا كان موجود)
-    if (typeof window !== 'undefined' && window.LiveKitLib) {
-        return window.LiveKitLib;
-    }
-    return null;
-}
+// تعريف المتغيرات
+window.LiveKitLib = null;
+window._liveKitLoaded = false;
 
-let LiveKitLib = getLiveKit();
-
-if (!LiveKitLib) {
-    console.warn('⚠️ LiveKit not found, waiting for load...');
-    
-    // محاولة التحميل كل 500ms لمدة 10 ثواني
-    let attempts = 0;
-    const maxAttempts = 20;
-    
-    const checkInterval = setInterval(function() {
-        attempts++;
-        LiveKitLib = getLiveKit();
-        
-        if (LiveKitLib) {
-            clearInterval(checkInterval);
-            console.log('✅ LiveKit loaded successfully');
-            window.LiveKitLib = LiveKitLib;
-            initLiveKitFunctions();
-        } else if (attempts >= maxAttempts) {
-            clearInterval(checkInterval);
-            console.error('❌ Failed to load LiveKit after 10 seconds');
-            
-            // محاولة تحميل ديناميكي
-            var script = document.createElement('script');
-            script.src = 'https://unpkg.com/livekit-client@1.15.0/dist/livekit-client.umd.min.js';
-            script.async = false;
-            script.onload = function() {
-                LiveKitLib = getLiveKit();
-                if (LiveKitLib) {
-                    window.LiveKitLib = LiveKitLib;
-                    console.log('✅ LiveKit loaded dynamically');
-                    initLiveKitFunctions();
-                    // إعادة تحميل الصفحة لتطبيق التغييرات
-                    setTimeout(function() { location.reload(); }, 1000);
-                } else {
-                    alert('⚠️ تعذر تحميل LiveKit. يرجى تحديث الصفحة أو التحقق من الاتصال بالإنترنت.');
-                }
-            };
-            script.onerror = function() {
-                alert('⚠️ فشل تحميل LiveKit. يرجى تحديث الصفحة.');
-            };
-            document.head.appendChild(script);
-        }
-    }, 500);
-    
-} else {
-    console.log('✅ LiveKit already loaded');
-    window.LiveKitLib = LiveKitLib;
-    initLiveKitFunctions();
-}
-
-// ==================== استخراج دوال LiveKit ====================
-function initLiveKitFunctions() {
-    if (!window.LiveKitLib) {
-        console.warn('⚠️ LiveKitLib not available');
-        return;
-    }
-    
+// محاولة تحميل LiveKit باستخدام import()
+async function loadLiveKit() {
     try {
+        // محاولة التحميل من importmap
+        const LiveKit = await import('livekit-client');
+        console.log('✅ LiveKit loaded via ES Module');
+        
+        window.LiveKitLib = LiveKit;
+        window._liveKitLoaded = true;
+        
         // استخراج الدوال
+        window.LiveKitRoom = LiveKit.Room;
+        window.LiveKitRoomEvent = LiveKit.RoomEvent;
+        window.LiveKitTrack = LiveKit.Track;
+        window.LiveKitVideoPresets = LiveKit.VideoPresets;
+        window.LiveKitCreateLocalTracks = LiveKit.createLocalTracks;
+        window.LiveKitLocalTrack = LiveKit.LocalTrack;
+        window.LiveKitConnectionState = LiveKit.ConnectionState;
+        
+        console.log('✅ LiveKit functions extracted successfully');
+        return true;
+    } catch (error) {
+        console.error('❌ Error loading LiveKit via ES Module:', error);
+        return false;
+    }
+}
+
+// تشغيل التحميل
+loadLiveKit().then(success => {
+    if (!success) {
+        console.warn('⚠️ LiveKit ES Module failed, trying UMD fallback...');
+        // محاولة تحميل UMD كحل أخير
+        var script = document.createElement('script');
+        script.src = 'https://unpkg.com/livekit-client@1.15.0/dist/livekit-client.umd.min.js';
+        script.async = false;
+        script.onload = function() {
+            if (typeof LiveKit !== 'undefined' || typeof window.LiveKit !== 'undefined') {
+                window.LiveKitLib = window.LiveKit || LiveKit;
+                console.log('✅ LiveKit loaded via UMD fallback');
+                initLiveKitFunctions();
+                // إعادة تحميل الصفحة لتطبيق التغييرات
+                setTimeout(function() { location.reload(); }, 1000);
+            }
+        };
+        script.onerror = function() {
+            console.error('❌ All LiveKit loading methods failed');
+            // عرض رسالة للمستخدم
+            document.getElementById('toast')?.innerHTML = '⚠️ تعذر تحميل مكتبة LiveKit. يرجى تحديث الصفحة.';
+        };
+        document.head.appendChild(script);
+    }
+});
+
+function initLiveKitFunctions() {
+    if (!window.LiveKitLib) return;
+    try {
         window.LiveKitRoom = window.LiveKitLib.Room;
         window.LiveKitRoomEvent = window.LiveKitLib.RoomEvent;
         window.LiveKitTrack = window.LiveKitLib.Track;
@@ -4393,18 +4383,10 @@ function initLiveKitFunctions() {
         window.LiveKitCreateLocalTracks = window.LiveKitLib.createLocalTracks;
         window.LiveKitLocalTrack = window.LiveKitLib.LocalTrack;
         window.LiveKitConnectionState = window.LiveKitLib.ConnectionState;
-        
-        console.log('✅ LiveKit functions extracted');
-        console.log('📦 Room:', typeof window.LiveKitRoom);
-        console.log('📦 createLocalTracks:', typeof window.LiveKitCreateLocalTracks);
-    } catch (error) {
-        console.error('❌ Error extracting LiveKit functions:', error);
+        console.log('✅ LiveKit functions initialized');
+    } catch (e) {
+        console.error('❌ init error:', e);
     }
-}
-
-// إذا كان LiveKit محملاً بالفعل عند تشغيل هذا الكود
-if (window.LiveKitLib) {
-    initLiveKitFunctions();
 }
         // ==================== بيانات LiveKit ====================
 const LIVEKIT_URL = 'wss://tecnosherk-meet-83dxkxag.livekit.cloud';
@@ -10094,3 +10076,4 @@ function goToMyAccountPage() {
     </script>
 </body>
 </html>
+    
