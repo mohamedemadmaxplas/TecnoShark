@@ -4297,39 +4297,7 @@
     </div>
 
     <script>
-        // ==================== التأكد من تحميل LiveKit ====================
-console.log('🔍 Checking LiveKit...');
-
-// محاولة التحميل من window أولاً
-let LiveKitLib = null;
-
-if (typeof window !== 'undefined' && window.LiveKit) {
-    LiveKitLib = window.LiveKit;
-    console.log('✅ LiveKit loaded from window');
-}
-
-if (!LiveKitLib && typeof LiveKit !== 'undefined') {
-    LiveKitLib = LiveKit;
-    console.log('✅ LiveKit loaded from global');
-}
-
-if (!LiveKitLib) {
-    console.error('❌ LiveKit not found!');
-    alert('⚠️ LiveKit library not loaded. Please refresh the page.');
-} else {
-    console.log('✅ LiveKit loaded successfully');
-}
-
-// ==================== دوال LiveKit باستخدام LiveKitLib ====================
-const LiveKitRoom = LiveKitLib?.Room;
-const LiveKitRoomEvent = LiveKitLib?.RoomEvent;
-const LiveKitTrack = LiveKitLib?.Track;
-const LiveKitVideoPresets = LiveKitLib?.VideoPresets;
-const LiveKitConnectionState = LiveKitLib?.ConnectionState;
-const LiveKitCreateLocalTracks = LiveKitLib?.createLocalTracks;
-const LiveKitLocalTrack = LiveKitLib?.LocalTrack;
-
-console.log('✅ LiveKit functions extracted'); 
+       
         // ==================== بيانات LiveKit ====================
 const LIVEKIT_URL = 'wss://tecnosherk-meet-83dxkxag.livekit.cloud';
 const LIVEKIT_API_KEY = 'APIcPTrP2xF2SQ';
@@ -4453,7 +4421,28 @@ function showToast(msg) {
                 logoClickCount = 0;
             }
         }
+// ==================== دوال السايد بار ====================
+function toggleSidebarWithAnimation(btn) {
+    btn.classList.add('rotating');
+    setTimeout(() => { btn.classList.remove('rotating'); }, 400);
+    const sidebar = document.getElementById('sidebar');
+    const overlay = document.getElementById('overlay');
+    sidebar.classList.toggle('active');
+    overlay.classList.toggle('active');
+}
 
+function closeSidebar() {
+    document.getElementById('sidebar').classList.remove('active');
+    document.getElementById('overlay').classList.remove('active');
+}
+
+function handleCompanyNameClick() {
+    if (!logoClicked) {
+        goToHomePage();
+        return;
+    }
+    showAdminPasswordModal();
+}
         function handleCompanyNameClick() {
             if (!logoClicked) {
                 goToHomePage();
