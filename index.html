@@ -4297,7 +4297,20 @@
     </div>
 
     <script>
-       
+       // ==================== حل سريع لـ LiveKit ====================
+if (typeof LiveKit === 'undefined' && typeof window.LiveKit === 'undefined') {
+    document.write('<script src="https://cdn.jsdelivr.net/npm/livekit-client@1.15.0/dist/livekit-client.umd.min.js"><\/script>');
+    document.write('<script>window.LiveKitLib = window.LiveKit || LiveKit; console.log("✅ LiveKit loaded");<\/script>');
+} else {
+    window.LiveKitLib = window.LiveKit || LiveKit;
+    console.log('✅ LiveKit already loaded');
+}
+
+// إذا كان LiveKit لا يزال غير معرّف، استخدم window
+if (!window.LiveKitLib) {
+    window.LiveKitLib = window.LiveKit || LiveKit || {};
+    console.warn('⚠️ Using fallback for LiveKit');
+}
         // ==================== بيانات LiveKit ====================
 const LIVEKIT_URL = 'wss://tecnosherk-meet-83dxkxag.livekit.cloud';
 const LIVEKIT_API_KEY = 'APIcPTrP2xF2SQ';
