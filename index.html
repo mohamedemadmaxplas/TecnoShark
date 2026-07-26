@@ -6280,7 +6280,7 @@ function createParticipantCardWithAudio(participant, uid) {
     
     return div;
 }
-// ==================== 1. إنشاء Token ====================
+// ==================== generateLiveKitToken - معدلة ====================
 function generateLiveKitToken(meetingId, userName, userId) {
     try {
         const now = Math.floor(Date.now() / 1000);
@@ -6297,6 +6297,7 @@ function generateLiveKitToken(meetingId, userName, userId) {
                 canSubscribe: true
             }
         };
+        // ✅ استخدام jwt من window
         const token = jwt.sign(payload, LIVEKIT_API_SECRET, { algorithm: 'HS256' });
         console.log('✅ Token created');
         return token;
@@ -6309,8 +6310,8 @@ function generateLiveKitToken(meetingId, userName, userId) {
 // ==================== connectToLiveKit - معدلة ====================
 async function connectToLiveKit(meetingId, userName, userId) {
     try {
-        // ✅ استخدام LiveKitLib بدلاً من window.LiveKit
-        const Room = LiveKitLib?.Room;
+        // ✅ استخدام window.LiveKitLib بدلاً من LiveKit
+        const Room = window.LiveKitLib?.Room;
         if (!Room) {
             throw new Error('LiveKit Room not available');
         }
@@ -6347,8 +6348,9 @@ async function connectToLiveKit(meetingId, userName, userId) {
 // ==================== publishLocalTracksLiveKit - معدلة ====================
 async function publishLocalTracksLiveKit() {
     try {
-        const createLocalTracks = LiveKitLib?.createLocalTracks;
-        const VideoPresets = LiveKitLib?.VideoPresets;
+        // ✅ استخدام window.LiveKitLib
+        const createLocalTracks = window.LiveKitLib?.createLocalTracks;
+        const VideoPresets = window.LiveKitLib?.VideoPresets;
         
         if (!createLocalTracks) {
             throw new Error('LiveKit createLocalTracks not available');
@@ -6395,7 +6397,8 @@ async function publishLocalTracksLiveKit() {
 function setupLiveKitListeners() {
     if (!liveKitRoom) return;
 
-    const RoomEvent = LiveKitLib?.RoomEvent;
+    // ✅ استخدام window.LiveKitLib
+    const RoomEvent = window.LiveKitLib?.RoomEvent;
     if (!RoomEvent) return;
 
     liveKitRoom.on(RoomEvent.ConnectionStateChanged, (state) => {
@@ -6410,6 +6413,16 @@ function setupLiveKitListeners() {
         liveKitParticipants[participant.sid] = participant;
         updateLiveKitParticipantsUI();
         showToast(`👤 ${participant.name || participant.identity} انضم`);
+        
+        if (currentLiveKitMeetingId && currentUser) {
+            db.ref(`meetings/${currentLiveKitMeetingId}/participants/${participant.identity}`).set({
+                name: participant.name || participant.identity,
+                joinedAt: new Date().toISOString(),
+                isHost: false,
+                micEnabled: true,
+                videoEnabled: true
+            });
+        }
     });
 
     liveKitRoom.on(RoomEvent.ParticipantDisconnected, (participant) => {
@@ -6417,6 +6430,10 @@ function setupLiveKitListeners() {
         delete liveKitParticipants[participant.sid];
         updateLiveKitParticipantsUI();
         removeLiveKitParticipantVideo(participant.sid);
+        
+        if (currentLiveKitMeetingId) {
+            db.ref(`meetings/${currentLiveKitMeetingId}/participants/${participant.identity}`).remove();
+        }
     });
 
     liveKitRoom.on(RoomEvent.TrackSubscribed, (track, publication, participant) => {
@@ -6473,7 +6490,7 @@ function displayLiveKitRemoteAudio(participant, track) {
     console.log(`🎤 صوت من: ${participant.name}`);
 }
 
-// ==================== 7. عرض مشاركة الشاشة ====================
+// ==================== displayLiveKitScreenShare - معدلة ====================
 function displayLiveKitScreenShare(track) {
     isScreenSharingLiveKit = true;
     screenShareLiveKitTrack = track;
@@ -6561,7 +6578,7 @@ function updateLiveKitHeaderParticipantsInfo() {
     container.innerHTML = `<span>${count} مشارك</span>`;
 }
 
-// ==================== 12. مغادرة الاجتماع ====================
+// ==================== leaveLiveKitRoom - معدلة ====================
 async function leaveLiveKitRoom() {
     try {
         if (liveKitRoom) {
@@ -9139,11 +9156,80 @@ function roomToggleMic() {
     // ✅ استخدام LiveKit للتحكم في المايك
     toggleLiveKitMic();
 }
+// ==================== toggleLiveKitMic - معدلة ====================
+function toggleLiveKitMic() {
+    if (!liveKitRoom) {
+        showToast('❌ لا يوجد اتصال بالاجتماع');
+        return;
+    }
 
+    const track = liveKitTracks.find(t => t.kind === 'audio');
+    if (!track) {
+        showToast('❌ لا يوجد مايك متصل');
+        return;
+    }
+
+    isMicEnabledLiveKit = !isMicEnabledLiveKit;
+    track.enabled = isMicEnabledLiveKit;
+
+    const micBtn = document.getElementById('roomMicBtn');
+    if (micBtn) {
+        if (isMicEnabledLiveKit) {
+            micBtn.classList.remove('inactive', 'no-device');
+            micBtn.classList.add('active');
+            micBtn.innerHTML = '<i class="fas fa-microphone"></i>';
+            micBtn.style.background = '';
+        } else {
+            micBtn.classList.remove('active');
+            micBtn.classList.add('inactive');
+            micBtn.innerHTML = '<i class="fas fa-microphone-slash"></i>';
+            micBtn.style.background = '#dc3545';
+        }
+    }
+    
+    if (currentLiveKitMeetingId && currentUser) {
+        db.ref(`meetings/${currentLiveKitMeetingId}/participants/${currentUser.uid}/micEnabled`).set(isMicEnabledLiveKit);
+    }
+}
 // ==================== roomToggleVideo - معدلة لاستخدام LiveKit ====================
 function roomToggleVideo() {
     // ✅ استخدام LiveKit للتحكم في الكاميرا
     toggleLiveKitVideo();
+}
+// ==================== toggleLiveKitVideo - معدلة ====================
+function toggleLiveKitVideo() {
+    if (!liveKitRoom) {
+        showToast('❌ لا يوجد اتصال بالاجتماع');
+        return;
+    }
+
+    const track = liveKitTracks.find(t => t.kind === 'video');
+    if (!track) {
+        showToast('❌ لا توجد كاميرا متصلة');
+        return;
+    }
+
+    isVideoEnabledLiveKit = !isVideoEnabledLiveKit;
+    track.enabled = isVideoEnabledLiveKit;
+
+    const videoBtn = document.getElementById('roomVideoBtn');
+    if (videoBtn) {
+        if (isVideoEnabledLiveKit) {
+            videoBtn.classList.remove('inactive', 'no-device');
+            videoBtn.classList.add('active');
+            videoBtn.innerHTML = '<i class="fas fa-video"></i>';
+            videoBtn.style.background = '';
+        } else {
+            videoBtn.classList.remove('active');
+            videoBtn.classList.add('inactive');
+            videoBtn.innerHTML = '<i class="fas fa-video-slash"></i>';
+            videoBtn.style.background = '#dc3545';
+        }
+    }
+    
+    if (currentLiveKitMeetingId && currentUser) {
+        db.ref(`meetings/${currentLiveKitMeetingId}/participants/${currentUser.uid}/videoEnabled`).set(isVideoEnabledLiveKit);
+    }
 }
 // ==================== رفع اليد ====================
 let handRaised = false;
@@ -9361,6 +9447,17 @@ async function roomToggleScreenShare() {
     // ✅ استخدام LiveKit لمشاركة الشاشة
     await toggleLiveKitScreenShare();
 }
+// ==================== stopLiveKitScreenShare - معدلة ====================
+async function stopLiveKitScreenShare() {
+    if (screenShareLiveKitTrack && liveKitRoom) {
+        await liveKitRoom.localParticipant.unpublishTrack(screenShareLiveKitTrack);
+        screenShareLiveKitTrack = null;
+    }
+
+    isScreenSharingLiveKit = false;
+    removeLiveKitScreenShareUI();
+    showToast('🖥️ تم إيقاف مشاركة الشاشة');
+}
 // ==================== toggleLiveKitScreenShare - معدلة ====================
 async function toggleLiveKitScreenShare() {
     if (isScreenSharingLiveKit) {
@@ -9377,8 +9474,9 @@ async function toggleLiveKitScreenShare() {
             audio: false
         });
 
-        const Track = LiveKitLib?.Track;
-        const LocalTrack = LiveKitLib?.LocalTrack;
+        // ✅ استخدام window.LiveKitLib
+        const Track = window.LiveKitLib?.Track;
+        const LocalTrack = window.LiveKitLib?.LocalTrack;
         
         if (!Track || !LocalTrack) {
             throw new Error('LiveKit Track or LocalTrack not available');
