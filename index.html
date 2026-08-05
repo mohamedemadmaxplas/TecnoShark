@@ -5810,7 +5810,31 @@ const faqData = [
 {
     keywords: ["جهاز", "آخر", "مشاركة", "داتا"],
     answer: "يمكنك استخدام النظام على عدة أجهزة مع مزامنة البيانات عبر السحابة. تأكد من تسجيل الدخول بنفس الحساب."
+},
+// أضف هذه العناصر إلى مصفوفة faqData
+{
+    keywords: ["نعم", "yes", "أكيد", "طبعاً", "موافق", "تمام"],
+    answer: "👋 رائع! اكتب سؤالك الجديد وسأجيبك فوراً. (اكتب 'لا' لإنهاء المحادثة)"
+},
+{
+    keywords: ["لا", "no", "كفاية", "انتهيت", "خلاص"],
+    answer: "👋 شكراً لاستخدامك المساعد الذكي! سيتم إنهاء المحادثة الآن. إذا احتجت مساعدة أخرى، يمكنك فتح تذكرة جديدة."
+},
+{
+    keywords: ["مساعدة", "help", "أسئلة", "ممكن اسأل", "استفسار"],
+    answer: "📋 إليك قائمة بالأسئلة التي يمكنني الإجابة عليها:\n\n• ما هو نظام TS POS؟\n• كيف أضيف منتجاً جديداً؟\n• كيف أبيع منتجاً؟\n• كيف أطبع فاتورة؟\n• كيف أضيف عميلاً؟\n• كيف أسجل حضوراً؟\n• كيف أعرف الدين؟\n• كيف أطبع باركود؟\n\n💡 اكتب سؤالك وسأجيبك فوراً."
+},
+// أضف هذه الكلمات المفتاحية الإضافية لتوسيع نطاق الفهم
+
+{
+    keywords: ["شكراً", "شكرا", "thank", "thanks", "ممتاز", "جيد"],
+    answer: "🌹 عفواً! أنا هنا لمساعدتك دائماً. هل لديك أي سؤال آخر؟ اكتب 'نعم' للمتابعة أو 'لا' لإنهاء المحادثة."
+},
+{
+    keywords: ["مرحباً", "السلام", "اهلا", "سلام", "مرحبا", "hello", "hi"],
+    answer: "👋 أهلاً بك! كيف يمكنني مساعدتك اليوم؟ اكتب سؤالك وسأجيبك فوراً."
 }
+
 ];
 
 // =============================================
@@ -6142,6 +6166,7 @@ async function sendBotMessage(ticketId, message) {
 function updateBotStatus(isActive) {
     const statusEl = document.getElementById('ticketBotStatus');
     if (!statusEl) return;
+    
     if (isActive) {
         statusEl.className = 'text-xs bg-blue-500 px-3 py-1 rounded-full text-white';
         statusEl.innerText = '🤖 البوت: مفعل';
@@ -6180,7 +6205,7 @@ async function sendTicketChatMessage() {
 }
 
 // ============================================================
-//  دالة معالجة رد البوت - النسخة المصححة
+//  دالة معالجة رد البوت - النسخة المصححة بالكامل
 // ============================================================
 
 async function handleBotResponse(ticketId, userMessage) {
@@ -6189,22 +6214,67 @@ async function handleBotResponse(ticketId, userMessage) {
         const ticket = snapshot.val();
         if (!ticket || ticket.botActive === false) return;
         
-        // ✅ محاولة البحث عن إجابة في FAQ
+        const message = userMessage.toLowerCase().trim();
+        
+        // ============================================================
+        // ✅ 1. التحقق من "نعم" - متابعة المحادثة
+        // ============================================================
+        if (message === 'نعم' || message === 'yes' || message === 'أكيد' || message === 'طبعاً' || message === 'موافق') {
+            await sendBotMessage(ticketId, '👋 رائع! اكتب سؤالك الجديد وسأجيبك فوراً.');
+            // ✅ إعادة تعيين الخطوة إلى 1 (بداية جديدة)
+            await db.ref(`tickets/${ticketId}/botStep`).set(1);
+            return;
+        }
+        
+        // ============================================================
+        // ✅ 2. التحقق من "لا" - إنهاء المحادثة
+        // ============================================================
+        if (message === 'لا' || message === 'no' || message === 'كفاية' || message === 'انتهيت' || message === 'خلاص') {
+            await sendBotMessage(ticketId, '👋 شكراً لاستخدامك المساعد الذكي! تم إنهاء المحادثة. إذا احتجت مساعدة أخرى، يمكنك فتح تذكرة جديدة.');
+            await db.ref(`tickets/${ticketId}/botActive`).set(false);
+            updateBotStatus(false);
+            return;
+        }
+        
+        // ============================================================
+        // ✅ 3. التحقق من "مساعدة" - عرض القائمة
+        // ============================================================
+        if (message === 'مساعدة' || message === 'help' || message === 'أسئلة' || message === 'استفسار' || message === 'ممكن اسأل') {
+            const helpMessage = `📋 *قائمة الأسئلة المتاحة:*
+
+• ما هو نظام TS POS؟
+• كيف أضيف منتجاً جديداً؟
+• كيف أبيع منتجاً؟
+• كيف أطبع فاتورة؟
+• كيف أضيف عميلاً؟
+• كيف أسجل حضوراً؟
+• كيف أعرف الدين؟
+• كيف أطبع باركود؟
+• كيف أضيف موظفاً؟
+• كيف أسجل مصروفاً؟
+• كيف أطبع تقريراً؟
+
+💡 اكتب أي سؤال وسأجيبك فوراً.`;
+            await sendBotMessage(ticketId, helpMessage);
+            return;
+        }
+        
+        // ============================================================
+        // ✅ 4. البحث عن إجابة في قاعدة البيانات
+        // ============================================================
         const cached = findAnswerInFAQ(userMessage);
         
         if (cached.found) {
-            // ✅ إجابة من المخزن
             await sendBotMessage(ticketId, cached.answer);
-            
             // ✅ اسأل إذا كان لديه سؤال آخر
             await sendBotMessage(ticketId, '📋 هل لديك أي سؤال آخر؟ اكتب "نعم" للمتابعة أو "لا" لإنهاء المحادثة.');
-            
-            // ✅ حفظ الخطوة كـ "سؤال تم الرد عليه"
             await db.ref(`tickets/${ticketId}/botStep`).set(99);
             return;
         }
         
-        // ✅ إذا لم يجد في المخزن، استخدم DeepSeek (إذا كان متاحاً)
+        // ============================================================
+        // ✅ 5. استخدام DeepSeek (إذا كان متاحاً)
+        // ============================================================
         if (typeof askDeepSeek === 'function') {
             await sendBotMessage(ticketId, '⏳ جاري البحث عن إجابة...');
             const aiResponse = await askDeepSeek(userMessage);
@@ -6218,7 +6288,9 @@ async function handleBotResponse(ticketId, userMessage) {
             }
         }
         
-        // ✅ إذا لم توجد إجابة، نطلب إعادة صياغة السؤال
+        // ============================================================
+        // ✅ 6. إذا لم توجد إجابة
+        // ============================================================
         await sendBotMessage(ticketId, '⚠️ عذراً، لم أستطع فهم سؤالك بالكامل.');
         await sendBotMessage(ticketId, '💡 يرجى إعادة صياغة السؤال بشكل أوضح، أو اكتب "مساعدة" للحصول على قائمة بالأسئلة المتاحة.');
         
@@ -7722,17 +7794,7 @@ async function sendTicketChatMessage() {
 
 
 
-function updateBotStatus(isActive) {
-    const statusEl = document.getElementById('ticketBotStatus');
-    if (!statusEl) return;
-    if (isActive) {
-        statusEl.className = 'text-xs bg-blue-500 px-3 py-1 rounded-full text-white';
-        statusEl.innerText = '🤖 البوت: مفعل';
-    } else {
-        statusEl.className = 'text-xs bg-gray-500 px-3 py-1 rounded-full text-white';
-        statusEl.innerText = '🤖 البوت: متوقف';
-    }
-}
+
 
 
 
