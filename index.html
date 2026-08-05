@@ -3412,6 +3412,64 @@
     font-weight: bold;
     z-index: 2;
 }
+
+/* ============================================================
+   إخفاء وإظهار الصفحات - تصحيح ظهور الشات
+   ============================================================ */
+
+/* إخفاء جميع الصفحات بشكل افتراضي */
+.page-content,
+#homePage,
+#loginPage,
+#registerPage,
+#forgotPasswordPage,
+#dashboardPage,
+#aboutPage,
+#myAccountPage,
+#mailPage,
+#ticketsPage,
+#meetingPage,
+#adminPanelPage,
+#meetingsRoomPage,
+#meetingRoomPage,
+#ticketChatPage {
+    display: none !important;
+}
+
+/* إظهار الصفحة النشطة فقط */
+.page-content:not(.hidden),
+#homePage:not(.hidden),
+#loginPage:not(.hidden),
+#registerPage:not(.hidden),
+#forgotPasswordPage:not(.hidden),
+#dashboardPage:not(.hidden),
+#aboutPage:not(.hidden),
+#myAccountPage:not(.hidden),
+#mailPage:not(.hidden),
+#ticketsPage:not(.hidden),
+#meetingPage:not(.hidden),
+#adminPanelPage:not(.hidden),
+#meetingsRoomPage:not(.hidden),
+#meetingRoomPage:not(.hidden),
+#ticketChatPage:not(.hidden) {
+    display: flex !important;
+}
+
+/* تأكد من أن شاشة الشات تظهر بشكل صحيح */
+#ticketChatPage {
+    position: relative;
+    z-index: 10;
+    background: #f8fafc;
+    min-height: 100vh;
+}
+
+/* تأكد من أن صفحة التذاكر تظهر بشكل صحيح */
+#ticketsPage {
+    position: relative;
+    z-index: 5;
+    background: #f8fafc;
+    min-height: 100vh;
+}
     </style>
 </head>
 <body class="bg-gradient-to-br from-blue-50 to-indigo-100 min-h-screen">
@@ -6086,10 +6144,24 @@ function openTicketChat(ticketId) {
         }
     }
 }
+// ============================================================
+//  دالة إغلاق شاشة الشات - مع العودة للتذاكر
+// ============================================================
+
 function closeTicketChat() {
-    currentTicketId = null;
-    isAdminMode = false;
+    // ✅ إلغاء المؤقتات
+    clearTimeout(botInactivityTimer);
+    clearTimeout(botWarningTimer);
+    isChatClosing = false;
+    chatEnded = false;
+    
+    // ✅ إخفاء شاشة الشات
+    hideTicketChat();
+    
+    // ✅ العودة لصفحة التذاكر
     goToTicketsPage();
+    
+    showToast('✅ تم إغلاق الشات');
 }
 
 // ============================================================
@@ -7119,24 +7191,223 @@ async function loadAdminDashboard() {
             });
         }
 
-        function showSpecificPage(pageId) {
-            const pages = ['homePage', 'loginPage', 'registerPage', 'forgotPasswordPage', 'dashboardPage', 'aboutPage', 'myAccountPage', 'mailPage', 'ticketsPage', 'meetingPage', 'adminPanelPage', 'meetingsRoomPage', 'meetingRoomPage'];
-            pages.forEach(page => {
-                const el = document.getElementById(page);
-                if (el) {
-                    el.classList.add('hidden');
-                    el.style.display = 'none';
-                }
-            });
-            
-            const page = document.getElementById(pageId);
-            if (page) {
-                page.classList.remove('hidden');
-                page.style.display = 'flex';
-                return true;
-            }
-            return false;
+    // ============================================================
+//  دالة إظهار صفحة محددة - مع إخفاء صحيح للشات
+// ============================================================
+
+function showSpecificPage(pageId) {
+    // قائمة بجميع الصفحات
+    const pages = [
+        'homePage', 'loginPage', 'registerPage', 'forgotPasswordPage', 
+        'dashboardPage', 'aboutPage', 'myAccountPage', 'mailPage', 
+        'ticketsPage', 'meetingPage', 'adminPanelPage', 'meetingsRoomPage', 
+        'meetingRoomPage', 'ticketChatPage'
+    ];
+    
+    // ✅ إخفاء جميع الصفحات
+    pages.forEach(page => {
+        const el = document.getElementById(page);
+        if (el) {
+            el.classList.add('hidden');
+            el.style.display = 'none';
+            el.style.position = 'static';
+            el.style.zIndex = 'auto';
         }
+    });
+    
+    // ✅ إظهار الصفحة المطلوبة
+    const page = document.getElementById(pageId);
+    if (page) {
+        page.classList.remove('hidden');
+        page.style.display = 'flex';
+        page.style.position = 'relative';
+        page.style.zIndex = '10';
+        
+        // ✅ تأكد من أن صفحة التذاكر تظهر بشكل صحيح
+        if (pageId === 'ticketsPage') {
+            page.style.display = 'block';
+        }
+        
+        return true;
+    }
+    
+    return false;
+}
+
+// ============================================================
+//  دالة عرض الصفحة - مع إخفاء صحيح للشات
+// ============================================================
+
+function showPage(page) {
+    // التحقق من الصلاحية
+    if (appData.currentUser?.role !== 'Admin' && appData.currentUser?.role !== 'manager') {
+        if (!appData.currentUser?.permissions || !appData.currentUser?.permissions.includes(page)) {
+            showToast('ليس لديك صلاحية للوصول إلى هذه الصفحة', 'error');
+            return;
+        }
+    }
+    
+    // ✅ إخفاء جميع الصفحات
+    document.querySelectorAll('.page-content').forEach(p => {
+        p.style.display = 'none';
+        p.classList.add('hidden');
+    });
+    
+    // ✅ إخفاء شاشة الشات بشكل خاص
+    const chatPage = document.getElementById('ticketChatPage');
+    if (chatPage) {
+        chatPage.style.display = 'none';
+        chatPage.classList.add('hidden');
+    }
+    
+    // ✅ تحديث الروابط النشطة
+    document.querySelectorAll('.nav-links a').forEach(a => a.classList.remove('active'));
+    const link = document.querySelector(`.nav-links a[onclick*="${page}"]`);
+    if (link) link.classList.add('active');
+    
+    // ✅ إظهار الصفحة المطلوبة
+    const pageElement = document.getElementById(`${page}Page`);
+    if (pageElement) {
+        pageElement.style.display = 'block';
+        pageElement.classList.remove('hidden');
+        pageElement.style.position = 'relative';
+        pageElement.style.zIndex = '10';
+        
+        // ✅ إذا كانت صفحة التذاكر، تأكد من ظهورها بشكل صحيح
+        if (page === 'tickets') {
+            pageElement.style.display = 'block';
+            // ✅ إعادة تحميل التذاكر
+            if (typeof loadTickets === 'function') {
+                loadTickets();
+            }
+        }
+    } else {
+        console.warn(`⚠️ الصفحة ${page} غير موجودة`);
+        return;
+    }
+    
+    // ✅ تحديث عنوان الصفحة
+    const titles = {
+        'dashboard': 'لوحة التحكم',
+        'pos': 'نقاط البيع',
+        'products': 'المنتجات',
+        'inventory': 'المخزن',
+        'customers': 'العملاء',
+        'suppliers': 'الموردين',
+        'invoices': 'الفواتير',
+        'partialReturns': 'فواتير مرتجعة جزئياً',
+        'returns': 'مرتجعات الفواتير',
+        'reports': 'التقارير',
+        'employees': 'الموظفين',
+        'employeeStats': 'إحصائيات الموظفين',
+        'treasury': 'الخزنة',
+        'expenses': 'المصروفات',
+        'barcode': 'طباعة الباركود',
+        'settings': 'الإعدادات',
+        'activation': 'تفعيل النظام',
+        'copyright': 'حقوق الملكية',
+        'about': 'حول النظام',
+        'contact': 'اتصل بنا',
+        'categories': 'التصنيفات',
+        'repairInvoices': 'فواتير الصيانة',
+        'tickets': 'التذاكر'
+    };
+    
+    const titleEl = document.getElementById('pageTitle');
+    if (titleEl) {
+        titleEl.textContent = titles[page] || page;
+    }
+    
+    appData.currentPage = page;
+    
+    // ✅ استدعاء دوال الصفحات
+    if (page === 'pos') {
+        setTimeout(() => {
+            updatePOSHeader();
+            startPOSClock();
+            renderPOSCategories();
+            renderPOSProducts();
+            posSelectedCategoryId = '';
+            const allBtn = document.querySelector('#posCategoriesFilter .category-filter-btn');
+            if (allBtn) allBtn.click();
+        }, 100);
+    } else if (page === 'inventory') {
+        renderInventory();
+    } else if (page === 'settings') {
+        loadSettings();
+    } else if (page === 'suppliers') {
+        renderSuppliers();
+        loadSuppliersForSelect();
+    } else if (page === 'employeeStats') {
+        showEmployeeStatsPage();
+    } else if (page === 'treasury') {
+        renderTreasuryTransactions();
+    } else if (page === 'expenses') {
+        renderExpenses();
+    } else if (page === 'barcode') {
+        loadProductsForBarcode();
+        setTimeout(function() {
+            generateBarcodePreview();
+            initBarcodePreview();
+        }, 300);
+        updateBarcodeStats();
+    } else if (page === 'activation') {
+        updateActivationPageUI();
+    } else if (page === 'invoices') {
+        renderInvoices();
+    } else if (page === 'returns') {
+        renderReturns();
+    } else if (page === 'partialReturns') {
+        renderPartialReturns();
+    } else if (page === 'dashboard') {
+        updateDashboard();
+    } else if (page === 'categories') {
+        renderCategories();
+        loadCategoriesToSelect();
+    } else if (page === 'products') {
+        renderProductsCategories();
+        renderProductsTable();
+    } else if (page === 'purchaseBarcode') {
+        loadSuppliersForPurchaseBarcode();
+        document.getElementById('purchaseInvoicesList').style.display = 'none';
+        document.getElementById('noInvoicesMessage').style.display = 'none';
+    } else if (page === 'repairInvoices') {
+        renderRepairInvoices();
+    } else if (page === 'tickets') {
+        // ✅ تأكد من إخفاء الشات عند فتح التذاكر
+        const chatPageEl = document.getElementById('ticketChatPage');
+        if (chatPageEl) {
+            chatPageEl.style.display = 'none';
+            chatPageEl.classList.add('hidden');
+        }
+        if (typeof loadTickets === 'function') {
+            loadTickets();
+        }
+    }
+}
+
+// ============================================================
+//  دالة إخفاء شاشة الشات بشكل كامل
+// ============================================================
+
+function hideTicketChat() {
+    const chatPage = document.getElementById('ticketChatPage');
+    if (chatPage) {
+        chatPage.style.display = 'none';
+        chatPage.classList.add('hidden');
+        chatPage.style.position = 'static';
+        chatPage.style.zIndex = 'auto';
+    }
+    
+    // ✅ التأكد من إعادة ظهور الصفحة السابقة
+    if (appData.currentPage) {
+        const pageElement = document.getElementById(`${appData.currentPage}Page`);
+        if (pageElement) {
+            pageElement.style.display = 'block';
+            pageElement.classList.remove('hidden');
+        }
+    }
+}
 
         function goToHomePage() { showSpecificPage('homePage'); updateHomeUI(); }
         function goToHomePageFromSidebar() { closeSidebar(); goToHomePage(); }
@@ -8283,11 +8554,7 @@ let botAnswers = {};
 
 
 
-function closeTicketChat() {
-    currentTicketId = null;
-    isAdminMode = false;
-    goToTicketsPage();
-}
+
 
 
 // =============================================
@@ -12198,16 +12465,37 @@ window.addEventListener('pagehide', function() {
         let currentTicketFilter = 'all';
         let editingTicketId = null;
 
-        function goToTicketsPage() {
-            if (!currentUser) {
-                showToast('❌ الرجاء تسجيل الدخول أولاً');
-                showLoginPage();
-                return;
-            }
-            showSpecificPage('ticketsPage');
-            loadTickets();
-        }
+        // ============================================================
+//  دالة الانتقال لصفحة التذاكر - مع إخفاء الشات
+// ============================================================
 
+function goToTicketsPage() {
+    if (!currentUser) {
+        showToast('❌ الرجاء تسجيل الدخول أولاً');
+        showLoginPage();
+        return;
+    }
+    
+    // ✅ إخفاء شاشة الشات أولاً
+    hideTicketChat();
+    
+    // ✅ إظهار صفحة التذاكر
+    showSpecificPage('ticketsPage');
+    
+    // ✅ تحميل التذاكر
+    if (typeof loadTickets === 'function') {
+        loadTickets();
+    }
+}
+
+// ============================================================
+//  دالة الانتقال للصفحة من السايد بار - مع إخفاء الشات
+// ============================================================
+
+function goToTicketsPageFromSidebar() {
+    closeSidebar();
+    goToTicketsPage();
+}
     function openTicketModal(ticketId = null) {
     if (!currentUser) {
         showToast('❌ الرجاء تسجيل الدخول أولاً');
