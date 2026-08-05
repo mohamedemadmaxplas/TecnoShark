@@ -4373,23 +4373,29 @@
 <div id="ticketChatPage" class="hidden page-container py-8">
     <div class="container mx-auto px-4">
         <div class="bg-white rounded-3xl shadow-xl overflow-hidden">
-            <!-- رأس الشات -->
-            <div class="bg-gradient-to-r from-blue-600 to-indigo-600 p-4 text-white flex justify-between items-center">
-                <div>
-                    <h2 class="text-xl font-bold">
-                        <i class="fas fa-comment-dots ml-2"></i>
-                        <span id="ticketChatTitle">شات التذكرة</span>
-                    </h2>
-                    <p class="text-sm text-blue-100" id="ticketChatClient">العميل: ...</p>
-                </div>
-                <div class="flex items-center gap-3">
-                    <span id="ticketChatStatus" class="text-xs bg-green-500 px-3 py-1 rounded-full">نشط</span>
-                    <span id="ticketBotStatus" class="text-xs bg-blue-500 px-3 py-1 rounded-full">🤖 البوت: مفعل</span>
-                    <button onclick="closeTicketChat()" class="text-white/70 hover:text-white text-sm">
-                        <i class="fas fa-times"></i>
-                    </button>
-                </div>
-            </div>
+           <!-- رأس الشات -->
+<div class="bg-gradient-to-r from-blue-600 to-indigo-600 p-4 text-white flex justify-between items-center">
+    <div>
+        <h2 class="text-xl font-bold">
+            <i class="fas fa-comment-dots ml-2"></i>
+            <span id="ticketChatTitle">شات التذكرة</span>
+        </h2>
+        <p class="text-sm text-blue-100" id="ticketChatClient">العميل: ...</p>
+    </div>
+    <div class="flex items-center gap-3">
+        <span id="ticketChatStatus" class="text-xs bg-green-500 px-3 py-1 rounded-full">نشط</span>
+        <span id="ticketBotStatus" class="text-xs bg-blue-500 px-3 py-1 rounded-full">🤖 البوت: مفعل</span>
+        
+        <!-- ✅ زر حذف التذكرة (جديد) -->
+        <button onclick="startChatClosure()" class="text-white/70 hover:text-white text-sm ml-3" title="إنهاء المحادثة وحذف التذكرة">
+            <i class="fas fa-trash-alt"></i>
+        </button>
+        
+        <button onclick="closeTicketChat()" class="text-white/70 hover:text-white text-sm">
+            <i class="fas fa-times"></i>
+        </button>
+    </div>
+</div>
             
             <!-- معلومات التذكرة (بدون ميتنج) -->
             <div class="bg-gray-50 p-3 border-b flex flex-wrap gap-3 text-sm">
@@ -5843,7 +5849,17 @@ const faqData = [
 
 const DEEPSEEK_API_KEY = 'sk-50426c8bca2a4068bbaee9c919d8f4a4';
 const DEEPSEEK_API_URL = 'https://api.deepseek.com/v1/chat/completions';
+// ============================================================
+//  متغيرات المؤقت والتقييم
+// ============================================================
 
+let botInactivityTimer = null;
+let botWarningTimer = null;
+let botInactivityCount = 0;
+const INACTIVITY_WARNING_TIME = 30000; // 30 ثانية قبل التحذير
+const INACTIVITY_CLOSE_TIME = 60000; // 60 ثانية قبل الإغلاق (دقيقة واحدة)
+let isChatClosing = false;
+let chatEnded = false;
 // =============================================
 //  3. دالة البحث عن الإجابة في المخزن
 // =============================================
@@ -6076,21 +6092,36 @@ function closeTicketChat() {
     goToTicketsPage();
 }
 
+// ============================================================
+//  دالة تحميل بيانات التذكرة - مع المؤقت
+// ============================================================
+
 async function loadTicketChatData(ticketId) {
     try {
         const snapshot = await db.ref(`tickets/${ticketId}`).once('value');
         const ticket = snapshot.val();
-        if (!ticket) { showToast('❌ التذكرة غير موجودة'); return; }
+        if (!ticket) {
+            showToast('❌ التذكرة غير موجودة');
+            return;
+        }
         
+        // تحديث معلومات التذكرة
         document.getElementById('ticketChatTitle').innerText = `شات التذكرة - ${ticket.clientName}`;
         document.getElementById('ticketChatClient').innerText = `العميل: ${ticket.clientName}`;
         document.getElementById('chatTicketNumber').innerText = ticket.ticketNumber || '#';
         document.getElementById('chatTicketPhone').innerText = ticket.phone || '-';
-        document.getElementById('chatTicketStatusText').innerText = ticket.status === 'active' ? 'نشطة' : 'قيد الانتظار';
+        document.getElementById('chatTicketTime').innerText = new Date(ticket.createdAt).toLocaleString('ar-EG');
         
+        // تحديث حالة البوت
         updateBotStatus(ticket.botActive !== false);
+        
+        // تحميل الرسائل
         await loadTicketMessages(ticketId);
         
+        // ✅ بدء المؤقت
+        resetInactivityTimer(ticketId);
+        
+        // ✅ إذا كانت التذكرة جديدة والبوت مفعل، أرسل رسالة ترحيب
         if (ticket.botActive !== false && ticket.botStep === 0) {
             await sendBotMessage(ticketId, '👋 أهلاً بك في دعم TecnoShark!');
             await new Promise(resolve => setTimeout(resolve, 500));
@@ -6099,9 +6130,101 @@ async function loadTicketChatData(ticketId) {
             await sendBotMessage(ticketId, '📌 اكتب سؤالك وسأجيبك فوراً.');
             await db.ref(`tickets/${ticketId}/botStep`).set(1);
         }
+        
     } catch (error) {
         console.error('خطأ في تحميل بيانات التذكرة:', error);
         showToast('❌ خطأ في تحميل بيانات التذكرة');
+    }
+}
+
+// ============================================================
+//  دوال المؤقت (Inactivity Timer)
+// ============================================================
+
+function resetInactivityTimer(ticketId) {
+    // إلغاء المؤقتات السابقة
+    clearTimeout(botInactivityTimer);
+    clearTimeout(botWarningTimer);
+    botInactivityCount = 0;
+    isChatClosing = false;
+    
+    // بدء المؤقت الجديد
+    botInactivityTimer = setTimeout(() => {
+        sendInactivityWarning(ticketId);
+    }, INACTIVITY_WARNING_TIME);
+}
+
+async function sendInactivityWarning(ticketId) {
+    try {
+        // التحقق من وجود رسائل جديدة
+        const snapshot = await db.ref(`tickets/${ticketId}/messages`).once('value');
+        const messages = snapshot.val();
+        
+        if (!messages) {
+            await sendBotMessage(ticketId, '⚠️ تنبيه: لم تقم بإرسال أي رسالة خلال الـ 30 ثانية الماضية.');
+            await sendBotMessage(ticketId, '⏳ سيتم إغلاق المحادثة خلال دقيقة واحدة إذا لم ترسل أي رسالة.');
+            
+            // بدء العد التنازلي للإغلاق
+            botWarningTimer = setTimeout(() => {
+                closeChatDueToInactivity(ticketId);
+            }, INACTIVITY_CLOSE_TIME);
+        }
+    } catch (error) {
+        console.error('خطأ في إرسال تحذير الخمول:', error);
+    }
+}
+
+async function closeChatDueToInactivity(ticketId) {
+    if (isChatClosing || chatEnded) return;
+    isChatClosing = true;
+    
+    try {
+        // ✅ إرسال رسالة إغلاق
+        await sendBotMessage(ticketId, '⏰ انتهت المهلة! سيتم إغلاق المحادثة الآن.');
+        await sendBotMessage(ticketId, '📋 شكراً لتواصلك معنا. إذا احتجت مساعدة، يمكنك فتح تذكرة جديدة.');
+        
+        // ✅ إيقاف البوت
+        await db.ref(`tickets/${ticketId}/botActive`).set(false);
+        await db.ref(`tickets/${ticketId}/status`).set('ended');
+        await db.ref(`tickets/${ticketId}/endedAt`).set(new Date().toISOString());
+        
+        chatEnded = true;
+        updateBotStatus(false);
+        
+        // ✅ عرض نافذة التقييم بعد 2 ثانية
+        setTimeout(() => {
+            showRatingModal(ticketId);
+        }, 2000);
+        
+        // ✅ حذف التذكرة بعد 30 ثانية من التقييم
+        setTimeout(() => {
+            deleteTicketAfterChat(ticketId);
+        }, 30000);
+        
+    } catch (error) {
+        console.error('خطأ في إغلاق المحادثة:', error);
+        showToast('❌ حدث خطأ في إغلاق المحادثة');
+    }
+}
+
+// ============================================================
+//  دالة إعادة ضبط المؤقت عند إرسال رسالة جديدة
+// ============================================================
+
+function resetTimerOnNewMessage() {
+    if (chatEnded) return;
+    
+    // إلغاء المؤقتات الحالية
+    clearTimeout(botInactivityTimer);
+    clearTimeout(botWarningTimer);
+    botInactivityCount = 0;
+    isChatClosing = false;
+    
+    // بدء المؤقت من جديد
+    if (currentTicketId) {
+        botInactivityTimer = setTimeout(() => {
+            sendInactivityWarning(currentTicketId);
+        }, INACTIVITY_WARNING_TIME);
     }
 }
 
@@ -6176,33 +6299,7 @@ function updateBotStatus(isActive) {
     }
 }
 
-async function sendTicketChatMessage() {
-    const input = document.getElementById('ticketChatInput');
-    const message = input.value.trim();
-    if (!message || !currentTicketId) return;
-    input.value = '';
-    
-    const msgData = {
-        senderId: currentUser.uid,
-        senderName: currentUser.name || currentUser.username,
-        message: message,
-        timestamp: new Date().toISOString(),
-        isBot: false,
-        isAdmin: isAdminMode
-    };
-    try {
-        const newRef = db.ref(`tickets/${currentTicketId}/messages`).push();
-        await newRef.set(msgData);
-        await loadTicketMessages(currentTicketId);
-        
-        if (!isAdminMode) {
-            await handleBotResponse(currentTicketId, message);
-        }
-    } catch (error) {
-        console.error('خطأ في إرسال الرسالة:', error);
-        showToast('❌ خطأ في إرسال الرسالة');
-    }
-}
+
 
 // ============================================================
 //  دالة معالجة رد البوت - النسخة المصححة بالكامل
@@ -7758,13 +7855,17 @@ async function askNextQuestion(ticketId) {
 
 
 
-// =============================================
-//  7. إرسال رسالة من المستخدم
-// =============================================
+// ============================================================
+//  دالة إرسال رسالة من المستخدم - مع إعادة ضبط المؤقت
+// ============================================================
+
 async function sendTicketChatMessage() {
     const input = document.getElementById('ticketChatInput');
     const message = input.value.trim();
     if (!message || !currentTicketId) return;
+    
+    // ✅ إعادة ضبط المؤقت عند إرسال رسالة جديدة
+    resetTimerOnNewMessage();
     
     input.value = '';
     
@@ -7782,8 +7883,7 @@ async function sendTicketChatMessage() {
         await newRef.set(msgData);
         await loadTicketMessages(currentTicketId);
         
-        // معالجة رد البوت
-        if (!isAdminMode) {
+        if (!isAdminMode && !chatEnded) {
             await handleBotResponse(currentTicketId, message);
         }
     } catch (error) {
@@ -7792,11 +7892,222 @@ async function sendTicketChatMessage() {
     }
 }
 
+// ============================================================
+//  نافذة تقييم المحادثة (5 نجوم + ملاحظات)
+// ============================================================
+
+function showRatingModal(ticketId) {
+    // إزالة أي نافذة سابقة
+    const existingModal = document.getElementById('ratingModal');
+    if (existingModal) existingModal.remove();
+    
+    let selectedRating = 0;
+    
+    const modalHtml = `
+        <div class="modal-overlay" id="ratingModal" style="display: flex; z-index: 10000;">
+            <div class="modal" style="max-width: 450px; text-align: center;">
+                <div class="modal-header">
+                    <div class="modal-title">
+                        <i class="fas fa-star" style="color: #f59e0b;"></i> 
+                        تقييم المحادثة
+                    </div>
+                    <button class="modal-close" onclick="closeRatingModal()">&times;</button>
+                </div>
+                <div class="modal-body">
+                    <div style="margin-bottom: 20px;">
+                        <p style="color: #64748b; font-size: 14px;">كيف تقيم تجربتك مع خدمة الدعم؟</p>
+                    </div>
+                    
+                    <!-- نجوم التقييم -->
+                    <div style="display: flex; justify-content: center; gap: 10px; margin-bottom: 25px; direction: ltr;">
+                        ${[1, 2, 3, 4, 5].map(i => `
+                            <span class="rating-star" data-value="${i}" 
+                                  style="font-size: 40px; cursor: pointer; color: #d1d5db; transition: all 0.3s ease;"
+                                  onmouseover="this.style.transform='scale(1.2)'"
+                                  onmouseout="this.style.transform='scale(1)'"
+                                  onclick="selectRating(${i})">
+                                ☆
+                            </span>
+                        `).join('')}
+                    </div>
+                    
+                    <!-- نص التقييم -->
+                    <div id="ratingText" style="font-size: 14px; color: #64748b; margin-bottom: 15px;">
+                        اختر عدد النجوم لتقييم الخدمة
+                    </div>
+                    
+                    <!-- ملاحظات -->
+                    <div class="form-group" style="text-align: right;">
+                        <label style="font-weight: 600; color: #1e293b;">📝 ملاحظات إضافية</label>
+                        <textarea id="ratingFeedback" class="form-control" rows="3" 
+                                  placeholder="أكتب أي ملاحظات أو اقتراحات... (اختياري)"
+                                  style="resize: vertical; min-height: 80px;"></textarea>
+                    </div>
+                    
+                    <!-- زر الإرسال -->
+                    <button id="submitRatingBtn" class="btn" style="width: 100%; background: linear-gradient(135deg, #4f46e5, #7c3aed); padding: 12px; font-size: 16px;" disabled>
+                        <i class="fas fa-paper-plane"></i> إرسال التقييم
+                    </button>
+                </div>
+            </div>
+        </div>
+    `;
+    
+    document.body.insertAdjacentHTML('beforeend', modalHtml);
+    
+    // ✅ دوال اختيار النجوم
+    window.selectRating = function(value) {
+        selectedRating = value;
+        
+        // تحديث مظهر النجوم
+        document.querySelectorAll('.rating-star').forEach(star => {
+            const val = parseInt(star.dataset.value);
+            if (val <= value) {
+                star.style.color = '#f59e0b';
+                star.textContent = '★';
+            } else {
+                star.style.color = '#d1d5db';
+                star.textContent = '☆';
+            }
+        });
+        
+        // تحديث النص المعروض
+        const ratingTexts = {
+            1: '😞 سيء جداً',
+            2: '😕 سيء',
+            3: '😐 مقبول',
+            4: '😊 جيد',
+            5: '🌟 ممتاز'
+        };
+        document.getElementById('ratingText').textContent = ratingTexts[value] || 'اختر عدد النجوم';
+        document.getElementById('ratingText').style.color = '#4f46e5';
+        document.getElementById('ratingText').style.fontWeight = 'bold';
+        
+        // تفعيل زر الإرسال
+        document.getElementById('submitRatingBtn').disabled = false;
+    };
+    
+    // ✅ إرسال التقييم
+    document.getElementById('submitRatingBtn').onclick = function() {
+        submitRating(ticketId, selectedRating);
+    };
+}
+
+// ============================================================
+//  دالة إرسال التقييم
+// ============================================================
+
+async function submitRating(ticketId, rating) {
+    const feedback = document.getElementById('ratingFeedback')?.value.trim() || '';
+    
+    // حفظ التقييم في Firebase
+    try {
+        await db.ref(`ratings/${ticketId}`).set({
+            ticketId: ticketId,
+            rating: rating,
+            feedback: feedback,
+            createdAt: new Date().toISOString(),
+            clientName: currentUser?.name || 'مستخدم',
+            clientPhone: document.getElementById('chatTicketPhone')?.textContent || ''
+        });
+        
+        showToast('✅ شكراً لك! تم حفظ تقييمك بنجاح');
+        closeRatingModal();
+        
+        // ✅ حذف التذكرة بعد التقييم مباشرة
+        await deleteTicketAfterChat(ticketId);
+        
+    } catch (error) {
+        console.error('خطأ في حفظ التقييم:', error);
+        showToast('❌ حدث خطأ في حفظ التقييم');
+    }
+}
+
+function closeRatingModal() {
+    const modal = document.getElementById('ratingModal');
+    if (modal) modal.remove();
+}
 
 
+// ============================================================
+//  دالة حذف التذكرة بعد انتهاء المحادثة
+// ============================================================
 
+async function deleteTicketAfterChat(ticketId) {
+    try {
+        // ✅ التحقق من وجود التذكرة
+        const snapshot = await db.ref(`tickets/${ticketId}`).once('value');
+        const ticket = snapshot.val();
+        
+        if (!ticket) {
+            console.log('ℹ️ التذكرة غير موجودة أو تم حذفها مسبقاً');
+            return;
+        }
+        
+        // ✅ حذف التذكرة
+        await db.ref(`tickets/${ticketId}`).remove();
+        
+        console.log(`🗑️ تم حذف التذكرة ${ticketId} بنجاح`);
+        
+        // ✅ تحديث الواجهات
+        if (typeof loadTickets === 'function') {
+            loadTickets();
+        }
+        
+        if (typeof renderTickets === 'function') {
+            renderTickets(currentTickets);
+        }
+        
+        // ✅ إغلاق الشات إذا كان مفتوحاً
+        if (currentTicketId === ticketId) {
+            closeTicketChat();
+        }
+        
+        showToast('🗑️ تم حذف التذكرة بعد انتهاء المحادثة');
+        
+    } catch (error) {
+        console.error('❌ خطأ في حذف التذكرة:', error);
+        // لا نعرض رسالة خطأ للمستخدم حتى لا يزعجه
+    }
+}
 
+// ============================================================
+//  دالة بدء حذف التذكرة يدوياً (اختياري)
+// ============================================================
 
+function startChatClosure(ticketId) {
+    if (!ticketId) ticketId = currentTicketId;
+    if (!ticketId) return;
+    
+    if (confirm('⚠️ هل أنت متأكد من إنهاء هذه المحادثة وحذف التذكرة؟')) {
+        closeChatDueToInactivity(ticketId);
+    }
+}
+
+// ============================================================
+//  دالة إلغاء حذف التذكرة (في حال استمرار المحادثة)
+// ============================================================
+
+function cancelTicketDeletion(ticketId) {
+    if (!ticketId) ticketId = currentTicketId;
+    if (!ticketId) return;
+    
+    // إلغاء المؤقتات
+    clearTimeout(botInactivityTimer);
+    clearTimeout(botWarningTimer);
+    isChatClosing = false;
+    botInactivityCount = 0;
+    
+    // إعادة تعيين حالة التذكرة
+    db.ref(`tickets/${ticketId}/status`).set('active');
+    db.ref(`tickets/${ticketId}/botActive`).set(true);
+    updateBotStatus(true);
+    
+    showToast('✅ تم إلغاء إغلاق المحادثة');
+    
+    // إعادة تشغيل المؤقت
+    resetInactivityTimer(ticketId);
+}
 
 function exitAdminMode() {
     if (isAdminMode) {
