@@ -5839,17 +5839,66 @@ function addNewFAQ(question, answer) {
 
 
 
+// ============================================================
+//  دالة فتح شات التذكرة - المصححة
+// ============================================================
+
 function openTicketChat(ticketId) {
-    if (!ticketId) { showToast('❌ لا يوجد معرف للتذكرة'); return; }
+    if (!ticketId) {
+        showToast('❌ لا يوجد معرف للتذكرة');
+        return;
+    }
+    
+    // ✅ التحقق من وجود صفحة الشات
+    const chatPage = document.getElementById('ticketChatPage');
+    if (!chatPage) {
+        showToast('❌ صفحة الشات غير متاحة');
+        console.warn('⚠️ عنصر ticketChatPage غير موجود');
+        return;
+    }
+    
     currentTicketId = ticketId;
     isAdminMode = false;
-    showSpecificPage('ticketChatPage');
-    document.getElementById('adminModeNotice').classList.add('hidden');
-    document.getElementById('ticketChatInput').disabled = false;
-    document.getElementById('adminToggleBtn').innerHTML = '<i class="fas fa-user-cog"></i> دخول المدير';
-    loadTicketChatData(ticketId);
+    
+    // ✅ إظهار صفحة الشات
+    if (typeof showSpecificPage === 'function') {
+        showSpecificPage('ticketChatPage');
+    } else {
+        // طريقة بديلة لإظهار الصفحة
+        document.querySelectorAll('.page-content').forEach(p => {
+            p.classList.add('hidden');
+            p.style.display = 'none';
+        });
+        chatPage.classList.remove('hidden');
+        chatPage.style.display = 'flex';
+    }
+    
+    // ✅ تحديث واجهة الشات
+    const adminNotice = document.getElementById('adminModeNotice');
+    const chatInput = document.getElementById('ticketChatInput');
+    const adminBtn = document.getElementById('adminToggleBtn');
+    
+    if (adminNotice) adminNotice.classList.add('hidden');
+    if (chatInput) chatInput.disabled = false;
+    if (adminBtn) adminBtn.innerHTML = '<i class="fas fa-user-cog"></i> دخول المدير';
+    
+    // ✅ تحميل بيانات التذكرة
+    if (typeof loadTicketChatData === 'function') {
+        loadTicketChatData(ticketId);
+    } else {
+        console.warn('⚠️ دالة loadTicketChatData غير موجودة');
+        // عرض رسالة ترحيب افتراضية
+        const messagesContainer = document.getElementById('ticketChatMessages');
+        if (messagesContainer) {
+            messagesContainer.innerHTML = `
+                <div class="text-center text-gray-400 py-10">
+                    <i class="fas fa-comment text-4xl mb-3"></i>
+                    <p>مرحباً بك في شات التذكرة</p>
+                </div>
+            `;
+        }
+    }
 }
-
 function closeTicketChat() {
     currentTicketId = null;
     isAdminMode = false;
@@ -11226,12 +11275,34 @@ window.addEventListener('pagehide', function() {
     modal.classList.add('active');
 }
 
-        function closeTicketModal(event) {
-            if (!event || event.target === document.getElementById('ticketModal') || !event) {
-                document.getElementById('ticketModal').classList.remove('active');
-                editingTicketId = null;
-            }
-        }
+       // ============================================================
+//  دالة إغلاق نافذة التذكرة - المصححة
+// ============================================================
+
+function closeTicketModal(event) {
+    // ✅ التحقق من وجود النافذة
+    const modal = document.getElementById('ticketModal');
+    if (!modal) {
+        console.warn('⚠️ نافذة التذكرة غير موجودة');
+        return;
+    }
+    
+    // ✅ إغلاق النافذة
+    modal.classList.remove('active');
+    modal.style.display = 'none';
+    
+    // ✅ تفريغ الحقول
+    const clientNameInput = document.getElementById('ticketClientName');
+    const phoneInput = document.getElementById('ticketPhone');
+    const issueInput = document.getElementById('ticketIssue');
+    
+    if (clientNameInput) clientNameInput.value = '';
+    if (phoneInput) phoneInput.value = '';
+    if (issueInput) issueInput.value = '';
+    
+    // ✅ إعادة تعيين المتغيرات
+    editingTicketId = null;
+}
 
         async function loadTicketForEdit(ticketId) {
             try {
@@ -11253,86 +11324,145 @@ window.addEventListener('pagehide', function() {
             }
         }
 
-      // =============================================
-//  تعديل دالة حفظ التذكرة
-// =============================================
+      // ============================================================
+//  دالة حفظ التذكرة - النسخة المصححة
+// ============================================================
+
 async function saveTicket(event) {
     event.preventDefault();
+    
+    // ✅ التحقق من تسجيل الدخول
     if (!currentUser) {
         showToast('❌ الرجاء تسجيل الدخول أولاً');
         return;
     }
     
-    const clientName = document.getElementById('ticketClientName').value.trim();
-    const phone = document.getElementById('ticketPhone').value.trim();
-    const program = document.getElementById('ticketProgram').value;
-    const issue = document.getElementById('ticketIssue').value.trim();
-    const date = document.getElementById('ticketDate').value;
-    const time = document.getElementById('ticketTime').value;
+    // ✅ الحصول على العناصر مع التحقق من وجودها
+    const clientNameInput = document.getElementById('ticketClientName');
+    const phoneInput = document.getElementById('ticketPhone');
+    const issueInput = document.getElementById('ticketIssue');
     
-    if (!clientName || !phone || !program || !issue) {
+    // ✅ التحقق من وجود العناصر
+    if (!clientNameInput || !phoneInput || !issueInput) {
+        showToast('❌ حدث خطأ في النموذج، يرجى تحديث الصفحة');
+        console.error('❌ عناصر التذكرة غير موجودة:', {
+            clientNameInput: !!clientNameInput,
+            phoneInput: !!phoneInput,
+            issueInput: !!issueInput
+        });
+        return;
+    }
+    
+    // ✅ الحصول على القيم
+    const clientName = clientNameInput.value.trim();
+    const phone = phoneInput.value.trim();
+    const issue = issueInput.value.trim();
+    
+    // ✅ التحقق من صحة البيانات
+    if (!clientName || !phone || !issue) {
         showToast('❌ الرجاء ملء جميع الحقول المطلوبة');
         return;
     }
     
-    const meetingTime = `${date}T${time}`;
+    // ✅ التحقق من رقم الهاتف
+    if (phone.length < 10) {
+        showToast('❌ رقم الهاتف يجب أن يكون 10 أرقام على الأقل');
+        return;
+    }
+    
+    // ✅ إنشاء بيانات التذكرة
     const ticketData = {
         clientName,
         phone,
-        program,
         issue,
-        userId: currentUser.uid,
-        userName: currentUser.name || currentUser.username,
-        meetingTime: new Date(meetingTime).toISOString(),
+        userId: currentUser.uid || currentUser.id || 'unknown',
+        userName: currentUser.name || currentUser.username || 'مستخدم',
         status: 'waiting',
         createdAt: new Date().toISOString(),
-        meetingSettings: {
-            video: document.getElementById('meetingVideo').checked,
-            audio: document.getElementById('meetingAudio').checked,
-            screen: document.getElementById('meetingScreen').checked,
-            chat: document.getElementById('meetingChat').checked
-        },
         ticketNumber: 'TCK-' + Date.now().toString().slice(-6),
-        botActive: true,       // ✅ جديد: تفعيل البوت
-        botStep: 0,           // ✅ جديد: خطوة البوت الحالية
-        botAnswers: {}        // ✅ جديد: إجابات المستخدم
+        botActive: true,
+        botStep: 0,
+        botAnswers: {}
     };
     
     try {
+        // ✅ التحقق من وجود Firebase
+        if (typeof db === 'undefined' || !db) {
+            showToast('❌ قاعدة البيانات غير متاحة');
+            console.error('❌ Firebase غير مهيأ');
+            return;
+        }
+        
+        // ✅ حفظ التذكرة
         const newRef = db.ref('tickets').push();
         await newRef.set(ticketData);
+        
         showToast('✅ تم إنشاء التذكرة بنجاح');
         closeTicketModal();
         loadTickets();
         
-        // ✅ جديد: فتح شات التذكرة مباشرة
-        openTicketChat(newRef.key);
+        // ✅ فتح شات التذكرة إذا كانت الدالة موجودة
+        if (typeof openTicketChat === 'function') {
+            openTicketChat(newRef.key);
+        }
+        
     } catch (error) {
-        console.error('خطأ في حفظ التذكرة:', error);
-        showToast('❌ حدث خطأ في حفظ التذكرة');
+        console.error('❌ خطأ في حفظ التذكرة:', error);
+        showToast('❌ حدث خطأ في حفظ التذكرة: ' + error.message);
     }
 }
 
-     async function loadTickets() {
-    if (!currentUser) return;
+   // ============================================================
+//  دالة تحميل التذاكر - المصححة
+// ============================================================
+
+async function loadTickets() {
+    // ✅ التحقق من تسجيل الدخول
+    if (!currentUser) {
+        console.warn('⚠️ لا يوجد مستخدم مسجل الدخول');
+        return;
+    }
+    
+    // ✅ التحقق من وجود Firebase
+    if (typeof db === 'undefined' || !db) {
+        console.warn('⚠️ قاعدة البيانات غير متاحة');
+        return;
+    }
+    
     try {
         const snapshot = await db.ref('tickets').once('value');
         const allTickets = snapshot.val();
         const ticketsList = [];
+        
         if (allTickets) {
             for (let id in allTickets) {
                 const ticket = allTickets[id];
+                // ✅ عرض التذاكر للمستخدم الحالي أو للمدير
                 if (isAdmin() || ticket.userId === currentUser.uid) {
                     ticketsList.push({ id, ...ticket });
                 }
             }
         }
+        
         currentTickets = ticketsList;
-        renderTickets(currentTickets);
-        updateTicketsCount();
-        checkAndUpdateTicketStatus();
+        
+        // ✅ التحقق من وجود دالة renderTickets
+        if (typeof renderTickets === 'function') {
+            renderTickets(currentTickets);
+        } else {
+            console.warn('⚠️ دالة renderTickets غير موجودة');
+        }
+        
+        if (typeof updateTicketsCount === 'function') {
+            updateTicketsCount();
+        }
+        
+        if (typeof checkAndUpdateTicketStatus === 'function') {
+            checkAndUpdateTicketStatus();
+        }
+        
     } catch (error) {
-        console.error('خطأ في تحميل التذاكر:', error);
+        console.error('❌ خطأ في تحميل التذاكر:', error);
         showToast('❌ خطأ في تحميل التذاكر');
     }
 }
