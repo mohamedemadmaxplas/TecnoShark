@@ -3439,9 +3439,6 @@
                 <a onclick="goToHomePageFromSidebar()" class="sidebar-link flex items-center gap-3 p-3 text-gray-300 hover:text-white cursor-pointer animate-slide-right delay-100">
                     <i class="fas fa-home w-5"></i><span>الرئيسية</span>
                 </a>
-                <a onclick="goToMeetingsRoomFromSidebar()" class="sidebar-link flex items-center gap-3 p-3 text-gray-300 hover:text-white cursor-pointer animate-slide-right delay-150">
-                    <i class="fas fa-video w-5"></i><span>غرفة الاجتماعات</span>
-                </a>
                 <a onclick="goToTicketsPageFromSidebar()" class="sidebar-link flex items-center gap-3 p-3 text-gray-300 hover:text-white cursor-pointer animate-slide-right delay-200">
                     <i class="fas fa-ticket-alt w-5"></i><span>التذاكر</span>
                 </a>
@@ -3522,9 +3519,7 @@
                     <button onclick="showLoginPage()" class="bg-white text-blue-600 px-6 py-3 rounded-full font-bold hover:shadow-lg transition">
                         <i class="fas fa-user-plus ml-2"></i> ابدأ الآن
                     </button>
-                    <button onclick="goToMeetingsRoom()" class="border-2 border-white px-6 py-3 rounded-full font-bold hover:bg-white/10 transition">
-                        <i class="fas fa-video ml-2"></i> غرفة الاجتماعات
-                    </button>
+                    
                     <button onclick="goToTicketsPage()" class="border-2 border-white px-6 py-3 rounded-full font-bold hover:bg-white/10 transition">
                         <i class="fas fa-ticket-alt ml-2"></i> التذاكر
                     </button>
@@ -4172,103 +4167,124 @@
         </div>
     </div>
 
-    <!-- ==================== نافذة إنشاء تذكرة ==================== -->
-    <div id="ticketModal" class="modal-overlay" onclick="closeTicketModal(event)">
-        <div class="modal-content p-6" style="max-width: 500px; width: 95%;" onclick="event.stopPropagation()">
-            <div class="flex justify-between items-center mb-4">
-                <h3 class="text-xl font-bold">
-                    <i class="fas fa-plus-circle text-blue-600 ml-2"></i> 
-                    <span id="ticketModalTitle">تذكرة جديدة</span>
-                </h3>
-                <button onclick="closeTicketModal()" class="text-gray-400 hover:text-gray-600">
-                    <i class="fas fa-times text-xl"></i>
-                </button>
+   <div id="ticketModal" class="modal-overlay" onclick="closeTicketModal(event)">
+    <div class="modal-content p-6" style="max-width: 550px; width: 95%;" onclick="event.stopPropagation()">
+        <div class="flex justify-between items-center mb-4">
+            <h3 class="text-xl font-bold">
+                <i class="fas fa-plus-circle text-blue-600 ml-2"></i> 
+                <span id="ticketModalTitle">تذكرة جديدة</span>
+            </h3>
+            <button onclick="closeTicketModal()" class="text-gray-400 hover:text-gray-600">
+                <i class="fas fa-times text-xl"></i>
+            </button>
+        </div>
+        
+        <form id="ticketForm" onsubmit="saveTicket(event)">
+            <div class="mb-3">
+                <label class="block text-sm font-medium text-gray-700 mb-1">اسم العميل <span class="text-red-500">*</span></label>
+                <input type="text" id="ticketClientName" class="w-full p-2 border rounded-lg focus:ring-2 focus:ring-blue-500" placeholder="أدخل اسم العميل" required>
             </div>
             
-            <form id="ticketForm" onsubmit="saveTicket(event)">
-                <div class="mb-3">
-                    <label class="block text-sm font-medium text-gray-700 mb-1">اسم العميل <span class="text-red-500">*</span></label>
-                    <input type="text" id="ticketClientName" class="w-full p-2 border rounded-lg focus:ring-2 focus:ring-blue-500" placeholder="أدخل اسم العميل" required>
+            <div class="mb-3">
+                <label class="block text-sm font-medium text-gray-700 mb-1">رقم الهاتف <span class="text-red-500">*</span></label>
+                <input type="tel" id="ticketPhone" class="w-full p-2 border rounded-lg focus:ring-2 focus:ring-blue-500" placeholder="مثال: 01123456789" required>
+            </div>
+            
+            <div class="mb-3">
+                <label class="block text-sm font-medium text-gray-700 mb-1">اختر البرنامج <span class="text-red-500">*</span></label>
+                <select id="ticketProgram" class="w-full p-2 border rounded-lg focus:ring-2 focus:ring-blue-500" required>
+                    <option value="">-- جاري تحميل البرامج --</option>
+                </select>
+                <p class="text-xs text-gray-400 mt-1">البرامج مضافه من قبل المدير</p>
+            </div>
+            
+            <div class="mb-3">
+                <label class="block text-sm font-medium text-gray-700 mb-1">وصف المشكلة <span class="text-red-500">*</span></label>
+                <textarea id="ticketIssue" rows="3" class="w-full p-2 border rounded-lg focus:ring-2 focus:ring-blue-500" placeholder="صف المشكلة بالتفصيل" required></textarea>
+            </div>
+            
+            <div class="grid grid-cols-2 gap-3 mb-4">
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-1">التاريخ</label>
+                    <input type="date" id="ticketDate" class="w-full p-2 border rounded-lg bg-gray-50" readonly>
                 </div>
-                
-                <div class="mb-3">
-                    <label class="block text-sm font-medium text-gray-700 mb-1">رقم الهاتف <span class="text-red-500">*</span></label>
-                    <input type="tel" id="ticketPhone" class="w-full p-2 border rounded-lg focus:ring-2 focus:ring-blue-500" placeholder="مثال: 01123456789" required>
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-1">الوقت</label>
+                    <input type="time" id="ticketTime" class="w-full p-2 border rounded-lg bg-gray-50" readonly>
                 </div>
-                
-                <div class="mb-3">
-                    <label class="block text-sm font-medium text-gray-700 mb-1">وصف المشكلة <span class="text-red-500">*</span></label>
-                    <textarea id="ticketIssue" rows="3" class="w-full p-2 border rounded-lg focus:ring-2 focus:ring-blue-500" placeholder="صف المشكلة بالتفصيل" required></textarea>
+            </div>
+            
+            <div class="bg-yellow-50 border border-yellow-200 rounded-lg p-3 mb-4 text-sm text-yellow-800">
+                <i class="fas fa-info-circle ml-2"></i>
+                سيتم تحديد موعد الاجتماع تلقائياً بعد 24 ساعة من الآن
+            </div>
+            
+            <div class="border rounded-lg p-4 mb-4 bg-gray-50">
+                <p class="font-semibold text-sm text-gray-700 mb-3">⚙️ إعدادات الاجتماع</p>
+                <div class="grid grid-cols-2 gap-3">
+                    <label class="flex items-center gap-2 text-sm">
+                        <input type="checkbox" id="meetingVideo" checked> <i class="fas fa-video text-blue-500"></i> كاميرا
+                    </label>
+                    <label class="flex items-center gap-2 text-sm">
+                        <input type="checkbox" id="meetingAudio" checked> <i class="fas fa-microphone text-green-500"></i> مايك
+                    </label>
+                    <label class="flex items-center gap-2 text-sm">
+                        <input type="checkbox" id="meetingScreen" checked> <i class="fas fa-desktop text-purple-500"></i> شير سكرين
+                    </label>
+                    <label class="flex items-center gap-2 text-sm">
+                        <input type="checkbox" id="meetingChat" checked> <i class="fas fa-comment text-yellow-500"></i> شات
+                    </label>
                 </div>
-                
-                <div class="grid grid-cols-2 gap-3 mb-4">
-                    <div>
-                        <label class="block text-sm font-medium text-gray-700 mb-1">التاريخ</label>
-                        <input type="date" id="ticketDate" class="w-full p-2 border rounded-lg bg-gray-50" readonly>
-                    </div>
-                    <div>
-                        <label class="block text-sm font-medium text-gray-700 mb-1">الوقت</label>
-                        <input type="time" id="ticketTime" class="w-full p-2 border rounded-lg bg-gray-50" readonly>
-                    </div>
-                </div>
-                
-                <div class="bg-yellow-50 border border-yellow-200 rounded-lg p-3 mb-4 text-sm text-yellow-800">
-                    <i class="fas fa-info-circle ml-2"></i>
-                    سيتم تحديد موعد الاجتماع تلقائياً بعد 24 ساعة من الآن
-                </div>
-                
-                <div class="border rounded-lg p-4 mb-4 bg-gray-50">
-                    <p class="font-semibold text-sm text-gray-700 mb-3">⚙️ إعدادات الاجتماع</p>
-                    <div class="grid grid-cols-2 gap-3">
-                        <label class="flex items-center gap-2 text-sm">
-                            <input type="checkbox" id="meetingVideo" checked> <i class="fas fa-video text-blue-500"></i> كاميرا
-                        </label>
-                        <label class="flex items-center gap-2 text-sm">
-                            <input type="checkbox" id="meetingAudio" checked> <i class="fas fa-microphone text-green-500"></i> مايك
-                        </label>
-                        <label class="flex items-center gap-2 text-sm">
-                            <input type="checkbox" id="meetingScreen" checked> <i class="fas fa-desktop text-purple-500"></i> شير سكرين
-                        </label>
-                        <label class="flex items-center gap-2 text-sm">
-                            <input type="checkbox" id="meetingChat" checked> <i class="fas fa-comment text-yellow-500"></i> شات
-                        </label>
-                    </div>
-                </div>
-                
-                <button type="submit" class="w-full bg-blue-600 text-white py-2 rounded-lg hover:bg-blue-700 transition font-semibold">
-                    <i class="fas fa-save ml-2"></i> إنشاء التذكرة
-                </button>
-            </form>
-        </div>
+            </div>
+            
+            <button type="submit" class="w-full bg-blue-600 text-white py-2 rounded-lg hover:bg-blue-700 transition font-semibold">
+                <i class="fas fa-save ml-2"></i> إنشاء التذكرة
+            </button>
+        </form>
     </div>
+</div>
 
     <!-- ==================== لوحة المدير ==================== -->
-    <div id="adminPanelPage" class="hidden page-container py-8">
-        <div class="container mx-auto px-4">
-            <div id="adminLockScreen" class="bg-white rounded-3xl shadow-xl p-8 max-w-md mx-auto text-center">
-                <img src="https://i.ibb.co/Fk4jw8pR/4840e6da-a9c5-4858-a78d-8ceb60d1eaaa.png" alt="Logo" class="w-20 h-20 mx-auto mb-4 rounded-full shadow-md">
-                <h2 class="text-2xl font-bold text-gray-800 mb-2">👑 لوحة المدير</h2>
-                <p class="text-gray-500 text-sm mb-6">أدخل كلمة السر للوصول إلى لوحة التحكم</p>
-                <div class="relative">
-                    <input type="password" id="adminPasswordInput" class="w-full p-3 border rounded-lg focus:ring-2 focus:ring-yellow-500" placeholder="أدخل كلمة السر" onkeydown="if(event.key==='Enter') verifyAdminPassword()">
-                    <button onclick="verifyAdminPassword()" class="absolute left-2 top-1/2 -translate-y-1/2 bg-yellow-500 text-white px-4 py-1 rounded-lg hover:bg-yellow-600 transition">
-                        <i class="fas fa-unlock"></i>
-                    </button>
-                </div>
-                <p class="text-xs text-gray-400 mt-3">كلمة السر الافتراضية: <span dir="ltr" class="font-mono">01144</span></p>
+  <div id="adminPanelPage" class="hidden page-container py-8">
+    <div class="container mx-auto px-4">
+        <!-- قفل المدير -->
+        <div id="adminLockScreen" class="bg-white rounded-3xl shadow-xl p-8 max-w-md mx-auto text-center">
+            <img src="https://i.ibb.co/Fk4jw8pR/4840e6da-a9c5-4858-a78d-8ceb60d1eaaa.png" alt="Logo" class="w-20 h-20 mx-auto mb-4 rounded-full shadow-md">
+            <h2 class="text-2xl font-bold text-gray-800 mb-2">👑 لوحة المدير</h2>
+            <p class="text-gray-500 text-sm mb-6">أدخل كلمة السر للوصول إلى لوحة التحكم</p>
+            <div class="relative">
+                <input type="password" id="adminPasswordInput" class="w-full p-3 border rounded-lg focus:ring-2 focus:ring-yellow-500" placeholder="أدخل كلمة السر" onkeydown="if(event.key==='Enter') verifyAdminPassword()">
+                <button onclick="verifyAdminPassword()" class="absolute left-2 top-1/2 -translate-y-1/2 bg-yellow-500 text-white px-4 py-1 rounded-lg hover:bg-yellow-600 transition">
+                    <i class="fas fa-unlock"></i>
+                </button>
+            </div>
+            <p class="text-xs text-gray-400 mt-3">كلمة السر الافتراضية: <span dir="ltr" class="font-mono">01144</span></p>
+        </div>
+        
+        <!-- لوحة المدير -->
+        <div id="adminDashboard" class="hidden">
+            <!-- شريط التبويبات -->
+            <div class="flex flex-wrap gap-2 mb-6 border-b pb-2">
+                <button onclick="adminShowTab('dashboard')" class="admin-tab-btn px-4 py-2 rounded-lg bg-blue-600 text-white text-sm" data-tab="dashboard">
+                    <i class="fas fa-chart-pie ml-1"></i> الإحصائيات
+                </button>
+                <button onclick="adminShowTab('tickets')" class="admin-tab-btn px-4 py-2 rounded-lg bg-gray-200 text-gray-700 hover:bg-gray-300 text-sm" data-tab="tickets">
+                    <i class="fas fa-ticket-alt ml-1"></i> التذاكر
+                </button>
+                <button onclick="adminShowTab('programs')" class="admin-tab-btn px-4 py-2 rounded-lg bg-gray-200 text-gray-700 hover:bg-gray-300 text-sm" data-tab="programs">
+                    <i class="fas fa-code ml-1"></i> إدارة البرامج
+                </button>
+                <button onclick="adminShowTab('users')" class="admin-tab-btn px-4 py-2 rounded-lg bg-gray-200 text-gray-700 hover:bg-gray-300 text-sm" data-tab="users">
+                    <i class="fas fa-users ml-1"></i> المستخدمين
+                </button>
+                <button onclick="logoutAdmin()" class="text-red-500 hover:text-red-700 text-sm mr-auto">
+                    <i class="fas fa-sign-out-alt ml-1"></i> خروج
+                </button>
             </div>
             
-            <div id="adminDashboard" class="hidden">
-                <div class="flex justify-between items-center mb-6 flex-wrap gap-4">
-                    <h2 class="text-2xl font-bold text-gray-800">
-                        <i class="fas fa-crown text-yellow-500 ml-2"></i> لوحة المدير
-                    </h2>
-                    <button onclick="logoutAdmin()" class="text-red-500 hover:text-red-700 text-sm">
-                        <i class="fas fa-sign-out-alt ml-1"></i> خروج من لوحة المدير
-                    </button>
-                </div>
-                
-                <div class="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8">
+            <!-- تبويب الإحصائيات -->
+            <div id="adminTabDashboard" class="admin-tab-content">
+                <div class="grid grid-cols-2 md:grid-cols-5 gap-4 mb-8">
                     <div class="bg-white rounded-2xl p-4 shadow text-center">
                         <i class="fas fa-ticket-alt text-2xl text-blue-500"></i>
                         <p class="text-2xl font-bold" id="adminTotalTickets">0</p>
@@ -4280,29 +4296,185 @@
                         <p class="text-gray-500 text-sm">تذاكر نشطة</p>
                     </div>
                     <div class="bg-white rounded-2xl p-4 shadow text-center">
+                        <i class="fas fa-hourglass-half text-2xl text-orange-500"></i>
+                        <p class="text-2xl font-bold" id="adminWaitingTickets">0</p>
+                        <p class="text-gray-500 text-sm">قيد الانتظار</p>
+                    </div>
+                    <div class="bg-white rounded-2xl p-4 shadow text-center">
                         <i class="fas fa-check-circle text-2xl text-green-500"></i>
                         <p class="text-2xl font-bold" id="adminCompletedTickets">0</p>
                         <p class="text-gray-500 text-sm">تم الحل</p>
                     </div>
                     <div class="bg-white rounded-2xl p-4 shadow text-center">
-                        <i class="fas fa-users text-2xl text-purple-500"></i>
-                        <p class="text-2xl font-bold" id="adminTotalUsers">0</p>
-                        <p class="text-gray-500 text-sm">المستخدمين</p>
+                        <i class="fas fa-code text-2xl text-purple-500"></i>
+                        <p class="text-2xl font-bold" id="adminTotalPrograms">0</p>
+                        <p class="text-gray-500 text-sm">البرامج</p>
                     </div>
                 </div>
                 
+                <div class="bg-white rounded-2xl p-4 shadow">
+                    <h4 class="font-bold mb-3">آخر التذاكر</h4>
+                    <div id="adminRecentTickets" class="divide-y max-h-60 overflow-y-auto"></div>
+                </div>
+            </div>
+            
+            <!-- تبويب التذاكر -->
+            <div id="adminTabTickets" class="admin-tab-content hidden">
                 <div class="bg-white rounded-3xl shadow-xl overflow-hidden">
-                    <div class="p-4 border-b bg-gray-50 flex justify-between items-center">
+                    <div class="p-4 border-b bg-gray-50 flex justify-between items-center flex-wrap gap-2">
                         <h3 class="font-bold"><i class="fas fa-list ml-2"></i> جميع التذاكر</h3>
-                        <button onclick="adminRefreshTickets()" class="text-blue-500 hover:text-blue-700 text-sm">
-                            <i class="fas fa-sync-alt ml-1"></i> تحديث
-                        </button>
+                        <div class="flex gap-2 flex-wrap">
+                            <button onclick="adminFilterTickets('all')" class="admin-filter-btn px-3 py-1 rounded-full text-xs bg-blue-600 text-white" data-filter="all">الكل</button>
+                            <button onclick="adminFilterTickets('waiting')" class="admin-filter-btn px-3 py-1 rounded-full text-xs bg-gray-200 text-gray-700 hover:bg-yellow-100" data-filter="waiting">قيد الانتظار</button>
+                            <button onclick="adminFilterTickets('active')" class="admin-filter-btn px-3 py-1 rounded-full text-xs bg-gray-200 text-gray-700 hover:bg-green-100" data-filter="active">نشطة</button>
+                            <button onclick="adminFilterTickets('ended')" class="admin-filter-btn px-3 py-1 rounded-full text-xs bg-gray-200 text-gray-700 hover:bg-red-100" data-filter="ended">منتهية</button>
+                            <button onclick="adminRefreshTickets()" class="text-blue-500 hover:text-blue-700 text-sm">
+                                <i class="fas fa-sync-alt ml-1"></i>
+                            </button>
+                        </div>
                     </div>
                     <div id="adminTicketsList" class="divide-y max-h-96 overflow-y-auto"></div>
                 </div>
             </div>
+            
+            <!-- تبويب إدارة البرامج -->
+            <div id="adminTabPrograms" class="admin-tab-content hidden">
+                <div class="bg-white rounded-3xl shadow-xl overflow-hidden">
+                    <div class="p-4 border-b bg-gray-50 flex justify-between items-center flex-wrap gap-2">
+                        <h3 class="font-bold"><i class="fas fa-code ml-2"></i> إدارة البرامج والأسئلة</h3>
+                        <button onclick="openAddProgramModal()" class="bg-green-600 text-white px-4 py-2 rounded-lg hover:bg-green-700 transition text-sm">
+                            <i class="fas fa-plus ml-1"></i> إضافة برنامج جديد
+                        </button>
+                    </div>
+                    <div id="adminProgramsList" class="divide-y max-h-96 overflow-y-auto p-4"></div>
+                </div>
+            </div>
+            
+            <!-- تبويب المستخدمين -->
+            <div id="adminTabUsers" class="admin-tab-content hidden">
+                <div class="bg-white rounded-3xl shadow-xl overflow-hidden">
+                    <div class="p-4 border-b bg-gray-50">
+                        <h3 class="font-bold"><i class="fas fa-users ml-2"></i> جميع المستخدمين</h3>
+                    </div>
+                    <div id="adminUsersList" class="divide-y max-h-96 overflow-y-auto"></div>
+                </div>
+            </div>
         </div>
     </div>
+</div>
+
+
+<div id="addProgramModal" class="modal-overlay" onclick="closeAddProgramModal(event)">
+    <div class="modal-content p-6" style="max-width: 550px; width: 95%;" onclick="event.stopPropagation()">
+        <div class="flex justify-between items-center mb-4">
+            <h3 class="text-xl font-bold">
+                <i class="fas fa-plus-circle text-green-600 ml-2"></i> 
+                إضافة برنامج جديد
+            </h3>
+            <button onclick="closeAddProgramModal()" class="text-gray-400 hover:text-gray-600">
+                <i class="fas fa-times text-xl"></i>
+            </button>
+        </div>
+        
+        <form id="addProgramForm" onsubmit="saveProgram(event)">
+            <div class="mb-3">
+                <label class="block text-sm font-medium text-gray-700 mb-1">اسم البرنامج <span class="text-red-500">*</span></label>
+                <input type="text" id="programName" class="w-full p-2 border rounded-lg focus:ring-2 focus:ring-green-500" placeholder="مثال: برنامج المحاسبة" required>
+            </div>
+            
+            <div class="mb-3">
+                <label class="block text-sm font-medium text-gray-700 mb-1">الأسئلة (سؤال في كل سطر) <span class="text-red-500">*</span></label>
+                <textarea id="programQuestions" rows="5" class="w-full p-2 border rounded-lg focus:ring-2 focus:ring-green-500" placeholder="ما هي إصدار البرنامج؟&#10;هل توجد مشكلة في الفواتير؟&#10;متى ظهرت المشكلة؟" required></textarea>
+                <p class="text-xs text-gray-400 mt-1">أدخل سؤالاً واحداً في كل سطر</p>
+            </div>
+            
+            <div class="mb-4">
+                <label class="block text-sm font-medium text-gray-700 mb-1">الإجابات الافتراضية (اختياري)</label>
+                <textarea id="programAnswers" rows="3" class="w-full p-2 border rounded-lg focus:ring-2 focus:ring-green-500" placeholder="الإصدار 3.2&#10;نعم، الفواتير لا تطبع&#10;منذ يومين"></textarea>
+                <p class="text-xs text-gray-400 mt-1">أدخل إجابة واحدة في كل سطر (بنفس ترتيب الأسئلة)</p>
+            </div>
+            
+            <div class="flex gap-3">
+                <button type="submit" class="flex-1 bg-green-600 text-white py-2 rounded-lg hover:bg-green-700 transition font-semibold">
+                    <i class="fas fa-save ml-2"></i> حفظ البرنامج
+                </button>
+                <button type="button" onclick="closeAddProgramModal()" class="px-4 py-2 bg-gray-200 text-gray-700 rounded-lg hover:bg-gray-300 transition">
+                    إلغاء
+                </button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<!-- ============================================ -->
+<!--  4. شاشة شات التذكرة (مع البوت)              -->
+<!-- ============================================ -->
+<div id="ticketChatPage" class="hidden page-container py-8">
+    <div class="container mx-auto px-4">
+        <div class="bg-white rounded-3xl shadow-xl overflow-hidden">
+            <!-- رأس الشات -->
+            <div class="bg-gradient-to-r from-blue-600 to-indigo-600 p-4 text-white flex justify-between items-center">
+                <div>
+                    <h2 class="text-xl font-bold">
+                        <i class="fas fa-comment-dots ml-2"></i>
+                        <span id="ticketChatTitle">شات التذكرة</span>
+                    </h2>
+                    <p class="text-sm text-blue-100" id="ticketChatClient">العميل: ...</p>
+                </div>
+                <div class="flex items-center gap-3">
+                    <span id="ticketChatStatus" class="text-xs bg-green-500 px-3 py-1 rounded-full">نشط</span>
+                    <span id="ticketBotStatus" class="text-xs bg-blue-500 px-3 py-1 rounded-full">البوت: مفعل</span>
+                    <button onclick="closeTicketChat()" class="text-white/70 hover:text-white text-sm">
+                        <i class="fas fa-times"></i>
+                    </button>
+                </div>
+            </div>
+            
+            <!-- معلومات التذكرة -->
+            <div class="bg-gray-50 p-3 border-b flex flex-wrap gap-3 text-sm">
+                <span><i class="fas fa-tag text-blue-500 ml-1"></i> <span id="chatTicketNumber">#</span></span>
+                <span><i class="fas fa-phone text-green-500 ml-1"></i> <span id="chatTicketPhone">-</span></span>
+                <span><i class="fas fa-code text-purple-500 ml-1"></i> <span id="chatTicketProgram">-</span></span>
+                <span><i class="fas fa-clock text-yellow-500 ml-1"></i> <span id="chatTicketTime">-</span></span>
+            </div>
+            
+            <!-- مساحة الرسائل -->
+            <div id="ticketChatMessages" class="p-4 h-96 overflow-y-auto bg-gray-50">
+                <div class="text-center text-gray-400 py-10">
+                    <i class="fas fa-comment text-4xl mb-3"></i>
+                    <p>بدء المحادثة مع البوت...</p>
+                </div>
+            </div>
+            
+            <!-- منطقة الإدخال -->
+            <div class="border-t p-3 bg-white flex gap-2">
+                <input type="text" id="ticketChatInput" class="flex-1 p-2 border rounded-lg focus:ring-2 focus:ring-blue-500" placeholder="اكتب رسالتك..." onkeydown="if(event.key==='Enter') sendTicketChatMessage()">
+                <button onclick="sendTicketChatMessage()" class="bg-blue-600 text-white px-5 py-2 rounded-lg hover:bg-blue-700 transition">
+                    <i class="fas fa-paper-plane"></i>
+                </button>
+                <button onclick="toggleTicketChatAdmin()" id="adminToggleBtn" class="bg-yellow-500 text-white px-4 py-2 rounded-lg hover:bg-yellow-600 transition text-sm">
+                    <i class="fas fa-user-cog"></i> دخول المدير
+                </button>
+            </div>
+            
+            <!-- إشعار المدير -->
+            <div id="adminModeNotice" class="hidden bg-yellow-100 border-t border-yellow-300 p-2 text-center text-sm text-yellow-800">
+                <i class="fas fa-user-shield ml-2"></i>
+                <span id="adminModeText">👑 المدير دخل المحادثة - البوت متوقف</span>
+                <button onclick="exitAdminMode()" class="text-red-500 hover:text-red-700 mr-3 text-xs">
+                    <i class="fas fa-times"></i> خروج من وضع المدير
+                </button>
+            </div>
+        </div>
+        
+        <!-- زر العودة -->
+        <div class="mt-4 text-center">
+            <button onclick="goToTicketsPage()" class="text-blue-600 hover:text-blue-800">
+                <i class="fas fa-arrow-right ml-1"></i> العودة للتذاكر
+            </button>
+        </div>
+    </div>
+</div>
 
     <script>
    
@@ -4391,7 +4563,7 @@ if (LiveKitLib) {
     // عرض رسالة للمستخدم
     var toast = document.getElementById('toast');
     if (toast) {
-        toast.textContent = '⚠️ تعذر تحميل LiveKit. سيتم استخدام وضع الطوارئ.';
+        
         toast.classList.remove('opacity-0');
         toast.classList.add('opacity-100');
         setTimeout(function() {
@@ -5154,16 +5326,37 @@ function closeScreenFullscreen() {
             return currentUser && (currentUser.role === 'admin' || currentUser.isAdmin === true);
         }
 
-        function showAdminPanel() {
-            if (!isAdmin()) {
-                showToast('❌ ليس لديك صلاحيات المدير');
-                return;
-            }
-            showSpecificPage('adminPanelPage');
-            document.getElementById('adminLockScreen').classList.add('hidden');
-            document.getElementById('adminDashboard').classList.remove('hidden');
-            loadAdminDashboard();
-        }
+
+        document.addEventListener('DOMContentLoaded', function() {
+    const ticketModal = document.getElementById('ticketModal');
+    if (ticketModal) {
+        const observer = new MutationObserver(function(mutations) {
+            mutations.forEach(function(mutation) {
+                if (ticketModal.classList.contains('active')) {
+                    loadProgramsSelect();
+                }
+            });
+        });
+        observer.observe(ticketModal, { attributes: true, attributeFilter: ['class'] });
+    }
+});
+
+
+        // =============================================
+//  تعديل دالة عرض لوحة المدير
+// =============================================
+function showAdminPanel() {
+    if (!isAdmin()) {
+        showToast('❌ ليس لديك صلاحيات المدير');
+        return;
+    }
+    showSpecificPage('adminPanelPage');
+    document.getElementById('adminLockScreen').classList.add('hidden');
+    document.getElementById('adminDashboard').classList.remove('hidden');
+    loadAdminDashboard();
+    loadAdminPrograms();    // ✅ جديد: تحميل البرامج
+    loadAdminUsers();       // ✅ جديد: تحميل المستخدمين
+}
 
         function logoutAdmin() {
             if (currentUser) {
@@ -5210,52 +5403,93 @@ function showHomePage() {
     updateHomeUI();
     updateSidebarUI();
 }
-        function verifyAdminPassword() {
-            const input = document.getElementById('adminPasswordInput');
-            const password = input.value.trim();
-            
-            if (password === '01144') {
-                document.getElementById('adminLockScreen').classList.add('hidden');
-                document.getElementById('adminDashboard').classList.remove('hidden');
-                loadAdminDashboard();
-                showToast('👑 مرحباً بك في لوحة المدير');
-            } else {
-                showToast('❌ كلمة السر غير صحيحة');
-                input.value = '';
-                input.focus();
-            }
-        }
+        // =============================================
+//  تعديل دالة التحقق من كلمة سر المدير
+// =============================================
+function verifyAdminPassword() {
+    const input = document.getElementById('adminPasswordInput');
+    const password = input.value.trim();
+    
+    if (password === '01144') {
+        document.getElementById('adminLockScreen').classList.add('hidden');
+        document.getElementById('adminDashboard').classList.remove('hidden');
+        loadAdminDashboard();
+        loadAdminPrograms();      // ✅ جديد: تحميل البرامج
+        loadAdminUsers();         // ✅ جديد: تحميل المستخدمين
+        showToast('👑 مرحباً بك في لوحة المدير');
+    } else {
+        showToast('❌ كلمة السر غير صحيحة');
+        input.value = '';
+        input.focus();
+    }
+}
 
-        async function loadAdminDashboard() {
-            try {
-                const ticketsSnapshot = await db.ref('tickets').once('value');
-                const tickets = ticketsSnapshot.val();
-                let total = 0, active = 0, completed = 0;
+   // =============================================
+//  تعديل دالة تحميل لوحة المدير - إضافة إحصائيات البرامج
+// =============================================
+async function loadAdminDashboard() {
+    try {
+        const ticketsSnapshot = await db.ref('tickets').once('value');
+        const tickets = ticketsSnapshot.val();
+        let total = 0, active = 0, waiting = 0, completed = 0;
+        let recentTickets = [];
+        
+        if (tickets) {
+            for (let id in tickets) {
+                total++;
+                const status = tickets[id].status || 'waiting';
+                if (status === 'active') active++;
+                else if (status === 'waiting') waiting++;
+                else if (status === 'ended') completed++;
                 
-                if (tickets) {
-                    for (let id in tickets) {
-                        total++;
-                        if (tickets[id].status === 'active') active++;
-                        if (tickets[id].status === 'ended') completed++;
-                    }
-                }
-                
-                const usersSnapshot = await db.ref('users').once('value');
-                const users = usersSnapshot.val();
-                const userCount = users ? Object.keys(users).length : 0;
-                
-                document.getElementById('adminTotalTickets').innerText = total;
-                document.getElementById('adminActiveTickets').innerText = active;
-                document.getElementById('adminCompletedTickets').innerText = completed;
-                document.getElementById('adminTotalUsers').innerText = userCount;
-                
-                renderAdminTickets(tickets);
-                
-            } catch (error) {
-                console.error('خطأ في تحميل لوحة المدير:', error);
-                showToast('❌ خطأ في تحميل بيانات المدير');
+                recentTickets.push({ id, ...tickets[id] });
+            }
+            recentTickets.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
+            recentTickets = recentTickets.slice(0, 5);
+        }
+        
+        document.getElementById('adminTotalTickets').innerText = total;
+        document.getElementById('adminActiveTickets').innerText = active;
+        document.getElementById('adminWaitingTickets').innerText = waiting;
+        document.getElementById('adminCompletedTickets').innerText = completed;
+        
+        // ✅ جديد: عدد البرامج
+        const programsSnapshot = await db.ref('programs').once('value');
+        const programs = programsSnapshot.val();
+        document.getElementById('adminTotalPrograms').innerText = programs ? Object.keys(programs).length : 0;
+        
+        // عرض آخر التذاكر
+        const recentContainer = document.getElementById('adminRecentTickets');
+        if (recentContainer) {
+            if (recentTickets.length === 0) {
+                recentContainer.innerHTML = '<div class="text-center py-4 text-gray-400">لا توجد تذاكر</div>';
+            } else {
+                let html = '';
+                recentTickets.forEach(ticket => {
+                    const statusLabels = { active: 'نشطة', waiting: 'قيد الانتظار', ended: 'منتهية' };
+                    const statusColors = { active: 'text-green-600', waiting: 'text-yellow-600', ended: 'text-red-600' };
+                    const status = ticket.status || 'waiting';
+                    html += `
+                        <div class="p-3 flex justify-between items-center hover:bg-gray-50">
+                            <div>
+                                <div class="font-bold">${ticket.clientName}</div>
+                                <div class="text-sm text-gray-500">${ticket.program || 'بدون برنامج'}</div>
+                            </div>
+                            <div class="text-right">
+                                <div class="text-sm ${statusColors[status]}">${statusLabels[status]}</div>
+                                <div class="text-xs text-gray-400">${new Date(ticket.createdAt).toLocaleDateString('ar-EG')}</div>
+                            </div>
+                        </div>
+                    `;
+                });
+                recentContainer.innerHTML = html;
             }
         }
+        
+    } catch (error) {
+        console.error('خطأ في تحميل لوحة المدير:', error);
+    }
+}
 
         function renderAdminTickets(tickets) {
             const container = document.getElementById('adminTicketsList');
@@ -6443,6 +6677,807 @@ async function publishLocalTracksLiveKit() {
         return false;
     }
 }
+
+
+// =============================================
+//  الدوال الجديدة للنظام بالكامل
+// =============================================
+
+// =============================================
+//  1. تحميل البرامج في قائمة التذكرة
+// =============================================
+async function loadProgramsSelect() {
+    const select = document.getElementById('ticketProgram');
+    if (!select) return;
+    
+    try {
+        const snapshot = await db.ref('programs').once('value');
+        const programs = snapshot.val();
+        
+        select.innerHTML = '<option value="">-- اختر البرنامج --</option>';
+        
+        if (programs) {
+            let hasPrograms = false;
+            for (let id in programs) {
+                const program = programs[id];
+                select.innerHTML += `<option value="${program.name}">${program.name}</option>`;
+                hasPrograms = true;
+            }
+            if (!hasPrograms) {
+                select.innerHTML += '<option value="" disabled>لا توجد برامج مضافة</option>';
+            }
+        } else {
+            select.innerHTML += '<option value="" disabled>لا توجد برامج مضافة</option>';
+        }
+    } catch (error) {
+        console.error('خطأ في تحميل البرامج:', error);
+        select.innerHTML = '<option value="">-- خطأ في تحميل البرامج --</option>';
+    }
+}
+
+// =============================================
+//  2. فتح شات التذكرة
+// =============================================
+let currentTicketId = null;
+let isAdminMode = false;
+let botQuestions = [];
+let botCurrentStep = 0;
+let botAnswers = {};
+
+function openTicketChat(ticketId) {
+    if (!ticketId) {
+        showToast('❌ لا يوجد معرف للتذكرة');
+        return;
+    }
+    
+    currentTicketId = ticketId;
+    isAdminMode = false;
+    botCurrentStep = 0;
+    botAnswers = {};
+    
+    showSpecificPage('ticketChatPage');
+    document.getElementById('adminModeNotice').classList.add('hidden');
+    document.getElementById('ticketChatInput').disabled = false;
+    document.getElementById('adminToggleBtn').innerHTML = '<i class="fas fa-user-cog"></i> دخول المدير';
+    
+    loadTicketChatData(ticketId);
+}
+
+function closeTicketChat() {
+    currentTicketId = null;
+    isAdminMode = false;
+    goToTicketsPage();
+}
+
+// =============================================
+//  3. تحميل بيانات التذكرة والشات
+// =============================================
+async function loadTicketChatData(ticketId) {
+    try {
+        const snapshot = await db.ref(`tickets/${ticketId}`).once('value');
+        const ticket = snapshot.val();
+        if (!ticket) {
+            showToast('❌ التذكرة غير موجودة');
+            return;
+        }
+        
+        document.getElementById('ticketChatTitle').innerText = `شات التذكرة - ${ticket.clientName}`;
+        document.getElementById('ticketChatClient').innerText = `العميل: ${ticket.clientName}`;
+        document.getElementById('chatTicketNumber').innerText = ticket.ticketNumber || '#';
+        document.getElementById('chatTicketPhone').innerText = ticket.phone || '-';
+        document.getElementById('chatTicketProgram').innerText = ticket.program || '-';
+        document.getElementById('chatTicketTime').innerText = new Date(ticket.meetingTime).toLocaleString('ar-EG');
+        
+        updateBotStatus(ticket.botActive !== false);
+        await loadTicketMessages(ticketId);
+        
+        if (ticket.botActive !== false && ticket.botStep === 0) {
+            await sendBotMessage(ticketId, '👋 أهلاً بك في دعم TecnoShark!');
+            await new Promise(resolve => setTimeout(resolve, 500));
+            await sendBotMessage(ticketId, `📌 تم اختيار برنامج: ${ticket.program}`);
+            await new Promise(resolve => setTimeout(resolve, 500));
+            await startBotQuestions(ticketId, ticket.program);
+        }
+    } catch (error) {
+        console.error('خطأ في تحميل بيانات التذكرة:', error);
+        showToast('❌ خطأ في تحميل بيانات التذكرة');
+    }
+}
+
+// =============================================
+//  4. تشغيل البوت - الأسئلة من البرنامج
+// =============================================
+async function startBotQuestions(ticketId, programName) {
+    try {
+        const snapshot = await db.ref('programs').once('value');
+        const programs = snapshot.val();
+        
+        let programQuestions = [];
+        let programAnswers = [];
+        
+        if (programs) {
+            for (let id in programs) {
+                if (programs[id].name === programName) {
+                    programQuestions = programs[id].questions || [];
+                    programAnswers = programs[id].answers || [];
+                    break;
+                }
+            }
+        }
+        
+        if (programQuestions.length === 0) {
+            programQuestions = [
+                'ما هي إصدار البرنامج الذي تستخدمه؟',
+                'هل هناك أي رسائل خطأ تظهر؟',
+                'متى بدأت المشكلة بالظهور؟',
+                'هل قمت بتجربة أي حلول؟'
+            ];
+        }
+        
+        botQuestions = programQuestions;
+        botAnswers = {};
+        botCurrentStep = 0;
+        
+        await db.ref(`tickets/${ticketId}/botStep`).set(0);
+        await db.ref(`tickets/${ticketId}/botQuestions`).set(programQuestions);
+        
+        await new Promise(resolve => setTimeout(resolve, 500));
+        await sendBotMessage(ticketId, `📝 سأبدأ بطرح بعض الأسئلة لمساعدتك:`);
+        await new Promise(resolve => setTimeout(resolve, 500));
+        await askNextQuestion(ticketId);
+        
+    } catch (error) {
+        console.error('خطأ في بدء أسئلة البوت:', error);
+        await sendBotMessage(ticketId, '❌ عذراً، حدث خطأ في تحميل الأسئلة. يرجى الانتظار قليلاً.');
+    }
+}
+
+async function askNextQuestion(ticketId) {
+    if (botCurrentStep < botQuestions.length) {
+        const question = botQuestions[botCurrentStep];
+        await sendBotMessage(ticketId, `❓ ${question}`);
+        await db.ref(`tickets/${ticketId}/botStep`).set(botCurrentStep + 1);
+    } else {
+        await sendBotMessage(ticketId, '✅ شكراً لك! تم جمع جميع المعلومات.');
+        await sendBotMessage(ticketId, '📋 سيتم مراجعة بياناتك وسنقوم بالتواصل معك قريباً.');
+        await db.ref(`tickets/${ticketId}/botActive`).set(false);
+        updateBotStatus(false);
+    }
+}
+
+// =============================================
+//  5. إرسال رسالة من البوت
+// =============================================
+async function sendBotMessage(ticketId, message) {
+    const msgData = {
+        senderId: 'bot',
+        senderName: '🤖 البوت',
+        message: message,
+        timestamp: new Date().toISOString(),
+        isBot: true
+    };
+    
+    try {
+        const newRef = db.ref(`tickets/${ticketId}/messages`).push();
+        await newRef.set(msgData);
+        await loadTicketMessages(ticketId);
+    } catch (error) {
+        console.error('خطأ في إرسال رسالة البوت:', error);
+    }
+}
+
+// =============================================
+//  6. تحميل رسائل الشات
+// =============================================
+async function loadTicketMessages(ticketId) {
+    try {
+        const snapshot = await db.ref(`tickets/${ticketId}/messages`).once('value');
+        const messages = snapshot.val();
+        const container = document.getElementById('ticketChatMessages');
+        
+        if (!messages) {
+            container.innerHTML = `
+                <div class="text-center text-gray-400 py-10">
+                    <i class="fas fa-comment text-4xl mb-3"></i>
+                    <p>لا توجد رسائل بعد</p>
+                </div>
+            `;
+            return;
+        }
+        
+        const msgList = [];
+        for (let id in messages) {
+            msgList.push({ id, ...messages[id] });
+        }
+        msgList.sort((a, b) => new Date(a.timestamp) - new Date(b.timestamp));
+        
+        let html = '';
+        msgList.forEach(msg => {
+            const isBot = msg.isBot;
+            const isAdmin = msg.isAdmin;
+            const isSelf = msg.senderId === currentUser?.uid && !isBot && !isAdmin;
+            
+            let senderName = msg.senderName || 'مستخدم';
+            let bgColor = 'bg-gray-100';
+            let textColor = 'text-gray-800';
+            
+            if (isBot) {
+                bgColor = 'bg-blue-100';
+                textColor = 'text-blue-800';
+                senderName = '🤖 البوت';
+            } else if (isAdmin) {
+                bgColor = 'bg-yellow-100';
+                textColor = 'text-yellow-800';
+                senderName = '👑 المدير';
+            } else if (isSelf) {
+                bgColor = 'bg-green-100';
+                textColor = 'text-green-800';
+            }
+            
+            const time = new Date(msg.timestamp).toLocaleTimeString('ar-EG', {hour: '2-digit', minute: '2-digit'});
+            
+            html += `
+                <div class="mb-3 ${isSelf ? 'text-right' : ''}">
+                    <div class="inline-block ${bgColor} rounded-2xl p-3 max-w-[80%] ${isSelf ? 'rounded-br-none' : 'rounded-bl-none'}">
+                        <div class="text-xs font-bold ${textColor}">${senderName}</div>
+                        <div class="text-sm">${msg.message}</div>
+                        <div class="text-xs text-gray-400 mt-1">${time}</div>
+                    </div>
+                </div>
+            `;
+        });
+        
+        container.innerHTML = html;
+        container.scrollTop = container.scrollHeight;
+        
+    } catch (error) {
+        console.error('خطأ في تحميل الرسائل:', error);
+    }
+}
+
+// =============================================
+//  7. إرسال رسالة من المستخدم
+// =============================================
+async function sendTicketChatMessage() {
+    const input = document.getElementById('ticketChatInput');
+    const message = input.value.trim();
+    if (!message || !currentTicketId) return;
+    
+    input.value = '';
+    
+    const msgData = {
+        senderId: currentUser.uid,
+        senderName: currentUser.name || currentUser.username,
+        message: message,
+        timestamp: new Date().toISOString(),
+        isBot: false,
+        isAdmin: isAdminMode
+    };
+    
+    try {
+        const newRef = db.ref(`tickets/${currentTicketId}/messages`).push();
+        await newRef.set(msgData);
+        await loadTicketMessages(currentTicketId);
+        
+        // معالجة رد البوت
+        if (!isAdminMode) {
+            await handleBotResponse(currentTicketId, message);
+        }
+    } catch (error) {
+        console.error('خطأ في إرسال الرسالة:', error);
+        showToast('❌ خطأ في إرسال الرسالة');
+    }
+}
+
+// =============================================
+//  8. معالجة رد البوت على رسالة المستخدم
+// =============================================
+async function handleBotResponse(ticketId, userMessage) {
+    try {
+        const snapshot = await db.ref(`tickets/${ticketId}`).once('value');
+        const ticket = snapshot.val();
+        
+        if (!ticket || ticket.botActive === false) return;
+        
+        const step = ticket.botStep || 0;
+        
+        // حفظ إجابة المستخدم
+        if (step > 0 && step <= botQuestions.length) {
+            const questionIndex = step - 1;
+            const question = botQuestions[questionIndex] || `سؤال ${step}`;
+            botAnswers[question] = userMessage;
+            await db.ref(`tickets/${ticketId}/botAnswers`).set(botAnswers);
+        }
+        
+        // الانتقال للسؤال التالي
+        if (step < botQuestions.length) {
+            await new Promise(resolve => setTimeout(resolve, 500));
+            const nextQuestion = botQuestions[step];
+            await sendBotMessage(ticketId, `❓ ${nextQuestion}`);
+            await db.ref(`tickets/${ticketId}/botStep`).set(step + 1);
+        } else {
+            // انتهت الأسئلة
+            await sendBotMessage(ticketId, '✅ شكراً لك! تم جمع جميع المعلومات.');
+            await sendBotMessage(ticketId, '📋 سيتم مراجعة بياناتك وسنقوم بالتواصل معك قريباً.');
+            await db.ref(`tickets/${ticketId}/botActive`).set(false);
+            updateBotStatus(false);
+        }
+    } catch (error) {
+        console.error('خطأ في معالجة رد البوت:', error);
+    }
+}
+
+// =============================================
+//  9. تحديث حالة البوت في الواجهة
+// =============================================
+function updateBotStatus(isActive) {
+    const statusEl = document.getElementById('ticketBotStatus');
+    if (!statusEl) return;
+    
+    if (isActive) {
+        statusEl.className = 'text-xs bg-blue-500 px-3 py-1 rounded-full text-white';
+        statusEl.innerText = '🤖 البوت: مفعل';
+    } else {
+        statusEl.className = 'text-xs bg-gray-500 px-3 py-1 rounded-full text-white';
+        statusEl.innerText = '🤖 البوت: متوقف';
+    }
+}
+
+// =============================================
+//  10. تبديل وضع المدير في الشات
+// =============================================
+function toggleTicketChatAdmin() {
+    isAdminMode = !isAdminMode;
+    const notice = document.getElementById('adminModeNotice');
+    const btn = document.getElementById('adminToggleBtn');
+    
+    if (isAdminMode) {
+        notice.classList.remove('hidden');
+        btn.innerHTML = '<i class="fas fa-user-cog"></i> خروج المدير';
+        btn.className = 'bg-red-500 text-white px-4 py-2 rounded-lg hover:bg-red-600 transition text-sm';
+        document.getElementById('adminModeText').innerHTML = '👑 المدير دخل المحادثة - البوت متوقف';
+        
+        // إيقاف البوت
+        db.ref(`tickets/${currentTicketId}/botActive`).set(false);
+        updateBotStatus(false);
+        
+        // إرسال رسالة إشعار
+        const msgData = {
+            senderId: 'system',
+            senderName: '📢 النظام',
+            message: '👑 دخل المدير إلى المحادثة. البوت متوقف الآن.',
+            timestamp: new Date().toISOString(),
+            isBot: false,
+            isAdmin: true,
+            isSystem: true
+        };
+        db.ref(`tickets/${currentTicketId}/messages`).push().set(msgData);
+        loadTicketMessages(currentTicketId);
+        
+    } else {
+        notice.classList.add('hidden');
+        btn.innerHTML = '<i class="fas fa-user-cog"></i> دخول المدير';
+        btn.className = 'bg-yellow-500 text-white px-4 py-2 rounded-lg hover:bg-yellow-600 transition text-sm';
+    }
+}
+
+function exitAdminMode() {
+    if (isAdminMode) {
+        toggleTicketChatAdmin();
+    }
+}
+
+// =============================================
+//  11. إدارة البرامج من لوحة المدير
+// =============================================
+function openAddProgramModal() {
+    document.getElementById('programName').value = '';
+    document.getElementById('programQuestions').value = '';
+    document.getElementById('programAnswers').value = '';
+    document.getElementById('addProgramModal').classList.add('active');
+}
+
+function closeAddProgramModal(event) {
+    if (!event || event.target === document.getElementById('addProgramModal') || !event) {
+        document.getElementById('addProgramModal').classList.remove('active');
+    }
+}
+
+async function saveProgram(event) {
+    event.preventDefault();
+    
+    const name = document.getElementById('programName').value.trim();
+    const questionsText = document.getElementById('programQuestions').value.trim();
+    const answersText = document.getElementById('programAnswers').value.trim();
+    
+    if (!name || !questionsText) {
+        showToast('❌ الرجاء إدخال اسم البرنامج والأسئلة');
+        return;
+    }
+    
+    const questions = questionsText.split('\n').filter(q => q.trim());
+    const answers = answersText ? answersText.split('\n').filter(a => a.trim()) : [];
+    
+    if (questions.length === 0) {
+        showToast('❌ الرجاء إدخال سؤال واحد على الأقل');
+        return;
+    }
+    
+    const programData = {
+        name: name,
+        questions: questions,
+        answers: answers,
+        createdAt: new Date().toISOString(),
+        createdBy: currentUser?.uid || 'admin'
+    };
+    
+    try {
+        const newRef = db.ref('programs').push();
+        await newRef.set(programData);
+        showToast('✅ تم إضافة البرنامج بنجاح');
+        closeAddProgramModal();
+        loadAdminPrograms();
+        loadProgramsSelect();
+    } catch (error) {
+        console.error('خطأ في حفظ البرنامج:', error);
+        showToast('❌ حدث خطأ في حفظ البرنامج');
+    }
+}
+
+async function deleteProgram(programId) {
+    if (!confirm('هل أنت متأكد من حذف هذا البرنامج؟')) return;
+    
+    try {
+        await db.ref(`programs/${programId}`).remove();
+        showToast('✅ تم حذف البرنامج');
+        loadAdminPrograms();
+        loadProgramsSelect();
+    } catch (error) {
+        console.error('خطأ في حذف البرنامج:', error);
+        showToast('❌ حدث خطأ في حذف البرنامج');
+    }
+}
+
+async function editProgram(programId) {
+    try {
+        const snapshot = await db.ref(`programs/${programId}`).once('value');
+        const program = snapshot.val();
+        if (!program) {
+            showToast('❌ البرنامج غير موجود');
+            return;
+        }
+        
+        document.getElementById('programName').value = program.name || '';
+        document.getElementById('programQuestions').value = (program.questions || []).join('\n');
+        document.getElementById('programAnswers').value = (program.answers || []).join('\n');
+        
+        // تغيير زر الحفظ لتحديث
+        const form = document.getElementById('addProgramForm');
+        const submitBtn = form.querySelector('button[type="submit"]');
+        submitBtn.innerText = 'تحديث البرنامج';
+        form.onsubmit = function(e) {
+            e.preventDefault();
+            updateProgram(programId);
+        };
+        
+        document.getElementById('addProgramModal').classList.add('active');
+        
+    } catch (error) {
+        console.error('خطأ في تحميل البرنامج للتعديل:', error);
+        showToast('❌ حدث خطأ في تحميل البرنامج');
+    }
+}
+
+async function updateProgram(programId) {
+    const name = document.getElementById('programName').value.trim();
+    const questionsText = document.getElementById('programQuestions').value.trim();
+    const answersText = document.getElementById('programAnswers').value.trim();
+    
+    if (!name || !questionsText) {
+        showToast('❌ الرجاء إدخال اسم البرنامج والأسئلة');
+        return;
+    }
+    
+    const questions = questionsText.split('\n').filter(q => q.trim());
+    const answers = answersText ? answersText.split('\n').filter(a => a.trim()) : [];
+    
+    if (questions.length === 0) {
+        showToast('❌ الرجاء إدخال سؤال واحد على الأقل');
+        return;
+    }
+    
+    const programData = {
+        name: name,
+        questions: questions,
+        answers: answers,
+        updatedAt: new Date().toISOString(),
+        updatedBy: currentUser?.uid || 'admin'
+    };
+    
+    try {
+        await db.ref(`programs/${programId}`).update(programData);
+        showToast('✅ تم تحديث البرنامج بنجاح');
+        closeAddProgramModal();
+        loadAdminPrograms();
+        loadProgramsSelect();
+        
+        // إعادة تعيين النموذج
+        const form = document.getElementById('addProgramForm');
+        form.onsubmit = saveProgram;
+        const submitBtn = form.querySelector('button[type="submit"]');
+        submitBtn.innerText = 'حفظ البرنامج';
+    } catch (error) {
+        console.error('خطأ في تحديث البرنامج:', error);
+        showToast('❌ حدث خطأ في تحديث البرنامج');
+    }
+}
+
+async function loadAdminPrograms() {
+    try {
+        const snapshot = await db.ref('programs').once('value');
+        const programs = snapshot.val();
+        const container = document.getElementById('adminProgramsList');
+        
+        if (!container) return;
+        
+        if (!programs) {
+            container.innerHTML = `
+                <div class="text-center py-8 text-gray-400">
+                    <i class="fas fa-code text-3xl mb-2"></i>
+                    <p>لا توجد برامج مضافة</p>
+                    <button onclick="openAddProgramModal()" class="mt-2 text-blue-500 hover:text-blue-700">
+                        <i class="fas fa-plus ml-1"></i> أضف برنامجاً جديداً
+                    </button>
+                </div>
+            `;
+            return;
+        }
+        
+        let html = '';
+        for (let id in programs) {
+            const program = programs[id];
+            const questionCount = (program.questions || []).length;
+            const answerCount = (program.answers || []).length;
+            
+            html += `
+                <div class="p-4 hover:bg-gray-50 flex justify-between items-center flex-wrap gap-2 border-b">
+                    <div>
+                        <div class="font-bold text-gray-800">${program.name}</div>
+                        <div class="text-sm text-gray-500">
+                            <i class="fas fa-question-circle ml-1"></i> ${questionCount} سؤال
+                            <span class="mx-2">|</span>
+                            <i class="fas fa-check-circle ml-1"></i> ${answerCount} إجابة
+                        </div>
+                        <div class="text-xs text-gray-400">${new Date(program.createdAt).toLocaleDateString('ar-EG')}</div>
+                    </div>
+                    <div class="flex gap-2">
+                        <button onclick="viewProgramQuestions('${id}')" class="text-blue-500 hover:text-blue-700 text-sm">
+                            <i class="fas fa-eye"></i>
+                        </button>
+                        <button onclick="editProgram('${id}')" class="text-green-500 hover:text-green-700 text-sm">
+                            <i class="fas fa-edit"></i>
+                        </button>
+                        <button onclick="deleteProgram('${id}')" class="text-red-500 hover:text-red-700 text-sm">
+                            <i class="fas fa-trash"></i>
+                        </button>
+                    </div>
+                </div>
+            `;
+        }
+        
+        container.innerHTML = html;
+        
+    } catch (error) {
+        console.error('خطأ في تحميل البرامج:', error);
+    }
+}
+
+function viewProgramQuestions(programId) {
+    db.ref(`programs/${programId}`).once('value').then(snapshot => {
+        const program = snapshot.val();
+        if (!program) {
+            showToast('❌ البرنامج غير موجود');
+            return;
+        }
+        
+        const questions = program.questions || [];
+        const answers = program.answers || [];
+        
+        let msg = `📋 أسئلة برنامج ${program.name}:\n\n`;
+        questions.forEach((q, i) => {
+            msg += `${i+1}. ${q}`;
+            if (answers[i]) {
+                msg += `\n   ↳ الإجابة: ${answers[i]}`;
+            }
+            msg += '\n\n';
+        });
+        
+        alert(msg);
+    });
+}
+
+// =============================================
+//  12. دوال لوحة المدير المحسنة
+// =============================================
+let adminCurrentFilter = 'all';
+
+function adminShowTab(tab) {
+    // إخفاء كل المحتويات
+    document.querySelectorAll('.admin-tab-content').forEach(el => {
+        el.classList.add('hidden');
+    });
+    
+    // إظهار التبويب المحدد
+    const content = document.getElementById(`adminTab${tab.charAt(0).toUpperCase() + tab.slice(1)}`);
+    if (content) content.classList.remove('hidden');
+    
+    // تحديث الأزرار
+    document.querySelectorAll('.admin-tab-btn').forEach(btn => {
+        btn.className = 'admin-tab-btn px-4 py-2 rounded-lg bg-gray-200 text-gray-700 hover:bg-gray-300 text-sm';
+    });
+    const activeBtn = document.querySelector(`.admin-tab-btn[data-tab="${tab}"]`);
+    if (activeBtn) {
+        activeBtn.className = 'admin-tab-btn px-4 py-2 rounded-lg bg-blue-600 text-white text-sm';
+    }
+    
+    // تحميل البيانات حسب التبويب
+    if (tab === 'programs') {
+        loadAdminPrograms();
+    } else if (tab === 'users') {
+        loadAdminUsers();
+    } else if (tab === 'tickets') {
+        adminRefreshTickets();
+    } else if (tab === 'dashboard') {
+        loadAdminDashboard();
+    }
+}
+
+function adminFilterTickets(filter) {
+    adminCurrentFilter = filter;
+    document.querySelectorAll('.admin-filter-btn').forEach(btn => {
+        btn.className = 'admin-filter-btn px-3 py-1 rounded-full text-xs bg-gray-200 text-gray-700 hover:bg-gray-300';
+    });
+    const activeBtn = document.querySelector(`.admin-filter-btn[data-filter="${filter}"]`);
+    if (activeBtn) {
+        activeBtn.className = 'admin-filter-btn px-3 py-1 rounded-full text-xs bg-blue-600 text-white';
+    }
+    adminRefreshTickets();
+}
+
+
+
+// =============================================
+//  تعديل دالة تحديث التذاكر في لوحة المدير
+// =============================================
+async function adminRefreshTickets() {
+    try {
+        const snapshot = await db.ref('tickets').once('value');
+        const tickets = snapshot.val();
+        const container = document.getElementById('adminTicketsList');
+        
+        if (!container) return;
+        
+        if (!tickets) {
+            container.innerHTML = '<div class="text-center py-8 text-gray-400">لا توجد تذاكر</div>';
+            return;
+        }
+        
+        let ticketsList = [];
+        for (let id in tickets) {
+            ticketsList.push({ id, ...tickets[id] });
+        }
+        
+        if (adminCurrentFilter !== 'all') {
+            ticketsList = ticketsList.filter(t => (t.status || 'waiting') === adminCurrentFilter);
+        }
+        
+        ticketsList.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
+        
+        if (ticketsList.length === 0) {
+            container.innerHTML = '<div class="text-center py-8 text-gray-400">لا توجد تذاكر في هذا التصنيف</div>';
+            return;
+        }
+        
+        let html = '';
+        ticketsList.forEach(ticket => {
+            const statusLabels = { active: 'نشطة', waiting: 'قيد الانتظار', ended: 'منتهية' };
+            const statusColors = { active: 'status-active', waiting: 'status-waiting', ended: 'status-ended' };
+            const status = ticket.status || 'waiting';
+            
+            html += `
+                <div class="p-4 hover:bg-gray-50 flex justify-between items-center flex-wrap gap-2">
+                    <div>
+                        <div class="font-bold text-gray-800">${ticket.clientName}</div>
+                        <div class="text-sm text-gray-500">${ticket.program || 'بدون برنامج'}</div>
+                        <div class="text-xs text-gray-400">${ticket.ticketNumber || '#'}</div>
+                    </div>
+                    <div class="flex items-center gap-3 flex-wrap">
+                        <span class="status-badge ${statusColors[status]}">${statusLabels[status]}</span>
+                        <!-- ✅ جديد: زر الشات في لوحة المدير -->
+                        <button onclick="openTicketChat('${ticket.id}')" class="text-blue-500 hover:text-blue-700 text-sm">
+                            <i class="fas fa-comment"></i> شات
+                        </button>
+                        <button onclick="deleteTicket('${ticket.id}')" class="text-red-500 hover:text-red-700 text-sm">
+                            <i class="fas fa-trash"></i>
+                        </button>
+                    </div>
+                </div>
+            `;
+        });
+        
+        container.innerHTML = html;
+        
+    } catch (error) {
+        console.error('خطأ في تحميل التذاكر:', error);
+    }
+}
+
+function adminRefreshAll() {
+    loadAdminDashboard();
+    adminRefreshTickets();
+    loadAdminPrograms();
+    loadAdminUsers();
+    showToast('🔄 تم تحديث جميع البيانات');
+}
+
+async function loadAdminUsers() {
+    try {
+        const snapshot = await db.ref('users').once('value');
+        const users = snapshot.val();
+        const container = document.getElementById('adminUsersList');
+        
+        if (!container) return;
+        
+        if (!users) {
+            container.innerHTML = '<div class="text-center py-8 text-gray-400">لا يوجد مستخدمين</div>';
+            return;
+        }
+        
+        let html = '';
+        for (let uid in users) {
+            const user = users[uid];
+            const isAdmin = user.role === 'admin' || user.isAdmin === true;
+            
+            html += `
+                <div class="p-4 hover:bg-gray-50 flex justify-between items-center flex-wrap gap-2 border-b">
+                    <div>
+                        <div class="font-bold text-gray-800">${user.name || 'مستخدم'}</div>
+                        <div class="text-sm text-gray-500">${user.username || user.email || ''}</div>
+                        <div class="text-xs text-gray-400">${user.phone || 'رقم غير مسجل'}</div>
+                    </div>
+                    <div class="flex items-center gap-3">
+                        ${isAdmin ? '<span class="text-xs bg-yellow-100 text-yellow-800 px-2 py-1 rounded-full">👑 مدير</span>' : ''}
+                        <span class="text-xs bg-gray-100 px-2 py-1 rounded-full">${user.plan || 'مجاني'}</span>
+                    </div>
+                </div>
+            `;
+        }
+        
+        container.innerHTML = html;
+        
+    } catch (error) {
+        console.error('خطأ في تحميل المستخدمين:', error);
+    }
+}
+
+// =============================================
+//  13. دالة حذف التذكرة (معدلة)
+// =============================================
+async function deleteTicket(ticketId) {
+    if (!confirm('هل أنت متأكد من حذف هذه التذكرة؟')) return;
+    
+    try {
+        await db.ref(`tickets/${ticketId}`).remove();
+        showToast('✅ تم حذف التذكرة');
+        adminRefreshTickets();
+        loadTickets();
+    } catch (error) {
+        console.error('خطأ في حذف التذكرة:', error);
+        showToast('❌ حدث خطأ في الحذف');
+    }
+}
+
+
 
 // ==================== setupLiveKitListeners - معدلة ====================
 function setupLiveKitListeners() {
@@ -9680,38 +10715,44 @@ window.addEventListener('pagehide', function() {
             loadTickets();
         }
 
-        function openTicketModal(ticketId = null) {
-            if (!currentUser) {
-                showToast('❌ الرجاء تسجيل الدخول أولاً');
-                showLoginPage();
-                return;
-            }
-            
-            editingTicketId = ticketId;
-            const modal = document.getElementById('ticketModal');
-            const title = document.getElementById('ticketModalTitle');
-            
-            const now = new Date();
-            const meetingTime = new Date(now.getTime() + 24 * 60 * 60 * 1000);
-            document.getElementById('ticketDate').value = meetingTime.toISOString().split('T')[0];
-            document.getElementById('ticketTime').value = meetingTime.toTimeString().slice(0, 5);
-            
-            if (ticketId) {
-                title.innerText = 'تعديل التذكرة';
-                loadTicketForEdit(ticketId);
-            } else {
-                title.innerText = 'تذكرة جديدة';
-                document.getElementById('ticketClientName').value = '';
-                document.getElementById('ticketPhone').value = '';
-                document.getElementById('ticketIssue').value = '';
-                document.getElementById('meetingVideo').checked = true;
-                document.getElementById('meetingAudio').checked = true;
-                document.getElementById('meetingScreen').checked = true;
-                document.getElementById('meetingChat').checked = true;
-            }
-            
-            modal.classList.add('active');
-        }
+     // =============================================
+//  دالة فتح نافذة التذكرة - النسخة الكاملة المعدلة
+// =============================================
+function openTicketModal(ticketId = null) {
+    if (!currentUser) {
+        showToast('❌ الرجاء تسجيل الدخول أولاً');
+        showLoginPage();
+        return;
+    }
+    
+    editingTicketId = ticketId;
+    const modal = document.getElementById('ticketModal');
+    const title = document.getElementById('ticketModalTitle');
+    
+    const now = new Date();
+    const meetingTime = new Date(now.getTime() + 24 * 60 * 60 * 1000);
+    document.getElementById('ticketDate').value = meetingTime.toISOString().split('T')[0];
+    document.getElementById('ticketTime').value = meetingTime.toTimeString().slice(0, 5);
+    
+    if (ticketId) {
+        title.innerText = 'تعديل التذكرة';
+        loadTicketForEdit(ticketId);
+    } else {
+        title.innerText = 'تذكرة جديدة';
+        document.getElementById('ticketClientName').value = '';
+        document.getElementById('ticketPhone').value = '';
+        document.getElementById('ticketIssue').value = '';
+        document.getElementById('meetingVideo').checked = true;
+        document.getElementById('meetingAudio').checked = true;
+        document.getElementById('meetingScreen').checked = true;
+        document.getElementById('meetingChat').checked = true;
+        
+        // ✅ تحميل البرامج في القائمة المنسدلة
+        loadProgramsSelect();
+    }
+    
+    modal.classList.add('active');
+}
 
         function closeTicketModal(event) {
             if (!event || event.target === document.getElementById('ticketModal') || !event) {
@@ -9740,190 +10781,199 @@ window.addEventListener('pagehide', function() {
             }
         }
 
-        async function saveTicket(event) {
-            event.preventDefault();
-            if (!currentUser) return;
-            
-            const clientName = document.getElementById('ticketClientName').value.trim();
-            const phone = document.getElementById('ticketPhone').value.trim();
-            const issue = document.getElementById('ticketIssue').value.trim();
-            const date = document.getElementById('ticketDate').value;
-            const time = document.getElementById('ticketTime').value;
-            
-            if (!clientName || !phone || !issue) {
-                showToast('❌ الرجاء ملء جميع الحقول المطلوبة');
-                return;
-            }
-            
-            if (phone.length < 10) {
-                showToast('❌ رقم الهاتف يجب أن يكون 10 أرقام على الأقل');
-                return;
-            }
-            
-            const meetingTime = `${date}T${time}`;
-            const ticketData = {
-                clientName,
-                phone,
-                issue,
-                userId: currentUser.uid,
-                userName: currentUser.name || currentUser.username,
-                meetingTime: new Date(meetingTime).toISOString(),
-                status: 'waiting',
-                createdAt: new Date().toISOString(),
-                meetingSettings: {
-                    video: document.getElementById('meetingVideo').checked,
-                    audio: document.getElementById('meetingAudio').checked,
-                    screen: document.getElementById('meetingScreen').checked,
-                    chat: document.getElementById('meetingChat').checked
-                },
-                ticketNumber: 'TCK-' + Date.now().toString().slice(-6)
-            };
-            
-            try {
-                if (editingTicketId) {
-                    await db.ref(`tickets/${editingTicketId}`).update(ticketData);
-                    showToast('✅ تم تحديث التذكرة بنجاح');
-                } else {
-                    const newRef = db.ref('tickets').push();
-                    await newRef.set(ticketData);
-                    showToast('✅ تم إنشاء التذكرة بنجاح');
-                    
-                    if (isAdmin()) {
-                        showToast('📢 تذكرة جديدة: ' + clientName);
-                    }
-                }
-                
-                closeTicketModal();
-                loadTickets();
-            } catch (error) {
-                console.error('خطأ في حفظ التذكرة:', error);
-                showToast('❌ حدث خطأ في حفظ التذكرة');
-            }
-        }
+      // =============================================
+//  تعديل دالة حفظ التذكرة
+// =============================================
+async function saveTicket(event) {
+    event.preventDefault();
+    if (!currentUser) {
+        showToast('❌ الرجاء تسجيل الدخول أولاً');
+        return;
+    }
+    
+    const clientName = document.getElementById('ticketClientName').value.trim();
+    const phone = document.getElementById('ticketPhone').value.trim();
+    const program = document.getElementById('ticketProgram').value;
+    const issue = document.getElementById('ticketIssue').value.trim();
+    const date = document.getElementById('ticketDate').value;
+    const time = document.getElementById('ticketTime').value;
+    
+    if (!clientName || !phone || !program || !issue) {
+        showToast('❌ الرجاء ملء جميع الحقول المطلوبة');
+        return;
+    }
+    
+    const meetingTime = `${date}T${time}`;
+    const ticketData = {
+        clientName,
+        phone,
+        program,
+        issue,
+        userId: currentUser.uid,
+        userName: currentUser.name || currentUser.username,
+        meetingTime: new Date(meetingTime).toISOString(),
+        status: 'waiting',
+        createdAt: new Date().toISOString(),
+        meetingSettings: {
+            video: document.getElementById('meetingVideo').checked,
+            audio: document.getElementById('meetingAudio').checked,
+            screen: document.getElementById('meetingScreen').checked,
+            chat: document.getElementById('meetingChat').checked
+        },
+        ticketNumber: 'TCK-' + Date.now().toString().slice(-6),
+        botActive: true,       // ✅ جديد: تفعيل البوت
+        botStep: 0,           // ✅ جديد: خطوة البوت الحالية
+        botAnswers: {}        // ✅ جديد: إجابات المستخدم
+    };
+    
+    try {
+        const newRef = db.ref('tickets').push();
+        await newRef.set(ticketData);
+        showToast('✅ تم إنشاء التذكرة بنجاح');
+        closeTicketModal();
+        loadTickets();
+        
+        // ✅ جديد: فتح شات التذكرة مباشرة
+        openTicketChat(newRef.key);
+    } catch (error) {
+        console.error('خطأ في حفظ التذكرة:', error);
+        showToast('❌ حدث خطأ في حفظ التذكرة');
+    }
+}
 
-        async function loadTickets() {
-            if (!currentUser) return;
-            
-            try {
-                const snapshot = await db.ref('tickets').once('value');
-                const allTickets = snapshot.val();
-                const ticketsList = [];
-                
-                if (allTickets) {
-                    for (let id in allTickets) {
-                        const ticket = allTickets[id];
-                        if (isAdmin() || ticket.userId === currentUser.uid) {
-                            ticketsList.push({ id, ...ticket });
-                        }
-                    }
+        // =============================================
+//  تعديل دالة تحميل التذاكر - إضافة زر الشات
+// =============================================
+async function loadTickets() {
+    if (!currentUser) return;
+    
+    try {
+        const snapshot = await db.ref('tickets').once('value');
+        const allTickets = snapshot.val();
+        const ticketsList = [];
+        
+        if (allTickets) {
+            for (let id in allTickets) {
+                const ticket = allTickets[id];
+                if (isAdmin() || ticket.userId === currentUser.uid) {
+                    ticketsList.push({ id, ...ticket });
                 }
-                
-                currentTickets = ticketsList;
-                renderTickets(currentTickets);
-                updateTicketsCount();
-                checkAndUpdateTicketStatus();
-                
-            } catch (error) {
-                console.error('خطأ في تحميل التذاكر:', error);
-                showToast('❌ خطأ في تحميل التذاكر');
             }
         }
+        
+        currentTickets = ticketsList;
+        renderTickets(currentTickets);
+        updateTicketsCount();
+        checkAndUpdateTicketStatus();
+        
+    } catch (error) {
+        console.error('خطأ في تحميل التذاكر:', error);
+        showToast('❌ خطأ في تحميل التذاكر');
+    }
+}
 
-        function renderTickets(tickets) {
-            const container = document.getElementById('ticketsList');
-            const noMessage = document.getElementById('noTicketsMessage');
+        // =============================================
+//  تعديل دالة عرض التذاكر - إضافة زر الشات
+// =============================================
+function renderTickets(tickets) {
+    const container = document.getElementById('ticketsList');
+    const noMessage = document.getElementById('noTicketsMessage');
+    
+    if (!container) return;
+    
+    const filtered = tickets.filter(ticket => {
+        if (currentTicketFilter === 'all') return true;
+        return ticket.status === currentTicketFilter;
+    });
+    
+    if (filtered.length === 0) {
+        container.innerHTML = '';
+        noMessage.classList.remove('hidden');
+        return;
+    }
+    
+    noMessage.classList.add('hidden');
+    
+    container.innerHTML = filtered.map(ticket => {
+        const statusColors = {
+            active: 'status-active',
+            waiting: 'status-waiting',
+            ended: 'status-ended'
+        };
+        const statusLabels = {
+            active: 'نشطة',
+            waiting: 'قيد الانتظار',
+            ended: 'منتهية'
+        };
+        
+        const meetingDate = new Date(ticket.meetingTime);
+        const now = new Date();
+        const timeDiff = meetingDate - now;
+        const isActive = timeDiff <= 0 && ticket.status !== 'ended';
+        const status = isActive ? 'active' : ticket.status;
+        
+        let countdownHtml = '';
+        if (status === 'waiting' || status === 'active') {
+            const diff = status === 'waiting' ? Math.floor(timeDiff / 1000) : Math.floor((now - meetingDate) / 1000);
+            const isUrgent = status === 'active' && diff > 0;
             
-            if (!container) return;
+            let days = Math.floor(diff / 86400);
+            let hours = Math.floor((diff % 86400) / 3600);
+            let minutes = Math.floor((diff % 3600) / 60);
+            let seconds = Math.floor(diff % 60);
             
-            const filtered = tickets.filter(ticket => {
-                if (currentTicketFilter === 'all') return true;
-                return ticket.status === currentTicketFilter;
-            });
-            
-            if (filtered.length === 0) {
-                container.innerHTML = '';
-                noMessage.classList.remove('hidden');
-                return;
+            if (status === 'active') {
+                days = Math.floor(diff / 86400);
+                hours = Math.floor((diff % 86400) / 3600);
+                minutes = Math.floor((diff % 3600) / 60);
+                seconds = Math.floor(diff % 60);
             }
             
-            noMessage.classList.add('hidden');
-            
-            container.innerHTML = filtered.map(ticket => {
-                const statusColors = {
-                    active: 'status-active',
-                    waiting: 'status-waiting',
-                    ended: 'status-ended'
-                };
-                const statusLabels = {
-                    active: 'نشطة',
-                    waiting: 'قيد الانتظار',
-                    ended: 'منتهية'
-                };
-                
-                const meetingDate = new Date(ticket.meetingTime);
-                const now = new Date();
-                const timeDiff = meetingDate - now;
-                const isActive = timeDiff <= 0 && ticket.status !== 'ended';
-                const status = isActive ? 'active' : ticket.status;
-                
-                let countdownHtml = '';
-                if (status === 'waiting' || status === 'active') {
-                    const diff = status === 'waiting' ? Math.floor(timeDiff / 1000) : Math.floor((now - meetingDate) / 1000);
-                    const isUrgent = status === 'active' && diff > 0;
-                    
-                    let days = Math.floor(diff / 86400);
-                    let hours = Math.floor((diff % 86400) / 3600);
-                    let minutes = Math.floor((diff % 3600) / 60);
-                    let seconds = Math.floor(diff % 60);
-                    
-                    if (status === 'active') {
-                        days = Math.floor(diff / 86400);
-                        hours = Math.floor((diff % 86400) / 3600);
-                        minutes = Math.floor((diff % 3600) / 60);
-                        seconds = Math.floor(diff % 60);
-                    }
-                    
-                    const timeStr = `${String(days).padStart(2, '0')}d ${String(hours).padStart(2, '0')}h ${String(minutes).padStart(2, '0')}m ${String(seconds).padStart(2, '0')}s`;
-                    countdownHtml = `
-                        <div class="text-xs text-gray-500 mt-2">
-                            <i class="fas fa-clock ml-1"></i>
-                            <span class="countdown-timer ${isUrgent ? 'urgent' : ''}" data-ticket="${ticket.id}">${timeStr}</span>
-                        </div>
-                    `;
-                }
-                
-                return `
-                    <div class="ticket-card bg-white rounded-2xl p-5 shadow-lg">
-                        <div class="flex justify-between items-start mb-3">
-                            <h3 class="font-bold text-lg">${ticket.clientName}</h3>
-                            <span class="status-badge ${statusColors[status] || statusColors.waiting}">${statusLabels[status] || 'قيد الانتظار'}</span>
-                        </div>
-                        <p class="text-sm text-gray-600 mb-2">📱 ${ticket.phone}</p>
-                        <p class="text-sm text-gray-700 mb-3 line-clamp-2">${ticket.issue}</p>
-                        <div class="flex justify-between items-center text-xs text-gray-400">
-                            <span>🕐 ${new Date(ticket.meetingTime).toLocaleString('ar-EG')}</span>
-                            <span>#${ticket.ticketNumber || 'N/A'}</span>
-                        </div>
-                        ${countdownHtml}
-                        ${status === 'active' ? `
-                            <div class="mt-3">
-                                <button onclick="joinMeetingRoom('${ticket.id}')" class="w-full bg-green-600 text-white py-2 rounded-lg hover:bg-green-700 transition text-sm">
-                                    <i class="fas fa-video ml-1"></i> انضم للاجتماع
-                                </button>
-                            </div>
-                        ` : status === 'waiting' ? `
-                            <div class="mt-3 text-center text-xs text-gray-400">
-                                ⏳ في انتظار الموعد
-                            </div>
-                        ` : `
-                            <div class="mt-3 text-center text-xs text-gray-400">
-                                ✅ تم حل المشكلة
-                            </div>
-                        `}
-                    </div>
-                `;
-            }).join('');
+            const timeStr = `${String(days).padStart(2, '0')}d ${String(hours).padStart(2, '0')}h ${String(minutes).padStart(2, '0')}m ${String(seconds).padStart(2, '0')}s`;
+            countdownHtml = `
+                <div class="text-xs text-gray-500 mt-2">
+                    <i class="fas fa-clock ml-1"></i>
+                    <span class="countdown-timer ${isUrgent ? 'urgent' : ''}" data-ticket="${ticket.id}">${timeStr}</span>
+                </div>
+            `;
         }
+        
+        return `
+            <div class="ticket-card bg-white rounded-2xl p-5 shadow-lg">
+                <div class="flex justify-between items-start mb-3">
+                    <h3 class="font-bold text-lg">${ticket.clientName}</h3>
+                    <span class="status-badge ${statusColors[status] || statusColors.waiting}">${statusLabels[status] || 'قيد الانتظار'}</span>
+                </div>
+                <p class="text-sm text-gray-600 mb-2">📱 ${ticket.phone}</p>
+                <p class="text-sm text-gray-700 mb-3 line-clamp-2">${ticket.issue}</p>
+                <div class="flex justify-between items-center text-xs text-gray-400">
+                    <span>🕐 ${new Date(ticket.meetingTime).toLocaleString('ar-EG')}</span>
+                    <span>#${ticket.ticketNumber || 'N/A'}</span>
+                </div>
+                ${countdownHtml}
+                <div class="mt-3 flex gap-2">
+                    ${status === 'active' ? `
+                        <button onclick="joinMeetingRoom('${ticket.id}')" class="flex-1 bg-green-600 text-white py-2 rounded-lg hover:bg-green-700 transition text-sm">
+                            <i class="fas fa-video ml-1"></i> اجتماع
+                        </button>
+                    ` : status === 'waiting' ? `
+                        <button class="flex-1 bg-gray-300 text-gray-500 py-2 rounded-lg text-sm cursor-not-allowed" disabled>
+                            ⏳ انتظار
+                        </button>
+                    ` : `
+                        <button class="flex-1 bg-gray-300 text-gray-500 py-2 rounded-lg text-sm cursor-not-allowed" disabled>
+                            ✅ منتهية
+                        </button>
+                    `}
+                    <!-- ✅ جديد: زر الشات -->
+                    <button onclick="openTicketChat('${ticket.id}')" class="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition text-sm">
+                        <i class="fas fa-comment"></i> شات
+                    </button>
+                </div>
+            </div>
+        `;
+    }).join('');
+}
 function goToMyAccountPage() {
     showSpecificPage('myAccountPage');
     updateSidebarUI();
