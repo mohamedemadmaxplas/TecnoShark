@@ -4365,18 +4365,23 @@
                 </div>
             </div>
             
-            <!-- تبويب إدارة البرامج -->
-            <div id="adminTabPrograms" class="admin-tab-content hidden">
-                <div class="bg-white rounded-3xl shadow-xl overflow-hidden">
-                    <div class="p-4 border-b bg-gray-50 flex justify-between items-center flex-wrap gap-2">
-                        <h3 class="font-bold"><i class="fas fa-code ml-2"></i> إدارة البرامج والأسئلة</h3>
-                        <button onclick="openAddProgramModal()" class="bg-green-600 text-white px-4 py-2 rounded-lg hover:bg-green-700 transition text-sm">
-                            <i class="fas fa-plus ml-1"></i> إضافة برنامج جديد
-                        </button>
-                    </div>
-                    <div id="adminProgramsList" class="divide-y max-h-96 overflow-y-auto p-4"></div>
-                </div>
-            </div>
+           <!-- تبويب إدارة البرامج -->
+<div id="adminTabPrograms" class="admin-tab-content hidden">
+    <div class="bg-white rounded-3xl shadow-xl overflow-hidden">
+        <div class="p-4 border-b bg-gray-50 flex justify-between items-center flex-wrap gap-2">
+            <h3 class="font-bold">
+                <i class="fas fa-code ml-2 text-green-600"></i> 
+                إدارة البرامج
+            </h3>
+            <button onclick="openAddProgramModal()" class="bg-green-600 text-white px-4 py-2 rounded-lg hover:bg-green-700 transition text-sm">
+                <i class="fas fa-plus ml-1"></i> إضافة برنامج جديد
+            </button>
+        </div>
+        <div id="adminProgramsList" class="divide-y max-h-96 overflow-y-auto p-2">
+            <!-- سيتم عرض البرامج هنا بواسطة JavaScript -->
+        </div>
+    </div>
+</div>
             
             <!-- تبويب المستخدمين -->
             <div id="adminTabUsers" class="admin-tab-content hidden">
@@ -8754,17 +8759,17 @@ async function publishLocalTracksLiveKit() {
 }
 
 
-// =============================================
-//  الدوال الجديدة للنظام بالكامل
-// =============================================
-
 // ============================================================
-//  دالة تحميل البرامج في قائمة الاختيار
+//  دالة تحميل البرامج في قائمة الاختيار (مصلحة)
 // ============================================================
 
 async function loadProgramsSelect() {
     const select = document.getElementById('ticketProgram');
-    if (!select) return;
+    if (!select) {
+        // ✅ إذا لم يكن العنصر موجوداً، ننتظر حتى يتم إنشاؤه
+        setTimeout(() => loadProgramsSelect(), 500);
+        return;
+    }
     
     try {
         const snapshot = await db.ref('programs').once('value');
@@ -9092,14 +9097,118 @@ function exitAdminMode() {
     }
 }
 
-// =============================================
-//  11. إدارة البرامج من لوحة المدير
-// =============================================
+// ============================================================
+//  دالة فتح نافذة إضافة برنامج (مصلحة)
+// ============================================================
+
 function openAddProgramModal() {
-    document.getElementById('programName').value = '';
-    document.getElementById('programQuestions').value = '';
-    document.getElementById('programAnswers').value = '';
-    document.getElementById('addProgramModal').classList.add('active');
+    // ✅ التحقق من وجود العناصر قبل استخدامها
+    const programNameInput = document.getElementById('programName');
+    const programQuestionsInput = document.getElementById('programQuestions');
+    const programAnswersInput = document.getElementById('programAnswers');
+    const modal = document.getElementById('addProgramModal');
+    
+    // ✅ تعيين القيم فقط إذا كانت العناصر موجودة
+    if (programNameInput) programNameInput.value = '';
+    if (programQuestionsInput) programQuestionsInput.value = '';
+    if (programAnswersInput) programAnswersInput.value = '';
+    
+    // ✅ إظهار النافذة
+    if (modal) {
+        modal.classList.add('active');
+        modal.style.display = 'flex';
+    } else {
+        // ✅ إذا لم توجد النافذة، قم بإنشائها ديناميكياً
+        createAddProgramModal();
+    }
+}
+
+// ============================================================
+//  دالة إنشاء نافذة إضافة برنامج (إذا لم تكن موجودة)
+// ============================================================
+
+function createAddProgramModal() {
+    // ✅ التحقق من عدم وجود نافذة مكررة
+    const existingModal = document.getElementById('addProgramModal');
+    if (existingModal) {
+        existingModal.classList.add('active');
+        existingModal.style.display = 'flex';
+        return;
+    }
+    
+    // ✅ إنشاء النافذة
+    const modalHtml = `
+        <div id="addProgramModal" class="modal-overlay" onclick="closeAddProgramModal(event)">
+            <div class="modal-content p-6" style="max-width: 450px; width: 95%;" onclick="event.stopPropagation()">
+                <div class="flex justify-between items-center mb-4">
+                    <h3 class="text-xl font-bold">
+                        <i class="fas fa-plus-circle text-green-600 ml-2"></i> 
+                        إضافة برنامج جديد
+                    </h3>
+                    <button onclick="closeAddProgramModal()" class="text-gray-400 hover:text-gray-600">
+                        <i class="fas fa-times text-xl"></i>
+                    </button>
+                </div>
+                
+                <form id="addProgramForm" onsubmit="saveProgram(event)">
+                    <div class="mb-4">
+                        <label class="block text-sm font-medium text-gray-700 mb-1">
+                            <i class="fas fa-tag text-blue-500 ml-1"></i> اسم البرنامج <span class="text-red-500">*</span>
+                        </label>
+                        <input type="text" id="programName" 
+                               class="w-full p-3 border rounded-lg focus:ring-2 focus:ring-green-500 text-lg" 
+                               placeholder="مثال: TS محاسبة" 
+                               required>
+                        <p class="text-xs text-gray-400 mt-1">سيتم إنشاء أسئلة افتراضية تلقائياً لهذا البرنامج</p>
+                    </div>
+                    
+                    <div class="bg-blue-50 rounded-lg p-3 mb-4 text-sm text-blue-700">
+                        <i class="fas fa-info-circle ml-1"></i>
+                        سيتم إنشاء الأسئلة التالية تلقائياً:
+                        <ul class="list-disc pr-5 mt-2 text-xs text-gray-600">
+                            <li>ما هي إصدار برنامج [الاسم] الذي تستخدمه؟</li>
+                            <li>متى بدأت المشكلة بالظهور؟</li>
+                            <li>هل هناك أي رسائل خطأ تظهر؟</li>
+                            <li>هل قمت بتجربة أي حلول؟</li>
+                        </ul>
+                    </div>
+                    
+                    <button type="submit" class="w-full bg-green-600 text-white py-3 rounded-lg hover:bg-green-700 transition font-semibold text-lg">
+                        <i class="fas fa-save ml-2"></i> إضافة البرنامج
+                    </button>
+                </form>
+            </div>
+        </div>
+    `;
+    
+    document.body.insertAdjacentHTML('beforeend', modalHtml);
+    
+    // ✅ إظهار النافذة
+    const modal = document.getElementById('addProgramModal');
+    if (modal) {
+        modal.classList.add('active');
+        modal.style.display = 'flex';
+    }
+}
+
+// ============================================================
+//  دالة إغلاق نافذة إضافة برنامج (مصلحة)
+// ============================================================
+
+function closeAddProgramModal(event) {
+    // ✅ إذا كان هناك حدث، نتحقق من عدم النقر خارج النافذة
+    if (event && event.target && event.target.id !== 'addProgramModal') {
+        // إذا كان النقر على عنصر آخر غير النافذة، لا نغلق
+        if (event.target.closest && !event.target.closest('.modal-content')) {
+            return;
+        }
+    }
+    
+    const modal = document.getElementById('addProgramModal');
+    if (modal) {
+        modal.classList.remove('active');
+        modal.style.display = 'none';
+    }
 }
 
 function closeAddProgramModal(event) {
@@ -9109,13 +9218,20 @@ function closeAddProgramModal(event) {
 }
 
 // ============================================================
-//  دالة حفظ برنامج جديد (اسم فقط - مع أسئلة افتراضية)
+//  دالة حفظ برنامج جديد (مصلحة)
 // ============================================================
 
 async function saveProgram(event) {
     event.preventDefault();
     
-    const name = document.getElementById('programName').value.trim();
+    // ✅ التحقق من وجود العنصر
+    const nameInput = document.getElementById('programName');
+    if (!nameInput) {
+        showToast('❌ حدث خطأ في النموذج، يرجى تحديث الصفحة');
+        return;
+    }
+    
+    const name = nameInput.value.trim();
     
     if (!name) {
         showToast('❌ الرجاء إدخال اسم البرنامج');
@@ -9123,10 +9239,20 @@ async function saveProgram(event) {
     }
     
     // ✅ التحقق من عدم وجود برنامج بنفس الاسم
-    const existing = appData.programsList?.find(p => p.name === name);
-    if (existing) {
-        showToast('❌ هذا البرنامج موجود بالفعل');
-        return;
+    try {
+        const snapshot = await db.ref('programs').once('value');
+        const programs = snapshot.val();
+        
+        if (programs) {
+            for (let id in programs) {
+                if (programs[id].name === name) {
+                    showToast('❌ هذا البرنامج موجود بالفعل');
+                    return;
+                }
+            }
+        }
+    } catch (error) {
+        console.error('❌ خطأ في التحقق من البرنامج:', error);
     }
     
     // ✅ إنشاء أسئلة افتراضية تلقائياً
@@ -9150,24 +9276,23 @@ async function saveProgram(event) {
         answers: defaultAnswers,
         createdAt: new Date().toISOString(),
         createdBy: currentUser?.uid || 'admin',
-        autoGenerated: true  // ✅ علامة لتحديد أنه تم إنشاؤه تلقائياً
+        autoGenerated: true
     };
     
     try {
         const newRef = db.ref('programs').push();
         await newRef.set(programData);
         
-        // ✅ تحديث القائمة المحلية
-        if (!appData.programsList) appData.programsList = [];
-        appData.programsList.push(programData);
-        
-        showToast(`✅ تم إضافة برنامج "${name}" بنجاح مع أسئلة افتراضية`);
+        showToast(`✅ تم إضافة برنامج "${name}" بنجاح`);
         closeAddProgramModal();
+        
+        // ✅ تحديث القوائم
         loadAdminPrograms();
         loadProgramsSelect();
         
         // ✅ إعادة تعيين النموذج
-        document.getElementById('programName').value = '';
+        const nameInputField = document.getElementById('programName');
+        if (nameInputField) nameInputField.value = '';
         
     } catch (error) {
         console.error('❌ خطأ في حفظ البرنامج:', error);
@@ -9292,16 +9417,31 @@ async function updateProgram(programId) {
 }
 
 // ============================================================
-//  دالة عرض البرامج في لوحة المدير (مبسطة)
+//  دالة عرض البرامج في لوحة المدير (مصلحة)
 // ============================================================
 
 async function loadAdminPrograms() {
     try {
+        // ✅ التحقق من وجود الحاوية
+        let container = document.getElementById('adminProgramsList');
+        
+        // ✅ إذا لم توجد الحاوية، قم بإنشائها
+        if (!container) {
+            const tabContent = document.getElementById('adminTabPrograms');
+            if (tabContent) {
+                const wrapper = document.createElement('div');
+                wrapper.id = 'adminProgramsList';
+                wrapper.className = 'divide-y max-h-96 overflow-y-auto p-2';
+                tabContent.appendChild(wrapper);
+                container = wrapper;
+            } else {
+                console.warn('⚠️ adminTabPrograms غير موجود');
+                return;
+            }
+        }
+        
         const snapshot = await db.ref('programs').once('value');
         const programs = snapshot.val();
-        const container = document.getElementById('adminProgramsList');
-        
-        if (!container) return;
         
         if (!programs) {
             container.innerHTML = `
