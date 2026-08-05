@@ -4167,7 +4167,10 @@
         </div>
     </div>
 
-   <div id="ticketModal" class="modal-overlay" onclick="closeTicketModal(event)">
+ <!-- ============================================ -->
+<!--  1. نافذة إنشاء تذكرة جديدة (بدون ميتنج)    -->
+<!-- ============================================ -->
+<div id="ticketModal" class="modal-overlay" onclick="closeTicketModal(event)">
     <div class="modal-content p-6" style="max-width: 550px; width: 95%;" onclick="event.stopPropagation()">
         <div class="flex justify-between items-center mb-4">
             <h3 class="text-xl font-bold">
@@ -4191,50 +4194,8 @@
             </div>
             
             <div class="mb-3">
-                <label class="block text-sm font-medium text-gray-700 mb-1">اختر البرنامج <span class="text-red-500">*</span></label>
-                <select id="ticketProgram" class="w-full p-2 border rounded-lg focus:ring-2 focus:ring-blue-500" required>
-                    <option value="">-- جاري تحميل البرامج --</option>
-                </select>
-                <p class="text-xs text-gray-400 mt-1">البرامج مضافه من قبل المدير</p>
-            </div>
-            
-            <div class="mb-3">
                 <label class="block text-sm font-medium text-gray-700 mb-1">وصف المشكلة <span class="text-red-500">*</span></label>
                 <textarea id="ticketIssue" rows="3" class="w-full p-2 border rounded-lg focus:ring-2 focus:ring-blue-500" placeholder="صف المشكلة بالتفصيل" required></textarea>
-            </div>
-            
-            <div class="grid grid-cols-2 gap-3 mb-4">
-                <div>
-                    <label class="block text-sm font-medium text-gray-700 mb-1">التاريخ</label>
-                    <input type="date" id="ticketDate" class="w-full p-2 border rounded-lg bg-gray-50" readonly>
-                </div>
-                <div>
-                    <label class="block text-sm font-medium text-gray-700 mb-1">الوقت</label>
-                    <input type="time" id="ticketTime" class="w-full p-2 border rounded-lg bg-gray-50" readonly>
-                </div>
-            </div>
-            
-            <div class="bg-yellow-50 border border-yellow-200 rounded-lg p-3 mb-4 text-sm text-yellow-800">
-                <i class="fas fa-info-circle ml-2"></i>
-                سيتم تحديد موعد الاجتماع تلقائياً بعد 24 ساعة من الآن
-            </div>
-            
-            <div class="border rounded-lg p-4 mb-4 bg-gray-50">
-                <p class="font-semibold text-sm text-gray-700 mb-3">⚙️ إعدادات الاجتماع</p>
-                <div class="grid grid-cols-2 gap-3">
-                    <label class="flex items-center gap-2 text-sm">
-                        <input type="checkbox" id="meetingVideo" checked> <i class="fas fa-video text-blue-500"></i> كاميرا
-                    </label>
-                    <label class="flex items-center gap-2 text-sm">
-                        <input type="checkbox" id="meetingAudio" checked> <i class="fas fa-microphone text-green-500"></i> مايك
-                    </label>
-                    <label class="flex items-center gap-2 text-sm">
-                        <input type="checkbox" id="meetingScreen" checked> <i class="fas fa-desktop text-purple-500"></i> شير سكرين
-                    </label>
-                    <label class="flex items-center gap-2 text-sm">
-                        <input type="checkbox" id="meetingChat" checked> <i class="fas fa-comment text-yellow-500"></i> شات
-                    </label>
-                </div>
             </div>
             
             <button type="submit" class="w-full bg-blue-600 text-white py-2 rounded-lg hover:bg-blue-700 transition font-semibold">
@@ -4407,7 +4368,7 @@
 </div>
 
 <!-- ============================================ -->
-<!--  4. شاشة شات التذكرة (مع البوت)              -->
+<!--  2. شاشة شات التذكرة مع البوت الذكي          -->
 <!-- ============================================ -->
 <div id="ticketChatPage" class="hidden page-container py-8">
     <div class="container mx-auto px-4">
@@ -4423,19 +4384,19 @@
                 </div>
                 <div class="flex items-center gap-3">
                     <span id="ticketChatStatus" class="text-xs bg-green-500 px-3 py-1 rounded-full">نشط</span>
-                    <span id="ticketBotStatus" class="text-xs bg-blue-500 px-3 py-1 rounded-full">البوت: مفعل</span>
+                    <span id="ticketBotStatus" class="text-xs bg-blue-500 px-3 py-1 rounded-full">🤖 البوت: مفعل</span>
                     <button onclick="closeTicketChat()" class="text-white/70 hover:text-white text-sm">
                         <i class="fas fa-times"></i>
                     </button>
                 </div>
             </div>
             
-            <!-- معلومات التذكرة -->
+            <!-- معلومات التذكرة (بدون ميتنج) -->
             <div class="bg-gray-50 p-3 border-b flex flex-wrap gap-3 text-sm">
                 <span><i class="fas fa-tag text-blue-500 ml-1"></i> <span id="chatTicketNumber">#</span></span>
                 <span><i class="fas fa-phone text-green-500 ml-1"></i> <span id="chatTicketPhone">-</span></span>
-                <span><i class="fas fa-code text-purple-500 ml-1"></i> <span id="chatTicketProgram">-</span></span>
                 <span><i class="fas fa-clock text-yellow-500 ml-1"></i> <span id="chatTicketTime">-</span></span>
+                <span><i class="fas fa-info-circle text-purple-500 ml-1"></i> <span id="chatTicketStatusText">قيد الانتظار</span></span>
             </div>
             
             <!-- مساحة الرسائل -->
@@ -5377,6 +5338,724 @@ function showAdminPanel() {
                 });
             }
         }
+
+
+// =============================================
+//  1. بيانات الأسئلة والإجابات المخزنة في الكود
+// =============================================
+
+const faqData = [
+    {
+        keywords: ["برنامج", "نقاط بيع", "TS POS", "إيه", "ما هو", "تعريف"],
+        answer: "هذا برنامج نقاط بيع احترافي (TS POS) لإدارة المتاجر، يشمل إدارة المنتجات، العملاء، الفواتير، المخزون، الموردين، الموظفين، والخزنة."
+    },
+    {
+        keywords: ["مجاني", "سعر", "تكلفة", "فلوس", "بفلوس", "اشتراك"],
+        answer: "يحتوي على نسخة تجريبية مجانية لمدة 3 أيام، وبعدها يلزم التفعيل برقم ترخيص."
+    },
+    {
+        keywords: ["تفعيل", "كود", "ترخيص", "تنشيط", "رقم"],
+        answer: "للحصول على كود التفعيل، تواصل مع المطور: 01144100018 أو 01126125881."
+    },
+    {
+        keywords: ["إنترنت", "نت", "اتصال", "أونلاين", "اوفلاين"],
+        answer: "يعمل النظام محلياً بعد التفعيل، ولا يحتاج إنترنت إلا للتفعيل الأولي."
+    },
+    {
+        keywords: ["إضافة منتج", "منتج جديد", "إنشاء منتج", "اضافة"],
+        answer: "من صفحة المنتجات > زر إضافة منتج، ثم أدخل البيانات."
+    },
+    {
+        keywords: ["باركود", "طباعة باركود", "barcode"],
+        answer: "من صفحة طباعة الباركود، اختر المنتج، حدد الحجم والنسخ، ثم طباعة."
+    },
+    {
+        keywords: ["منتجات منخفضة", "مخزون منخفض", "نقص مخزون"],
+        answer: "تظهر في صفحة المخزن في قسم المنتجات المنخفضة."
+    },
+    {
+        keywords: ["تعديل سعر", "سعر منتج", "تغيير سعر"],
+        answer: "من صفحة المنتجات، اضغط تعديل بجانب المنتج، ثم غيّر السعر."
+    },
+    {
+        keywords: ["حذف منتج", "مسح منتج", "إزالة منتج"],
+        answer: "من صفحة المنتجات، اضغط حذف بجانب المنتج، ثم أكد."
+    },
+    {
+        keywords: ["بيع", "شراء", "فاتورة جديدة", "إتمام شراء"],
+        answer: "من نقاط البيع، اختر العميل، اضغط على المنتج، حدد الكمية، ثم إتمام الشراء."
+    },
+    {
+        keywords: ["إيصال", "طباعة إيصال", "فاتورة مطبوعة"],
+        answer: "بعد إتمام الشراء، اضغط إتمام وطباعة."
+    },
+    {
+        keywords: ["إيقاف فاتورة", "تعليق فاتورة", "pause"],
+        answer: "استخدم زر إيقاف الفاتورة، ثم استرجاعها لاحقاً."
+    },
+    {
+        keywords: ["خصم", "تخفيض", "discount", "سعر نهائي"],
+        answer: "في نقاط البيع، استخدم حقل السعر النهائي لتعديل السعر."
+    },
+    {
+        keywords: ["طرق دفع", "دفع", "payment", "كاش", "بنك"],
+        answer: "يدعم: كاش، إنستا باي، محفظة، فودافون كاش، أورانج كاش، اتصالات كاش، تحويل بنكي، بطاقة ائتمان، بطاقة خصم، شيك، حوالة بريدية."
+    },
+    {
+        keywords: ["إضافة عميل", "عميل جديد", "عميل", "زبون"],
+        answer: "من صفحة العملاء > زر إضافة عميل، أدخل البيانات."
+    },
+    {
+        keywords: ["دين عميل", "مديونية عميل", "debt"],
+        answer: "من صفحة العملاء، يظهر عمود الدين الحالي."
+    },
+    {
+        keywords: ["سداد دين", "دفع دين", "تسديد"],
+        answer: "اضغط زر سداد بجانب العميل، أدخل المبلغ، ثم أكد."
+    },
+    {
+        keywords: ["إضافة موظف", "موظف جديد", "موظف", "employee"],
+        answer: "من صفحة الموظفين > زر إضافة موظف، أدخل البيانات والصلاحيات."
+    },
+    {
+        keywords: ["صلاحيات موظف", "صلاحية", "permission"],
+        answer: "عند إضافة أو تعديل موظف، اختر الصلاحيات من القائمة."
+    },
+    {
+        keywords: ["حذف موظف", "مسح موظف"],
+        answer: "من صفحة الموظفين، اضغط حذف بجانب الموظف (ما عدا المدير الأساسي)."
+    },
+    {
+        keywords: ["إضافة مورد", "مورد جديد", "مورد", "supplier"],
+        answer: "من صفحة الموردين > زر إضافة مورد، أدخل البيانات."
+    },
+    {
+        keywords: ["فاتورة شراء", "شراء", "purchase", "طلبية"],
+        answer: "من صفحة الموردين، اضغط فاتورة شراء بجانب المورد."
+    },
+    {
+        keywords: ["سداد مورد", "دفع مورد", "تسديد مورد"],
+        answer: "من تفاصيل المورد، اضغط سداد بجانب الفاتورة."
+    },
+    {
+        keywords: ["إيداع", "خزنة", "deposit"],
+        answer: "من صفحة الخزنة > زر إيداع، أدخل المبلغ والسبب."
+    },
+    {
+        keywords: ["سحب", "withdraw", "صرف"],
+        answer: "من صفحة الخزنة > زر سحب، أدخل المبلغ والسبب."
+    },
+    {
+        keywords: ["مصروف", "expense", "صرف يومي"],
+        answer: "من صفحة المصروفات > زر إنشاء فاتورة مصروف."
+    },
+    {
+        keywords: ["تقرير مبيعات", "تقرير", "report", "إحصائيات"],
+        answer: "من صفحة التقارير، اختر الفترة، ثم توليد تقرير."
+    },
+    {
+        keywords: ["تغيير اسم المتجر", "اسم المتجر", "store name"],
+        answer: "من صفحة الإعدادات > حقل اسم المتجر."
+    },
+    {
+        keywords: ["تغيير كلمة مرور المدير", "تغيير بيانات المدير"],
+        answer: "من صفحة الإعدادات > قسم تغيير بيانات دخول المدير."
+    },
+    {
+        keywords: ["تكبير", "تصغير", "zoom", "شاشة"],
+        answer: "استخدم شريط التكبير أو Ctrl + + و Ctrl + -."
+    },
+    {
+        keywords: ["صيانة", "فاتورة صيانة", "repair", "جهاز"],
+        answer: "من نقاط البيع > زر فاتورة صيانة."
+    },
+    {
+        keywords: ["نسخ احتياطي", "backup", "تصدير", "استيراد"],
+        answer: "من صفحة الإعدادات > زر تصدير البيانات أو استيراد البيانات."
+    },
+    {
+        keywords: ["دعم فني", "تواصل", "contact", "help", "مساعدة"],
+        answer: "للتواصل: 01144100018 أو 01126125881 أو mohammedemadpromax@gmail.com"
+    },
+
+    // ====== الأسئلة العامة ======
+    {
+        keywords: ["برنامج", "نظام", "الحضور", "الذكي", "TS Attend Pro", "إدارة", "الطلاب", "الفصول", "إيه", "ما هو"],
+        answer: "هذا نظام متكامل لإدارة الحضور والغياب للطلاب، يسمح لك بإدارة الطلاب والفصول والمصاريف والامتحانات وغيرها من الميزات."
+    },
+    {
+        keywords: ["تسجيل", "دخول", "login", "اسم مستخدم", "كلمة مرور", "admin", "1234"],
+        answer: "افتح صفحة تسجيل الدخول، أدخل اسم المستخدم 'admin' وكلمة المرور '1234' واضغط على زر تسجيل الدخول."
+    },
+
+    // ====== إدارة الطلاب ======
+    {
+        keywords: ["إضافة", "طالب", "جديد", "تسجيل", "حفظ"],
+        answer: "من صفحة 'إدارة الطلاب'، اضغط على زر 'إضافة طالب'، أدخل اسم الطالب، كود الطالب، اختر الصف الدراسي، ورقم ولي الأمر، ثم اضغط حفظ."
+    },
+    {
+        keywords: ["تعديل", "بيانات", "طالب", "تحديث"],
+        answer: "من صفحة 'إدارة الطلاب'، اضغط على زر التعديل (القلم) بجانب الطالب، غيّر البيانات المطلوبة، ثم اضغط تحديث."
+    },
+    {
+        keywords: ["حذف", "طالب", "مسح", "إزالة"],
+        answer: "من صفحة 'إدارة الطلاب'، اضغط على زر الحذف (سلة المهملات) بجانب الطالب، ثم أكد الحذف. يمكنك أيضاً استخدام الحذف النهائي من السحابة."
+    },
+    {
+        keywords: ["بحث", "طالب", "كود", "اسم"],
+        answer: "من صفحة 'إدارة الطلاب'، استخدم حقل البحث في الأعلى، اكتب اسم الطالب أو كوده، ستظهر النتائج فوراً."
+    },
+
+    // ====== إدارة الفصول ======
+    {
+        keywords: ["إضافة", "فصل", "دراسي", "جديد"],
+        answer: "من صفحة 'الفصول الدراسية'، اضغط على زر 'إضافة فصل'، أدخل اسم الفصل، رمز الفصل، اسم المدرس، المصاريف الشهرية، وحدد أيام الدراسة، ثم اضغط حفظ."
+    },
+    {
+        keywords: ["تعديل", "فصل", "تحديث"],
+        answer: "من صفحة 'الفصول الدراسية'، اضغط على زر التعديل (القلم) بجانب الفصل، غيّر البيانات المطلوبة، ثم اضغط تحديث."
+    },
+    {
+        keywords: ["حذف", "فصل", "مسح"],
+        answer: "من صفحة 'الفصول الدراسية'، اضغط على زر الحذف (سلة المهملات) بجانب الفصل، ثم أكد الحذف. سيتم حذف جميع الطلاب المرتبطين بالفصل."
+    },
+
+    // ====== تسجيل الحضور ======
+    {
+        keywords: ["تسجيل", "حضور", "الطلاب", "باركود", "مسح"],
+        answer: "من صفحة 'تسجيل الحضور'، اختر الفصل، ثم اضغط على بطاقة الطالب لتسجيل حضوره، أو استخدم مسح الباركود أو الإدخال اليدوي بكود الطالب."
+    },
+    {
+        keywords: ["حضور", "اليوم", "قائمة", "عرض"],
+        answer: "من صفحة 'تسجيل الحضور'، تظهر قائمة الحضور في الجانب الأيمن مع أسماء الطلاب وأوقات الحضور."
+    },
+    {
+        keywords: ["إنهاء", "تسجيل", "حضور", "غائبين"],
+        answer: "من صفحة 'تسجيل الحضور'، اضغط على زر 'إنهاء وتسجيل الغائبين' لتسجيل غياب الطلاب الذين لم يسجلوا حضوراً."
+    },
+    {
+        keywords: ["مسح", "حضور", "اليوم", "إعادة تعيين"],
+        answer: "من صفحة 'تسجيل الحضور'، اضغط على زر 'مسح الكل' لحذف جميع سجلات الحضور لليوم الحالي."
+    },
+
+    // ====== الغياب ======
+    {
+        keywords: ["غياب", "اليومي", "عدد", "الغائبين"],
+        answer: "من لوحة التحكم، بطاقة 'الغياب اليوم' تعرض عدد الغائبين، أو من صفحة 'إدارة الغياب' يمكنك مشاهدة جميع سجلات الغياب."
+    },
+    {
+        keywords: ["تقرير", "غياب", "فترة", "بحث"],
+        answer: "من صفحة 'إدارة الغياب'، يمكنك تصفية الغياب حسب الفصل أو التاريخ، والبحث باسم الطالب أو كوده."
+    },
+    {
+        keywords: ["حذف", "سجل", "غياب"],
+        answer: "من صفحة 'إدارة الغياب'، اضغط على زر الحذف بجانب سجل الغياب لحذفه."
+    },
+
+    // ====== المصاريف ======
+    {
+        keywords: ["مصاريف", "إدارة", "دفع", "شهر"],
+        answer: "من صفحة 'إدارة المصاريف'، يمكنك مشاهدة جميع المصاريف، تصفيتها حسب الفصل أو الحالة (مدفوعة/غير مدفوعة)، وتسجيل الدفع."
+    },
+    {
+        keywords: ["إضافة", "شهر", "مالي", "مصاريف"],
+        answer: "من صفحة 'إدارة المصاريف'، في قسم 'إدارة الأشهر المالية'، اختر الشهر والسنة، ثم اضغط 'إضافة شهر لجميع الفصول'."
+    },
+    {
+        keywords: ["تعديل", "شهر", "مبلغ", "مصاريف"],
+        answer: "من صفحة 'إدارة المصاريف'، اضغط على زر التعديل بجانب الشهر، غيّر المبلغ لكل فصل، ثم اضغط حفظ."
+    },
+    {
+        keywords: ["حذف", "شهر", "مصاريف"],
+        answer: "من صفحة 'إدارة المصاريف'، اضغط على زر الحذف بجانب الشهر لحذفه وجميع سجلات المصاريف المرتبطة به."
+    },
+    {
+        keywords: ["سداد", "دفع", "مصاريف", "طالب"],
+        answer: "من صفحة 'إدارة المصاريف'، اضغط على زر 'سداد' بجانب الطالب، اختر الشهر، أدخل المبلغ، ثم أكد."
+    },
+
+    // ====== الخزنة ======
+    {
+        keywords: ["خزنة", "إيرادات", "مصروفات", "رصيد"],
+        answer: "من صفحة 'الخزنة'، يمكنك مشاهدة جميع الإيرادات والمصروفات، مع تفاصيل الفصول الدراسية وصافي الرصيد."
+    },
+    {
+        keywords: ["إضافة", "مصروف", "خزنة"],
+        answer: "من صفحة 'الخزنة'، اضغط على زر 'إضافة مصروف'، أدخل الوصف والمبلغ والتاريخ، ثم اضغط حفظ."
+    },
+    {
+        keywords: ["جرد", "يومي", "خزنة"],
+        answer: "من صفحة 'الخزنة'، اضغط على زر 'جرد يومي' لعرض تقرير مفصل لإيرادات ومصروفات اليوم الحالي."
+    },
+    {
+        keywords: ["تقرير", "خزنة", "فترة"],
+        answer: "من صفحة 'الخزنة'، اختر الفترة الزمنية (من - إلى)، ثم اضغط 'عرض تقرير الخزنة'."
+    },
+
+    // ====== الامتحانات ======
+    {
+        keywords: ["إضافة", "امتحان", "جديد"],
+        answer: "من صفحة 'إدارة الامتحانات'، اضغط على زر 'إضافة امتحان'، أدخل اسم الامتحان، الفصل، التاريخ، والدرجة الكلية، ثم اضغط حفظ."
+    },
+    {
+        keywords: ["تسجيل", "درجة", "طالب", "امتحان"],
+        answer: "من صفحة 'إدارة الامتحانات'، اضغط على زر 'إضافة درجة' بجانب الطالب، اختر الامتحان، أدخل الدرجة والملاحظات، ثم اضغط حفظ."
+    },
+    {
+        keywords: ["تعديل", "درجة", "امتحان"],
+        answer: "من صفحة 'إدارة الامتحانات'، اضغط على زر 'تعديل درجة' بجانب الطالب، اختر الامتحان، غيّر الدرجة، ثم اضغط حفظ."
+    },
+    {
+        keywords: ["نتائج", "امتحانات", "طالب", "عرض"],
+        answer: "من صفحة 'إدارة الامتحانات'، اضغط على زر 'عرض النتائج' بجانب الطالب لعرض جميع نتائجه."
+    },
+
+    // ====== طباعة الباركود ======
+    {
+        keywords: ["طباعة", "باركود", "طالب", "فصل"],
+        answer: "من صفحة 'طباعة الباركود'، اختر الطالب أو الفصل، اختر نوع الباركود، ثم اضغط 'طباعة الباركود'."
+    },
+    {
+        keywords: ["طباعة", "متعددة", "باركودات", "طلاب"],
+        answer: "من صفحة 'طباعة الباركود'، اضغط على زر 'طباعة متعددة'، اختر الطلاب المطلوبين، ثم اضغط 'بدء الطباعة'."
+    },
+    {
+        keywords: ["طباعة", "باركود", "الفصل", "بالكامل"],
+        answer: "من صفحة 'طباعة الباركود'، اضغط على زر '📚 طباعة باركودات الفصل'، اختر الفصل، ثم اضغط 'طباعة الباركودات'."
+
+    },
+
+    // ====== التقارير ======
+    {
+        keywords: ["تقرير", "حضور", "غياب", "مصاريف", "طلاب"],
+        answer: "من صفحة 'التقارير'، اختر نوع التقرير، الفصل، الفترة الزمنية، ثم اضغط 'توليد تقرير'."
+    },
+    {
+        keywords: ["تصدير", "Excel", "تقرير"],
+        answer: "من أي صفحة، اضغط على زر 'تصدير Excel' لتحميل البيانات كملف Excel."
+    },
+    {
+        keywords: ["طباعة", "PDF", "تقرير"],
+        answer: "من أي صفحة، اضغط على زر 'تصدير PDF' لفتح التقرير في نافذة جديدة للطباعة."
+    },
+
+    // ====== الإعدادات ======
+    {
+        keywords: ["إعدادات", "تغيير", "اسم", "مدرسة"],
+        answer: "من صفحة 'الإعدادات'، يمكنك تغيير اسم المدرسة، العنوان، رقم الهاتف، اسم المدير، السنة الدراسية، رسوم الحصة، وعدد الحصص."
+    },
+    {
+        keywords: ["تغيير", "كلمة", "مرور", "تسجيل", "دخول"],
+        answer: "من صفحة 'الإعدادات'، اضغط على زر 'تغيير باسورد تسجيل الدخول'، أدخل الباسورد القديم ثم الجديد."
+    },
+    {
+        keywords: ["تصدير", "استيراد", "بيانات", "نسخ", "احتياطي"],
+        answer: "من صفحة 'الإعدادات'، استخدم زر 'تصدير البيانات' لحفظ نسخة احتياطية، و'استيراد البيانات' لاستعادة النسخة."
+    },
+    {
+        keywords: ["إعادة", "تعيين", "النظام", "reset"],
+        answer: "من صفحة 'الإعدادات'، اضغط على زر 'إعادة تعيين النظام'، اختر نوع إعادة التعيين، ثم أكد."
+
+    },
+
+    // ====== التفعيل ======
+    {
+        keywords: ["تفعيل", "النظام", "كود", "ترخيص"],
+        answer: "من صفحة 'تفعيل النظام'، أدخل كود التفعيل المكون من 10 أرقام، ثم اضغط 'تفعيل النظام'."
+    },
+    {
+        keywords: ["نسخة", "تجريبية", "متبقي", "أيام"],
+        answer: "من صفحة 'تفعيل النظام'، تظهر معلومات النسخة التجريبية مع عدد الأيام المتبقية."
+    },
+
+    // ====== العائلات ======
+    {
+        keywords: ["عائلة", "إضافة", "إدارة", "أفراد"],
+        answer: "من صفحة 'العائلات'، يمكنك إضافة عائلات جديدة، إضافة أفراد، وتحديد المبالغ الموزعة على كل فرد."
+    },
+    {
+        keywords: ["سداد", "عائلة", "مصاريف", "جماعي"],
+        answer: "من صفحة 'العائلات'، اضغط على زر 'سداد' بجانب العائلة، اختر الشهر، ثم أكد السداد لتسجيل الدفع لجميع أفراد العائلة."
+    },
+
+    // ====== التواصل ======
+    {
+        keywords: ["تواصل", "دعم", "فني", "مساعدة", "مطور"],
+        answer: "للتواصل مع الدعم الفني: 01035636654 - 01144100018 - 01126125881، أو البريد الإلكتروني: mohammedemadpromax@gmail.com"
+    },
+    {
+        keywords: ["واتساب", "إرسال", "تقرير", "ولي", "أمر"],
+        answer: "من صفحة القوائم السريعة (قائمة الطلاب)، اختر الشهر، ثم اضغط على زر 'إرسال التقرير' بجانب الطالب لإرسال تقرير شهري عبر واتساب."
+    },
+
+    // ====== الزوم والتكبير ======
+    {
+        keywords: ["تكبير", "تصغير", "شاشة", "zoom", "حجم"],
+        answer: "استخدم شريط التكبير في صفحة الإعدادات أو اختصارات Ctrl + + و Ctrl + - لتكبير وتصغير الشاشة."
+    },
+
+    // ====== الأجهزة والسحابة ======
+    {
+        keywords: ["سحابة", "مزامنة", "sync", "رفع", "تحميل"],
+        answer: "من صفحة الإعدادات، اضغط على 'إعدادات المزامنة السحابية'، يمكنك رفع البيانات، تحميلها، أو مزامنتها بالكامل."
+    },
+    {
+        keywords: ["أجهزة", "نشطة", "إدارة", "حذف"],
+        answer: "من إعدادات المزامنة السحابية، اضغط على 'خيارات المطور - إدارة الأجهزة' لعرض وإدارة جميع الأجهزة النشطة."
+    }
+];
+
+// =============================================
+//  2. تكوين DeepSeek API
+// =============================================
+
+const DEEPSEEK_API_KEY = 'sk-50426c8bca2a4068bbaee9c919d8f4a4';
+const DEEPSEEK_API_URL = 'https://api.deepseek.com/v1/chat/completions';
+
+// =============================================
+//  3. دالة البحث عن الإجابة في المخزن
+// =============================================
+
+function findAnswerInFAQ(userMessage) {
+    const message = userMessage.toLowerCase().trim();
+    let bestMatch = null;
+    let bestScore = 0;
+    
+    faqData.forEach(item => {
+        let score = 0;
+        item.keywords.forEach(keyword => {
+            if (message.includes(keyword.toLowerCase())) score += 3;
+        });
+        const words = message.split(' ');
+        words.forEach(word => {
+            item.keywords.forEach(keyword => {
+                if (keyword.toLowerCase().includes(word) || word.includes(keyword.toLowerCase())) {
+                    score += 1;
+                }
+            });
+        });
+        if (score > bestScore) {
+            bestScore = score;
+            bestMatch = item;
+        }
+    });
+    
+    if (bestScore >= 3 && bestMatch) {
+        return { found: true, answer: bestMatch.answer, score: bestScore, fromCache: true };
+    }
+    return { found: false, score: bestScore };
+}
+
+// =============================================
+//  دالة الاتصال بـ DeepSeek API (معدلة)
+// =============================================
+
+async function askDeepSeek(question) {
+    try {
+        // التحقق من وجود المفتاح
+        if (!DEEPSEEK_API_KEY || DEEPSEEK_API_KEY === 'YOUR_DEEPSEEK_API_KEY_HERE') {
+            return {
+                success: false,
+                answer: '⚠️ لم يتم تكوين مفتاح DeepSeek API. يرجى التواصل مع الدعم الفني.',
+                error: 'API key not configured'
+            };
+        }
+        
+        console.log('📡 جاري الاتصال بـ DeepSeek API...');
+        
+        const response = await fetch(DEEPSEEK_API_URL, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${DEEPSEEK_API_KEY}`
+            },
+            body: JSON.stringify({
+                model: 'deepseek-chat',
+                messages: [
+                    {
+                        role: 'system',
+                        content: 'أنت مساعد دعم فني لنظام نقاط البيع TS POS. أجب على أسئلة العملاء بشكل مفيد ومختصر. استخدم اللغة العربية دائماً.'
+                    },
+                    {
+                        role: 'user',
+                        content: question
+                    }
+                ],
+                max_tokens: 500,
+                temperature: 0.7
+            })
+        });
+        
+        if (!response.ok) {
+            const errorData = await response.json();
+            console.error('❌ DeepSeek API error:', errorData);
+            return {
+                success: false,
+                answer: '❌ حدث خطأ في الاتصال بالذكاء الاصطناعي. يرجى المحاولة لاحقاً.',
+                error: errorData
+            };
+        }
+        
+        const data = await response.json();
+        const answer = data.choices?.[0]?.message?.content || '⚠️ لم أستطع توليد إجابة. يرجى إعادة صياغة السؤال.';
+        
+        console.log('✅ تم الحصول على إجابة من DeepSeek');
+        return {
+            success: true,
+            answer: answer,
+            fromDeepSeek: true
+        };
+        
+    } catch (error) {
+        console.error('❌ Error calling DeepSeek API:', error);
+        return {
+            success: false,
+            answer: '❌ حدث خطأ في الاتصال بالذكاء الاصطناعي. يرجى المحاولة لاحقاً.',
+            error: error.message
+        };
+    }
+}
+
+// =============================================
+//  5. دالة إضافة إجابة جديدة إلى المخزن
+// =============================================
+
+function addNewFAQ(question, answer) {
+    const words = question.toLowerCase().split(' ');
+    const keywords = words.filter(word => word.length > 3).slice(0, 6);
+    const exists = faqData.some(item => 
+        item.answer.toLowerCase().includes(answer.toLowerCase().substring(0, 30))
+    );
+    if (!exists) {
+        faqData.push({ keywords: keywords, answer: answer });
+        return true;
+    }
+    return false;
+}
+
+// =============================================
+//  6. دوال شات التذكرة
+// =============================================
+
+
+
+function openTicketChat(ticketId) {
+    if (!ticketId) { showToast('❌ لا يوجد معرف للتذكرة'); return; }
+    currentTicketId = ticketId;
+    isAdminMode = false;
+    showSpecificPage('ticketChatPage');
+    document.getElementById('adminModeNotice').classList.add('hidden');
+    document.getElementById('ticketChatInput').disabled = false;
+    document.getElementById('adminToggleBtn').innerHTML = '<i class="fas fa-user-cog"></i> دخول المدير';
+    loadTicketChatData(ticketId);
+}
+
+function closeTicketChat() {
+    currentTicketId = null;
+    isAdminMode = false;
+    goToTicketsPage();
+}
+
+async function loadTicketChatData(ticketId) {
+    try {
+        const snapshot = await db.ref(`tickets/${ticketId}`).once('value');
+        const ticket = snapshot.val();
+        if (!ticket) { showToast('❌ التذكرة غير موجودة'); return; }
+        
+        document.getElementById('ticketChatTitle').innerText = `شات التذكرة - ${ticket.clientName}`;
+        document.getElementById('ticketChatClient').innerText = `العميل: ${ticket.clientName}`;
+        document.getElementById('chatTicketNumber').innerText = ticket.ticketNumber || '#';
+        document.getElementById('chatTicketPhone').innerText = ticket.phone || '-';
+        document.getElementById('chatTicketStatusText').innerText = ticket.status === 'active' ? 'نشطة' : 'قيد الانتظار';
+        
+        updateBotStatus(ticket.botActive !== false);
+        await loadTicketMessages(ticketId);
+        
+        if (ticket.botActive !== false && ticket.botStep === 0) {
+            await sendBotMessage(ticketId, '👋 أهلاً بك في دعم TecnoShark!');
+            await new Promise(resolve => setTimeout(resolve, 500));
+            await sendBotMessage(ticketId, '💬 أنا هنا لمساعدتك. اسألني أي شيء عن النظام.');
+            await new Promise(resolve => setTimeout(resolve, 500));
+            await sendBotMessage(ticketId, '📌 اكتب سؤالك وسأجيبك فوراً.');
+            await db.ref(`tickets/${ticketId}/botStep`).set(1);
+        }
+    } catch (error) {
+        console.error('خطأ في تحميل بيانات التذكرة:', error);
+        showToast('❌ خطأ في تحميل بيانات التذكرة');
+    }
+}
+
+async function loadTicketMessages(ticketId) {
+    try {
+        const snapshot = await db.ref(`tickets/${ticketId}/messages`).once('value');
+        const messages = snapshot.val();
+        const container = document.getElementById('ticketChatMessages');
+        if (!messages) {
+            container.innerHTML = `<div class="text-center text-gray-400 py-10">
+                <i class="fas fa-comment text-4xl mb-3"></i><p>لا توجد رسائل بعد</p>
+            </div>`;
+            return;
+        }
+        const msgList = [];
+        for (let id in messages) msgList.push({ id, ...messages[id] });
+        msgList.sort((a, b) => new Date(a.timestamp) - new Date(b.timestamp));
+        let html = '';
+        msgList.forEach(msg => {
+            const isBot = msg.isBot;
+            const isAdmin = msg.isAdmin;
+            const isSelf = msg.senderId === currentUser?.uid && !isBot && !isAdmin;
+            let senderName = msg.senderName || 'مستخدم';
+            let bgColor = 'bg-gray-100';
+            let textColor = 'text-gray-800';
+            if (isBot) { bgColor = 'bg-blue-100'; textColor = 'text-blue-800'; senderName = '🤖 البوت'; }
+            else if (isAdmin) { bgColor = 'bg-yellow-100'; textColor = 'text-yellow-800'; senderName = '👑 المدير'; }
+            else if (isSelf) { bgColor = 'bg-green-100'; textColor = 'text-green-800'; }
+            const time = new Date(msg.timestamp).toLocaleTimeString('ar-EG', {hour: '2-digit', minute: '2-digit'});
+            html += `<div class="mb-3 ${isSelf ? 'text-right' : ''}">
+                <div class="inline-block ${bgColor} rounded-2xl p-3 max-w-[80%] ${isSelf ? 'rounded-br-none' : 'rounded-bl-none'}">
+                    <div class="text-xs font-bold ${textColor}">${senderName}</div>
+                    <div class="text-sm">${msg.message}</div>
+                    <div class="text-xs text-gray-400 mt-1">${time}</div>
+                </div>
+            </div>`;
+        });
+        container.innerHTML = html;
+        container.scrollTop = container.scrollHeight;
+    } catch (error) {
+        console.error('خطأ في تحميل الرسائل:', error);
+    }
+}
+
+async function sendBotMessage(ticketId, message) {
+    const msgData = {
+        senderId: 'bot',
+        senderName: '🤖 البوت',
+        message: message,
+        timestamp: new Date().toISOString(),
+        isBot: true
+    };
+    try {
+        const newRef = db.ref(`tickets/${ticketId}/messages`).push();
+        await newRef.set(msgData);
+        await loadTicketMessages(ticketId);
+    } catch (error) {
+        console.error('خطأ في إرسال رسالة البوت:', error);
+    }
+}
+
+function updateBotStatus(isActive) {
+    const statusEl = document.getElementById('ticketBotStatus');
+    if (!statusEl) return;
+    if (isActive) {
+        statusEl.className = 'text-xs bg-blue-500 px-3 py-1 rounded-full text-white';
+        statusEl.innerText = '🤖 البوت: مفعل';
+    } else {
+        statusEl.className = 'text-xs bg-gray-500 px-3 py-1 rounded-full text-white';
+        statusEl.innerText = '🤖 البوت: متوقف';
+    }
+}
+
+async function sendTicketChatMessage() {
+    const input = document.getElementById('ticketChatInput');
+    const message = input.value.trim();
+    if (!message || !currentTicketId) return;
+    input.value = '';
+    
+    const msgData = {
+        senderId: currentUser.uid,
+        senderName: currentUser.name || currentUser.username,
+        message: message,
+        timestamp: new Date().toISOString(),
+        isBot: false,
+        isAdmin: isAdminMode
+    };
+    try {
+        const newRef = db.ref(`tickets/${currentTicketId}/messages`).push();
+        await newRef.set(msgData);
+        await loadTicketMessages(currentTicketId);
+        
+        if (!isAdminMode) {
+            await handleBotResponse(currentTicketId, message);
+        }
+    } catch (error) {
+        console.error('خطأ في إرسال الرسالة:', error);
+        showToast('❌ خطأ في إرسال الرسالة');
+    }
+}
+
+async function handleBotResponse(ticketId, userMessage) {
+    try {
+        const snapshot = await db.ref(`tickets/${ticketId}`).once('value');
+        const ticket = snapshot.val();
+        if (!ticket || ticket.botActive === false) return;
+        
+        // ✅ البحث في المخزن أولاً
+        const cached = findAnswerInFAQ(userMessage);
+        
+        if (cached.found) {
+            await sendBotMessage(ticketId, cached.answer);
+            await db.ref(`tickets/${ticketId}/botActive`).set(false);
+            await sendBotMessage(ticketId, '📋 هل لديك أي سؤال آخر؟ اكتب "نعم" للمتابعة أو "لا" لإنهاء المحادثة.');
+            return;
+        }
+        
+        // ✅ إذا لم يجد، استخدم DeepSeek
+        await sendBotMessage(ticketId, '⏳ جاري البحث عن إجابة...');
+        const aiResponse = await askDeepSeek(userMessage);
+        
+        if (aiResponse.success) {
+            await sendBotMessage(ticketId, aiResponse.answer);
+            // ✅ حفظ الإجابة الجديدة في المخزن
+            addNewFAQ(userMessage, aiResponse.answer);
+            await sendBotMessage(ticketId, '📋 هل لديك أي سؤال آخر؟ اكتب "نعم" للمتابعة أو "لا" لإنهاء المحادثة.');
+        } else {
+            await sendBotMessage(ticketId, '⚠️ عذراً، لم أستطع العثور على إجابة لسؤالك.');
+            await sendBotMessage(ticketId, '📋 سيتم التواصل معك قريباً لحل مشكلتك.');
+            await db.ref(`tickets/${ticketId}/botActive`).set(false);
+        }
+        
+    } catch (error) {
+        console.error('خطأ في معالجة رد البوت:', error);
+    }
+}
+
+function toggleTicketChatAdmin() {
+    isAdminMode = !isAdminMode;
+    const notice = document.getElementById('adminModeNotice');
+    const btn = document.getElementById('adminToggleBtn');
+    
+    if (isAdminMode) {
+        notice.classList.remove('hidden');
+        btn.innerHTML = '<i class="fas fa-user-cog"></i> خروج المدير';
+        btn.className = 'bg-red-500 text-white px-4 py-2 rounded-lg hover:bg-red-600 transition text-sm';
+        document.getElementById('adminModeText').innerHTML = '👑 المدير دخل المحادثة - البوت متوقف';
+        db.ref(`tickets/${currentTicketId}/botActive`).set(false);
+        updateBotStatus(false);
+        const msgData = {
+            senderId: 'system',
+            senderName: '📢 النظام',
+            message: '👑 دخل المدير إلى المحادثة. البوت متوقف الآن.',
+            timestamp: new Date().toISOString(),
+            isBot: false,
+            isAdmin: true,
+            isSystem: true
+        };
+        db.ref(`tickets/${currentTicketId}/messages`).push().set(msgData);
+        loadTicketMessages(currentTicketId);
+    } else {
+        notice.classList.add('hidden');
+        btn.innerHTML = '<i class="fas fa-user-cog"></i> دخول المدير';
+        btn.className = 'bg-yellow-500 text-white px-4 py-2 rounded-lg hover:bg-yellow-600 transition text-sm';
+    }
+}
+
+function exitAdminMode() {
+    if (isAdminMode) toggleTicketChatAdmin();
+}
+
+
+
+
 // ==================== دالة showHomePage ====================
 function showHomePage() {
     // إخفاء جميع الصفحات
@@ -6724,24 +7403,7 @@ let botQuestions = [];
 let botCurrentStep = 0;
 let botAnswers = {};
 
-function openTicketChat(ticketId) {
-    if (!ticketId) {
-        showToast('❌ لا يوجد معرف للتذكرة');
-        return;
-    }
-    
-    currentTicketId = ticketId;
-    isAdminMode = false;
-    botCurrentStep = 0;
-    botAnswers = {};
-    
-    showSpecificPage('ticketChatPage');
-    document.getElementById('adminModeNotice').classList.add('hidden');
-    document.getElementById('ticketChatInput').disabled = false;
-    document.getElementById('adminToggleBtn').innerHTML = '<i class="fas fa-user-cog"></i> دخول المدير';
-    
-    loadTicketChatData(ticketId);
-}
+
 
 function closeTicketChat() {
     currentTicketId = null;
@@ -6749,40 +7411,6 @@ function closeTicketChat() {
     goToTicketsPage();
 }
 
-// =============================================
-//  3. تحميل بيانات التذكرة والشات
-// =============================================
-async function loadTicketChatData(ticketId) {
-    try {
-        const snapshot = await db.ref(`tickets/${ticketId}`).once('value');
-        const ticket = snapshot.val();
-        if (!ticket) {
-            showToast('❌ التذكرة غير موجودة');
-            return;
-        }
-        
-        document.getElementById('ticketChatTitle').innerText = `شات التذكرة - ${ticket.clientName}`;
-        document.getElementById('ticketChatClient').innerText = `العميل: ${ticket.clientName}`;
-        document.getElementById('chatTicketNumber').innerText = ticket.ticketNumber || '#';
-        document.getElementById('chatTicketPhone').innerText = ticket.phone || '-';
-        document.getElementById('chatTicketProgram').innerText = ticket.program || '-';
-        document.getElementById('chatTicketTime').innerText = new Date(ticket.meetingTime).toLocaleString('ar-EG');
-        
-        updateBotStatus(ticket.botActive !== false);
-        await loadTicketMessages(ticketId);
-        
-        if (ticket.botActive !== false && ticket.botStep === 0) {
-            await sendBotMessage(ticketId, '👋 أهلاً بك في دعم TecnoShark!');
-            await new Promise(resolve => setTimeout(resolve, 500));
-            await sendBotMessage(ticketId, `📌 تم اختيار برنامج: ${ticket.program}`);
-            await new Promise(resolve => setTimeout(resolve, 500));
-            await startBotQuestions(ticketId, ticket.program);
-        }
-    } catch (error) {
-        console.error('خطأ في تحميل بيانات التذكرة:', error);
-        showToast('❌ خطأ في تحميل بيانات التذكرة');
-    }
-}
 
 // =============================================
 //  4. تشغيل البوت - الأسئلة من البرنامج
@@ -6845,95 +7473,9 @@ async function askNextQuestion(ticketId) {
     }
 }
 
-// =============================================
-//  5. إرسال رسالة من البوت
-// =============================================
-async function sendBotMessage(ticketId, message) {
-    const msgData = {
-        senderId: 'bot',
-        senderName: '🤖 البوت',
-        message: message,
-        timestamp: new Date().toISOString(),
-        isBot: true
-    };
-    
-    try {
-        const newRef = db.ref(`tickets/${ticketId}/messages`).push();
-        await newRef.set(msgData);
-        await loadTicketMessages(ticketId);
-    } catch (error) {
-        console.error('خطأ في إرسال رسالة البوت:', error);
-    }
-}
 
-// =============================================
-//  6. تحميل رسائل الشات
-// =============================================
-async function loadTicketMessages(ticketId) {
-    try {
-        const snapshot = await db.ref(`tickets/${ticketId}/messages`).once('value');
-        const messages = snapshot.val();
-        const container = document.getElementById('ticketChatMessages');
-        
-        if (!messages) {
-            container.innerHTML = `
-                <div class="text-center text-gray-400 py-10">
-                    <i class="fas fa-comment text-4xl mb-3"></i>
-                    <p>لا توجد رسائل بعد</p>
-                </div>
-            `;
-            return;
-        }
-        
-        const msgList = [];
-        for (let id in messages) {
-            msgList.push({ id, ...messages[id] });
-        }
-        msgList.sort((a, b) => new Date(a.timestamp) - new Date(b.timestamp));
-        
-        let html = '';
-        msgList.forEach(msg => {
-            const isBot = msg.isBot;
-            const isAdmin = msg.isAdmin;
-            const isSelf = msg.senderId === currentUser?.uid && !isBot && !isAdmin;
-            
-            let senderName = msg.senderName || 'مستخدم';
-            let bgColor = 'bg-gray-100';
-            let textColor = 'text-gray-800';
-            
-            if (isBot) {
-                bgColor = 'bg-blue-100';
-                textColor = 'text-blue-800';
-                senderName = '🤖 البوت';
-            } else if (isAdmin) {
-                bgColor = 'bg-yellow-100';
-                textColor = 'text-yellow-800';
-                senderName = '👑 المدير';
-            } else if (isSelf) {
-                bgColor = 'bg-green-100';
-                textColor = 'text-green-800';
-            }
-            
-            const time = new Date(msg.timestamp).toLocaleTimeString('ar-EG', {hour: '2-digit', minute: '2-digit'});
-            
-            html += `
-                <div class="mb-3 ${isSelf ? 'text-right' : ''}">
-                    <div class="inline-block ${bgColor} rounded-2xl p-3 max-w-[80%] ${isSelf ? 'rounded-br-none' : 'rounded-bl-none'}">
-                        <div class="text-xs font-bold ${textColor}">${senderName}</div>
-                        <div class="text-sm">${msg.message}</div>
-                        <div class="text-xs text-gray-400 mt-1">${time}</div>
-                    </div>
-                </div>
-            `;
-        });
-        
-        container.innerHTML = html;
-        container.scrollTop = container.scrollHeight;
-        
-    } catch (error) {
-        console.error('خطأ في تحميل الرسائل:', error);
-    }
-}
+
+
 
 // =============================================
 //  7. إرسال رسالة من المستخدم
@@ -7007,13 +7549,9 @@ async function handleBotResponse(ticketId, userMessage) {
     }
 }
 
-// =============================================
-//  9. تحديث حالة البوت في الواجهة
-// =============================================
 function updateBotStatus(isActive) {
     const statusEl = document.getElementById('ticketBotStatus');
     if (!statusEl) return;
-    
     if (isActive) {
         statusEl.className = 'text-xs bg-blue-500 px-3 py-1 rounded-full text-white';
         statusEl.innerText = '🤖 البوت: مفعل';
@@ -7023,43 +7561,7 @@ function updateBotStatus(isActive) {
     }
 }
 
-// =============================================
-//  10. تبديل وضع المدير في الشات
-// =============================================
-function toggleTicketChatAdmin() {
-    isAdminMode = !isAdminMode;
-    const notice = document.getElementById('adminModeNotice');
-    const btn = document.getElementById('adminToggleBtn');
-    
-    if (isAdminMode) {
-        notice.classList.remove('hidden');
-        btn.innerHTML = '<i class="fas fa-user-cog"></i> خروج المدير';
-        btn.className = 'bg-red-500 text-white px-4 py-2 rounded-lg hover:bg-red-600 transition text-sm';
-        document.getElementById('adminModeText').innerHTML = '👑 المدير دخل المحادثة - البوت متوقف';
-        
-        // إيقاف البوت
-        db.ref(`tickets/${currentTicketId}/botActive`).set(false);
-        updateBotStatus(false);
-        
-        // إرسال رسالة إشعار
-        const msgData = {
-            senderId: 'system',
-            senderName: '📢 النظام',
-            message: '👑 دخل المدير إلى المحادثة. البوت متوقف الآن.',
-            timestamp: new Date().toISOString(),
-            isBot: false,
-            isAdmin: true,
-            isSystem: true
-        };
-        db.ref(`tickets/${currentTicketId}/messages`).push().set(msgData);
-        loadTicketMessages(currentTicketId);
-        
-    } else {
-        notice.classList.add('hidden');
-        btn.innerHTML = '<i class="fas fa-user-cog"></i> دخول المدير';
-        btn.className = 'bg-yellow-500 text-white px-4 py-2 rounded-lg hover:bg-yellow-600 transition text-sm';
-    }
-}
+
 
 function exitAdminMode() {
     if (isAdminMode) {
@@ -7346,54 +7848,42 @@ function adminFilterTickets(filter) {
 
 
 
-// =============================================
-//  تعديل دالة تحديث التذاكر في لوحة المدير
-// =============================================
 async function adminRefreshTickets() {
     try {
         const snapshot = await db.ref('tickets').once('value');
         const tickets = snapshot.val();
         const container = document.getElementById('adminTicketsList');
-        
         if (!container) return;
-        
         if (!tickets) {
             container.innerHTML = '<div class="text-center py-8 text-gray-400">لا توجد تذاكر</div>';
             return;
         }
-        
         let ticketsList = [];
         for (let id in tickets) {
             ticketsList.push({ id, ...tickets[id] });
         }
-        
         if (adminCurrentFilter !== 'all') {
             ticketsList = ticketsList.filter(t => (t.status || 'waiting') === adminCurrentFilter);
         }
-        
         ticketsList.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
-        
         if (ticketsList.length === 0) {
             container.innerHTML = '<div class="text-center py-8 text-gray-400">لا توجد تذاكر في هذا التصنيف</div>';
             return;
         }
-        
         let html = '';
         ticketsList.forEach(ticket => {
             const statusLabels = { active: 'نشطة', waiting: 'قيد الانتظار', ended: 'منتهية' };
             const statusColors = { active: 'status-active', waiting: 'status-waiting', ended: 'status-ended' };
             const status = ticket.status || 'waiting';
-            
             html += `
                 <div class="p-4 hover:bg-gray-50 flex justify-between items-center flex-wrap gap-2">
                     <div>
                         <div class="font-bold text-gray-800">${ticket.clientName}</div>
-                        <div class="text-sm text-gray-500">${ticket.program || 'بدون برنامج'}</div>
+                        <div class="text-sm text-gray-500">${ticket.issue ? ticket.issue.substring(0, 50) + '...' : ''}</div>
                         <div class="text-xs text-gray-400">${ticket.ticketNumber || '#'}</div>
                     </div>
                     <div class="flex items-center gap-3 flex-wrap">
                         <span class="status-badge ${statusColors[status]}">${statusLabels[status]}</span>
-                        <!-- ✅ جديد: زر الشات في لوحة المدير -->
                         <button onclick="openTicketChat('${ticket.id}')" class="text-blue-500 hover:text-blue-700 text-sm">
                             <i class="fas fa-comment"></i> شات
                         </button>
@@ -7404,14 +7894,11 @@ async function adminRefreshTickets() {
                 </div>
             `;
         });
-        
         container.innerHTML = html;
-        
     } catch (error) {
         console.error('خطأ في تحميل التذاكر:', error);
     }
 }
-
 function adminRefreshAll() {
     loadAdminDashboard();
     adminRefreshTickets();
@@ -10715,10 +11202,7 @@ window.addEventListener('pagehide', function() {
             loadTickets();
         }
 
-     // =============================================
-//  دالة فتح نافذة التذكرة - النسخة الكاملة المعدلة
-// =============================================
-function openTicketModal(ticketId = null) {
+    function openTicketModal(ticketId = null) {
     if (!currentUser) {
         showToast('❌ الرجاء تسجيل الدخول أولاً');
         showLoginPage();
@@ -10729,11 +11213,6 @@ function openTicketModal(ticketId = null) {
     const modal = document.getElementById('ticketModal');
     const title = document.getElementById('ticketModalTitle');
     
-    const now = new Date();
-    const meetingTime = new Date(now.getTime() + 24 * 60 * 60 * 1000);
-    document.getElementById('ticketDate').value = meetingTime.toISOString().split('T')[0];
-    document.getElementById('ticketTime').value = meetingTime.toTimeString().slice(0, 5);
-    
     if (ticketId) {
         title.innerText = 'تعديل التذكرة';
         loadTicketForEdit(ticketId);
@@ -10742,13 +11221,6 @@ function openTicketModal(ticketId = null) {
         document.getElementById('ticketClientName').value = '';
         document.getElementById('ticketPhone').value = '';
         document.getElementById('ticketIssue').value = '';
-        document.getElementById('meetingVideo').checked = true;
-        document.getElementById('meetingAudio').checked = true;
-        document.getElementById('meetingScreen').checked = true;
-        document.getElementById('meetingChat').checked = true;
-        
-        // ✅ تحميل البرامج في القائمة المنسدلة
-        loadProgramsSelect();
     }
     
     modal.classList.add('active');
@@ -10841,17 +11313,12 @@ async function saveTicket(event) {
     }
 }
 
-        // =============================================
-//  تعديل دالة تحميل التذاكر - إضافة زر الشات
-// =============================================
-async function loadTickets() {
+     async function loadTickets() {
     if (!currentUser) return;
-    
     try {
         const snapshot = await db.ref('tickets').once('value');
         const allTickets = snapshot.val();
         const ticketsList = [];
-        
         if (allTickets) {
             for (let id in allTickets) {
                 const ticket = allTickets[id];
@@ -10860,25 +11327,19 @@ async function loadTickets() {
                 }
             }
         }
-        
         currentTickets = ticketsList;
         renderTickets(currentTickets);
         updateTicketsCount();
         checkAndUpdateTicketStatus();
-        
     } catch (error) {
         console.error('خطأ في تحميل التذاكر:', error);
         showToast('❌ خطأ في تحميل التذاكر');
     }
 }
 
-        // =============================================
-//  تعديل دالة عرض التذاكر - إضافة زر الشات
-// =============================================
-function renderTickets(tickets) {
+       function renderTickets(tickets) {
     const container = document.getElementById('ticketsList');
     const noMessage = document.getElementById('noTicketsMessage');
-    
     if (!container) return;
     
     const filtered = tickets.filter(ticket => {
@@ -10891,70 +11352,29 @@ function renderTickets(tickets) {
         noMessage.classList.remove('hidden');
         return;
     }
-    
     noMessage.classList.add('hidden');
     
     container.innerHTML = filtered.map(ticket => {
-        const statusColors = {
-            active: 'status-active',
-            waiting: 'status-waiting',
-            ended: 'status-ended'
-        };
-        const statusLabels = {
-            active: 'نشطة',
-            waiting: 'قيد الانتظار',
-            ended: 'منتهية'
-        };
-        
-        const meetingDate = new Date(ticket.meetingTime);
-        const now = new Date();
-        const timeDiff = meetingDate - now;
-        const isActive = timeDiff <= 0 && ticket.status !== 'ended';
-        const status = isActive ? 'active' : ticket.status;
-        
-        let countdownHtml = '';
-        if (status === 'waiting' || status === 'active') {
-            const diff = status === 'waiting' ? Math.floor(timeDiff / 1000) : Math.floor((now - meetingDate) / 1000);
-            const isUrgent = status === 'active' && diff > 0;
-            
-            let days = Math.floor(diff / 86400);
-            let hours = Math.floor((diff % 86400) / 3600);
-            let minutes = Math.floor((diff % 3600) / 60);
-            let seconds = Math.floor(diff % 60);
-            
-            if (status === 'active') {
-                days = Math.floor(diff / 86400);
-                hours = Math.floor((diff % 86400) / 3600);
-                minutes = Math.floor((diff % 3600) / 60);
-                seconds = Math.floor(diff % 60);
-            }
-            
-            const timeStr = `${String(days).padStart(2, '0')}d ${String(hours).padStart(2, '0')}h ${String(minutes).padStart(2, '0')}m ${String(seconds).padStart(2, '0')}s`;
-            countdownHtml = `
-                <div class="text-xs text-gray-500 mt-2">
-                    <i class="fas fa-clock ml-1"></i>
-                    <span class="countdown-timer ${isUrgent ? 'urgent' : ''}" data-ticket="${ticket.id}">${timeStr}</span>
-                </div>
-            `;
-        }
+        const statusColors = { active: 'status-active', waiting: 'status-waiting', ended: 'status-ended' };
+        const statusLabels = { active: 'نشطة', waiting: 'قيد الانتظار', ended: 'منتهية' };
+        const status = ticket.status || 'waiting';
         
         return `
             <div class="ticket-card bg-white rounded-2xl p-5 shadow-lg">
                 <div class="flex justify-between items-start mb-3">
                     <h3 class="font-bold text-lg">${ticket.clientName}</h3>
-                    <span class="status-badge ${statusColors[status] || statusColors.waiting}">${statusLabels[status] || 'قيد الانتظار'}</span>
+                    <span class="status-badge ${statusColors[status]}">${statusLabels[status]}</span>
                 </div>
                 <p class="text-sm text-gray-600 mb-2">📱 ${ticket.phone}</p>
                 <p class="text-sm text-gray-700 mb-3 line-clamp-2">${ticket.issue}</p>
                 <div class="flex justify-between items-center text-xs text-gray-400">
-                    <span>🕐 ${new Date(ticket.meetingTime).toLocaleString('ar-EG')}</span>
+                    <span>🕐 ${new Date(ticket.createdAt).toLocaleString('ar-EG')}</span>
                     <span>#${ticket.ticketNumber || 'N/A'}</span>
                 </div>
-                ${countdownHtml}
                 <div class="mt-3 flex gap-2">
                     ${status === 'active' ? `
-                        <button onclick="joinMeetingRoom('${ticket.id}')" class="flex-1 bg-green-600 text-white py-2 rounded-lg hover:bg-green-700 transition text-sm">
-                            <i class="fas fa-video ml-1"></i> اجتماع
+                        <button onclick="openTicketChat('${ticket.id}')" class="flex-1 bg-green-600 text-white py-2 rounded-lg hover:bg-green-700 transition text-sm">
+                            <i class="fas fa-comment"></i> شات
                         </button>
                     ` : status === 'waiting' ? `
                         <button class="flex-1 bg-gray-300 text-gray-500 py-2 rounded-lg text-sm cursor-not-allowed" disabled>
@@ -10965,7 +11385,6 @@ function renderTickets(tickets) {
                             ✅ منتهية
                         </button>
                     `}
-                    <!-- ✅ جديد: زر الشات -->
                     <button onclick="openTicketChat('${ticket.id}')" class="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition text-sm">
                         <i class="fas fa-comment"></i> شات
                     </button>
