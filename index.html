@@ -6174,6 +6174,10 @@ async function sendInactivityWarning(ticketId) {
     }
 }
 
+// ============================================================
+//  دالة إغلاق المحادثة بسبب الخمول - مع النافذة الجديدة
+// ============================================================
+
 async function closeChatDueToInactivity(ticketId) {
     if (isChatClosing || chatEnded) return;
     isChatClosing = true;
@@ -6181,7 +6185,7 @@ async function closeChatDueToInactivity(ticketId) {
     try {
         // ✅ إرسال رسالة إغلاق
         await sendBotMessage(ticketId, '⏰ انتهت المهلة! سيتم إغلاق المحادثة الآن.');
-        await sendBotMessage(ticketId, '📋 شكراً لتواصلك معنا. إذا احتجت مساعدة، يمكنك فتح تذكرة جديدة.');
+        await sendBotMessage(ticketId, '📋 شكراً لتواصلك معنا. سيتم عرض نافذة التقييم.');
         
         // ✅ إيقاف البوت
         await db.ref(`tickets/${ticketId}/botActive`).set(false);
@@ -6191,15 +6195,15 @@ async function closeChatDueToInactivity(ticketId) {
         chatEnded = true;
         updateBotStatus(false);
         
-        // ✅ عرض نافذة التقييم بعد 2 ثانية
+        // ✅ عرض نافذة التقييم الجديدة بعد 2 ثانية
         setTimeout(() => {
-            showRatingModal(ticketId);
+            showModernRatingModal(ticketId);  // ← استخدم الدالة الجديدة
         }, 2000);
         
         // ✅ حذف التذكرة بعد 30 ثانية من التقييم
         setTimeout(() => {
             deleteTicketAfterChat(ticketId);
-        }, 30000);
+        }, 35000);
         
     } catch (error) {
         console.error('خطأ في إغلاق المحادثة:', error);
@@ -6273,6 +6277,10 @@ async function loadTicketMessages(ticketId) {
 //  دالة حذف الشات المحسنة - مع تأكيد
 // ============================================================
 
+// ============================================================
+//  دالة حذف الشات المحسنة - مع النافذة الجديدة
+// ============================================================
+
 async function startChatClosure() {
     if (!currentTicketId) {
         showToast('❌ لا توجد محادثة نشطة');
@@ -6305,9 +6313,9 @@ async function startChatClosure() {
         chatEnded = true;
         updateBotStatus(false);
         
-        // ✅ عرض نافذة التقييم المتطورة بعد 1.5 ثانية
+        // ✅ عرض نافذة التقييم الجديدة بعد 1.5 ثانية
         setTimeout(() => {
-            showModernRatingModal(currentTicketId);
+            showModernRatingModal(currentTicketId);  // ← استخدم الدالة الجديدة
         }, 1500);
         
         // ✅ حذف التذكرة بعد 30 ثانية (أو بعد التقييم)
@@ -6322,7 +6330,6 @@ async function startChatClosure() {
         showToast('❌ حدث خطأ في إنهاء المحادثة');
     }
 }
-
 // ============================================================
 //  نافذة التقييم المتطورة - تصميم عصري
 // ============================================================
@@ -6625,7 +6632,7 @@ async function submitModernRating(ticketId, rating) {
 }
 
 // ============================================================
-//  إغلاق نافذة التقييم
+//  دالة إغلاق نافذة التقييم الجديدة
 // ============================================================
 
 function closeModernRatingModal() {
@@ -6638,6 +6645,29 @@ function closeModernRatingModal() {
     }
 }
 
+// ============================================================
+//  دالة تخطي التقييم
+// ============================================================
+
+window.skipRating = function() {
+    if (window.ratingSubmitted) return;
+    window.ratingSubmitted = true;
+    
+    const ticketId = currentTicketId;
+    showToast('⏭️ تم تخطي التقييم');
+    closeModernRatingModal();
+    
+    // حذف التذكرة بعد التخطي
+    setTimeout(() => {
+        if (ticketId) {
+            deleteTicketAfterChat(ticketId);
+        }
+    }, 1000);
+};
+
+
+// أضف هذا في بداية الكود مع المتغيرات الأخرى
+window.ratingSubmitted = false;
 // ============================================================
 //  دالة حذف التذكرة بعد انتهاء المحادثة (محسنة)
 // ============================================================
