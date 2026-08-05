@@ -6150,10 +6150,18 @@ function openTicketChat(ticketId) {
 
 function closeTicketChat() {
     // ✅ إلغاء المؤقتات
-    clearTimeout(botInactivityTimer);
-    clearTimeout(botWarningTimer);
-    isChatClosing = false;
-    chatEnded = false;
+    if (typeof botInactivityTimer !== 'undefined') {
+        clearTimeout(botInactivityTimer);
+    }
+    if (typeof botWarningTimer !== 'undefined') {
+        clearTimeout(botWarningTimer);
+    }
+    if (typeof isChatClosing !== 'undefined') {
+        isChatClosing = false;
+    }
+    if (typeof chatEnded !== 'undefined') {
+        chatEnded = false;
+    }
     
     // ✅ إخفاء شاشة الشات
     hideTicketChat();
@@ -7390,7 +7398,12 @@ function showPage(page) {
 //  دالة إخفاء شاشة الشات بشكل كامل
 // ============================================================
 
+// ============================================================
+//  دالة إخفاء شاشة الشات بشكل كامل (بدون استخدام appData)
+// ============================================================
+
 function hideTicketChat() {
+    // ✅ إخفاء شاشة الشات بشكل مباشر
     const chatPage = document.getElementById('ticketChatPage');
     if (chatPage) {
         chatPage.style.display = 'none';
@@ -7399,14 +7412,23 @@ function hideTicketChat() {
         chatPage.style.zIndex = 'auto';
     }
     
-    // ✅ التأكد من إعادة ظهور الصفحة السابقة
-    if (appData.currentPage) {
-        const pageElement = document.getElementById(`${appData.currentPage}Page`);
-        if (pageElement) {
-            pageElement.style.display = 'block';
-            pageElement.classList.remove('hidden');
-        }
+    // ✅ التأكد من إعادة ظهور صفحة التذاكر (بدون استخدام appData)
+    const ticketsPage = document.getElementById('ticketsPage');
+    if (ticketsPage) {
+        ticketsPage.style.display = 'block';
+        ticketsPage.classList.remove('hidden');
+        ticketsPage.style.position = 'relative';
+        ticketsPage.style.zIndex = '10';
     }
+    
+    // ✅ إخفاء أي عناصر شات عالقة
+    document.querySelectorAll('.chat-messages, .chat-input, .chat-header').forEach(el => {
+        if (el.closest('#ticketChatPage')) {
+            // هذه العناصر داخل الشات، لا تفعل شيئاً
+        }
+    });
+    
+    console.log('✅ تم إخفاء شاشة الشات');
 }
 
         function goToHomePage() { showSpecificPage('homePage'); updateHomeUI(); }
@@ -12464,15 +12486,17 @@ window.addEventListener('pagehide', function() {
         let currentTickets = [];
         let currentTicketFilter = 'all';
         let editingTicketId = null;
-
-        // ============================================================
+// ============================================================
 //  دالة الانتقال لصفحة التذاكر - مع إخفاء الشات
 // ============================================================
 
 function goToTicketsPage() {
-    if (!currentUser) {
+    // ✅ التحقق من تسجيل الدخول
+    if (typeof currentUser === 'undefined' || !currentUser) {
         showToast('❌ الرجاء تسجيل الدخول أولاً');
-        showLoginPage();
+        if (typeof showLoginPage === 'function') {
+            showLoginPage();
+        }
         return;
     }
     
@@ -12480,7 +12504,20 @@ function goToTicketsPage() {
     hideTicketChat();
     
     // ✅ إظهار صفحة التذاكر
-    showSpecificPage('ticketsPage');
+    if (typeof showSpecificPage === 'function') {
+        showSpecificPage('ticketsPage');
+    } else {
+        // طريقة بديلة
+        document.querySelectorAll('.page-content').forEach(p => {
+            p.classList.add('hidden');
+            p.style.display = 'none';
+        });
+        const ticketsPage = document.getElementById('ticketsPage');
+        if (ticketsPage) {
+            ticketsPage.classList.remove('hidden');
+            ticketsPage.style.display = 'block';
+        }
+    }
     
     // ✅ تحميل التذاكر
     if (typeof loadTickets === 'function') {
@@ -12493,7 +12530,17 @@ function goToTicketsPage() {
 // ============================================================
 
 function goToTicketsPageFromSidebar() {
-    closeSidebar();
+    // ✅ إغلاق السايد بار
+    const sidebar = document.getElementById('sidebar');
+    if (sidebar) {
+        sidebar.classList.remove('active');
+    }
+    const overlay = document.getElementById('overlay');
+    if (overlay) {
+        overlay.classList.remove('active');
+    }
+    
+    // ✅ الانتقال لصفحة التذاكر
     goToTicketsPage();
 }
     function openTicketModal(ticketId = null) {
