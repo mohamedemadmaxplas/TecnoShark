@@ -4540,21 +4540,22 @@
 
 
 <!-- ============================================ -->
-<!--  نافذة إضافة برنامج (مبسطة - اسم فقط)        -->
+<!--  نافذة إضافة برنامج (مع السعر ونوعه)        -->
 <!-- ============================================ -->
 <div id="addProgramModal" class="modal-overlay" onclick="closeAddProgramModal(event)">
-    <div class="modal-content p-6" style="max-width: 450px; width: 95%;" onclick="event.stopPropagation()">
+    <div class="modal-content p-6" style="max-width: 500px; width: 95%;" onclick="event.stopPropagation()">
         <div class="flex justify-between items-center mb-4">
-            <h3 class="text-xl font-bold">
+            <h3 class="text-xl font-bold modal-title">
                 <i class="fas fa-plus-circle text-green-600 ml-2"></i> 
                 إضافة برنامج جديد
             </h3>
-            <button onclick="closeAddProgramModal()" class="text-gray-400 hover:text-gray-600">
-                <i class="fas fa-times text-xl"></i>
+            <button onclick="closeAddProgramModal(event)" class="text-gray-400 hover:text-gray-600 text-2xl">
+                <i class="fas fa-times"></i>
             </button>
         </div>
         
         <form id="addProgramForm" onsubmit="saveProgram(event)">
+            <!-- اسم البرنامج -->
             <div class="mb-4">
                 <label class="block text-sm font-medium text-gray-700 mb-1">
                     <i class="fas fa-tag text-blue-500 ml-1"></i> اسم البرنامج <span class="text-red-500">*</span>
@@ -4563,22 +4564,55 @@
                        class="w-full p-3 border rounded-lg focus:ring-2 focus:ring-green-500 text-lg" 
                        placeholder="مثال: TS محاسبة" 
                        required>
-                <p class="text-xs text-gray-400 mt-1">سيتم إنشاء أسئلة افتراضية تلقائياً لهذا البرنامج</p>
+            </div>
+            
+            <!-- ✅ حقل السعر -->
+            <div class="mb-4">
+                <label class="block text-sm font-medium text-gray-700 mb-1">
+                    <i class="fas fa-money-bill-wave text-yellow-600 ml-1"></i> سعر البرنامج
+                </label>
+                <input type="number" id="programPrice" 
+                       class="w-full p-3 border rounded-lg focus:ring-2 focus:ring-green-500 text-lg" 
+                       placeholder="أدخل السعر (مثال: 500)" 
+                       min="0">
+            </div>
+            
+            <!-- ✅ نوع السعر -->
+            <div class="mb-4">
+                <label class="block text-sm font-medium text-gray-700 mb-1">
+                    <i class="fas fa-clock text-purple-600 ml-1"></i> نوع السعر
+                </label>
+                <select id="programPriceType" class="w-full p-3 border rounded-lg focus:ring-2 focus:ring-green-500">
+                    <option value="monthly">📅 شهري</option>
+                    <option value="yearly">📆 سنوي</option>
+                    <option value="permanent">♾️ دائم (مرة واحدة)</option>
+                    <option value="free">🎁 مجاني</option>
+                    <option value="custom">📋 مخصص (اتصل بنا)</option>
+                </select>
+            </div>
+            
+            <!-- ✅ وصف السعر (اختياري) -->
+            <div class="mb-4">
+                <label class="block text-sm font-medium text-gray-700 mb-1">
+                    <i class="fas fa-info-circle text-blue-500 ml-1"></i> تفاصيل إضافية عن السعر (اختياري)
+                </label>
+                <textarea id="programPriceDetails" rows="2" 
+                          class="w-full p-3 border rounded-lg focus:ring-2 focus:ring-green-500" 
+                          placeholder="مثال: يشمل التحديثات والدعم الفني لمدة عام"></textarea>
             </div>
             
             <div class="bg-blue-50 rounded-lg p-3 mb-4 text-sm text-blue-700">
                 <i class="fas fa-info-circle ml-1"></i>
-                سيتم إنشاء الأسئلة التالية تلقائياً:
-                <ul class="list-disc pr-5 mt-2 text-xs text-gray-600">
-                    <li>ما هي إصدار برنامج [الاسم] الذي تستخدمه؟</li>
-                    <li>متى بدأت المشكلة بالظهور؟</li>
-                    <li>هل هناك أي رسائل خطأ تظهر؟</li>
-                    <li>هل قمت بتجربة أي حلول؟</li>
-                </ul>
+                سيتم عرض سعر البرنامج للعملاء عند السؤال عنه
             </div>
             
             <button type="submit" class="w-full bg-green-600 text-white py-3 rounded-lg hover:bg-green-700 transition font-semibold text-lg">
                 <i class="fas fa-save ml-2"></i> إضافة البرنامج
+            </button>
+            
+            <button type="button" onclick="closeAddProgramModal(event)" 
+                    class="w-full mt-2 text-gray-400 hover:text-gray-600 transition text-sm py-2">
+                إلغاء
             </button>
         </form>
     </div>
@@ -6137,6 +6171,22 @@ const faqData = [
 {
     keywords: ["مطور", "شركة", "Tecno Shark", "من عمل", "صانع", "المطور"],
     answer: "تم تطوير TS مقاولات بواسطة Tecno Shark Company، فريق من المطورين المحترفين بقيادة محمد عماد وعبدالرحمن محمد."
+},
+// ============================================================
+//  أسئلة جديدة عن البرامج والأسعار
+// ============================================================
+
+{
+    keywords: ["البرامج", "ما هي البرامج", "ما البرامج", "البرامج المتاحة", "قائمة البرامج", "أنواع البرامج"],
+    answer: "📋 *قائمة البرامج المتاحة:*\n\nسيتم عرض البرامج المسجلة في النظام. يرجى اختيار برنامج من القائمة للحصول على تفاصيل أكثر."
+},
+{
+    keywords: ["سعر", "كم سعر", "التكلفة", "بكم", "ثمن", "price", "cost", "اشتراك"],
+    answer: "💰 *استفسار عن الأسعار*\n\nيمكنك معرفة سعر أي برنامج بكتابة اسم البرنامج مع كلمة 'سعر'، مثل:\n• ما هو سعر TS محاسبة؟\n• كم تكلفة TS POS؟\n\nسيتم عرض تفاصيل السعر حسب نوع الاشتراك (شهري/سنوي/دائم)."
+},
+{
+    keywords: ["اشتراك", "شهري", "سنوي", "دائم", "subscription", "renewal"],
+    answer: "📆 *أنواع الاشتراكات المتاحة:*\n\n• 📅 *شهري:* مناسب للاستخدام القصير\n• 📆 *سنوي:* مناسب للاستخدام الطويل مع خصم\n• ♾️ *دائم:* شراء مرة واحدة مدى الحياة\n• 🎁 *مجاني:* نسخة تجريبية أو محدودة\n• 📋 *مخصص:* حسب احتياجاتك - اتصل بنا"
 }
 
 ];
@@ -6163,10 +6213,10 @@ let chatEnded = false;
 // =============================================
 
 // ============================================================
-//  دالة البحث عن إجابة في FAQ - النسخة المحسنة
+//  دالة البحث عن إجابة في faqData (مع مراعاة البرنامج)
 // ============================================================
 
-function findAnswerInFAQ(userMessage) {
+function findAnswerInFAQ(userMessage, programName) {
     if (!userMessage) {
         return { found: false, answer: '⚠️ يرجى كتابة سؤالك', score: 0 };
     }
@@ -6175,8 +6225,14 @@ function findAnswerInFAQ(userMessage) {
     let bestMatch = null;
     let bestScore = 0;
     
+    // ✅ البحث في faqData بالكامل
     faqData.forEach(item => {
         let score = 0;
+        
+        // ✅ نقطة إضافية إذا كانت الإجابة تحتوي على اسم البرنامج
+        if (programName && item.answer && item.answer.toLowerCase().includes(programName.toLowerCase())) {
+            score += 2;
+        }
         
         // البحث عن تطابق الكلمات المفتاحية
         item.keywords.forEach(keyword => {
@@ -6213,11 +6269,18 @@ function findAnswerInFAQ(userMessage) {
         }
     });
     
-    // ✅ العتبة 2 بدلاً من 3 لتكون أكثر تسامحاً
+    // ✅ العتبة 2 لتكون أكثر تسامحاً
     if (bestScore >= 2 && bestMatch) {
+        let answer = bestMatch.answer;
+        
+        // ✅ إضافة اسم البرنامج في الإجابة إذا لم يكن موجوداً
+        if (programName && !answer.toLowerCase().includes(programName.toLowerCase())) {
+            answer = `📌 بخصوص برنامج ${programName}:\n\n${answer}`;
+        }
+        
         return {
             found: true,
-            answer: bestMatch.answer,
+            answer: answer,
             score: bestScore,
             fromCache: true,
             keywords: bestMatch.keywords
@@ -6229,6 +6292,107 @@ function findAnswerInFAQ(userMessage) {
         answer: '❌ لم أجد إجابة مطابقة. يرجى إعادة صياغة السؤال.',
         score: bestScore
     };
+}
+
+// ============================================================
+//  دالة توليد رسالة المساعدة من faqData
+// ============================================================
+
+function generateHelpMessage(programName) {
+    let helpMessage = `📋 *قائمة الأسئلة المتاحة:*\n\n`;
+    
+    // ✅ تصفية الأسئلة المرتبطة بالبرنامج المختار
+    let relevantQuestions = [];
+    let generalQuestions = [];
+    
+    if (programName) {
+        const programWords = programName.toLowerCase().split(' ');
+        
+        faqData.forEach(item => {
+            let isRelevant = false;
+            item.keywords.forEach(kw => {
+                programWords.forEach(word => {
+                    if (word.length > 2 && (kw.toLowerCase().includes(word) || word.includes(kw.toLowerCase()))) {
+                        isRelevant = true;
+                    }
+                });
+            });
+            
+            if (isRelevant) {
+                const q = item.keywords.slice(0, 3).join('، ');
+                if (!relevantQuestions.includes(q)) {
+                    relevantQuestions.push(q);
+                }
+            } else {
+                const q = item.keywords.slice(0, 2).join('، ');
+                if (!generalQuestions.includes(q)) {
+                    generalQuestions.push(q);
+                }
+            }
+        });
+    }
+    
+    // ✅ عرض الأسئلة المرتبطة بالبرنامج أولاً
+    if (relevantQuestions.length > 0) {
+        helpMessage += `📌 *أسئلة متعلقة بـ ${programName}:*\n`;
+        relevantQuestions.slice(0, 10).forEach((q, i) => {
+            helpMessage += `${i+1}. ${q}\n`;
+        });
+        helpMessage += '\n';
+    }
+    
+    // ✅ عرض الأسئلة العامة
+    if (generalQuestions.length > 0) {
+        helpMessage += `📌 *أسئلة عامة:*\n`;
+        generalQuestions.slice(0, 15).forEach((q, i) => {
+            helpMessage += `${i+1}. ${q}\n`;
+        });
+        helpMessage += '\n';
+    }
+    
+    helpMessage += `💡 اكتب أي سؤال وسأجيبك فوراً.`;
+    
+    return helpMessage;
+}
+
+// ============================================================
+//  دالة إضافة إجابة جديدة إلى faqData
+// ============================================================
+
+function addNewFAQ(question, answer, programName) {
+    if (!question || !answer) return false;
+    
+    // ✅ استخراج الكلمات المفتاحية من السؤال
+    const words = question.toLowerCase().split(' ');
+    const keywords = words.filter(word => word.length > 3).slice(0, 6);
+    
+    // ✅ إضافة اسم البرنامج ككلمة مفتاحية إضافية
+    if (programName) {
+        const programWords = programName.toLowerCase().split(' ');
+        programWords.forEach(word => {
+            if (word.length > 2 && !keywords.includes(word)) {
+                keywords.push(word);
+            }
+        });
+    }
+    
+    // ✅ التحقق من عدم وجود إجابة مكررة
+    const exists = faqData.some(item => 
+        item.answer.toLowerCase().includes(answer.toLowerCase().substring(0, 30))
+    );
+    
+    if (!exists) {
+        const newEntry = {
+            keywords: keywords,
+            answer: programName ? `📌 بخصوص برنامج ${programName}:\n\n${answer}` : answer
+        };
+        
+        faqData.push(newEntry);
+        console.log(`✅ تم إضافة سؤال جديد إلى FAQ: "${question}"`);
+        return true;
+    }
+    
+    return false;
 }
 
 // =============================================
@@ -7122,7 +7286,7 @@ function updateBotStatus(isActive) {
 
 
 // ============================================================
-//  دالة معالجة رد البوت - مع معرفة البرنامج المختار
+//  دالة معالجة رد البوت (مع دعم أسئلة البرامج والأسعار)
 // ============================================================
 
 async function handleBotResponse(ticketId, userMessage) {
@@ -7132,7 +7296,7 @@ async function handleBotResponse(ticketId, userMessage) {
         if (!ticket || ticket.botActive === false) return;
         
         const message = userMessage.toLowerCase().trim();
-        const programName = ticket.botProgram || '';  // ✅ البرنامج المختار
+        const programName = ticket.botProgram || '';
         
         // ============================================================
         // ✅ 1. التحقق من "لا" - إنهاء المحادثة
@@ -7140,66 +7304,58 @@ async function handleBotResponse(ticketId, userMessage) {
         if (message === 'لا' || message === 'no' || message === 'كفاية' || message === 'انتهيت' || message === 'خلاص') {
             await sendBotMessage(ticketId, '👋 تم إنهاء المحادثة بناءً على طلبك.');
             await sendBotMessage(ticketId, '📋 شكراً لتواصلك معنا.');
-            
             await db.ref(`tickets/${ticketId}/botActive`).set(false);
             await db.ref(`tickets/${ticketId}/status`).set('ended');
             await db.ref(`tickets/${ticketId}/endedAt`).set(new Date().toISOString());
-            
             chatEnded = true;
             updateBotStatus(false);
-            
-            setTimeout(() => {
-                if (typeof showModernRatingModal === 'function') {
-                    showModernRatingModal(ticketId);
-                }
-            }, 1500);
-            
-            setTimeout(() => {
-                if (typeof deleteTicketAfterChat === 'function') {
-                    deleteTicketAfterChat(ticketId);
-                }
-            }, 35000);
-            
+            setTimeout(() => { if (typeof showModernRatingModal === 'function') showModernRatingModal(ticketId); }, 1500);
+            setTimeout(() => { if (typeof deleteTicketAfterChat === 'function') deleteTicketAfterChat(ticketId); }, 35000);
             return;
         }
         
         // ============================================================
-        // ✅ 2. البحث في الأسئلة المخصصة للبرنامج أولاً
+        // ✅ 2. التحقق من "نعم" - متابعة المحادثة
         // ============================================================
-        const programQuestions = ticket.botQuestions || [];
-        const currentStep = ticket.botCurrentStep || 0;
-        
-        // إذا كانت هناك أسئلة مخصصة للبرنامج ولم ننتهي منها
-        if (programQuestions.length > 0 && currentStep < programQuestions.length) {
-            // هذا يعني أن البوت في وضع طرح الأسئلة
-            // نخزن إجابة المستخدم
-            const answerKey = `answer_${currentStep}`;
-            const answers = ticket.botAnswers || {};
-            answers[answerKey] = userMessage;
-            await db.ref(`tickets/${ticketId}/botAnswers`).set(answers);
-            
-            // ننتقل للسؤال التالي
-            const nextStep = currentStep + 1;
-            await db.ref(`tickets/${ticketId}/botCurrentStep`).set(nextStep);
-            
-            if (nextStep < programQuestions.length) {
-                // نطرح السؤال التالي
-                await sendBotMessage(ticketId, `❓ ${programQuestions[nextStep]}`);
-            } else {
-                // انتهت الأسئلة
-                await sendBotMessage(ticketId, '✅ شكراً لك! تم جمع جميع المعلومات.');
-                await sendBotMessage(ticketId, `📋 سيتم مراجعة بياناتك المتعلقة بـ ${programName} وسنقوم بالتواصل معك قريباً.`);
-                await db.ref(`tickets/${ticketId}/botActive`).set(false);
-                updateBotStatus(false);
-            }
+        if (message === 'نعم' || message === 'yes' || message === 'أكيد' || message === 'طبعاً' || message === 'موافق') {
+            await sendBotMessage(ticketId, '👋 رائع! اكتب سؤالك الجديد وسأجيبك فوراً.');
+            await db.ref(`tickets/${ticketId}/botStep`).set(1);
             return;
         }
         
         // ============================================================
-        // ✅ 3. البحث في FAQ مع مراعاة البرنامج المختار
+        // ✅ 3. التحقق من "مساعدة" - عرض القائمة
         // ============================================================
-        const cached = findAnswerInFAQWithProgram(userMessage, programName);
+        if (message === 'مساعدة' || message === 'help' || message === 'أسئلة' || message === 'استفسار' || message === 'ممكن اسأل') {
+            const helpMessage = generateHelpMessage(programName);
+            await sendBotMessage(ticketId, helpMessage);
+            return;
+        }
         
+        // ============================================================
+        // ✅ 4. التحقق من أسئلة البرامج (ما هي البرامج؟)
+        // ============================================================
+        if (message.includes('البرامج') || message.includes('ما هي') || message.includes('ما هي البرامج')) {
+            const programsList = await getProgramsList();
+            await sendBotMessage(ticketId, programsList);
+            await sendBotMessage(ticketId, '📋 هل لديك أي سؤال آخر؟ اكتب "نعم" للمتابعة أو "لا" لإنهاء المحادثة.');
+            return;
+        }
+        
+        // ============================================================
+        // ✅ 5. التحقق من أسئلة الأسعار (ما هو سعر [اسم البرنامج]؟)
+        // ============================================================
+        const priceMatch = await checkPriceQuestion(message);
+        if (priceMatch.found) {
+            await sendBotMessage(ticketId, priceMatch.answer);
+            await sendBotMessage(ticketId, '📋 هل لديك أي سؤال آخر؟ اكتب "نعم" للمتابعة أو "لا" لإنهاء المحادثة.');
+            return;
+        }
+        
+        // ============================================================
+        // ✅ 6. البحث عن إجابة في faqData
+        // ============================================================
+        const cached = findAnswerInFAQ(message, programName);
         if (cached.found) {
             await sendBotMessage(ticketId, cached.answer);
             await sendBotMessage(ticketId, '📋 هل لديك أي سؤال آخر؟ اكتب "نعم" للمتابعة أو "لا" لإنهاء المحادثة.');
@@ -7208,23 +7364,21 @@ async function handleBotResponse(ticketId, userMessage) {
         }
         
         // ============================================================
-        // ✅ 4. استخدام DeepSeek (إذا كان متاحاً)
+        // ✅ 7. استخدام DeepSeek
         // ============================================================
         if (typeof askDeepSeek === 'function') {
             await sendBotMessage(ticketId, '⏳ جاري البحث عن إجابة...');
             const aiResponse = await askDeepSeek(userMessage);
-            
             if (aiResponse.success) {
                 await sendBotMessage(ticketId, aiResponse.answer);
-                // حفظ الإجابة في FAQ مع البرنامج
-                addNewFAQWithProgram(userMessage, aiResponse.answer, programName);
+                addNewFAQ(userMessage, aiResponse.answer, programName);
                 await sendBotMessage(ticketId, '📋 هل لديك أي سؤال آخر؟ اكتب "نعم" للمتابعة أو "لا" لإنهاء المحادثة.');
                 return;
             }
         }
         
         // ============================================================
-        // ✅ 5. إذا لم توجد إجابة
+        // ✅ 8. إذا لم توجد إجابة
         // ============================================================
         await sendBotMessage(ticketId, '⚠️ عذراً، لم أستطع فهم سؤالك بالكامل.');
         await sendBotMessage(ticketId, '💡 يرجى إعادة صياغة السؤال بشكل أوضح، أو اكتب "مساعدة" للحصول على قائمة بالأسئلة المتاحة.');
@@ -7235,6 +7389,168 @@ async function handleBotResponse(ticketId, userMessage) {
     }
 }
 
+
+// ============================================================
+//  دالة جلب قائمة البرامج من Firebase
+// ============================================================
+
+async function getProgramsList() {
+    try {
+        const snapshot = await db.ref('programs').once('value');
+        const programs = snapshot.val();
+        
+        if (!programs) {
+            return '📋 *لا توجد برامج مسجلة حالياً*\n\nيرجى التواصل مع الإدارة لإضافة البرامج.';
+        }
+        
+        let message = '📋 *قائمة البرامج المتاحة:*\n\n';
+        let index = 1;
+        
+        for (let id in programs) {
+            const program = programs[id];
+            const priceText = getPriceText(program.price || 0, program.priceType || 'free');
+            message += `${index}. *${program.name}*\n`;
+            message += `   💰 ${priceText}\n`;
+            if (program.priceDetails) {
+                message += `   📝 ${program.priceDetails}\n`;
+            }
+            message += '\n';
+            index++;
+        }
+        
+        message += '💡 *للاستفسار عن سعر برنامج معين:*\n';
+        message += 'اكتب "ما هو سعر [اسم البرنامج]"\n';
+        message += 'مثال: "ما هو سعر TS محاسبة"';
+        
+        return message;
+        
+    } catch (error) {
+        console.error('❌ خطأ في جلب قائمة البرامج:', error);
+        return '❌ حدث خطأ في جلب قائمة البرامج. يرجى المحاولة لاحقاً.';
+    }
+}
+
+// ============================================================
+//  دالة التحقق من أسئلة الأسعار
+// ============================================================
+
+async function checkPriceQuestion(message) {
+    // ✅ أنماط البحث عن السعر
+    const pricePatterns = [
+        /سعر\s*(.*)/i,
+        /كم\s*سعر\s*(.*)/i,
+        /بكم\s*(.*)/i,
+        /ثمن\s*(.*)/i,
+        /تكلفة\s*(.*)/i,
+        /price\s*(.*)/i,
+        /cost\s*(.*)/i,
+        /ما هو سعر\s*(.*)/i,
+        /كم تكلفة\s*(.*)/i
+    ];
+    
+    let programName = null;
+    
+    // ✅ محاولة استخراج اسم البرنامج من السؤال
+    for (let pattern of pricePatterns) {
+        const match = message.match(pattern);
+        if (match && match[1]) {
+            programName = match[1].trim();
+            break;
+        }
+    }
+    
+    // ✅ إذا لم يتم العثور على اسم برنامج، حاول البحث عن كلمات مفتاحية
+    if (!programName) {
+        // البحث عن أي كلمة تشبه اسم برنامج
+        const words = message.split(' ');
+        for (let word of words) {
+            if (word.length > 3) {
+                programName = word;
+                break;
+            }
+        }
+    }
+    
+    if (!programName) {
+        return { found: false, answer: '' };
+    }
+    
+    // ✅ البحث عن البرنامج في Firebase
+    try {
+        const snapshot = await db.ref('programs').once('value');
+        const programs = snapshot.val();
+        
+        if (!programs) {
+            return { 
+                found: true, 
+                answer: '📋 *لا توجد برامج مسجلة حالياً*\n\nيرجى التواصل مع الإدارة.'
+            };
+        }
+        
+        let foundProgram = null;
+        let foundId = null;
+        
+        // ✅ البحث عن برنامج مطابق للاسم
+        for (let id in programs) {
+            const program = programs[id];
+            // مقارنة الأسماء (مع تجاهل الحروف)
+            if (program.name.toLowerCase().includes(programName.toLowerCase()) || 
+                programName.toLowerCase().includes(program.name.toLowerCase())) {
+                foundProgram = program;
+                foundId = id;
+                break;
+            }
+        }
+        
+        if (!foundProgram) {
+            // ✅ عرض قائمة البرامج المتاحة
+            let programList = '📋 *البرامج المتاحة:*\n';
+            let index = 1;
+            for (let id in programs) {
+                programList += `${index}. ${programs[id].name}\n`;
+                index++;
+            }
+            return {
+                found: true,
+                answer: `❌ *لم أجد برنامجاً باسم "${programName}"*\n\n${programList}\n💡 اكتب اسم البرنامج بشكل صحيح للسؤال عن سعره.`
+            };
+        }
+        
+        // ✅ عرض تفاصيل السعر
+        const priceText = getPriceText(foundProgram.price || 0, foundProgram.priceType || 'free');
+        let answer = `💰 *سعر برنامج ${foundProgram.name}*\n\n`;
+        answer += `📌 *السعر:* ${priceText}\n`;
+        
+        if (foundProgram.priceDetails) {
+            answer += `📝 *تفاصيل:* ${foundProgram.priceDetails}\n`;
+        }
+        
+        // ✅ إضافة معلومات إضافية حسب نوع السعر
+        const priceType = foundProgram.priceType || 'free';
+        if (priceType === 'monthly') {
+            answer += `\n📅 *اشتراك شهري:* يمكنك التجديد شهرياً.`;
+        } else if (priceType === 'yearly') {
+            answer += `\n📆 *اشتراك سنوي:* تجديد سنوي مع خصم.`;
+        } else if (priceType === 'permanent') {
+            answer += `\n♾️ *شراء دائم:* مرة واحدة مدى الحياة.`;
+        } else if (priceType === 'free') {
+            answer += `\n🎁 *مجاني:* نسخة تجريبية أو محدودة.`;
+        } else if (priceType === 'custom') {
+            answer += `\n📋 *مخصص:* يرجى الاتصال بنا للحصول على عرض سعر.`;
+        }
+        
+        answer += `\n\n💡 للتواصل: 📞 01144100018 - 01126125881`;
+        
+        return { found: true, answer: answer };
+        
+    } catch (error) {
+        console.error('❌ خطأ في البحث عن السعر:', error);
+        return {
+            found: true,
+            answer: '❌ حدث خطأ في البحث عن السعر. يرجى المحاولة لاحقاً.'
+        };
+    }
+}
 // ============================================================
 //  دالة البحث عن إجابة مع معرفة البرنامج المختار
 // ============================================================
@@ -8902,13 +9218,12 @@ async function publishLocalTracksLiveKit() {
 
 
 // ============================================================
-//  دالة تحميل البرامج في قائمة الاختيار (مصلحة)
+//  دالة تحميل البرامج في قائمة الاختيار
 // ============================================================
 
 async function loadProgramsSelect() {
     const select = document.getElementById('ticketProgram');
     if (!select) {
-        // ✅ إذا لم يكن العنصر موجوداً، ننتظر حتى يتم إنشاؤه
         setTimeout(() => loadProgramsSelect(), 500);
         return;
     }
@@ -9409,7 +9724,7 @@ function closeAddProgramModal(event) {
 
 
 // ============================================================
-//  دالة حفظ برنامج جديد - تأخذ الأسئلة من faqData
+//  دالة حفظ برنامج جديد (مع السعر ونوعه)
 // ============================================================
 
 async function saveProgram(event) {
@@ -9429,6 +9744,16 @@ async function saveProgram(event) {
         return;
     }
     
+    // ✅ جلب السعر ونوعه
+    const priceInput = document.getElementById('programPrice');
+    const price = priceInput ? parseFloat(priceInput.value) || 0 : 0;
+    
+    const priceTypeSelect = document.getElementById('programPriceType');
+    const priceType = priceTypeSelect ? priceTypeSelect.value : 'free';
+    
+    const priceDetailsText = document.getElementById('programPriceDetails');
+    const priceDetails = priceDetailsText ? priceDetailsText.value.trim() : '';
+    
     // ✅ التحقق من عدم وجود برنامج بنفس الاسم
     try {
         const snapshot = await db.ref('programs').once('value');
@@ -9447,124 +9772,64 @@ async function saveProgram(event) {
         console.error('❌ خطأ في التحقق من البرنامج:', error);
     }
     
-    // ============================================================
-    // ✅ استخراج الأسئلة والإجابات من faqData
-    // ============================================================
-    
-    // 1. تصفية الأسئلة التي تحتوي على اسم البرنامج أو كلمات مفتاحية مرتبطة
-    const programKeywords = name.toLowerCase().split(' ');
-    
-    // 2. البحث في faqData عن أسئلة مرتبطة بهذا البرنامج
-    let relatedQuestions = [];
-    let relatedAnswers = [];
-    
-    // ✅ البحث عن الأسئلة التي تحتوي على كلمات مفتاحية تشبه اسم البرنامج
-    faqData.forEach(item => {
-        let matchScore = 0;
-        
-        // التحقق من وجود كلمات من اسم البرنامج في الكلمات المفتاحية
-        programKeywords.forEach(keyword => {
-            if (keyword.length > 2) {
-                item.keywords.forEach(kw => {
-                    if (kw.toLowerCase().includes(keyword) || keyword.includes(kw.toLowerCase())) {
-                        matchScore += 2;
-                    }
-                });
-            }
-        });
-        
-        // إذا كانت درجة التطابق عالية، نعتبر السؤال مرتبطاً بالبرنامج
-        if (matchScore >= 2) {
-            // استخراج السؤال من الكلمات المفتاحية (نأخذ أول كلمة كعنوان للسؤال)
-            const question = `ما هي المعلومات المتعلقة بـ ${item.keywords.slice(0, 3).join('، ')}؟`;
-            if (!relatedQuestions.includes(question)) {
-                relatedQuestions.push(question);
-                relatedAnswers.push(item.answer);
-            }
-        }
-    });
-    
-    // ============================================================
-    // ✅ إذا لم يتم العثور على أسئلة مرتبطة، استخدم الأسئلة الافتراضية
-    // ============================================================
-    
-    if (relatedQuestions.length === 0) {
-        // أسئلة عامة عن البرنامج
-        relatedQuestions = [
-            `ما هي إصدار برنامج ${name} الذي تستخدمه؟`,
-            'متى بدأت المشكلة بالظهور؟',
-            'هل هناك أي رسائل خطأ تظهر؟',
-            'هل قمت بتجربة أي حلول؟'
-        ];
-        relatedAnswers = [
-            'أدخل إصدار البرنامج',
-            'أدخل تاريخ ظهور المشكلة',
-            'أدخل رسائل الخطأ إن وجدت',
-            'أدخل الحلول التي جربتها'
-        ];
-    }
-    
-    // ============================================================
-    // ✅ إضافة أسئلة إضافية من faqData (أسئلة عامة)
-    // ============================================================
-    
-    // إضافة أسئلة عامة من faqData (مثل: ما هو النظام؟، كيف أضيف منتجاً؟ إلخ)
-    const generalKeywords = ['ما هو', 'كيف', 'إضافة', 'تعديل', 'حذف', 'طباعة', 'بحث', 'تقرير'];
-    const generalQuestions = [];
-    const generalAnswers = [];
-    
-    faqData.forEach(item => {
-        let isGeneral = false;
-        item.keywords.forEach(kw => {
-            if (generalKeywords.some(gk => kw.toLowerCase().includes(gk))) {
-                isGeneral = true;
-            }
-        });
-        
-        if (isGeneral && !relatedQuestions.includes(item.answer)) {
-            // نضيف سؤال عام عن البرنامج
-            const q = `هل لديك سؤال حول ${item.keywords.slice(0, 2).join(' أو ')}؟`;
-            if (!generalQuestions.includes(q) && generalQuestions.length < 10) {
-                generalQuestions.push(q);
-                generalAnswers.push(item.answer);
-            }
-        }
-    });
-    
-    // دمج الأسئلة (المرتبطة أولاً ثم العامة)
-    const finalQuestions = [...relatedQuestions, ...generalQuestions];
-    const finalAnswers = [...relatedAnswers, ...generalAnswers];
-    
-    // ============================================================
-    // ✅ حفظ البرنامج مع الأسئلة المستخرجة
-    // ============================================================
-    
+    // ✅ حفظ البرنامج مع السعر ونوعه
     const programData = {
         name: name,
-        questions: finalQuestions,
-        answers: finalAnswers,
+        price: price,
+        priceType: priceType,
+        priceDetails: priceDetails,
         createdAt: new Date().toISOString(),
         createdBy: currentUser?.uid || 'admin',
         autoGenerated: true,
-        keywords: programKeywords,  // حفظ الكلمات المفتاحية للبحث المستقبلي
-        source: 'faqData'  // مصدر الأسئلة
+        useFAQ: true
     };
     
     try {
         const newRef = db.ref('programs').push();
         await newRef.set(programData);
         
-        showToast(`✅ تم إضافة برنامج "${name}" مع ${finalQuestions.length} سؤال من FAQ`);
+        // ✅ عرض رسالة مع السعر
+        const priceText = getPriceText(price, priceType);
+        showToast(`✅ تم إضافة برنامج "${name}" بسعر ${priceText}`);
+        
         closeAddProgramModal();
         loadAdminPrograms();
         loadProgramsSelect();
         
-        // ✅ عرض عدد الأسئلة المستخرجة
-        console.log(`📋 تم استخراج ${finalQuestions.length} سؤال من faqData للبرنامج ${name}`);
+        // ✅ إعادة تعيين الحقول
+        if (nameInput) nameInput.value = '';
+        if (priceInput) priceInput.value = '';
+        if (priceDetailsText) priceDetailsText.value = '';
         
     } catch (error) {
         console.error('❌ خطأ في حفظ البرنامج:', error);
         showToast('❌ حدث خطأ في حفظ البرنامج');
+    }
+}
+
+// ============================================================
+//  دالة مساعدة: تحويل السعر ونوعه إلى نص
+// ============================================================
+
+function getPriceText(price, priceType) {
+    const typeMap = {
+        'monthly': 'شهري',
+        'yearly': 'سنوي',
+        'permanent': 'دائم (مرة واحدة)',
+        'free': 'مجاني',
+        'custom': 'مخصص (اتصل بنا)'
+    };
+    
+    const typeText = typeMap[priceType] || priceType;
+    
+    if (priceType === 'free') {
+        return '🎁 مجاني';
+    } else if (priceType === 'custom') {
+        return '📋 مخصص - اتصل بنا';
+    } else if (price > 0) {
+        return `${price.toLocaleString()} ج.م / ${typeText}`;
+    } else {
+        return `💰 ${typeText}`;
     }
 }
 
@@ -9595,12 +9860,11 @@ async function deleteProgram(programId) {
 }
 
 // ============================================================
-//  دالة تعديل برنامج (مصلحة)
+//  دالة تعديل برنامج (مع السعر ونوعه)
 // ============================================================
 
 async function editProgram(programId) {
     try {
-        // ✅ التأكد من وجود النافذة
         let modal = document.getElementById('addProgramModal');
         if (!modal) {
             createAddProgramModal();
@@ -9614,11 +9878,20 @@ async function editProgram(programId) {
             return;
         }
         
-        // ✅ ملء اسم البرنامج
+        // ✅ ملء البيانات
         const nameInput = document.getElementById('programName');
         if (nameInput) nameInput.value = program.name || '';
         
-        // ✅ تغيير عنوان النافذة
+        const priceInput = document.getElementById('programPrice');
+        if (priceInput) priceInput.value = program.price || 0;
+        
+        const priceTypeSelect = document.getElementById('programPriceType');
+        if (priceTypeSelect) priceTypeSelect.value = program.priceType || 'free';
+        
+        const priceDetailsText = document.getElementById('programPriceDetails');
+        if (priceDetailsText) priceDetailsText.value = program.priceDetails || '';
+        
+        // ✅ تغيير العنوان
         const title = document.querySelector('#addProgramModal .modal-title');
         if (title) {
             title.innerHTML = '<i class="fas fa-edit text-yellow-600 ml-2"></i> تعديل البرنامج';
@@ -9637,7 +9910,6 @@ async function editProgram(programId) {
             };
         }
         
-        // ✅ إظهار النافذة
         if (modal) {
             modal.classList.add('active');
             modal.style.display = 'flex';
@@ -9648,9 +9920,12 @@ async function editProgram(programId) {
         showToast('❌ حدث خطأ في تحميل البرنامج');
     }
 }
+// ============================================================
+//  دالة تحديث برنامج (مبسطة)
+// ============================================================
 
 // ============================================================
-//  دالة تحديث برنامج (مصلحة)
+//  دالة تحديث برنامج (مع السعر ونوعه)
 // ============================================================
 
 async function updateProgram(programId) {
@@ -9667,6 +9942,16 @@ async function updateProgram(programId) {
         return;
     }
     
+    // ✅ جلب السعر ونوعه
+    const priceInput = document.getElementById('programPrice');
+    const price = priceInput ? parseFloat(priceInput.value) || 0 : 0;
+    
+    const priceTypeSelect = document.getElementById('programPriceType');
+    const priceType = priceTypeSelect ? priceTypeSelect.value : 'free';
+    
+    const priceDetailsText = document.getElementById('programPriceDetails');
+    const priceDetails = priceDetailsText ? priceDetailsText.value.trim() : '';
+    
     try {
         const snapshot = await db.ref(`programs/${programId}`).once('value');
         const oldProgram = snapshot.val();
@@ -9676,22 +9961,23 @@ async function updateProgram(programId) {
             return;
         }
         
-        // ✅ تحديث الاسم فقط مع الحفاظ على الأسئلة
+        // ✅ تحديث البيانات
         const programData = {
             ...oldProgram,
             name: name,
+            price: price,
+            priceType: priceType,
+            priceDetails: priceDetails,
             updatedAt: new Date().toISOString(),
             updatedBy: currentUser?.uid || 'admin'
         };
         
         await db.ref(`programs/${programId}`).update(programData);
         
-        showToast(`✅ تم تحديث البرنامج إلى "${name}"`);
+        const priceText = getPriceText(price, priceType);
+        showToast(`✅ تم تحديث برنامج "${name}" بسعر ${priceText}`);
         
-        // ✅ إغلاق النافذة
         closeAddProgramModal();
-        
-        // ✅ تحديث القوائم
         loadAdminPrograms();
         loadProgramsSelect();
         
@@ -9702,7 +9988,7 @@ async function updateProgram(programId) {
 }
 
 // ============================================================
-//  دالة عرض البرامج في لوحة المدير (مع مصدر الأسئلة)
+//  دالة عرض البرامج في لوحة المدير (مع السعر ونوعه)
 // ============================================================
 
 async function loadAdminPrograms() {
@@ -9742,32 +10028,27 @@ async function loadAdminPrograms() {
         let html = '';
         for (let id in programs) {
             const program = programs[id];
-            const questionCount = (program.questions || []).length;
-            const source = program.source || 'افتراضي';
-            const isAuto = program.autoGenerated ? '🤖 تلقائي' : '✏️ مخصص';
-            const sourceIcon = source === 'faqData' ? '📚' : '⚙️';
-            const sourceText = source === 'faqData' ? 'من FAQ' : 'افتراضي';
+            const priceText = getPriceText(program.price || 0, program.priceType || 'free');
+            
+            // ✅ تحديد لون السعر حسب النوع
+            let priceColor = 'text-green-600';
+            if (program.priceType === 'free') priceColor = 'text-blue-600';
+            else if (program.priceType === 'custom') priceColor = 'text-purple-600';
+            else if (program.priceType === 'permanent') priceColor = 'text-yellow-600';
             
             html += `
                 <div class="flex justify-between items-center p-4 hover:bg-gray-50 border-b">
                     <div>
                         <div class="font-bold text-gray-800 text-lg">${program.name}</div>
                         <div class="text-sm text-gray-500">
-                            <i class="fas fa-question-circle ml-1"></i> ${questionCount} سؤال
-                            <span class="mx-2">|</span>
-                            <span class="text-xs bg-gray-200 px-2 py-0.5 rounded-full">${isAuto}</span>
-                            <span class="mx-2">|</span>
-                            <span class="text-xs ${source === 'faqData' ? 'bg-blue-100 text-blue-700' : 'bg-gray-100 text-gray-600'} px-2 py-0.5 rounded-full">
-                                ${sourceIcon} ${sourceText}
-                            </span>
-                            <span class="mx-2">|</span>
+                            <span class="font-bold ${priceColor}">💰 ${priceText}</span>
+                            ${program.priceDetails ? `<span class="mx-2">|</span><span class="text-xs text-gray-400">${program.priceDetails}</span>` : ''}
+                        </div>
+                        <div class="text-xs text-gray-400 mt-1">
                             <i class="fas fa-calendar ml-1"></i> ${new Date(program.createdAt).toLocaleDateString('ar-EG')}
                         </div>
                     </div>
                     <div class="flex gap-2">
-                        <button onclick="viewProgramQuestions('${id}')" class="text-blue-500 hover:text-blue-700 text-sm px-2 py-1 rounded hover:bg-blue-50">
-                            <i class="fas fa-eye"></i>
-                        </button>
                         <button onclick="editProgram('${id}')" class="text-green-500 hover:text-green-700 text-sm px-2 py-1 rounded hover:bg-green-50">
                             <i class="fas fa-edit"></i>
                         </button>
