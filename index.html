@@ -4225,9 +4225,7 @@
         </div>
     </div>
 
- <!-- ============================================ -->
-<!--  1. نافذة إنشاء تذكرة جديدة (بدون ميتنج)    -->
-<!-- ============================================ -->
+ <!-- ==================== نافذة إنشاء تذكرة جديدة (مع اختيار البرنامج) ==================== -->
 <div id="ticketModal" class="modal-overlay" onclick="closeTicketModal(event)">
     <div class="modal-content p-6" style="max-width: 550px; width: 95%;" onclick="event.stopPropagation()">
         <div class="flex justify-between items-center mb-4">
@@ -4241,6 +4239,17 @@
         </div>
         
         <form id="ticketForm" onsubmit="saveTicket(event)">
+            <!-- ✅ حقل اختيار البرنامج (جديد) -->
+            <div class="mb-3">
+                <label class="block text-sm font-medium text-gray-700 mb-1">
+                    <i class="fas fa-code text-blue-500 ml-1"></i> اختر البرنامج <span class="text-red-500">*</span>
+                </label>
+                <select id="ticketProgram" class="w-full p-2 border rounded-lg focus:ring-2 focus:ring-blue-500" required>
+                    <option value="">-- اختر البرنامج --</option>
+                </select>
+                <p class="text-xs text-gray-400 mt-1">اختر البرنامج الذي تريد الاستفسار عنه</p>
+            </div>
+            
             <div class="mb-3">
                 <label class="block text-sm font-medium text-gray-700 mb-1">اسم العميل <span class="text-red-500">*</span></label>
                 <input type="text" id="ticketClientName" class="w-full p-2 border rounded-lg focus:ring-2 focus:ring-blue-500" placeholder="أدخل اسم العميل" required>
@@ -4383,8 +4392,11 @@
 </div>
 
 
+<!-- ============================================ -->
+<!--  نافذة إضافة برنامج (مبسطة - اسم فقط)        -->
+<!-- ============================================ -->
 <div id="addProgramModal" class="modal-overlay" onclick="closeAddProgramModal(event)">
-    <div class="modal-content p-6" style="max-width: 550px; width: 95%;" onclick="event.stopPropagation()">
+    <div class="modal-content p-6" style="max-width: 450px; width: 95%;" onclick="event.stopPropagation()">
         <div class="flex justify-between items-center mb-4">
             <h3 class="text-xl font-bold">
                 <i class="fas fa-plus-circle text-green-600 ml-2"></i> 
@@ -4396,31 +4408,31 @@
         </div>
         
         <form id="addProgramForm" onsubmit="saveProgram(event)">
-            <div class="mb-3">
-                <label class="block text-sm font-medium text-gray-700 mb-1">اسم البرنامج <span class="text-red-500">*</span></label>
-                <input type="text" id="programName" class="w-full p-2 border rounded-lg focus:ring-2 focus:ring-green-500" placeholder="مثال: برنامج المحاسبة" required>
-            </div>
-            
-            <div class="mb-3">
-                <label class="block text-sm font-medium text-gray-700 mb-1">الأسئلة (سؤال في كل سطر) <span class="text-red-500">*</span></label>
-                <textarea id="programQuestions" rows="5" class="w-full p-2 border rounded-lg focus:ring-2 focus:ring-green-500" placeholder="ما هي إصدار البرنامج؟&#10;هل توجد مشكلة في الفواتير؟&#10;متى ظهرت المشكلة؟" required></textarea>
-                <p class="text-xs text-gray-400 mt-1">أدخل سؤالاً واحداً في كل سطر</p>
-            </div>
-            
             <div class="mb-4">
-                <label class="block text-sm font-medium text-gray-700 mb-1">الإجابات الافتراضية (اختياري)</label>
-                <textarea id="programAnswers" rows="3" class="w-full p-2 border rounded-lg focus:ring-2 focus:ring-green-500" placeholder="الإصدار 3.2&#10;نعم، الفواتير لا تطبع&#10;منذ يومين"></textarea>
-                <p class="text-xs text-gray-400 mt-1">أدخل إجابة واحدة في كل سطر (بنفس ترتيب الأسئلة)</p>
+                <label class="block text-sm font-medium text-gray-700 mb-1">
+                    <i class="fas fa-tag text-blue-500 ml-1"></i> اسم البرنامج <span class="text-red-500">*</span>
+                </label>
+                <input type="text" id="programName" 
+                       class="w-full p-3 border rounded-lg focus:ring-2 focus:ring-green-500 text-lg" 
+                       placeholder="مثال: TS محاسبة" 
+                       required>
+                <p class="text-xs text-gray-400 mt-1">سيتم إنشاء أسئلة افتراضية تلقائياً لهذا البرنامج</p>
             </div>
             
-            <div class="flex gap-3">
-                <button type="submit" class="flex-1 bg-green-600 text-white py-2 rounded-lg hover:bg-green-700 transition font-semibold">
-                    <i class="fas fa-save ml-2"></i> حفظ البرنامج
-                </button>
-                <button type="button" onclick="closeAddProgramModal()" class="px-4 py-2 bg-gray-200 text-gray-700 rounded-lg hover:bg-gray-300 transition">
-                    إلغاء
-                </button>
+            <div class="bg-blue-50 rounded-lg p-3 mb-4 text-sm text-blue-700">
+                <i class="fas fa-info-circle ml-1"></i>
+                سيتم إنشاء الأسئلة التالية تلقائياً:
+                <ul class="list-disc pr-5 mt-2 text-xs text-gray-600">
+                    <li>ما هي إصدار برنامج [الاسم] الذي تستخدمه؟</li>
+                    <li>متى بدأت المشكلة بالظهور؟</li>
+                    <li>هل هناك أي رسائل خطأ تظهر؟</li>
+                    <li>هل قمت بتجربة أي حلول؟</li>
+                </ul>
             </div>
+            
+            <button type="submit" class="w-full bg-green-600 text-white py-3 rounded-lg hover:bg-green-700 transition font-semibold text-lg">
+                <i class="fas fa-save ml-2"></i> إضافة البرنامج
+            </button>
         </form>
     </div>
 </div>
@@ -5897,6 +5909,87 @@ const faqData = [
 {
     keywords: ["مرحباً", "السلام", "اهلا", "سلام", "مرحبا", "hello", "hi"],
     answer: "👋 أهلاً بك! كيف يمكنني مساعدتك اليوم؟ اكتب سؤالك وسأجيبك فوراً."
+},
+// =============================================
+//  الأسئلة المستخرجة من برنامج TS مقاولات
+//  أضف هذه العناصر داخل مصفوفة faqData
+// =============================================
+
+{
+    keywords: ["TS مقاولات", "نظام إدارة مواد البناء", "التعريف", "ما هو", "إيه", "يعني"],
+    answer: "TS مقاولات هو نظام متكامل لإدارة مواد البناء والحجوزات، يشمل إدارة المنتجات، العملاء، الموردين، الفواتير، الحجوزات، الخزنة، المصروفات، الموظفين، والتقارير."
+},
+{
+    keywords: ["دخول", "تسجيل دخول", "login", "اسم مستخدم", "كلمة مرور", "admin", "1234"],
+    answer: "افتح صفحة تسجيل الدخول، أدخل اسم المستخدم 'admin' وكلمة المرور '1234' واضغط على زر تسجيل الدخول."
+},
+{
+    keywords: ["منتج", "إضافة", "مواد بناء", "مخزون", "stock", "منتجات"],
+    answer: "من صفحة 'مواد البناء'، اضغط على زر 'إضافة مادة'، أدخل اسم المنتج، الفئة، الوحدة، سعر البيع، سعر التكلفة، والكمية، ثم اضغط حفظ."
+},
+{
+    keywords: ["عميل", "زبون", "إضافة عميل", "تسجيل عميل", "عملاء"],
+    answer: "من صفحة 'العملاء'، اضغط على زر 'إضافة عميل'، أدخل الاسم، رقم الهاتف، والعنوان، ثم اضغط حفظ."
+},
+{
+    keywords: ["مورد", "تاجر", "إضافة مورد", "موردين", "موردون"],
+    answer: "من صفحة 'الموردين'، اضغط على زر 'إضافة مورد'، أدخل اسم المورد، رقم الهاتف، البريد الإلكتروني، والعنوان، ثم اضغط حفظ."
+},
+{
+    keywords: ["فاتورة مورد", "شراء", "فواتير مشتريات", "سداد مورد", "فاتورة مشتريات"],
+    answer: "من صفحة 'الموردين'، اضغط على زر 'إضافة فاتورة مورد'، اختر المورد، أدخل الوصف، الإجمالي، المبلغ المدفوع مقدمًا، ونوع الدفع، ثم اضغط حفظ."
+},
+{
+    keywords: ["بيع", "نقاط بيع", "POS", "شراء", "فاتورة بيع", "مبيعات"],
+    answer: "من صفحة 'نقاط البيع'، اختر المنتجات من القائمة، حدد الكمية، اختر العميل (نقدي/عميل عادي/حجز)، اختر طريقة الدفع، ثم اضغط 'إتمام العملية'."
+},
+{
+    keywords: ["حجز", "reservation", "حجز مواد", "دفعة مقدمة", "حجوزات"],
+    answer: "من نقاط البيع، اختر 'حجز للعميل'، اختر العميل، أضف المنتجات، أدخل المبلغ المدفوع مقدمًا، ثم اضغط 'إتمام العملية' لإنشاء الحجز."
+},
+{
+    keywords: ["خزنة", "إيداع", "سحب", "رصيد", "cash", "حركات الخزنة"],
+    answer: "من صفحة 'الخزنة'، يمكنك مشاهدة الرصيد الحالي، إضافة إيداع أو سحب، وعرض جميع حركات الخزنة مع التقارير."
+},
+{
+    keywords: ["مصروف", "صرف", "expense", "ساحب", "مصروفات"],
+    answer: "من صفحة 'المصروفات'، اضغط على 'إضافة مصروف'، أدخل سبب المصروف، المبلغ، واسم الساحب، ثم اضغط حفظ."
+},
+{
+    keywords: ["تقرير", "إحصائيات", "report", "stats", "طباعة تقرير", "تقارير"],
+    answer: "من صفحة 'التقارير'، اختر الفترة الزمنية (من - إلى)، ثم اضغط 'توليد تقرير' لعرض المبيعات والأرباح والمصروفات."
+},
+{
+    keywords: ["موظف", "كاشير", "إضافة موظف", "صلاحيات", "موظفين"],
+    answer: "من صفحة 'الموظفين'، اضغط على 'إضافة موظف'، أدخل الاسم، اسم المستخدم، كلمة المرور، الدور، والصلاحيات، ثم اضغط حفظ."
+},
+{
+    keywords: ["إعدادات", "تغيير اسم الشركة", "تغيير باسورد", "settings", "ضبط"],
+    answer: "من صفحة 'الإعدادات'، يمكنك تغيير اسم الشركة، رقم الهاتف، العملة، وتغيير باسورد المدير."
+},
+{
+    keywords: ["تفعيل", "كود", "ترخيص", "activation", "تنشيط", "كود تفعيل"],
+    answer: "من صفحة 'التفعيل'، أدخل كود التفعيل المكون من أحرف وأرقام، ثم اضغط 'تفعيل' لتنشيط النظام."
+},
+{
+    keywords: ["طباعة", "فاتورة", "إيصال", "print", "A4", "طباعة فاتورة"],
+    answer: "يمكنك طباعة الفواتير بحجم A4 أو إيصال صغير من زر الطباعة في صفحة الفواتير أو تفاصيل الفاتورة."
+},
+{
+    keywords: ["تصدير", "استيراد", "backup", "نسخ احتياطي", "استعادة", "تصدير بيانات"],
+    answer: "من صفحة 'الإعدادات'، استخدم زر 'تصدير البيانات' لحفظ نسخة احتياطية، و'استيراد البيانات' لاستعادة النسخة."
+},
+{
+    keywords: ["إعادة تعيين", "reset", "مسح البيانات", "تهيئة", "إعادة ضبط"],
+    answer: "من صفحة 'الإعدادات'، اضغط على 'إعادة تعيين النظام'، اختر نوع إعادة التعيين (مسح الكل أو الاحتفاظ بالمواد)، ثم أكد."
+},
+{
+    keywords: ["دعم فني", "تواصل", "contact", "help", "مساعدة", "مطور", "الدعم"],
+    answer: "للتواصل مع الدعم الفني: 01144100018 - 01126125881، أو البريد الإلكتروني: mohammedemadpromax@gmail.com"
+},
+{
+    keywords: ["مطور", "شركة", "Tecno Shark", "من عمل", "صانع", "المطور"],
+    answer: "تم تطوير TS مقاولات بواسطة Tecno Shark Company، فريق من المطورين المحترفين بقيادة محمد عماد وعبدالرحمن محمد."
 }
 
 ];
@@ -6882,7 +6975,7 @@ function updateBotStatus(isActive) {
 
 
 // ============================================================
-//  دالة معالجة رد البوت - مع حذف التذكرة عند "لا"
+//  دالة معالجة رد البوت - مع معرفة البرنامج المختار
 // ============================================================
 
 async function handleBotResponse(ticketId, userMessage) {
@@ -6892,34 +6985,28 @@ async function handleBotResponse(ticketId, userMessage) {
         if (!ticket || ticket.botActive === false) return;
         
         const message = userMessage.toLowerCase().trim();
+        const programName = ticket.botProgram || '';  // ✅ البرنامج المختار
         
         // ============================================================
-        // ✅ 1. التحقق من "لا" - إنهاء المحادثة وحذف التذكرة
+        // ✅ 1. التحقق من "لا" - إنهاء المحادثة
         // ============================================================
-        if (message === 'لا' || message === 'no' || message === 'كفاية' || message === 'انتهيت' || message === 'خلاص' || message === 'enough') {
-            // ✅ إرسال رسالة إغلاق
+        if (message === 'لا' || message === 'no' || message === 'كفاية' || message === 'انتهيت' || message === 'خلاص') {
             await sendBotMessage(ticketId, '👋 تم إنهاء المحادثة بناءً على طلبك.');
-            await sendBotMessage(ticketId, '📋 شكراً لتواصلك معنا. سيتم حذف التذكرة الآن.');
+            await sendBotMessage(ticketId, '📋 شكراً لتواصلك معنا.');
             
-            // ✅ إيقاف البوت
             await db.ref(`tickets/${ticketId}/botActive`).set(false);
             await db.ref(`tickets/${ticketId}/status`).set('ended');
             await db.ref(`tickets/${ticketId}/endedAt`).set(new Date().toISOString());
-            await db.ref(`tickets/${ticketId}/endedBy`).set('user');
             
             chatEnded = true;
             updateBotStatus(false);
             
-            // ✅ عرض نافذة التقييم الجديدة بعد 1.5 ثانية
             setTimeout(() => {
                 if (typeof showModernRatingModal === 'function') {
                     showModernRatingModal(ticketId);
-                } else if (typeof showRatingModal === 'function') {
-                    showRatingModal(ticketId);
                 }
             }, 1500);
             
-            // ✅ حذف التذكرة بعد 30 ثانية (أو بعد التقييم)
             setTimeout(() => {
                 if (typeof deleteTicketAfterChat === 'function') {
                     deleteTicketAfterChat(ticketId);
@@ -6930,41 +7017,41 @@ async function handleBotResponse(ticketId, userMessage) {
         }
         
         // ============================================================
-        // ✅ 2. التحقق من "نعم" - متابعة المحادثة
+        // ✅ 2. البحث في الأسئلة المخصصة للبرنامج أولاً
         // ============================================================
-        if (message === 'نعم' || message === 'yes' || message === 'أكيد' || message === 'طبعاً' || message === 'موافق') {
-            await sendBotMessage(ticketId, '👋 رائع! اكتب سؤالك الجديد وسأجيبك فوراً.');
-            await db.ref(`tickets/${ticketId}/botStep`).set(1);
+        const programQuestions = ticket.botQuestions || [];
+        const currentStep = ticket.botCurrentStep || 0;
+        
+        // إذا كانت هناك أسئلة مخصصة للبرنامج ولم ننتهي منها
+        if (programQuestions.length > 0 && currentStep < programQuestions.length) {
+            // هذا يعني أن البوت في وضع طرح الأسئلة
+            // نخزن إجابة المستخدم
+            const answerKey = `answer_${currentStep}`;
+            const answers = ticket.botAnswers || {};
+            answers[answerKey] = userMessage;
+            await db.ref(`tickets/${ticketId}/botAnswers`).set(answers);
+            
+            // ننتقل للسؤال التالي
+            const nextStep = currentStep + 1;
+            await db.ref(`tickets/${ticketId}/botCurrentStep`).set(nextStep);
+            
+            if (nextStep < programQuestions.length) {
+                // نطرح السؤال التالي
+                await sendBotMessage(ticketId, `❓ ${programQuestions[nextStep]}`);
+            } else {
+                // انتهت الأسئلة
+                await sendBotMessage(ticketId, '✅ شكراً لك! تم جمع جميع المعلومات.');
+                await sendBotMessage(ticketId, `📋 سيتم مراجعة بياناتك المتعلقة بـ ${programName} وسنقوم بالتواصل معك قريباً.`);
+                await db.ref(`tickets/${ticketId}/botActive`).set(false);
+                updateBotStatus(false);
+            }
             return;
         }
         
         // ============================================================
-        // ✅ 3. التحقق من "مساعدة" - عرض القائمة
+        // ✅ 3. البحث في FAQ مع مراعاة البرنامج المختار
         // ============================================================
-        if (message === 'مساعدة' || message === 'help' || message === 'أسئلة' || message === 'استفسار' || message === 'ممكن اسأل') {
-            const helpMessage = `📋 *قائمة الأسئلة المتاحة:*
-
-• ما هو نظام TS POS؟
-• كيف أضيف منتجاً جديداً؟
-• كيف أبيع منتجاً؟
-• كيف أطبع فاتورة؟
-• كيف أضيف عميلاً؟
-• كيف أسجل حضوراً؟
-• كيف أعرف الدين؟
-• كيف أطبع باركود؟
-• كيف أضيف موظفاً؟
-• كيف أسجل مصروفاً؟
-• كيف أطبع تقريراً؟
-
-💡 اكتب أي سؤال وسأجيبك فوراً.`;
-            await sendBotMessage(ticketId, helpMessage);
-            return;
-        }
-        
-        // ============================================================
-        // ✅ 4. البحث عن إجابة في قاعدة البيانات
-        // ============================================================
-        const cached = findAnswerInFAQ(userMessage);
+        const cached = findAnswerInFAQWithProgram(userMessage, programName);
         
         if (cached.found) {
             await sendBotMessage(ticketId, cached.answer);
@@ -6974,7 +7061,7 @@ async function handleBotResponse(ticketId, userMessage) {
         }
         
         // ============================================================
-        // ✅ 5. استخدام DeepSeek (إذا كان متاحاً)
+        // ✅ 4. استخدام DeepSeek (إذا كان متاحاً)
         // ============================================================
         if (typeof askDeepSeek === 'function') {
             await sendBotMessage(ticketId, '⏳ جاري البحث عن إجابة...');
@@ -6982,14 +7069,15 @@ async function handleBotResponse(ticketId, userMessage) {
             
             if (aiResponse.success) {
                 await sendBotMessage(ticketId, aiResponse.answer);
-                addNewFAQ(userMessage, aiResponse.answer);
+                // حفظ الإجابة في FAQ مع البرنامج
+                addNewFAQWithProgram(userMessage, aiResponse.answer, programName);
                 await sendBotMessage(ticketId, '📋 هل لديك أي سؤال آخر؟ اكتب "نعم" للمتابعة أو "لا" لإنهاء المحادثة.');
                 return;
             }
         }
         
         // ============================================================
-        // ✅ 6. إذا لم توجد إجابة
+        // ✅ 5. إذا لم توجد إجابة
         // ============================================================
         await sendBotMessage(ticketId, '⚠️ عذراً، لم أستطع فهم سؤالك بالكامل.');
         await sendBotMessage(ticketId, '💡 يرجى إعادة صياغة السؤال بشكل أوضح، أو اكتب "مساعدة" للحصول على قائمة بالأسئلة المتاحة.');
@@ -6998,6 +7086,120 @@ async function handleBotResponse(ticketId, userMessage) {
         console.error('❌ خطأ في معالجة رد البوت:', error);
         await sendBotMessage(ticketId, '❌ حدث خطأ في معالجة سؤالك. يرجى المحاولة مرة أخرى.');
     }
+}
+
+// ============================================================
+//  دالة البحث عن إجابة مع معرفة البرنامج المختار
+// ============================================================
+
+function findAnswerInFAQWithProgram(userMessage, programName) {
+    if (!userMessage) {
+        return { found: false, answer: '⚠️ يرجى كتابة سؤالك', score: 0 };
+    }
+    
+    const message = userMessage.toLowerCase().trim();
+    let bestMatch = null;
+    let bestScore = 0;
+    
+    // ✅ البحث في FAQ مع إعطاء أولوية للأسئلة التي تحتوي على اسم البرنامج
+    faqData.forEach(item => {
+        let score = 0;
+        
+        // ✅ نقطة إضافية إذا كانت الإجابة تحتوي على اسم البرنامج
+        if (item.answer && item.answer.toLowerCase().includes(programName.toLowerCase())) {
+            score += 2;
+        }
+        
+        // البحث عن تطابق الكلمات المفتاحية
+        item.keywords.forEach(keyword => {
+            const keywordLower = keyword.toLowerCase();
+            
+            // تطابق تام
+            if (message.includes(keywordLower)) {
+                score += 3;
+            }
+            
+            // تطابق جزئي
+            const words = message.split(' ');
+            words.forEach(word => {
+                if (word.length > 2) {
+                    if (keywordLower.includes(word) || word.includes(keywordLower)) {
+                        score += 1;
+                    }
+                }
+            });
+        });
+        
+        // نقاط إضافية إذا كان السؤال قصيراً
+        if (message.length < 20) {
+            item.keywords.forEach(keyword => {
+                if (message === keyword.toLowerCase()) {
+                    score += 5;
+                }
+            });
+        }
+        
+        if (score > bestScore) {
+            bestScore = score;
+            bestMatch = item;
+        }
+    });
+    
+    if (bestScore >= 2 && bestMatch) {
+        // ✅ إضافة اسم البرنامج في الإجابة إذا لم يكن موجوداً
+        let answer = bestMatch.answer;
+        if (programName && !answer.toLowerCase().includes(programName.toLowerCase())) {
+            // نضيف تذكير بالبرنامج في بداية الإجابة
+            answer = `📌 بخصوص برنامج ${programName}:\n\n${answer}`;
+        }
+        
+        return {
+            found: true,
+            answer: answer,
+            score: bestScore,
+            fromCache: true,
+            keywords: bestMatch.keywords
+        };
+    }
+    
+    return {
+        found: false,
+        answer: '❌ لم أجد إجابة مطابقة. يرجى إعادة صياغة السؤال.',
+        score: bestScore
+    };
+}
+
+// ============================================================
+//  دالة إضافة إجابة جديدة مع اسم البرنامج
+// ============================================================
+
+function addNewFAQWithProgram(question, answer, programName) {
+    const words = question.toLowerCase().split(' ');
+    const keywords = words.filter(word => word.length > 3).slice(0, 6);
+    
+    // ✅ إضافة اسم البرنامج ككلمة مفتاحية إضافية
+    if (programName) {
+        const programWords = programName.toLowerCase().split(' ');
+        programWords.forEach(word => {
+            if (word.length > 2 && !keywords.includes(word)) {
+                keywords.push(word);
+            }
+        });
+    }
+    
+    // التحقق من عدم وجود إجابة مكررة
+    const exists = faqData.some(item => 
+        item.answer.toLowerCase().includes(answer.toLowerCase().substring(0, 30))
+    );
+    
+    if (!exists) {
+        faqData.push({ 
+            keywords: keywords, 
+            answer: `📌 بخصوص برنامج ${programName}:\n\n${answer}`
+        });
+        return true;
+    }
+    return false;
 }
 
 function toggleTicketChatAdmin() {
@@ -8556,9 +8758,10 @@ async function publishLocalTracksLiveKit() {
 //  الدوال الجديدة للنظام بالكامل
 // =============================================
 
-// =============================================
-//  1. تحميل البرامج في قائمة التذكرة
-// =============================================
+// ============================================================
+//  دالة تحميل البرامج في قائمة الاختيار
+// ============================================================
+
 async function loadProgramsSelect() {
     const select = document.getElementById('ticketProgram');
     if (!select) return;
@@ -8577,13 +8780,13 @@ async function loadProgramsSelect() {
                 hasPrograms = true;
             }
             if (!hasPrograms) {
-                select.innerHTML += '<option value="" disabled>لا توجد برامج مضافة</option>';
+                select.innerHTML += '<option value="" disabled>⚠️ لا توجد برامج مضافة</option>';
             }
         } else {
-            select.innerHTML += '<option value="" disabled>لا توجد برامج مضافة</option>';
+            select.innerHTML += '<option value="" disabled>⚠️ لا توجد برامج مضافة</option>';
         }
     } catch (error) {
-        console.error('خطأ في تحميل البرامج:', error);
+        console.error('❌ خطأ في تحميل البرامج:', error);
         select.innerHTML = '<option value="">-- خطأ في تحميل البرامج --</option>';
     }
 }
@@ -8602,9 +8805,10 @@ let botAnswers = {};
 
 
 
-// =============================================
-//  4. تشغيل البوت - الأسئلة من البرنامج
-// =============================================
+// ============================================================
+//  دالة بدء أسئلة البوت - مع البرنامج المختار
+// ============================================================
+
 async function startBotQuestions(ticketId, programName) {
     try {
         const snapshot = await db.ref('programs').once('value');
@@ -8623,30 +8827,31 @@ async function startBotQuestions(ticketId, programName) {
             }
         }
         
+        // إذا لم توجد أسئلة مخصصة
         if (programQuestions.length === 0) {
             programQuestions = [
-                'ما هي إصدار البرنامج الذي تستخدمه؟',
-                'هل هناك أي رسائل خطأ تظهر؟',
+                `ما هي إصدار برنامج ${programName} الذي تستخدمه؟`,
                 'متى بدأت المشكلة بالظهور؟',
+                'هل هناك أي رسائل خطأ تظهر؟',
                 'هل قمت بتجربة أي حلول؟'
             ];
         }
         
-        botQuestions = programQuestions;
-        botAnswers = {};
-        botCurrentStep = 0;
-        
-        await db.ref(`tickets/${ticketId}/botStep`).set(0);
+        // حفظ الأسئلة في التذكرة
         await db.ref(`tickets/${ticketId}/botQuestions`).set(programQuestions);
+        await db.ref(`tickets/${ticketId}/botCurrentStep`).set(0);
+        await db.ref(`tickets/${ticketId}/botProgram`).set(programName);
         
+        // بدء طرح الأسئلة
+        await sendBotMessage(ticketId, `📝 مرحباً بك في دعم برنامج ${programName}`);
         await new Promise(resolve => setTimeout(resolve, 500));
-        await sendBotMessage(ticketId, `📝 سأبدأ بطرح بعض الأسئلة لمساعدتك:`);
+        await sendBotMessage(ticketId, '💬 سأبدأ بطرح بعض الأسئلة لمساعدتك بشكل أفضل:');
         await new Promise(resolve => setTimeout(resolve, 500));
-        await askNextQuestion(ticketId);
+        await sendBotMessage(ticketId, `❓ ${programQuestions[0]}`);
         
     } catch (error) {
-        console.error('خطأ في بدء أسئلة البوت:', error);
-        await sendBotMessage(ticketId, '❌ عذراً، حدث خطأ في تحميل الأسئلة. يرجى الانتظار قليلاً.');
+        console.error('❌ خطأ في بدء أسئلة البوت:', error);
+        await sendBotMessage(ticketId, '❌ عذراً، حدث خطأ. يرجى الانتظار قليلاً.');
     }
 }
 
@@ -8903,60 +9108,102 @@ function closeAddProgramModal(event) {
     }
 }
 
+// ============================================================
+//  دالة حفظ برنامج جديد (اسم فقط - مع أسئلة افتراضية)
+// ============================================================
+
 async function saveProgram(event) {
     event.preventDefault();
     
     const name = document.getElementById('programName').value.trim();
-    const questionsText = document.getElementById('programQuestions').value.trim();
-    const answersText = document.getElementById('programAnswers').value.trim();
     
-    if (!name || !questionsText) {
-        showToast('❌ الرجاء إدخال اسم البرنامج والأسئلة');
+    if (!name) {
+        showToast('❌ الرجاء إدخال اسم البرنامج');
         return;
     }
     
-    const questions = questionsText.split('\n').filter(q => q.trim());
-    const answers = answersText ? answersText.split('\n').filter(a => a.trim()) : [];
-    
-    if (questions.length === 0) {
-        showToast('❌ الرجاء إدخال سؤال واحد على الأقل');
+    // ✅ التحقق من عدم وجود برنامج بنفس الاسم
+    const existing = appData.programsList?.find(p => p.name === name);
+    if (existing) {
+        showToast('❌ هذا البرنامج موجود بالفعل');
         return;
     }
+    
+    // ✅ إنشاء أسئلة افتراضية تلقائياً
+    const defaultQuestions = [
+        `ما هي إصدار برنامج ${name} الذي تستخدمه؟`,
+        'متى بدأت المشكلة بالظهور؟',
+        'هل هناك أي رسائل خطأ تظهر؟',
+        'هل قمت بتجربة أي حلول؟'
+    ];
+    
+    const defaultAnswers = [
+        'أدخل إصدار البرنامج',
+        'أدخل تاريخ ظهور المشكلة',
+        'أدخل رسائل الخطأ إن وجدت',
+        'أدخل الحلول التي جربتها'
+    ];
     
     const programData = {
         name: name,
-        questions: questions,
-        answers: answers,
+        questions: defaultQuestions,
+        answers: defaultAnswers,
         createdAt: new Date().toISOString(),
-        createdBy: currentUser?.uid || 'admin'
+        createdBy: currentUser?.uid || 'admin',
+        autoGenerated: true  // ✅ علامة لتحديد أنه تم إنشاؤه تلقائياً
     };
     
     try {
         const newRef = db.ref('programs').push();
         await newRef.set(programData);
-        showToast('✅ تم إضافة البرنامج بنجاح');
+        
+        // ✅ تحديث القائمة المحلية
+        if (!appData.programsList) appData.programsList = [];
+        appData.programsList.push(programData);
+        
+        showToast(`✅ تم إضافة برنامج "${name}" بنجاح مع أسئلة افتراضية`);
         closeAddProgramModal();
         loadAdminPrograms();
         loadProgramsSelect();
+        
+        // ✅ إعادة تعيين النموذج
+        document.getElementById('programName').value = '';
+        
     } catch (error) {
-        console.error('خطأ في حفظ البرنامج:', error);
+        console.error('❌ خطأ في حفظ البرنامج:', error);
         showToast('❌ حدث خطأ في حفظ البرنامج');
     }
 }
 
+// ============================================================
+//  دالة حذف برنامج مع تأكيد
+// ============================================================
+
 async function deleteProgram(programId) {
-    if (!confirm('هل أنت متأكد من حذف هذا البرنامج؟')) return;
-    
-    try {
-        await db.ref(`programs/${programId}`).remove();
-        showToast('✅ تم حذف البرنامج');
-        loadAdminPrograms();
-        loadProgramsSelect();
-    } catch (error) {
-        console.error('خطأ في حذف البرنامج:', error);
-        showToast('❌ حدث خطأ في حذف البرنامج');
-    }
+    // ✅ استخدام نافذة التأكيد المخصصة
+    openCustomConfirm(
+        `هل أنت متأكد من حذف هذا البرنامج؟`,
+        'سيتم حذف البرنامج وجميع أسئلته المرتبطة به!',
+        async function(confirmed) {
+            if (confirmed) {
+                try {
+                    await db.ref(`programs/${programId}`).remove();
+                    showToast('✅ تم حذف البرنامج');
+                    loadAdminPrograms();
+                    loadProgramsSelect();
+                } catch (error) {
+                    console.error('❌ خطأ في حذف البرنامج:', error);
+                    showToast('❌ حدث خطأ في حذف البرنامج');
+                }
+            }
+        },
+        true
+    );
 }
+
+// ============================================================
+//  دالة تعديل برنامج (اسم فقط)
+// ============================================================
 
 async function editProgram(programId) {
     try {
@@ -8967,11 +9214,10 @@ async function editProgram(programId) {
             return;
         }
         
+        // ✅ ملء اسم البرنامج فقط
         document.getElementById('programName').value = program.name || '';
-        document.getElementById('programQuestions').value = (program.questions || []).join('\n');
-        document.getElementById('programAnswers').value = (program.answers || []).join('\n');
         
-        // تغيير زر الحفظ لتحديث
+        // ✅ تغيير زر الحفظ لتحديث
         const form = document.getElementById('addProgramForm');
         const submitBtn = form.querySelector('button[type="submit"]');
         submitBtn.innerText = 'تحديث البرنامج';
@@ -8980,57 +9226,74 @@ async function editProgram(programId) {
             updateProgram(programId);
         };
         
+        // ✅ تغيير عنوان النافذة
+        document.querySelector('#addProgramModal .modal-title').innerHTML = 
+            '<i class="fas fa-edit text-yellow-600 ml-2"></i> تعديل البرنامج';
+        
         document.getElementById('addProgramModal').classList.add('active');
         
     } catch (error) {
-        console.error('خطأ في تحميل البرنامج للتعديل:', error);
+        console.error('❌ خطأ في تحميل البرنامج للتعديل:', error);
         showToast('❌ حدث خطأ في تحميل البرنامج');
     }
 }
 
+// ============================================================
+//  دالة تحديث برنامج (اسم فقط - مع الحفاظ على الأسئلة)
+// ============================================================
+
 async function updateProgram(programId) {
     const name = document.getElementById('programName').value.trim();
-    const questionsText = document.getElementById('programQuestions').value.trim();
-    const answersText = document.getElementById('programAnswers').value.trim();
     
-    if (!name || !questionsText) {
-        showToast('❌ الرجاء إدخال اسم البرنامج والأسئلة');
+    if (!name) {
+        showToast('❌ الرجاء إدخال اسم البرنامج');
         return;
     }
-    
-    const questions = questionsText.split('\n').filter(q => q.trim());
-    const answers = answersText ? answersText.split('\n').filter(a => a.trim()) : [];
-    
-    if (questions.length === 0) {
-        showToast('❌ الرجاء إدخال سؤال واحد على الأقل');
-        return;
-    }
-    
-    const programData = {
-        name: name,
-        questions: questions,
-        answers: answers,
-        updatedAt: new Date().toISOString(),
-        updatedBy: currentUser?.uid || 'admin'
-    };
     
     try {
+        // ✅ جلب البيانات القديمة للحفاظ على الأسئلة
+        const snapshot = await db.ref(`programs/${programId}`).once('value');
+        const oldProgram = snapshot.val();
+        
+        if (!oldProgram) {
+            showToast('❌ البرنامج غير موجود');
+            return;
+        }
+        
+        // ✅ تحديث الاسم فقط مع الحفاظ على الأسئلة
+        const programData = {
+            ...oldProgram,
+            name: name,
+            updatedAt: new Date().toISOString(),
+            updatedBy: currentUser?.uid || 'admin'
+        };
+        
         await db.ref(`programs/${programId}`).update(programData);
-        showToast('✅ تم تحديث البرنامج بنجاح');
+        
+        showToast(`✅ تم تحديث البرنامج إلى "${name}"`);
         closeAddProgramModal();
         loadAdminPrograms();
         loadProgramsSelect();
         
-        // إعادة تعيين النموذج
+        // ✅ إعادة تعيين النموذج
         const form = document.getElementById('addProgramForm');
         form.onsubmit = saveProgram;
         const submitBtn = form.querySelector('button[type="submit"]');
-        submitBtn.innerText = 'حفظ البرنامج';
+        submitBtn.innerText = 'إضافة البرنامج';
+        
+        // ✅ إعادة تعيين العنوان
+        document.querySelector('#addProgramModal .modal-title').innerHTML = 
+            '<i class="fas fa-plus-circle text-green-600 ml-2"></i> إضافة برنامج جديد';
+        
     } catch (error) {
-        console.error('خطأ في تحديث البرنامج:', error);
+        console.error('❌ خطأ في تحديث البرنامج:', error);
         showToast('❌ حدث خطأ في تحديث البرنامج');
     }
 }
+
+// ============================================================
+//  دالة عرض البرامج في لوحة المدير (مبسطة)
+// ============================================================
 
 async function loadAdminPrograms() {
     try {
@@ -9043,9 +9306,9 @@ async function loadAdminPrograms() {
         if (!programs) {
             container.innerHTML = `
                 <div class="text-center py-8 text-gray-400">
-                    <i class="fas fa-code text-3xl mb-2"></i>
+                    <i class="fas fa-code text-4xl mb-3"></i>
                     <p>لا توجد برامج مضافة</p>
-                    <button onclick="openAddProgramModal()" class="mt-2 text-blue-500 hover:text-blue-700">
+                    <button onclick="openAddProgramModal()" class="mt-3 bg-green-600 text-white px-4 py-2 rounded-lg hover:bg-green-700 transition">
                         <i class="fas fa-plus ml-1"></i> أضف برنامجاً جديداً
                     </button>
                 </div>
@@ -9057,27 +9320,28 @@ async function loadAdminPrograms() {
         for (let id in programs) {
             const program = programs[id];
             const questionCount = (program.questions || []).length;
-            const answerCount = (program.answers || []).length;
+            const isAuto = program.autoGenerated ? '🤖 تلقائي' : '✏️ مخصص';
             
             html += `
-                <div class="p-4 hover:bg-gray-50 flex justify-between items-center flex-wrap gap-2 border-b">
+                <div class="flex justify-between items-center p-4 hover:bg-gray-50 border-b">
                     <div>
-                        <div class="font-bold text-gray-800">${program.name}</div>
+                        <div class="font-bold text-gray-800 text-lg">${program.name}</div>
                         <div class="text-sm text-gray-500">
                             <i class="fas fa-question-circle ml-1"></i> ${questionCount} سؤال
                             <span class="mx-2">|</span>
-                            <i class="fas fa-check-circle ml-1"></i> ${answerCount} إجابة
+                            <span class="text-xs bg-gray-200 px-2 py-0.5 rounded-full">${isAuto}</span>
+                            <span class="mx-2">|</span>
+                            <i class="fas fa-calendar ml-1"></i> ${new Date(program.createdAt).toLocaleDateString('ar-EG')}
                         </div>
-                        <div class="text-xs text-gray-400">${new Date(program.createdAt).toLocaleDateString('ar-EG')}</div>
                     </div>
                     <div class="flex gap-2">
-                        <button onclick="viewProgramQuestions('${id}')" class="text-blue-500 hover:text-blue-700 text-sm">
+                        <button onclick="viewProgramQuestions('${id}')" class="text-blue-500 hover:text-blue-700 text-sm px-2 py-1 rounded hover:bg-blue-50">
                             <i class="fas fa-eye"></i>
                         </button>
-                        <button onclick="editProgram('${id}')" class="text-green-500 hover:text-green-700 text-sm">
+                        <button onclick="editProgram('${id}')" class="text-green-500 hover:text-green-700 text-sm px-2 py-1 rounded hover:bg-green-50">
                             <i class="fas fa-edit"></i>
                         </button>
-                        <button onclick="deleteProgram('${id}')" class="text-red-500 hover:text-red-700 text-sm">
+                        <button onclick="deleteProgram('${id}')" class="text-red-500 hover:text-red-700 text-sm px-2 py-1 rounded hover:bg-red-50">
                             <i class="fas fa-trash"></i>
                         </button>
                     </div>
@@ -9088,9 +9352,13 @@ async function loadAdminPrograms() {
         container.innerHTML = html;
         
     } catch (error) {
-        console.error('خطأ في تحميل البرامج:', error);
+        console.error('❌ خطأ في تحميل البرامج:', error);
     }
 }
+
+// ============================================================
+//  دالة عرض أسئلة البرنامج (للاطلاع فقط)
+// ============================================================
 
 function viewProgramQuestions(programId) {
     db.ref(`programs/${programId}`).once('value').then(snapshot => {
@@ -9103,16 +9371,55 @@ function viewProgramQuestions(programId) {
         const questions = program.questions || [];
         const answers = program.answers || [];
         
-        let msg = `📋 أسئلة برنامج ${program.name}:\n\n`;
+        let msg = `📋 أسئلة برنامج "${program.name}":\n\n`;
         questions.forEach((q, i) => {
             msg += `${i+1}. ${q}`;
             if (answers[i]) {
-                msg += `\n   ↳ الإجابة: ${answers[i]}`;
+                msg += `\n   ↳ الإجابة الافتراضية: ${answers[i]}`;
             }
             msg += '\n\n';
         });
         
-        alert(msg);
+        // ✅ عرض في نافذة منبثقة منظمة
+        const modal = document.createElement('div');
+        modal.className = 'modal-overlay';
+        modal.style.display = 'flex';
+        modal.style.zIndex = '2000';
+        modal.onclick = function(e) {
+            if (e.target === this) this.remove();
+        };
+        
+        modal.innerHTML = `
+            <div class="modal-content p-6" style="max-width: 550px; width: 95%;" onclick="event.stopPropagation()">
+                <div class="flex justify-between items-center mb-4">
+                    <h3 class="text-xl font-bold">
+                        <i class="fas fa-list text-blue-600 ml-2"></i>
+                        أسئلة برنامج "${program.name}"
+                    </h3>
+                    <button onclick="this.closest('.modal-overlay').remove()" class="text-gray-400 hover:text-gray-600">
+                        <i class="fas fa-times text-xl"></i>
+                    </button>
+                </div>
+                <div class="max-h-96 overflow-y-auto">
+                    ${questions.map((q, i) => `
+                        <div class="border-b py-3">
+                            <div class="font-bold text-gray-700">${i+1}. ${q}</div>
+                            ${answers[i] ? `<div class="text-sm text-gray-500 mt-1 pr-4">↳ الإجابة: ${answers[i]}</div>` : ''}
+                        </div>
+                    `).join('')}
+                </div>
+                <div class="mt-4 text-center text-sm text-gray-400">
+                    <i class="fas fa-info-circle ml-1"></i>
+                    هذه الأسئلة يتم طرحها تلقائياً عند فتح شات التذكرة
+                </div>
+            </div>
+        `;
+        
+        document.body.appendChild(modal);
+        
+    }).catch(error => {
+        console.error('❌ خطأ في عرض الأسئلة:', error);
+        showToast('❌ حدث خطأ');
     });
 }
 
@@ -12566,7 +12873,7 @@ function goToTicketsPageFromSidebar() {
     // ✅ الانتقال لصفحة التذاكر
     goToTicketsPage();
 }
-    function openTicketModal(ticketId = null) {
+   function openTicketModal(ticketId = null) {
     if (!currentUser) {
         showToast('❌ الرجاء تسجيل الدخول أولاً');
         showLoginPage();
@@ -12577,6 +12884,9 @@ function goToTicketsPageFromSidebar() {
     const modal = document.getElementById('ticketModal');
     const title = document.getElementById('ticketModalTitle');
     
+    // ✅ تحميل قائمة البرامج
+    loadProgramsSelect();
+    
     if (ticketId) {
         title.innerText = 'تعديل التذكرة';
         loadTicketForEdit(ticketId);
@@ -12585,6 +12895,7 @@ function goToTicketsPageFromSidebar() {
         document.getElementById('ticketClientName').value = '';
         document.getElementById('ticketPhone').value = '';
         document.getElementById('ticketIssue').value = '';
+        document.getElementById('ticketProgram').value = '';
     }
     
     modal.classList.add('active');
@@ -12639,76 +12950,53 @@ function closeTicketModal(event) {
             }
         }
 
-      // ============================================================
-//  دالة حفظ التذكرة - النسخة المصححة
-// ============================================================
-
-async function saveTicket(event) {
+    async function saveTicket(event) {
     event.preventDefault();
     
-    // ✅ التحقق من تسجيل الدخول
     if (!currentUser) {
         showToast('❌ الرجاء تسجيل الدخول أولاً');
         return;
     }
     
-    // ✅ الحصول على العناصر مع التحقق من وجودها
-    const clientNameInput = document.getElementById('ticketClientName');
-    const phoneInput = document.getElementById('ticketPhone');
-    const issueInput = document.getElementById('ticketIssue');
+    const clientName = document.getElementById('ticketClientName').value.trim();
+    const phone = document.getElementById('ticketPhone').value.trim();
+    const issue = document.getElementById('ticketIssue').value.trim();
+    const programName = document.getElementById('ticketProgram').value;
     
-    // ✅ التحقق من وجود العناصر
-    if (!clientNameInput || !phoneInput || !issueInput) {
-        showToast('❌ حدث خطأ في النموذج، يرجى تحديث الصفحة');
-        console.error('❌ عناصر التذكرة غير موجودة:', {
-            clientNameInput: !!clientNameInput,
-            phoneInput: !!phoneInput,
-            issueInput: !!issueInput
-        });
-        return;
-    }
-    
-    // ✅ الحصول على القيم
-    const clientName = clientNameInput.value.trim();
-    const phone = phoneInput.value.trim();
-    const issue = issueInput.value.trim();
-    
-    // ✅ التحقق من صحة البيانات
     if (!clientName || !phone || !issue) {
         showToast('❌ الرجاء ملء جميع الحقول المطلوبة');
         return;
     }
     
-    // ✅ التحقق من رقم الهاتف
+    if (!programName) {
+        showToast('❌ الرجاء اختيار البرنامج');
+        return;
+    }
+    
     if (phone.length < 10) {
         showToast('❌ رقم الهاتف يجب أن يكون 10 أرقام على الأقل');
         return;
     }
     
-    // ✅ إنشاء بيانات التذكرة
     const ticketData = {
         clientName,
         phone,
         issue,
-        userId: currentUser.uid || currentUser.id || 'unknown',
+        program: programName,  // ✅ حفظ البرنامج المختار
+        userId: currentUser.uid,
         userName: currentUser.name || currentUser.username || 'مستخدم',
         status: 'waiting',
         createdAt: new Date().toISOString(),
         ticketNumber: 'TCK-' + Date.now().toString().slice(-6),
         botActive: true,
         botStep: 0,
-        botAnswers: {}
+        botAnswers: {},
+        botProgram: programName,  // ✅ البرنامج الذي سيعرفه البوت
+        botQuestions: [],         // ✅ سيتم تحميل أسئلة البرنامج
+        botCurrentStep: 0
     };
     
     try {
-        // ✅ التحقق من وجود Firebase
-        if (typeof db === 'undefined' || !db) {
-            showToast('❌ قاعدة البيانات غير متاحة');
-            console.error('❌ Firebase غير مهيأ');
-            return;
-        }
-        
-        // ✅ حفظ التذكرة
         const newRef = db.ref('tickets').push();
         await newRef.set(ticketData);
         
@@ -12716,7 +13004,9 @@ async function saveTicket(event) {
         closeTicketModal();
         loadTickets();
         
-        // ✅ فتح شات التذكرة إذا كانت الدالة موجودة
+        // ✅ تحميل أسئلة البرنامج وبدء الشات
+        await loadProgramQuestionsForTicket(newRef.key, programName);
+        
         if (typeof openTicketChat === 'function') {
             openTicketChat(newRef.key);
         }
@@ -12724,6 +13014,48 @@ async function saveTicket(event) {
     } catch (error) {
         console.error('❌ خطأ في حفظ التذكرة:', error);
         showToast('❌ حدث خطأ في حفظ التذكرة: ' + error.message);
+    }
+}
+
+// ============================================================
+//  دالة تحميل أسئلة البرنامج للتذكرة
+// ============================================================
+
+async function loadProgramQuestionsForTicket(ticketId, programName) {
+    try {
+        const snapshot = await db.ref('programs').once('value');
+        const programs = snapshot.val();
+        
+        let questions = [];
+        
+        if (programs) {
+            for (let id in programs) {
+                if (programs[id].name === programName) {
+                    questions = programs[id].questions || [];
+                    break;
+                }
+            }
+        }
+        
+        // إذا لم توجد أسئلة مخصصة، استخدم أسئلة عامة
+        if (questions.length === 0) {
+            questions = [
+                'ما هي إصدار البرنامج الذي تستخدمه؟',
+                'متى بدأت المشكلة بالظهور؟',
+                'هل هناك أي رسائل خطأ تظهر؟',
+                'هل قمت بتجربة أي حلول؟'
+            ];
+        }
+        
+        // حفظ الأسئلة في التذكرة
+        await db.ref(`tickets/${ticketId}/botQuestions`).set(questions);
+        await db.ref(`tickets/${ticketId}/botCurrentStep`).set(0);
+        
+        return questions;
+        
+    } catch (error) {
+        console.error('❌ خطأ في تحميل أسئلة البرنامج:', error);
+        return [];
     }
 }
 
