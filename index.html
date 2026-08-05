@@ -3470,6 +3470,148 @@
     background: #f8fafc;
     min-height: 100vh;
 }
+/* أنماط نافذة إضافة البرنامج */
+.modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.6);
+    backdrop-filter: blur(4px);
+    z-index: 2000;
+    display: none;
+    align-items: center;
+    justify-content: center;
+}
+
+.modal-overlay.active {
+    display: flex !important;
+}
+
+.modal-content {
+    background: white;
+    border-radius: 24px;
+    padding: 25px;
+    max-width: 600px;
+    width: 90%;
+    max-height: 85vh;
+    overflow-y: auto;
+    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+    animation: modalFadeIn 0.3s ease;
+}
+
+@keyframes modalFadeIn {
+    from {
+        opacity: 0;
+        transform: scale(0.95) translateY(20px);
+    }
+    to {
+        opacity: 1;
+        transform: scale(1) translateY(0);
+    }
+}
+
+/* ==================== نافذة التأكيد المخصصة ==================== */
+.confirm-modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.7);
+    backdrop-filter: blur(4px);
+    z-index: 10000;
+    display: none;
+    align-items: center;
+    justify-content: center;
+}
+
+.confirm-modal {
+    background: white;
+    border-radius: 24px;
+    width: 90%;
+    max-width: 450px;
+    padding: 25px;
+    text-align: center;
+    box-shadow: 0 25px 50px rgba(0, 0, 0, 0.3);
+    animation: modalPop 0.3s ease-out;
+}
+
+@keyframes modalPop {
+    from {
+        transform: scale(0.9);
+        opacity: 0;
+    }
+    to {
+        transform: scale(1);
+        opacity: 1;
+    }
+}
+
+.confirm-modal h3 {
+    color: #dc3545;
+    font-size: 24px;
+    margin-bottom: 15px;
+}
+
+.confirm-modal .confirm-icon {
+    font-size: 60px;
+    color: #dc3545;
+    margin-bottom: 15px;
+}
+
+.confirm-modal .confirm-message {
+    color: #1e293b;
+    font-size: 16px;
+    margin-bottom: 10px;
+    line-height: 1.6;
+}
+
+.confirm-modal .confirm-warning {
+    color: #dc3545;
+    font-size: 14px;
+    margin-bottom: 25px;
+    background: #fff3cd;
+    padding: 10px;
+    border-radius: 12px;
+}
+
+.confirm-buttons {
+    display: flex;
+    gap: 15px;
+    justify-content: center;
+}
+
+.confirm-buttons button {
+    padding: 12px 25px;
+    border: none;
+    border-radius: 12px;
+    font-size: 16px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: 0.3s;
+}
+
+.confirm-buttons .btn-confirm {
+    background: #dc3545;
+    color: white;
+}
+
+.confirm-buttons .btn-confirm:hover {
+    background: #c82333;
+    transform: translateY(-2px);
+}
+
+.confirm-buttons .btn-cancel {
+    background: #e9ecef;
+    color: #6c757d;
+}
+
+.confirm-buttons .btn-cancel:hover {
+    background: #dee2e6;
+    transform: translateY(-2px);
+}
     </style>
 </head>
 <body class="bg-gradient-to-br from-blue-50 to-indigo-100 min-h-screen">
@@ -9102,38 +9244,52 @@ function exitAdminMode() {
 // ============================================================
 
 function openAddProgramModal() {
-    // ✅ التحقق من وجود العناصر قبل استخدامها
-    const programNameInput = document.getElementById('programName');
-    const programQuestionsInput = document.getElementById('programQuestions');
-    const programAnswersInput = document.getElementById('programAnswers');
-    const modal = document.getElementById('addProgramModal');
+    let modal = document.getElementById('addProgramModal');
     
-    // ✅ تعيين القيم فقط إذا كانت العناصر موجودة
-    if (programNameInput) programNameInput.value = '';
-    if (programQuestionsInput) programQuestionsInput.value = '';
-    if (programAnswersInput) programAnswersInput.value = '';
+    // ✅ إذا لم توجد النافذة، قم بإنشائها
+    if (!modal) {
+        createAddProgramModal();
+        modal = document.getElementById('addProgramModal');
+    }
     
-    // ✅ إظهار النافذة
     if (modal) {
+        // ✅ إعادة تعيين النموذج
+        const nameInput = document.getElementById('programName');
+        if (nameInput) nameInput.value = '';
+        
+        // ✅ إعادة تعيين زر الحفظ
+        const form = document.getElementById('addProgramForm');
+        if (form) {
+            form.onsubmit = saveProgram;
+            const submitBtn = form.querySelector('button[type="submit"]');
+            if (submitBtn) {
+                submitBtn.innerText = 'إضافة البرنامج';
+            }
+        }
+        
+        // ✅ إعادة تعيين العنوان
+        const title = document.querySelector('#addProgramModal .modal-title');
+        if (title) {
+            title.innerHTML = '<i class="fas fa-plus-circle text-green-600 ml-2"></i> إضافة برنامج جديد';
+        }
+        
+        // ✅ إظهار النافذة
         modal.classList.add('active');
         modal.style.display = 'flex';
     } else {
-        // ✅ إذا لم توجد النافذة، قم بإنشائها ديناميكياً
-        createAddProgramModal();
+        showToast('❌ حدث خطأ في فتح النافذة');
     }
 }
 
 // ============================================================
-//  دالة إنشاء نافذة إضافة برنامج (إذا لم تكن موجودة)
+//  دالة إنشاء نافذة إضافة برنامج (مصلحة)
 // ============================================================
 
 function createAddProgramModal() {
-    // ✅ التحقق من عدم وجود نافذة مكررة
+    // ✅ إزالة أي نافذة مكررة
     const existingModal = document.getElementById('addProgramModal');
     if (existingModal) {
-        existingModal.classList.add('active');
-        existingModal.style.display = 'flex';
-        return;
+        existingModal.remove();
     }
     
     // ✅ إنشاء النافذة
@@ -9141,12 +9297,12 @@ function createAddProgramModal() {
         <div id="addProgramModal" class="modal-overlay" onclick="closeAddProgramModal(event)">
             <div class="modal-content p-6" style="max-width: 450px; width: 95%;" onclick="event.stopPropagation()">
                 <div class="flex justify-between items-center mb-4">
-                    <h3 class="text-xl font-bold">
+                    <h3 class="text-xl font-bold modal-title">
                         <i class="fas fa-plus-circle text-green-600 ml-2"></i> 
                         إضافة برنامج جديد
                     </h3>
-                    <button onclick="closeAddProgramModal()" class="text-gray-400 hover:text-gray-600">
-                        <i class="fas fa-times text-xl"></i>
+                    <button onclick="closeAddProgramModal(event)" class="text-gray-400 hover:text-gray-600 text-2xl">
+                        <i class="fas fa-times"></i>
                     </button>
                 </div>
                 
@@ -9176,6 +9332,11 @@ function createAddProgramModal() {
                     <button type="submit" class="w-full bg-green-600 text-white py-3 rounded-lg hover:bg-green-700 transition font-semibold text-lg">
                         <i class="fas fa-save ml-2"></i> إضافة البرنامج
                     </button>
+                    
+                    <button type="button" onclick="closeAddProgramModal(event)" 
+                            class="w-full mt-2 text-gray-400 hover:text-gray-600 transition text-sm py-2">
+                        إلغاء
+                    </button>
                 </form>
             </div>
         </div>
@@ -9183,48 +9344,77 @@ function createAddProgramModal() {
     
     document.body.insertAdjacentHTML('beforeend', modalHtml);
     
-    // ✅ إظهار النافذة
-    const modal = document.getElementById('addProgramModal');
-    if (modal) {
-        modal.classList.add('active');
-        modal.style.display = 'flex';
-    }
+    // ✅ إضافة مستمع للضغط على Esc
+    document.addEventListener('keydown', function escHandler(e) {
+        if (e.key === 'Escape') {
+            closeAddProgramModal();
+            document.removeEventListener('keydown', escHandler);
+        }
+    });
 }
-
 // ============================================================
-//  دالة إغلاق نافذة إضافة برنامج (مصلحة)
+//  دالة إغلاق نافذة إضافة برنامج (مصلحة بالكامل)
 // ============================================================
 
 function closeAddProgramModal(event) {
-    // ✅ إذا كان هناك حدث، نتحقق من عدم النقر خارج النافذة
-    if (event && event.target && event.target.id !== 'addProgramModal') {
-        // إذا كان النقر على عنصر آخر غير النافذة، لا نغلق
-        if (event.target.closest && !event.target.closest('.modal-content')) {
+    // ✅ البحث عن النافذة
+    const modal = document.getElementById('addProgramModal');
+    if (!modal) {
+        console.warn('⚠️ النافذة غير موجودة');
+        return;
+    }
+    
+    // ✅ إذا كان هناك حدث (نقرة)، نتحقق من عدم النقر خارج المحتوى
+    if (event) {
+        // إذا كان العنصر المضغوط هو النافذة نفسها (الخلفية) نغلق
+        if (event.target === modal) {
+            // نغلق
+        } 
+        // إذا كان العنصر المضغوط داخل المحتوى، لا نغلق
+        else if (event.target.closest && event.target.closest('.modal-content')) {
+            return;
+        }
+        // إذا كان الزر X، نغلق
+        else if (event.target.closest && event.target.closest('button')) {
+            // نغلق
+        } else {
             return;
         }
     }
     
-    const modal = document.getElementById('addProgramModal');
-    if (modal) {
-        modal.classList.remove('active');
-        modal.style.display = 'none';
+    // ✅ إغلاق النافذة
+    modal.classList.remove('active');
+    modal.style.display = 'none';
+    
+    // ✅ إعادة تعيين النموذج
+    const form = document.getElementById('addProgramForm');
+    if (form) {
+        form.onsubmit = saveProgram;
+        const submitBtn = form.querySelector('button[type="submit"]');
+        if (submitBtn) {
+            submitBtn.innerText = 'إضافة البرنامج';
+        }
     }
+    
+    // ✅ إعادة تعيين العنوان
+    const title = document.querySelector('#addProgramModal .modal-title');
+    if (title) {
+        title.innerHTML = '<i class="fas fa-plus-circle text-green-600 ml-2"></i> إضافة برنامج جديد';
+    }
+    
+    // ✅ تفريغ الحقول
+    const nameInput = document.getElementById('programName');
+    if (nameInput) nameInput.value = '';
 }
 
-function closeAddProgramModal(event) {
-    if (!event || event.target === document.getElementById('addProgramModal') || !event) {
-        document.getElementById('addProgramModal').classList.remove('active');
-    }
-}
 
 // ============================================================
-//  دالة حفظ برنامج جديد (مصلحة)
+//  دالة حفظ برنامج جديد - تأخذ الأسئلة من faqData
 // ============================================================
 
 async function saveProgram(event) {
     event.preventDefault();
     
-    // ✅ التحقق من وجود العنصر
     const nameInput = document.getElementById('programName');
     if (!nameInput) {
         showToast('❌ حدث خطأ في النموذج، يرجى تحديث الصفحة');
@@ -9235,6 +9425,7 @@ async function saveProgram(event) {
     
     if (!name) {
         showToast('❌ الرجاء إدخال اسم البرنامج');
+        nameInput.focus();
         return;
     }
     
@@ -9247,6 +9438,7 @@ async function saveProgram(event) {
             for (let id in programs) {
                 if (programs[id].name === name) {
                     showToast('❌ هذا البرنامج موجود بالفعل');
+                    nameInput.focus();
                     return;
                 }
             }
@@ -9255,44 +9447,120 @@ async function saveProgram(event) {
         console.error('❌ خطأ في التحقق من البرنامج:', error);
     }
     
-    // ✅ إنشاء أسئلة افتراضية تلقائياً
-    const defaultQuestions = [
-        `ما هي إصدار برنامج ${name} الذي تستخدمه؟`,
-        'متى بدأت المشكلة بالظهور؟',
-        'هل هناك أي رسائل خطأ تظهر؟',
-        'هل قمت بتجربة أي حلول؟'
-    ];
+    // ============================================================
+    // ✅ استخراج الأسئلة والإجابات من faqData
+    // ============================================================
     
-    const defaultAnswers = [
-        'أدخل إصدار البرنامج',
-        'أدخل تاريخ ظهور المشكلة',
-        'أدخل رسائل الخطأ إن وجدت',
-        'أدخل الحلول التي جربتها'
-    ];
+    // 1. تصفية الأسئلة التي تحتوي على اسم البرنامج أو كلمات مفتاحية مرتبطة
+    const programKeywords = name.toLowerCase().split(' ');
+    
+    // 2. البحث في faqData عن أسئلة مرتبطة بهذا البرنامج
+    let relatedQuestions = [];
+    let relatedAnswers = [];
+    
+    // ✅ البحث عن الأسئلة التي تحتوي على كلمات مفتاحية تشبه اسم البرنامج
+    faqData.forEach(item => {
+        let matchScore = 0;
+        
+        // التحقق من وجود كلمات من اسم البرنامج في الكلمات المفتاحية
+        programKeywords.forEach(keyword => {
+            if (keyword.length > 2) {
+                item.keywords.forEach(kw => {
+                    if (kw.toLowerCase().includes(keyword) || keyword.includes(kw.toLowerCase())) {
+                        matchScore += 2;
+                    }
+                });
+            }
+        });
+        
+        // إذا كانت درجة التطابق عالية، نعتبر السؤال مرتبطاً بالبرنامج
+        if (matchScore >= 2) {
+            // استخراج السؤال من الكلمات المفتاحية (نأخذ أول كلمة كعنوان للسؤال)
+            const question = `ما هي المعلومات المتعلقة بـ ${item.keywords.slice(0, 3).join('، ')}؟`;
+            if (!relatedQuestions.includes(question)) {
+                relatedQuestions.push(question);
+                relatedAnswers.push(item.answer);
+            }
+        }
+    });
+    
+    // ============================================================
+    // ✅ إذا لم يتم العثور على أسئلة مرتبطة، استخدم الأسئلة الافتراضية
+    // ============================================================
+    
+    if (relatedQuestions.length === 0) {
+        // أسئلة عامة عن البرنامج
+        relatedQuestions = [
+            `ما هي إصدار برنامج ${name} الذي تستخدمه؟`,
+            'متى بدأت المشكلة بالظهور؟',
+            'هل هناك أي رسائل خطأ تظهر؟',
+            'هل قمت بتجربة أي حلول؟'
+        ];
+        relatedAnswers = [
+            'أدخل إصدار البرنامج',
+            'أدخل تاريخ ظهور المشكلة',
+            'أدخل رسائل الخطأ إن وجدت',
+            'أدخل الحلول التي جربتها'
+        ];
+    }
+    
+    // ============================================================
+    // ✅ إضافة أسئلة إضافية من faqData (أسئلة عامة)
+    // ============================================================
+    
+    // إضافة أسئلة عامة من faqData (مثل: ما هو النظام؟، كيف أضيف منتجاً؟ إلخ)
+    const generalKeywords = ['ما هو', 'كيف', 'إضافة', 'تعديل', 'حذف', 'طباعة', 'بحث', 'تقرير'];
+    const generalQuestions = [];
+    const generalAnswers = [];
+    
+    faqData.forEach(item => {
+        let isGeneral = false;
+        item.keywords.forEach(kw => {
+            if (generalKeywords.some(gk => kw.toLowerCase().includes(gk))) {
+                isGeneral = true;
+            }
+        });
+        
+        if (isGeneral && !relatedQuestions.includes(item.answer)) {
+            // نضيف سؤال عام عن البرنامج
+            const q = `هل لديك سؤال حول ${item.keywords.slice(0, 2).join(' أو ')}؟`;
+            if (!generalQuestions.includes(q) && generalQuestions.length < 10) {
+                generalQuestions.push(q);
+                generalAnswers.push(item.answer);
+            }
+        }
+    });
+    
+    // دمج الأسئلة (المرتبطة أولاً ثم العامة)
+    const finalQuestions = [...relatedQuestions, ...generalQuestions];
+    const finalAnswers = [...relatedAnswers, ...generalAnswers];
+    
+    // ============================================================
+    // ✅ حفظ البرنامج مع الأسئلة المستخرجة
+    // ============================================================
     
     const programData = {
         name: name,
-        questions: defaultQuestions,
-        answers: defaultAnswers,
+        questions: finalQuestions,
+        answers: finalAnswers,
         createdAt: new Date().toISOString(),
         createdBy: currentUser?.uid || 'admin',
-        autoGenerated: true
+        autoGenerated: true,
+        keywords: programKeywords,  // حفظ الكلمات المفتاحية للبحث المستقبلي
+        source: 'faqData'  // مصدر الأسئلة
     };
     
     try {
         const newRef = db.ref('programs').push();
         await newRef.set(programData);
         
-        showToast(`✅ تم إضافة برنامج "${name}" بنجاح`);
+        showToast(`✅ تم إضافة برنامج "${name}" مع ${finalQuestions.length} سؤال من FAQ`);
         closeAddProgramModal();
-        
-        // ✅ تحديث القوائم
         loadAdminPrograms();
         loadProgramsSelect();
         
-        // ✅ إعادة تعيين النموذج
-        const nameInputField = document.getElementById('programName');
-        if (nameInputField) nameInputField.value = '';
+        // ✅ عرض عدد الأسئلة المستخرجة
+        console.log(`📋 تم استخراج ${finalQuestions.length} سؤال من faqData للبرنامج ${name}`);
         
     } catch (error) {
         console.error('❌ خطأ في حفظ البرنامج:', error);
@@ -9327,11 +9595,18 @@ async function deleteProgram(programId) {
 }
 
 // ============================================================
-//  دالة تعديل برنامج (اسم فقط)
+//  دالة تعديل برنامج (مصلحة)
 // ============================================================
 
 async function editProgram(programId) {
     try {
+        // ✅ التأكد من وجود النافذة
+        let modal = document.getElementById('addProgramModal');
+        if (!modal) {
+            createAddProgramModal();
+            modal = document.getElementById('addProgramModal');
+        }
+        
         const snapshot = await db.ref(`programs/${programId}`).once('value');
         const program = snapshot.val();
         if (!program) {
@@ -9339,23 +9614,34 @@ async function editProgram(programId) {
             return;
         }
         
-        // ✅ ملء اسم البرنامج فقط
-        document.getElementById('programName').value = program.name || '';
-        
-        // ✅ تغيير زر الحفظ لتحديث
-        const form = document.getElementById('addProgramForm');
-        const submitBtn = form.querySelector('button[type="submit"]');
-        submitBtn.innerText = 'تحديث البرنامج';
-        form.onsubmit = function(e) {
-            e.preventDefault();
-            updateProgram(programId);
-        };
+        // ✅ ملء اسم البرنامج
+        const nameInput = document.getElementById('programName');
+        if (nameInput) nameInput.value = program.name || '';
         
         // ✅ تغيير عنوان النافذة
-        document.querySelector('#addProgramModal .modal-title').innerHTML = 
-            '<i class="fas fa-edit text-yellow-600 ml-2"></i> تعديل البرنامج';
+        const title = document.querySelector('#addProgramModal .modal-title');
+        if (title) {
+            title.innerHTML = '<i class="fas fa-edit text-yellow-600 ml-2"></i> تعديل البرنامج';
+        }
         
-        document.getElementById('addProgramModal').classList.add('active');
+        // ✅ تغيير زر الحفظ
+        const form = document.getElementById('addProgramForm');
+        if (form) {
+            const submitBtn = form.querySelector('button[type="submit"]');
+            if (submitBtn) {
+                submitBtn.innerText = 'تحديث البرنامج';
+            }
+            form.onsubmit = function(e) {
+                e.preventDefault();
+                updateProgram(programId);
+            };
+        }
+        
+        // ✅ إظهار النافذة
+        if (modal) {
+            modal.classList.add('active');
+            modal.style.display = 'flex';
+        }
         
     } catch (error) {
         console.error('❌ خطأ في تحميل البرنامج للتعديل:', error);
@@ -9364,11 +9650,17 @@ async function editProgram(programId) {
 }
 
 // ============================================================
-//  دالة تحديث برنامج (اسم فقط - مع الحفاظ على الأسئلة)
+//  دالة تحديث برنامج (مصلحة)
 // ============================================================
 
 async function updateProgram(programId) {
-    const name = document.getElementById('programName').value.trim();
+    const nameInput = document.getElementById('programName');
+    if (!nameInput) {
+        showToast('❌ حدث خطأ في النموذج');
+        return;
+    }
+    
+    const name = nameInput.value.trim();
     
     if (!name) {
         showToast('❌ الرجاء إدخال اسم البرنامج');
@@ -9376,7 +9668,6 @@ async function updateProgram(programId) {
     }
     
     try {
-        // ✅ جلب البيانات القديمة للحفاظ على الأسئلة
         const snapshot = await db.ref(`programs/${programId}`).once('value');
         const oldProgram = snapshot.val();
         
@@ -9396,19 +9687,13 @@ async function updateProgram(programId) {
         await db.ref(`programs/${programId}`).update(programData);
         
         showToast(`✅ تم تحديث البرنامج إلى "${name}"`);
+        
+        // ✅ إغلاق النافذة
         closeAddProgramModal();
+        
+        // ✅ تحديث القوائم
         loadAdminPrograms();
         loadProgramsSelect();
-        
-        // ✅ إعادة تعيين النموذج
-        const form = document.getElementById('addProgramForm');
-        form.onsubmit = saveProgram;
-        const submitBtn = form.querySelector('button[type="submit"]');
-        submitBtn.innerText = 'إضافة البرنامج';
-        
-        // ✅ إعادة تعيين العنوان
-        document.querySelector('#addProgramModal .modal-title').innerHTML = 
-            '<i class="fas fa-plus-circle text-green-600 ml-2"></i> إضافة برنامج جديد';
         
     } catch (error) {
         console.error('❌ خطأ في تحديث البرنامج:', error);
@@ -9417,15 +9702,13 @@ async function updateProgram(programId) {
 }
 
 // ============================================================
-//  دالة عرض البرامج في لوحة المدير (مصلحة)
+//  دالة عرض البرامج في لوحة المدير (مع مصدر الأسئلة)
 // ============================================================
 
 async function loadAdminPrograms() {
     try {
-        // ✅ التحقق من وجود الحاوية
         let container = document.getElementById('adminProgramsList');
         
-        // ✅ إذا لم توجد الحاوية، قم بإنشائها
         if (!container) {
             const tabContent = document.getElementById('adminTabPrograms');
             if (tabContent) {
@@ -9460,7 +9743,10 @@ async function loadAdminPrograms() {
         for (let id in programs) {
             const program = programs[id];
             const questionCount = (program.questions || []).length;
+            const source = program.source || 'افتراضي';
             const isAuto = program.autoGenerated ? '🤖 تلقائي' : '✏️ مخصص';
+            const sourceIcon = source === 'faqData' ? '📚' : '⚙️';
+            const sourceText = source === 'faqData' ? 'من FAQ' : 'افتراضي';
             
             html += `
                 <div class="flex justify-between items-center p-4 hover:bg-gray-50 border-b">
@@ -9470,6 +9756,10 @@ async function loadAdminPrograms() {
                             <i class="fas fa-question-circle ml-1"></i> ${questionCount} سؤال
                             <span class="mx-2">|</span>
                             <span class="text-xs bg-gray-200 px-2 py-0.5 rounded-full">${isAuto}</span>
+                            <span class="mx-2">|</span>
+                            <span class="text-xs ${source === 'faqData' ? 'bg-blue-100 text-blue-700' : 'bg-gray-100 text-gray-600'} px-2 py-0.5 rounded-full">
+                                ${sourceIcon} ${sourceText}
+                            </span>
                             <span class="mx-2">|</span>
                             <i class="fas fa-calendar ml-1"></i> ${new Date(program.createdAt).toLocaleDateString('ar-EG')}
                         </div>
@@ -9496,8 +9786,119 @@ async function loadAdminPrograms() {
     }
 }
 
+
 // ============================================================
-//  دالة عرض أسئلة البرنامج (للاطلاع فقط)
+//  نافذة تأكيد مخصصة (متطورة)
+// ============================================================
+
+// متغير لتخزين الدالة التي سيتم تنفيذها بعد التأكيد
+let pendingConfirmAction = null;
+let pendingConfirmData = null;
+
+// فتح نافذة التأكيد المخصصة
+function openCustomConfirm(message, warning, onConfirm, data) {
+    // ✅ التحقق من وجود النافذة في DOM
+    let modal = document.getElementById('customConfirmModal');
+    
+    // ✅ إذا لم توجد النافذة، قم بإنشائها
+    if (!modal) {
+        createCustomConfirmModal();
+        modal = document.getElementById('customConfirmModal');
+    }
+    
+    if (!modal) {
+        // إذا فشل الإنشاء، استخدم confirm العادية
+        if (confirm(message + '\n\n' + warning)) {
+            onConfirm(data);
+        }
+        return;
+    }
+    
+    // ✅ تخزين الدالة والبيانات
+    pendingConfirmAction = onConfirm;
+    pendingConfirmData = data;
+    
+    // ✅ تحديث محتوى النافذة
+    const messageEl = document.getElementById('confirmMessage');
+    const warningEl = document.getElementById('confirmWarning');
+    const actionBtn = document.getElementById('confirmActionBtn');
+    
+    if (messageEl) messageEl.innerHTML = message;
+    if (warningEl) warningEl.innerHTML = warning || 'لا يمكن التراجع عن هذا الإجراء!';
+    if (actionBtn) {
+        actionBtn.onclick = function() {
+            executeCustomConfirm();
+        };
+    }
+    
+    // ✅ إظهار النافذة
+    modal.style.display = 'flex';
+}
+
+// دالة إنشاء نافذة التأكيد (إذا لم تكن موجودة)
+function createCustomConfirmModal() {
+    // ✅ التحقق من عدم وجود نافذة مكررة
+    if (document.getElementById('customConfirmModal')) {
+        return;
+    }
+    
+    const modalHtml = `
+        <div id="customConfirmModal" class="confirm-modal-overlay">
+            <div class="confirm-modal">
+                <div class="confirm-icon">
+                    <i class="fas fa-exclamation-triangle"></i>
+                </div>
+                <h3>⚠️ تحذير!</h3>
+                <div class="confirm-message" id="confirmMessage">
+                    هل أنت متأكد من هذا الإجراء؟
+                </div>
+                <div class="confirm-warning" id="confirmWarning">
+                    لا يمكن التراجع عن هذا الإجراء!
+                </div>
+                <div class="confirm-buttons">
+                    <button class="btn-cancel" onclick="closeCustomConfirm()">إلغاء</button>
+                    <button class="btn-confirm" id="confirmActionBtn">تأكيد</button>
+                </div>
+            </div>
+        </div>
+    `;
+    
+    document.body.insertAdjacentHTML('beforeend', modalHtml);
+}
+
+// إغلاق نافذة التأكيد
+function closeCustomConfirm() {
+    const modal = document.getElementById('customConfirmModal');
+    if (modal) {
+        modal.style.display = 'none';
+    }
+    pendingConfirmAction = null;
+    pendingConfirmData = null;
+}
+
+// تنفيذ الإجراء بعد التأكيد
+function executeCustomConfirm() {
+    if (pendingConfirmAction) {
+        pendingConfirmAction(pendingConfirmData);
+    }
+    closeCustomConfirm();
+}
+
+// ✅ دالة بديلة للتأكيد (في حالة عدم وجود النافذة)
+function confirmAction(message, warning, onConfirm, data) {
+    // محاولة استخدام النافذة المخصصة
+    try {
+        openCustomConfirm(message, warning, onConfirm, data);
+    } catch (error) {
+        // في حالة الفشل، استخدم confirm العادية
+        if (confirm(message + '\n\n' + warning)) {
+            onConfirm(data);
+        }
+    }
+}
+
+// ============================================================
+//  دالة عرض أسئلة البرنامج (مع مصدر الأسئلة)
 // ============================================================
 
 function viewProgramQuestions(programId) {
@@ -9510,12 +9911,17 @@ function viewProgramQuestions(programId) {
         
         const questions = program.questions || [];
         const answers = program.answers || [];
+        const source = program.source || 'افتراضي';
+        const keywordCount = (program.keywords || []).length;
         
         let msg = `📋 أسئلة برنامج "${program.name}":\n\n`;
+        msg += `📌 مصدر الأسئلة: ${source === 'faqData' ? '📚 من قاعدة المعرفة (FAQ)' : '🤖 تلقائي'}\n`;
+        msg += `🔑 عدد الكلمات المفتاحية: ${keywordCount}\n\n`;
+        
         questions.forEach((q, i) => {
             msg += `${i+1}. ${q}`;
             if (answers[i]) {
-                msg += `\n   ↳ الإجابة الافتراضية: ${answers[i]}`;
+                msg += `\n   ↳ الإجابة: ${answers[i]}`;
             }
             msg += '\n\n';
         });
@@ -9530,7 +9936,7 @@ function viewProgramQuestions(programId) {
         };
         
         modal.innerHTML = `
-            <div class="modal-content p-6" style="max-width: 550px; width: 95%;" onclick="event.stopPropagation()">
+            <div class="modal-content p-6" style="max-width: 600px; width: 95%;" onclick="event.stopPropagation()">
                 <div class="flex justify-between items-center mb-4">
                     <h3 class="text-xl font-bold">
                         <i class="fas fa-list text-blue-600 ml-2"></i>
@@ -9540,17 +9946,27 @@ function viewProgramQuestions(programId) {
                         <i class="fas fa-times text-xl"></i>
                     </button>
                 </div>
+                
+                <div class="bg-gray-50 rounded-lg p-3 mb-4 text-sm">
+                    <div class="flex justify-between flex-wrap gap-2">
+                        <span><i class="fas fa-database ml-1 text-blue-500"></i> المصدر: <strong>${source === 'faqData' ? '📚 FAQ' : '🤖 تلقائي'}</strong></span>
+                        <span><i class="fas fa-key ml-1 text-green-500"></i> الكلمات المفتاحية: <strong>${(program.keywords || []).length}</strong></span>
+                        <span><i class="fas fa-question-circle ml-1 text-orange-500"></i> عدد الأسئلة: <strong>${questions.length}</strong></span>
+                    </div>
+                </div>
+                
                 <div class="max-h-96 overflow-y-auto">
                     ${questions.map((q, i) => `
-                        <div class="border-b py-3">
+                        <div class="border-b py-3 hover:bg-gray-50 px-2 rounded">
                             <div class="font-bold text-gray-700">${i+1}. ${q}</div>
-                            ${answers[i] ? `<div class="text-sm text-gray-500 mt-1 pr-4">↳ الإجابة: ${answers[i]}</div>` : ''}
+                            ${answers[i] ? `<div class="text-sm text-gray-600 mt-1 pr-4 bg-gray-50 p-2 rounded">↳ ${answers[i]}</div>` : ''}
                         </div>
                     `).join('')}
                 </div>
-                <div class="mt-4 text-center text-sm text-gray-400">
+                
+                <div class="mt-4 text-center text-sm text-gray-400 border-t pt-3">
                     <i class="fas fa-info-circle ml-1"></i>
-                    هذه الأسئلة يتم طرحها تلقائياً عند فتح شات التذكرة
+                    هذه الأسئلة تم استخراجها تلقائياً من قاعدة المعرفة (FAQ)
                 </div>
             </div>
         `;
