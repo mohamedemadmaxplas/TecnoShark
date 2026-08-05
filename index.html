@@ -6882,7 +6882,7 @@ function updateBotStatus(isActive) {
 
 
 // ============================================================
-//  دالة معالجة رد البوت - النسخة المصححة بالكامل
+//  دالة معالجة رد البوت - مع حذف التذكرة عند "لا"
 // ============================================================
 
 async function handleBotResponse(ticketId, userMessage) {
@@ -6894,22 +6894,47 @@ async function handleBotResponse(ticketId, userMessage) {
         const message = userMessage.toLowerCase().trim();
         
         // ============================================================
-        // ✅ 1. التحقق من "نعم" - متابعة المحادثة
+        // ✅ 1. التحقق من "لا" - إنهاء المحادثة وحذف التذكرة
         // ============================================================
-        if (message === 'نعم' || message === 'yes' || message === 'أكيد' || message === 'طبعاً' || message === 'موافق') {
-            await sendBotMessage(ticketId, '👋 رائع! اكتب سؤالك الجديد وسأجيبك فوراً.');
-            // ✅ إعادة تعيين الخطوة إلى 1 (بداية جديدة)
-            await db.ref(`tickets/${ticketId}/botStep`).set(1);
+        if (message === 'لا' || message === 'no' || message === 'كفاية' || message === 'انتهيت' || message === 'خلاص' || message === 'enough') {
+            // ✅ إرسال رسالة إغلاق
+            await sendBotMessage(ticketId, '👋 تم إنهاء المحادثة بناءً على طلبك.');
+            await sendBotMessage(ticketId, '📋 شكراً لتواصلك معنا. سيتم حذف التذكرة الآن.');
+            
+            // ✅ إيقاف البوت
+            await db.ref(`tickets/${ticketId}/botActive`).set(false);
+            await db.ref(`tickets/${ticketId}/status`).set('ended');
+            await db.ref(`tickets/${ticketId}/endedAt`).set(new Date().toISOString());
+            await db.ref(`tickets/${ticketId}/endedBy`).set('user');
+            
+            chatEnded = true;
+            updateBotStatus(false);
+            
+            // ✅ عرض نافذة التقييم الجديدة بعد 1.5 ثانية
+            setTimeout(() => {
+                if (typeof showModernRatingModal === 'function') {
+                    showModernRatingModal(ticketId);
+                } else if (typeof showRatingModal === 'function') {
+                    showRatingModal(ticketId);
+                }
+            }, 1500);
+            
+            // ✅ حذف التذكرة بعد 30 ثانية (أو بعد التقييم)
+            setTimeout(() => {
+                if (typeof deleteTicketAfterChat === 'function') {
+                    deleteTicketAfterChat(ticketId);
+                }
+            }, 35000);
+            
             return;
         }
         
         // ============================================================
-        // ✅ 2. التحقق من "لا" - إنهاء المحادثة
+        // ✅ 2. التحقق من "نعم" - متابعة المحادثة
         // ============================================================
-        if (message === 'لا' || message === 'no' || message === 'كفاية' || message === 'انتهيت' || message === 'خلاص') {
-            await sendBotMessage(ticketId, '👋 شكراً لاستخدامك المساعد الذكي! تم إنهاء المحادثة. إذا احتجت مساعدة أخرى، يمكنك فتح تذكرة جديدة.');
-            await db.ref(`tickets/${ticketId}/botActive`).set(false);
-            updateBotStatus(false);
+        if (message === 'نعم' || message === 'yes' || message === 'أكيد' || message === 'طبعاً' || message === 'موافق') {
+            await sendBotMessage(ticketId, '👋 رائع! اكتب سؤالك الجديد وسأجيبك فوراً.');
+            await db.ref(`tickets/${ticketId}/botStep`).set(1);
             return;
         }
         
@@ -6943,7 +6968,6 @@ async function handleBotResponse(ticketId, userMessage) {
         
         if (cached.found) {
             await sendBotMessage(ticketId, cached.answer);
-            // ✅ اسأل إذا كان لديه سؤال آخر
             await sendBotMessage(ticketId, '📋 هل لديك أي سؤال آخر؟ اكتب "نعم" للمتابعة أو "لا" لإنهاء المحادثة.');
             await db.ref(`tickets/${ticketId}/botStep`).set(99);
             return;
@@ -6958,7 +6982,6 @@ async function handleBotResponse(ticketId, userMessage) {
             
             if (aiResponse.success) {
                 await sendBotMessage(ticketId, aiResponse.answer);
-                // ✅ حفظ الإجابة الجديدة
                 addNewFAQ(userMessage, aiResponse.answer);
                 await sendBotMessage(ticketId, '📋 هل لديك أي سؤال آخر؟ اكتب "نعم" للمتابعة أو "لا" لإنهاء المحادثة.');
                 return;
