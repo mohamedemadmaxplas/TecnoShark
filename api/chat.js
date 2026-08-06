@@ -1,5 +1,5 @@
 // ============================================================
-//  ملف: api/chat.js (معدل مع نماذج مجانية صحيحة)
+//  ملف: api/chat.js (نسخة مبسطة بنموذج واحد)
 // ============================================================
 
 module.exports = async (req, res) => {
@@ -25,71 +25,63 @@ module.exports = async (req, res) => {
         const OPENROUTER_API_KEY = process.env.OPENROUTER_API_KEY || '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';
         const OPENROUTER_URL = 'https://openrouter.ai/api/v1/chat/completions';
         
-        // ✅ قائمة النماذج المجانية المتاحة حالياً
-        const models = [
-            'mistralai/mistral-7b-instruct:free',
-            'meta-llama/llama-3.2-3b-instruct:free',
-            'qwen/qwen-2.5-72b-instruct:free',
-            'deepseek/deepseek-chat:free'
-        ];
+        // ✅ استخدم نموذجاً واحداً فقط
+        const model = 'mistralai/mistral-7b-instruct:free';
+        console.log(`🤖 جرب النموذج: ${model}`);
         
-        let lastError = null;
-        
-        // ✅ تجربة النماذج واحداً تلو الآخر
-        for (const model of models) {
-            try {
-                console.log(`🔄 جرب النموذج: ${model}`);
-                
-                const response = await fetch(OPENROUTER_URL, {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                        'Authorization': `Bearer ${OPENROUTER_API_KEY}`,
-                        'HTTP-Referer': 'https://tecno-shark.vercel.app',
-                        'X-Title': 'TecnoShark Bot'
+        const response = await fetch(OPENROUTER_URL, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${OPENROUTER_API_KEY}`,
+                'HTTP-Referer': 'https://tecno-shark.vercel.app',
+                'X-Title': 'TecnoShark Bot'
+            },
+            body: JSON.stringify({
+                model: model,
+                messages: [
+                    {
+                        role: 'system',
+                        content: 'أنت مساعد دعم فني لشركة TecnoShark. أجب بالعربية بشكل مختصر ومفيد. إذا سألك عن موقع، أعطه رابط الموقع. إذا سألك عن سعر، أحله للتواصل مع الدعم.'
                     },
-                    body: JSON.stringify({
-                        model: model,
-                        messages: [
-                            {
-                                role: 'system',
-                                content: 'أنت مساعد دعم فني لشركة TecnoShark. أجب بالعربية بشكل مختصر ومفيد.'
-                            },
-                            {
-                                role: 'user',
-                                content: question
-                            }
-                        ],
-                        max_tokens: 300,
-                        temperature: 0.7
-                    })
-                });
-                
-                if (response.ok) {
-                    const data = await response.json();
-                    const answer = data.choices?.[0]?.message?.content || 'لم أستطع توليد إجابة.';
-                    console.log(`✅ نجح النموذج: ${model}`);
-                    return res.status(200).json({
-                        success: true,
-                        answer: answer,
-                        model: model
-                    });
-                } else {
-                    const errorData = await response.text();
-                    console.warn(`⚠️ فشل النموذج ${model}:`, errorData);
-                    lastError = errorData;
-                }
-            } catch (error) {
-                console.warn(`⚠️ خطأ في النموذج ${model}:`, error.message);
-                lastError = error.message;
+                    {
+                        role: 'user',
+                        content: question
+                    }
+                ],
+                max_tokens: 300,
+                temperature: 0.7
+            })
+        });
+        
+        // ✅ قراءة الاستجابة كنص أولاً
+        const responseText = await response.text();
+        console.log('📥 استجابة OpenRouter:', response.status, responseText.substring(0, 300));
+        
+        if (!response.ok) {
+            // ✅ محاولة فهم الخطأ
+            let errorMessage = responseText;
+            try {
+                const errorJson = JSON.parse(responseText);
+                errorMessage = errorJson.error?.message || errorJson.message || responseText;
+            } catch (e) {
+                // النص ليس JSON
             }
+            
+            return res.status(response.status).json({
+                success: false,
+                error: `فشل الاتصال بـ OpenRouter: ${errorMessage}`,
+                status: response.status
+            });
         }
         
-        // ✅ إذا فشلت جميع النماذج
-        return res.status(500).json({
-            success: false,
-            error: 'جميع النماذج المجانية غير متاحة حالياً',
-            details: lastError
+        const data = JSON.parse(responseText);
+        const answer = data.choices?.[0]?.message?.content || 'لم أستطع توليد إجابة.';
+        
+        console.log('✅ تم الحصول على إجابة بنجاح');
+        return res.status(200).json({
+            success: true,
+            answer: answer
         });
         
     } catch (error) {
