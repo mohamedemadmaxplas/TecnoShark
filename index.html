@@ -3612,6 +3612,292 @@
     background: #dee2e6;
     transform: translateY(-2px);
 }
+/* ==================== أنماط الروابط في الشات ==================== */
+
+/* تنسيق الروابط في رسائل الشات */
+#ticketChatMessages a {
+    color: #2563eb !important;
+    text-decoration: underline !important;
+    cursor: pointer !important;
+    font-weight: 500 !important;
+    transition: all 0.2s ease !important;
+    word-break: break-all !important;
+}
+
+#ticketChatMessages a:hover {
+    color: #1d4ed8 !important;
+    text-decoration: underline !important;
+    opacity: 0.85 !important;
+}
+
+#ticketChatMessages a:active {
+    color: #1e40af !important;
+    transform: scale(0.98) !important;
+}
+
+/* تنسيق الروابط في رسائل البوت (خلفية زرقاء) */
+#ticketChatMessages .bg-blue-100 a {
+    color: #1e40af !important;
+}
+
+#ticketChatMessages .bg-blue-100 a:hover {
+    color: #1e3a8a !important;
+}
+
+/* تنسيق الروابط في رسائل المستخدم (خلفية خضراء) */
+#ticketChatMessages .bg-green-100 a {
+    color: #065f46 !important;
+}
+
+#ticketChatMessages .bg-green-100 a:hover {
+    color: #064e3b !important;
+}
+
+/* تنسيق الروابط في رسائل المدير (خلفية صفراء) */
+#ticketChatMessages .bg-yellow-100 a {
+    color: #78350f !important;
+}
+
+#ticketChatMessages .bg-yellow-100 a:hover {
+    color: #451a03 !important;
+}
+
+/* أيقونة الرابط */
+#ticketChatMessages a i {
+    margin-left: 4px;
+    font-size: 0.8em;
+}
+
+/* تأثير عند الضغط على الرابط */
+#ticketChatMessages a:active {
+    transform: scale(0.97);
+}
+/* ============================================================
+   🟢 زر البوت العائم - Floating Bot Button
+   ============================================================ */
+
+/* الحاوية الرئيسية للزر */
+.bot-float-container {
+    position: fixed;
+    bottom: 100px;
+    right: -10px;
+    z-index: 9999;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    transition: all 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+    cursor: pointer;
+}
+
+/* الزر نفسه */
+.bot-float-btn {
+    width: 60px;
+    height: 60px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, #2563eb, #1d4ed8, #7c3aed);
+    border: none;
+    box-shadow: 0 4px 20px rgba(37, 99, 235, 0.4);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: all 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+    color: white;
+    font-size: 28px;
+    position: relative;
+    flex-shrink: 0;
+}
+
+.bot-float-btn:hover {
+    transform: scale(1.1);
+    box-shadow: 0 8px 35px rgba(37, 99, 235, 0.5);
+}
+
+/* تأثير النبض للزر */
+.bot-float-btn::after {
+    content: '';
+    position: absolute;
+    top: -4px;
+    left: -4px;
+    right: -4px;
+    bottom: -4px;
+    border-radius: 50%;
+    border: 2px solid rgba(37, 99, 235, 0.3);
+    animation: botPulse 2s ease-in-out infinite;
+}
+
+@keyframes botPulse {
+    0%, 100% {
+        transform: scale(1);
+        opacity: 0.5;
+    }
+    50% {
+        transform: scale(1.15);
+        opacity: 0.1;
+    }
+}
+
+/* أيقونة البوت */
+.bot-float-btn i {
+    font-size: 30px;
+    animation: botIconFloat 3s ease-in-out infinite;
+}
+
+@keyframes botIconFloat {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(-4px); }
+}
+
+/* شارة الإشعارات (النقطة الحمراء) */
+.bot-float-btn .bot-badge {
+    position: absolute;
+    top: -2px;
+    right: -2px;
+    width: 18px;
+    height: 18px;
+    background: #ef4444;
+    border-radius: 50%;
+    border: 2px solid white;
+    font-size: 9px;
+    font-weight: bold;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    animation: botBadgePulse 1.5s ease-in-out infinite;
+}
+
+@keyframes botBadgePulse {
+    0%, 100% { transform: scale(1); }
+    50% { transform: scale(1.2); }
+}
+
+/* ===== الحالة الافتراضية: الزر داخل الشاشة قليلاً ===== */
+.bot-float-container .bot-float-btn {
+    transform: translateX(0);
+}
+
+/* حالة الخروج: الزر يخرج للخارج */
+.bot-float-container.bot-exit {
+    right: -60px;
+}
+
+.bot-float-container.bot-exit .bot-float-btn {
+    transform: scale(0.9);
+    opacity: 0.7;
+}
+
+.bot-float-container.bot-exit .bot-float-btn::after {
+    animation: none;
+}
+
+/* ===== حالة الدخول: الزر داخل الشاشة ===== */
+.bot-float-container.bot-enter {
+    right: 10px;
+}
+
+.bot-float-container.bot-enter .bot-float-btn {
+    transform: scale(1);
+    opacity: 1;
+}
+
+.bot-float-container.bot-enter .bot-float-btn::after {
+    animation: botPulse 2s ease-in-out infinite;
+}
+
+/* ===== النص الجانبي (يظهر عند hover) ===== */
+.bot-float-container .bot-label {
+    background: rgba(0, 0, 0, 0.8);
+    backdrop-filter: blur(10px);
+    color: white;
+    padding: 8px 16px;
+    border-radius: 30px;
+    font-size: 14px;
+    font-weight: 500;
+    white-space: nowrap;
+    opacity: 0;
+    transform: translateX(20px) scale(0.9);
+    transition: all 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+    pointer-events: none;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+}
+
+.bot-float-container:hover .bot-label {
+    opacity: 1;
+    transform: translateX(0) scale(1);
+}
+
+/* ===== الشاشات الصغيرة (موبايل) ===== */
+@media (max-width: 768px) {
+    .bot-float-container {
+        bottom: 80px;
+        right: -8px;
+    }
+    
+    .bot-float-btn {
+        width: 50px;
+        height: 50px;
+        font-size: 22px;
+    }
+    
+    .bot-float-btn i {
+        font-size: 24px;
+    }
+    
+    .bot-float-container .bot-label {
+        font-size: 12px;
+        padding: 6px 12px;
+    }
+    
+    .bot-float-container.bot-exit {
+        right: -50px;
+    }
+    
+    .bot-float-container.bot-enter {
+        right: 8px;
+    }
+}
+
+@media (max-width: 480px) {
+    .bot-float-container {
+        bottom: 70px;
+        right: -6px;
+    }
+    
+    .bot-float-btn {
+        width: 44px;
+        height: 44px;
+        font-size: 18px;
+    }
+    
+    .bot-float-btn i {
+        font-size: 20px;
+    }
+    
+    .bot-float-container.bot-exit {
+        right: -44px;
+    }
+    
+    .bot-float-container.bot-enter {
+        right: 6px;
+    }
+    
+    .bot-float-container .bot-label {
+        font-size: 10px;
+        padding: 4px 10px;
+    }
+}
+
+/* ===== تأثير اهتزاز عند النقر ===== */
+.bot-float-btn:active {
+    animation: botClick 0.3s ease;
+}
+
+@keyframes botClick {
+    0%, 100% { transform: scale(1); }
+    50% { transform: scale(0.85); }
+}
     </style>
 </head>
 <body class="bg-gradient-to-br from-blue-50 to-indigo-100 min-h-screen">
@@ -4693,6 +4979,8 @@
         </div>
     </div>
 </div>
+
+
 
     <script>
    
@@ -6187,6 +6475,365 @@ const faqData = [
 {
     keywords: ["اشتراك", "شهري", "سنوي", "دائم", "subscription", "renewal"],
     answer: "📆 *أنواع الاشتراكات المتاحة:*\n\n• 📅 *شهري:* مناسب للاستخدام القصير\n• 📆 *سنوي:* مناسب للاستخدام الطويل مع خصم\n• ♾️ *دائم:* شراء مرة واحدة مدى الحياة\n• 🎁 *مجاني:* نسخة تجريبية أو محدودة\n• 📋 *مخصص:* حسب احتياجاتك - اتصل بنا"
+},
+// ============================================================
+//  مميزات البرامج المختلفة
+// ============================================================
+
+// 1. مميزات TS POS (نظام نقاط البيع)
+{
+    keywords: ["TS POS", "نقاط بيع", "مميزات TS POS", "إمكانيات TS POS", "خصائص TS POS", "POS system", "مميزات نظام البيع", "شرح TS POS"],
+    answer: "📋 *مميزات نظام TS POS (نقاط البيع):*\n\n" +
+            "✅ *إدارة المنتجات:*\n" +
+            "   • إضافة وتعديل وحذف المنتجات بسهولة\n" +
+            "   • إدارة المخزون والتنبيه عند النقص\n" +
+            "   • طباعة باركود للمنتجات\n\n" +
+            "✅ *نقاط البيع:*\n" +
+            "   • بيع سريع وسهل\n" +
+            "   • دعم طرق دفع متعددة (كاش - شبكة - تحويل)\n" +
+            "   • طباعة فواتير وإيصالات\n\n" +
+            "✅ *إدارة العملاء:*\n" +
+            "   • تسجيل العملاء ومتابعة مشترياتهم\n" +
+            "   • نظام ديون العملاء وسدادها\n" +
+            "   • تقارير مشتريات العملاء\n\n" +
+            "✅ *إدارة الموظفين:*\n" +
+            "   • صلاحيات متعددة للموظفين\n" +
+            "   • متابعة أداء الموظفين\n\n" +
+            "✅ *التقارير والإحصائيات:*\n" +
+            "   • تقارير المبيعات والأرباح\n" +
+            "   • تقارير المخزون والمنتجات\n" +
+            "   • تقارير العملاء والديون\n\n" +
+            "✅ *ميزات إضافية:*\n" +
+            "   • العمل دون إنترنت (Offline)\n" +
+            "   • نسخ احتياطي واستعادة البيانات\n" +
+            "   • طباعة تقارير PDF و Excel"
+},
+
+// 2. مميزات TS Attend Pro (نظام الحضور والغياب)
+{
+    keywords: ["TS Attend Pro", "حضور وغياب", "مميزات TS Attend", "خصائص الحضور", "نظام الحضور", "إدارة الطلاب", "إدارة الفصول", "شرح TS Attend"],
+    answer: "📋 *مميزات نظام TS Attend Pro (الحضور والغياب):*\n\n" +
+            "✅ *إدارة الطلاب:*\n" +
+            "   • تسجيل الطلاب وإدارة بياناتهم\n" +
+            "   • طباعة باركود للطلاب\n" +
+            "   • البحث عن الطلاب بالاسم أو الكود\n\n" +
+            "✅ *إدارة الفصول الدراسية:*\n" +
+            "   • إنشاء فصول دراسية متعددة\n" +
+            "   • تخصيص مدرسين لكل فصل\n" +
+            "   • تحديد أيام الدراسة\n\n" +
+            "✅ *تسجيل الحضور والغياب:*\n" +
+            "   • تسجيل الحضور بالباركود أو يدوياً\n" +
+            "   • تقارير الغياب اليومية والأسبوعية\n" +
+            "   • إشعارات للطلاب المتغيبين\n\n" +
+            "✅ *إدارة المصاريف:*\n" +
+            "   • إدارة المصاريف الشهرية للطلاب\n" +
+            "   • متابعة المدفوعات والديون\n" +
+            "   • تقارير المصاريف\n\n" +
+            "✅ *التقارير والإحصائيات:*\n" +
+            "   • تقارير الحضور والغياب\n" +
+            "   • تقارير المصاريف والإيرادات\n" +
+            "   • إحصائيات الفصول والطلاب\n\n" +
+            "✅ *ميزات إضافية:*\n" +
+            "   • المزامنة السحابية\n" +
+            "   • طباعة تقارير PDF\n" +
+            "   • إرسال تقارير عبر واتساب"
+},
+
+// 3. مميزات TS مقاولات (نظام إدارة مواد البناء)
+{
+    keywords: ["TS مقاولات", "مواد بناء", "مميزات TS مقاولات", "خصائص مقاولات", "نظام مواد البناء", "إدارة الحجوزات", "شرح TS مقاولات"],
+    answer: "📋 *مميزات نظام TS مقاولات (إدارة مواد البناء):*\n\n" +
+            "✅ *إدارة مواد البناء:*\n" +
+            "   • إدارة المنتجات (حديد - أسمنت - طوب - رمل - زلط - جبس - سيراميك)\n" +
+            "   • تتبع المخزون والتنبيه عند النقص\n" +
+            "   • تحديد وحدات القياس لكل منتج\n\n" +
+            "✅ *نظام الحجوزات:*\n" +
+            "   • حجز المواد للعملاء بسعر ثابت\n" +
+            "   • دفع مقدم للحجز\n" +
+            "   • تحويل الحجز إلى فاتورة\n\n" +
+            "✅ *إدارة العملاء والموردين:*\n" +
+            "   • إدارة العملاء ومتابعة مشترياتهم\n" +
+            "   • إدارة الموردين وفواتير الشراء\n" +
+            "   • نظام ديون العملاء والموردين\n\n" +
+            "✅ *الخزنة والمصروفات:*\n" +
+            "   • إدارة حركات الخزنة (إيداع - سحب)\n" +
+            "   • تسجيل المصروفات\n" +
+            "   • تقارير الخزنة الشاملة\n\n" +
+            "✅ *التقارير:*\n" +
+            "   • تقارير المبيعات والأرباح\n" +
+            "   • تقارير الحجوزات\n" +
+            "   • تقارير الخزنة والمصروفات\n\n" +
+            "✅ *ميزات إضافية:*\n" +
+            "   • طباعة فواتير A4 وإيصالات\n" +
+            "   • تصدير واستيراد البيانات\n" +
+            "   • نظام التفعيل والترخيص"
+},
+
+// 4. مميزات عامة للبرامج
+{
+    keywords: ["مميزات البرنامج", "خصائص النظام", "إمكانيات البرنامج", "ماذا يقدم", "شرح البرنامج", "وصف البرنامج"],
+    answer: "📋 *مميزات برامج TecnoShark:*\n\n" +
+            "جميع برامجنا تتميز بـ:\n\n" +
+            "✅ *واجهة سهلة:*\n" +
+            "   • تصميم عصري وسهل الاستخدام\n" +
+            "   • دعم اللغة العربية\n\n" +
+            "✅ *أمان وحماية:*\n" +
+            "   • نظام صلاحيات متكامل\n" +
+            "   • تشفير البيانات\n\n" +
+            "✅ *دعم فني:*\n" +
+            "   • دعم فني على مدار الساعة\n" +
+            "   • تحديثات مستمرة\n\n" +
+            "✅ *مرونة:*\n" +
+            "   • قابلية التخصيص حسب احتياجك\n" +
+            "   • يعمل على ويندوز وماك\n\n" +
+            "💡 اكتب اسم البرنامج مع كلمة 'مميزات'\n" +
+            "مثال: 'مميزات TS POS'"
+},
+
+// 5. مميزات TS محاسبة (نظام المحاسبة)
+{
+    keywords: ["TS محاسبة", "محاسبة", "مميزات TS محاسبة", "نظام محاسبة", "حسابات", "ميزانية", "دفاتر"],
+    answer: "📋 *مميزات نظام TS محاسبة:*\n\n" +
+            "✅ *إدارة الحسابات:*\n" +
+            "   • إدارة الحسابات الرئيسية والفرعية\n" +
+            "   • شجرة حسابات متكاملة\n" +
+            "   • دليل حسابات مرن\n\n" +
+            "✅ *القيد اليومي:*\n" +
+            "   • تسجيل القيود اليومية بسهولة\n" +
+            "   • تدقيق تلقائي للقيود\n" +
+            "   • إمكانية التعديل والحذف\n\n" +
+            "✅ *التقارير المالية:*\n" +
+            "   • ميزانية عمومية\n" +
+            "   • قائمة الدخل\n" +
+            "   • كشف حساب\n" +
+            "   • تقارير الأرباح والخسائر\n\n" +
+            "✅ *إدارة العملاء والموردين:*\n" +
+            "   • حسابات العملاء والموردين\n" +
+            "   • متابعة الديون والأرصدة\n\n" +
+            "✅ *ميزات إضافية:*\n" +
+            "   • تصدير التقارير إلى Excel و PDF\n" +
+            "   • نسخ احتياطي آلي\n" +
+            "   • دعم العملات المتعددة"
+},
+// ============================================================
+//  سؤال عن تصميم المواقع مع أمثلة وروابط
+// ============================================================
+
+{
+    keywords: ["تصميم مواقع", "تصميم موقع", "تطوير مواقع", "بناء مواقع", "مواقع إلكترونية", "web design", "website design", "نصمم مواقع", "نساعدك في تصميم موقع", "موقع ويب"],
+    answer: "🌐 *تصميم وتطوير المواقع الإلكترونية*\n\n" +
+            "نحن في *Tecno Shark* نقدم خدمات تصميم وتطوير مواقع احترافية تناسب جميع احتياجاتك.\n\n" +
+            "✨ *ماذا نقدم في تصميم المواقع؟*\n" +
+            "✅ *تصميم عصري وجذاب:* نستخدم أحدث التقنيات والتصاميم العصرية التي تجذب الزوار.\n" +
+            "✅ *تجربة مستخدم مميزة:* نركز على سهولة الاستخدام وتجربة تصفح سلسة.\n" +
+            "✅ *متجاوبة مع جميع الأجهزة:* موقعك يعمل بشكل مثالي على الكمبيوتر والجوال والتابلت.\n" +
+            "✅ *سرعة في التحميل:* نحرص على تحسين الأداء لسرعة تحميل الموقع.\n" +
+            "✅ *سهولة في التحديث:* يمكنك تحديث محتوى موقعك بسهولة دون الحاجة لمبرمج.\n" +
+            "✅ *أمان وحماية:* نطبق أحدث معايير الأمان لحماية بياناتك وبيانات زوارك.\n\n" +
+            "📌 *نماذج من المواقع التي صممناها:*\n\n" +
+            "🏕️ *موقع Scout DoJo* - نظام إدارة الكشافة البحرية\n" +
+            "   هذا النظام يدير المجموعات الكشفية والأعضاء والأنشطة والتكاليف.\n" +
+            "   🔗 *رابط الموقع:* https://kayan-cyan.vercel.app/\n\n" +
+            "💡 *هل لديك فكرة لمشروعك؟*\n" +
+            "   تواصل معنا وسنساعدك في تحويل فكرتك إلى موقع احترافي.\n\n" +
+            "📞 *للتواصل:* 01144100018 - 01126125881"
+},
+// ============================================================
+//  مميزات موقع Imtihan (مع مرادفات متعددة)
+// ============================================================
+
+{
+    keywords: [
+        "مميزات Imtihan", "مميزات منصة Imtihan", "ما هي مميزات Imtihan",
+        "Imtihan مميزات", "شرح Imtihan", "منصة Imtihan",
+        "مميزات امتحان", "مميزات منصة امتحان", "منصة امتحان",
+        "مميزات موقع امتحان", "موقع امتحان", "امتحان",
+        "مميزات موقع Imtihan", "مميزات imtihan",
+        "شرح منصة Imtihan", "منصة الامتحانات", "الامتحانات",
+        "مميزات منصة الامتحانات", "منصة الاختبارات"
+    ],
+    answer: "📚 *مميزات منصة Imtihan - الامتحانات الإلكترونية:*\n\n" +
+            "✅ *إنشاء امتحانات:* أنشئ امتحاناتك بسهولة مع أسئلة اختيار من متعدد، صح/خطأ، وأسئلة مقالية.\n" +
+            "✅ *تصحيح تلقائي:* النظام يصحح الإجابات تلقائياً ويعطي النتيجة فوراً.\n" +
+            "✅ *تقارير فورية:* احصل على تقارير مفصلة عن أداء الطلاب.\n" +
+            "✅ *رابط امتحان:* شارك رابط الامتحان مع طلابك بسهولة.\n" +
+            "✅ *بنك الأسئلة:* خزّن أسئلتك واستخدمها في أي وقت.\n" +
+            "✅ *تحليلات متقدمة:* تتبع أداء الطلاب ونسب النجاح.\n" +
+            "✅ *إدارة الطلاب:* تتبع نتائج كل طالب على حدة.\n\n" +
+            "🔗 *رابط المنصة:* https://imtihan-eight.vercel.app/"
+},
+
+// ============================================================
+//  مميزات موقع نبض (مع مرادفات متعددة)
+// ============================================================
+
+{
+    keywords: [
+        "مميزات نبض", "مميزات متجر نبض", "ما هي مميزات نبض",
+        "نبض مميزات", "شرح نبض", "متجر نبض",
+        "مميزات موقع نبض", "مميزات nabd", "nabd",
+        "مميزات nabd", "متجر نبض للهوديز", "هوديز نبض",
+        "نبض ملابس", "متجر نبض للملابس", "ملابس نبض"
+    ],
+    answer: "👕 *مميزات متجر نبض - الملابس والهوديز:*\n\n" +
+            "✅ *هوديز عالية الجودة:* تشكيلة واسعة من الهوديز بألوان ومقاسات مختلفة.\n" +
+            "✅ *ملابس رجالية:* تيشيرتات، جواكيت، وعروض حصرية.\n" +
+            "✅ *أسعار تنافسية:* جودة عالية بأسعار مناسبة للجميع.\n" +
+            "✅ *توصيل سريع:* نوصل طلباتك في أسرع وقت.\n" +
+            "✅ *تجربة تسوق سهلة:* واجهة بسيطة وسهلة الاستخدام.\n" +
+            "✅ *نظام طلبات متكامل:* تتبع طلباتك بسهولة.\n" +
+            "✅ *تقييمات العملاء:* اقرأ تقييمات العملاء قبل الشراء.\n\n" +
+            "🔗 *رابط المتجر:* https://nabd-ten.vercel.app/"
+},
+
+// ============================================================
+//  مميزات موقع Scout DoJo (مع مرادفات متعددة)
+// ============================================================
+
+{
+    keywords: [
+        "مميزات Scout DoJo", "مميزات موقع الكشافة", "ما هي مميزات Scout DoJo",
+        "Scout DoJo مميزات", "شرح Scout DoJo", "نظام الكشافة",
+        "مميزات موقع الكشافة البحرية", "الكشافة البحرية", "كشافة",
+        "مميزات كشافة", "Scout", "DoJo", "منصة الكشافة",
+        "نظام إدارة الكشافة", "scout dojo", "كشافه بحريه",
+        "موقع الكشافة", "الكشافة", "الكشافه البحريه"
+    ],
+    answer: "⛵ *مميزات موقع Scout DoJo - نظام إدارة الكشافة البحرية:*\n\n" +
+            "✅ *إدارة الأعضاء:* تسجيل الأعضاء وإدارة بياناتهم ورتبهم.\n" +
+            "✅ *إدارة المجموعات والهيئات:* إنشاء مجموعات وهيئات وطلايع.\n" +
+            "✅ *نظام النقاط والترتيب:* منح نقاط للأعضاء وعرض الترتيب.\n" +
+            "✅ *إدارة التكاليف:* إنشاء تكاليف ومهام للأعضاء.\n" +
+            "✅ *نظام الحضور والغياب:* تتبع حضور الأعضاء.\n" +
+            "✅ *الفورمات والتقييمات:* إنشاء فورمات وتقييمات للأعضاء.\n" +
+            "✅ *لوحة تحكم متكاملة:* للمدير والقادة والأعضاء.\n\n" +
+            "🔗 *رابط الموقع:* https://kayan-cyan.vercel.app/"
+},
+
+
+
+{
+    keywords: [
+        "ما هي المواقع", "المواقع التي تم تصميمها", "مواقع صممناها", "قائمة المواقع",
+        "ما المواقع المتاحة", "المواقع المتاحة", "عرض المواقع", "المواقع المطورة",
+        "ما هي المواقع التي قمتم بتطويرها", "مواقع قمت بتصميمها", "أعمالنا", "مشاريعنا",
+        "هل لديكم مواقع", "هل لديك مواقع", "عندكم مواقع", "عندك مواقع", "مواقع عندكم",
+        "مواقع لديكم", "هل يوجد مواقع", "هل توجد مواقع", "عندكم موقع", "عندك موقع",
+        "مواقع تصممونها", "مواقع بتصمموها", "المواقع التي تصممونها",
+        "ما هي المواقع التي عندكم", "ما المواقع التي لديكم", "عندي استفسار عن المواقع",
+        "استفسار عن المواقع", "مواقع قمت بتطويرها", "تطوير مواقع", "تصميم مواقع"
+    ],
+    answer: "🌐 *قائمة المواقع التي تم تصميمها بواسطة Tecno Shark:*\n\n" +
+            "📌 *1. منصة Imtihan - الامتحانات الإلكترونية*\n" +
+            "   🔗 https://imtihan-eight.vercel.app\n" +
+            "   📝 منصة متكاملة لإنشاء وإدارة الامتحانات الإلكترونية.\n\n" +
+            "📌 *2. متجر نبض - الملابس والهوديز*\n" +
+            "   🔗 https://nabd-ten.vercel.app\n" +
+            "   📝 متجر إلكتروني متخصص في بيع الهوديز والملابس الرجالية.\n\n" +
+            "📌 *3. موقع Scout DoJo - الكشافة البحرية*\n" +
+            "   🔗 https://kayan-cyan.vercel.app\n" +
+            "   📝 نظام إدارة متكامل للمجموعات الكشفية والأعضاء والأنشطة.\n\n" +
+            "   📝 نظام إدارة الحضور والغياب للطلاب والفصول.\n\n" +
+            "💡 *للاستفسار عن مميزات أي موقع:*\n" +
+            "   اكتب 'مميزات [اسم الموقع]'\n" +
+            "   مثال: 'مميزات Imtihan' أو 'مميزات نبض'\n\n" +
+            "📞 للتواصل: 01144100018 - 01126125881"
+},
+
+// ============================================================
+//  مميزات موقع Imtihan
+// ============================================================
+
+{
+    keywords: ["مميزات Imtihan", "مميزات منصة Imtihan", "ما هي مميزات Imtihan", "Imtihan مميزات", "شرح Imtihan", "منصة Imtihan"],
+    answer: "📚 *مميزات منصة Imtihan - الامتحانات الإلكترونية:*\n\n" +
+            "✅ *إنشاء امتحانات:* أنشئ امتحاناتك بسهولة مع أسئلة اختيار من متعدد، صح/خطأ، وأسئلة مقالية.\n" +
+            "✅ *تصحيح تلقائي:* النظام يصحح الإجابات تلقائياً ويعطي النتيجة فوراً.\n" +
+            "✅ *تقارير فورية:* احصل على تقارير مفصلة عن أداء الطلاب.\n" +
+            "✅ *رابط امتحان:* شارك رابط الامتحان مع طلابك بسهولة.\n" +
+            "✅ *بنك الأسئلة:* خزّن أسئلتك واستخدمها في أي وقت.\n" +
+            "✅ *تحليلات متقدمة:* تتبع أداء الطلاب ونسب النجاح.\n" +
+            "✅ *إدارة الطلاب:* تتبع نتائج كل طالب على حدة.\n\n" +
+            "🔗 *رابط المنصة:* https://imtihan-eight.vercel.app/"
+},
+
+// ============================================================
+//  مميزات موقع نبض
+// ============================================================
+
+{
+    keywords: ["مميزات نبض", "مميزات متجر نبض", "ما هي مميزات نبض", "نبض مميزات", "شرح نبض", "متجر نبض"],
+    answer: "👕 *مميزات متجر نبض - الملابس والهوديز:*\n\n" +
+            "✅ *هوديز عالية الجودة:* تشكيلة واسعة من الهوديز بألوان ومقاسات مختلفة.\n" +
+            "✅ *ملابس رجالية:* تيشيرتات، جواكيت، وعروض حصرية.\n" +
+            "✅ *أسعار تنافسية:* جودة عالية بأسعار مناسبة للجميع.\n" +
+            "✅ *توصيل سريع:* نوصل طلباتك في أسرع وقت.\n" +
+            "✅ *تجربة تسوق سهلة:* واجهة بسيطة وسهلة الاستخدام.\n" +
+            "✅ *نظام طلبات متكامل:* تتبع طلباتك بسهولة.\n" +
+            "✅ *تقييمات العملاء:* اقرأ تقييمات العملاء قبل الشراء.\n\n" +
+            "🔗 *رابط المتجر:* https://nabd-ten.vercel.app/"
+},
+
+// ============================================================
+//  مميزات موقع Scout DoJo
+// ============================================================
+
+{
+    keywords: ["مميزات Scout DoJo", "مميزات موقع الكشافة", "ما هي مميزات Scout DoJo", "Scout DoJo مميزات", "شرح Scout DoJo", "نظام الكشافة"],
+    answer: "⛵ *مميزات موقع Scout DoJo - نظام إدارة الكشافة البحرية:*\n\n" +
+            "✅ *إدارة الأعضاء:* تسجيل الأعضاء وإدارة بياناتهم ورتبهم.\n" +
+            "✅ *إدارة المجموعات والهيئات:* إنشاء مجموعات وهيئات وطلايع.\n" +
+            "✅ *نظام النقاط والترتيب:* منح نقاط للأعضاء وعرض الترتيب.\n" +
+            "✅ *إدارة التكاليف:* إنشاء تكاليف ومهام للأعضاء.\n" +
+            "✅ *نظام الحضور والغياب:* تتبع حضور الأعضاء.\n" +
+            "✅ *الفورمات والتقييمات:* إنشاء فورمات وتقييمات للأعضاء.\n" +
+            "✅ *لوحة تحكم متكاملة:* للمدير والقادة والأعضاء.\n\n" +
+            "🔗 *رابط الموقع:* https://kayan-cyan.vercel.app/"
+},
+
+// ============================================================
+//  مميزات موقع TS مقاولات
+// ============================================================
+
+{
+    keywords: ["مميزات TS مقاولات", "مميزات نظام مقاولات", "ما هي مميزات TS مقاولات", "TS مقاولات مميزات", "شرح TS مقاولات", "نظام مواد البناء"],
+    answer: "🏗️ *مميزات نظام TS مقاولات - إدارة مواد البناء:*\n\n" +
+            "✅ *إدارة مواد البناء:* إدارة المنتجات (حديد - أسمنت - طوب - رمل - زلط - جبس - سيراميك).\n" +
+            "✅ *تتبع المخزون:* والتنبيه عند النقص.\n" +
+            "✅ *نظام الحجوزات:* حجز المواد للعملاء بسعر ثابت.\n" +
+            "✅ *إدارة العملاء والموردين:* متابعة الديون والفواتير.\n" +
+            "✅ *الخزنة والمصروفات:* إدارة حركات الخزنة والتقارير.\n" +
+            "✅ *طباعة الفواتير:* فواتير A4 وإيصالات.\n" +
+            "✅ *تصدير واستيراد البيانات:* نسخ احتياطية.\n\n" +
+            "🔗 *رابط الموقع:* (رابط الموقع)"
+},
+
+// ============================================================
+//  كيفية إنشاء موقع جديد
+// ============================================================
+
+
+{
+    keywords: ["كيف أنشئ موقع", "إنشاء موقع", "عمل موقع", "تصميم موقع", "طريقة عمل موقع", "أريد موقع", "كيف اعمل موقع", "بناء موقع", "كيفية إنشاء موقع", "كيف اسوي موقع", "كيف اطور موقع", "عايز موقع", "اريد موقع", "اعمل موقع", "موقع جديد", "إنشاء موقع إلكتروني", "تصميم موقع إلكتروني", "كيف أنشئ موقعاً", "كيف أنشئ موقع إلكتروني", "طريقة تصميم موقع"],
+    answer: "🌐 *كيف تنشئ موقعاً إلكترونياً مع Tecno Shark؟*\n\n" +
+            "📌 *الخطوات بسيطة:*\n\n" +
+            "1️⃣ *تواصل معنا* عبر الأرقام التالية:\n" +
+            "   📞 01144100018\n" +
+            "   📞 01126125881\n\n" +
+            "2️⃣ *أخبرنا بفكرتك*: ما هو نوع الموقع الذي تريده؟ (متجر، منصة تعليمية، نظام إدارة، موقع تعريفي، إلخ).\n\n" +
+            "3️⃣ *نقوم بالتصميم والتطوير*: نستخدم أحدث التقنيات لتصميم موقع احترافي.\n\n" +
+            "4️⃣ *نقدم لك الموقع جاهزاً* مع تدريب على الاستخدام.\n\n" +
+            "✨ *ماذا نقدم في تصميم المواقع؟*\n" +
+            "✅ تصميم عصري وجذاب.\n" +
+            "✅ متجاوب مع جميع الأجهزة (كمبيوتر - جوال - تابلت).\n" +
+            "✅ سرعة في التحميل.\n" +
+            "✅ سهولة في التحديث.\n" +
+            "✅ أمان وحماية.\n" +
+            "✅ دعم فني مستمر.\n" +
+            "✅ تحسين محركات البحث (SEO).\n" +
+            "✅ تكامل مع أنظمة الدفع.\n\n" +
+            "💡 *لا تتردد في التواصل معنا لتحويل فكرتك إلى واقع!*\n" +
+            "📞 01144100018 - 01126125881"
 }
 
 ];
@@ -6213,7 +6860,7 @@ let chatEnded = false;
 // =============================================
 
 // ============================================================
-//  دالة البحث عن إجابة في faqData (مع مراعاة البرنامج)
+//  دالة البحث عن إجابة في FAQ
 // ============================================================
 
 function findAnswerInFAQ(userMessage, programName) {
@@ -6225,22 +6872,16 @@ function findAnswerInFAQ(userMessage, programName) {
     let bestMatch = null;
     let bestScore = 0;
     
-    // ✅ البحث في faqData بالكامل
     faqData.forEach(item => {
         let score = 0;
-        
-        // ✅ نقطة إضافية إذا كانت الإجابة تحتوي على اسم البرنامج
-        if (programName && item.answer && item.answer.toLowerCase().includes(programName.toLowerCase())) {
-            score += 2;
-        }
         
         // البحث عن تطابق الكلمات المفتاحية
         item.keywords.forEach(keyword => {
             const keywordLower = keyword.toLowerCase();
             
-            // تطابق تام
+            // تطابق تام (السؤال يحتوي على الكلمة المفتاحية)
             if (message.includes(keywordLower)) {
-                score += 3;
+                score += 5;
             }
             
             // تطابق جزئي (الكلمة داخل كلمة أطول)
@@ -6248,7 +6889,7 @@ function findAnswerInFAQ(userMessage, programName) {
             words.forEach(word => {
                 if (word.length > 2) {
                     if (keywordLower.includes(word) || word.includes(keywordLower)) {
-                        score += 1;
+                        score += 2;
                     }
                 }
             });
@@ -6258,9 +6899,14 @@ function findAnswerInFAQ(userMessage, programName) {
         if (message.length < 20) {
             item.keywords.forEach(keyword => {
                 if (message === keyword.toLowerCase()) {
-                    score += 5;
+                    score += 8;
                 }
             });
+        }
+        
+        // ✅ تحسين: نقاط إضافية إذا كانت الإجابة تحتوي على اسم البرنامج المختار
+        if (programName && item.answer && item.answer.toLowerCase().includes(programName.toLowerCase())) {
+            score += 3;
         }
         
         if (score > bestScore) {
@@ -6269,11 +6915,10 @@ function findAnswerInFAQ(userMessage, programName) {
         }
     });
     
-    // ✅ العتبة 2 لتكون أكثر تسامحاً
-    if (bestScore >= 2 && bestMatch) {
-        let answer = bestMatch.answer;
-        
+    // ✅ العتبة 3 بدلاً من 2 لتكون أكثر دقة ولكن مع تحسين المطابقة
+    if (bestScore >= 3 && bestMatch) {
         // ✅ إضافة اسم البرنامج في الإجابة إذا لم يكن موجوداً
+        let answer = bestMatch.answer;
         if (programName && !answer.toLowerCase().includes(programName.toLowerCase())) {
             answer = `📌 بخصوص برنامج ${programName}:\n\n${answer}`;
         }
@@ -6716,45 +7361,145 @@ function resetTimerOnNewMessage() {
     }
 }
 
+// ============================================================
+//  دالة تحميل رسائل الشات - مع دعم الروابط القابلة للنقر
+// ============================================================
+
 async function loadTicketMessages(ticketId) {
     try {
         const snapshot = await db.ref(`tickets/${ticketId}/messages`).once('value');
         const messages = snapshot.val();
         const container = document.getElementById('ticketChatMessages');
+        
+        if (!container) {
+            console.warn('⚠️ عنصر ticketChatMessages غير موجود');
+            return;
+        }
+        
         if (!messages) {
             container.innerHTML = `<div class="text-center text-gray-400 py-10">
                 <i class="fas fa-comment text-4xl mb-3"></i><p>لا توجد رسائل بعد</p>
             </div>`;
             return;
         }
+        
         const msgList = [];
         for (let id in messages) msgList.push({ id, ...messages[id] });
         msgList.sort((a, b) => new Date(a.timestamp) - new Date(b.timestamp));
+        
         let html = '';
         msgList.forEach(msg => {
             const isBot = msg.isBot;
             const isAdmin = msg.isAdmin;
             const isSelf = msg.senderId === currentUser?.uid && !isBot && !isAdmin;
+            
             let senderName = msg.senderName || 'مستخدم';
             let bgColor = 'bg-gray-100';
             let textColor = 'text-gray-800';
-            if (isBot) { bgColor = 'bg-blue-100'; textColor = 'text-blue-800'; senderName = '🤖 البوت'; }
-            else if (isAdmin) { bgColor = 'bg-yellow-100'; textColor = 'text-yellow-800'; senderName = '👑 المدير'; }
-            else if (isSelf) { bgColor = 'bg-green-100'; textColor = 'text-green-800'; }
-            const time = new Date(msg.timestamp).toLocaleTimeString('ar-EG', {hour: '2-digit', minute: '2-digit'});
+            
+            if (isBot) { 
+                bgColor = 'bg-blue-100'; 
+                textColor = 'text-blue-800'; 
+                senderName = '🤖 البوت'; 
+            } else if (isAdmin) { 
+                bgColor = 'bg-yellow-100'; 
+                textColor = 'text-yellow-800'; 
+                senderName = '👑 المدير'; 
+            } else if (isSelf) { 
+                bgColor = 'bg-green-100'; 
+                textColor = 'text-green-800'; 
+            }
+            
+            const time = new Date(msg.timestamp).toLocaleTimeString('ar-EG', {
+                hour: '2-digit',
+                minute: '2-digit'
+            });
+            
+            // ✅ معالجة النص: تحويل الروابط إلى <a> tags قابلة للنقر
+            const messageText = msg.message ? formatMessageWithLinks(msg.message) : '';
+            
             html += `<div class="mb-3 ${isSelf ? 'text-right' : ''}">
-                <div class="inline-block ${bgColor} rounded-2xl p-3 max-w-[80%] ${isSelf ? 'rounded-br-none' : 'rounded-bl-none'}">
+                <div class="inline-block ${bgColor} rounded-2xl p-3 max-w-[85%] ${isSelf ? 'rounded-br-none' : 'rounded-bl-none'}">
                     <div class="text-xs font-bold ${textColor}">${senderName}</div>
-                    <div class="text-sm">${msg.message}</div>
+                    <div class="text-sm" style="white-space: pre-wrap; word-break: break-word;">${messageText}</div>
                     <div class="text-xs text-gray-400 mt-1">${time}</div>
                 </div>
             </div>`;
         });
+        
         container.innerHTML = html;
         container.scrollTop = container.scrollHeight;
+        
     } catch (error) {
         console.error('خطأ في تحميل الرسائل:', error);
     }
+}
+// ============================================================
+//  دالة تحويل الروابط في النص إلى <a> tags
+// ============================================================
+
+function formatMessageWithLinks(text) {
+    if (!text) return '';
+    
+    // ✅ نمط للتعرف على الروابط (URLs)
+    const urlPattern = /(https?:\/\/[^\s]+)/g;
+    
+    // استبدال الروابط بـ <a> tags
+    let formattedText = text.replace(urlPattern, function(url) {
+        // إزالة أي علامات ترقيم زائدة في نهاية الرابط
+        let cleanUrl = url;
+        const punctuation = /[.,;:!?)]$/;
+        let trailingPunctuation = '';
+        
+        // التحقق من وجود علامة ترقيم في نهاية الرابط
+        const match = url.match(punctuation);
+        if (match) {
+            // إذا كان الرابط يحتوي على علامة ترقيم في نهايته
+            // نتحقق إذا كانت هذه العلامة جزء من الرابط أم لا
+            const testUrl = url.slice(0, -1);
+            const testMatch = testUrl.match(/https?:\/\/[^\s]+/);
+            if (testMatch) {
+                cleanUrl = testUrl;
+                trailingPunctuation = match[0];
+            }
+        }
+        
+        // تحديد ما إذا كان الرابط صورة أم لا
+        const isImage = /\.(jpg|jpeg|png|gif|webp|svg)(\?.*)?$/i.test(cleanUrl);
+        
+        // إضافة أيقونة حسب نوع الرابط
+        let icon = '🔗';
+        if (isImage) icon = '🖼️';
+        if (cleanUrl.includes('youtube.com') || cleanUrl.includes('youtu.be')) icon = '📺';
+        if (cleanUrl.includes('wa.me')) icon = '💬';
+        if (cleanUrl.includes('facebook.com') || cleanUrl.includes('fb.com')) icon = '📘';
+        if (cleanUrl.includes('instagram.com')) icon = '📸';
+        if (cleanUrl.includes('twitter.com') || cleanUrl.includes('x.com')) icon = '🐦';
+        if (cleanUrl.includes('linkedin.com')) icon = '💼';
+        
+        // إنشاء الرابط القابل للنقر
+        return `<a href="${cleanUrl}" target="_blank" rel="noopener noreferrer" 
+                style="color: #2563eb; text-decoration: underline; word-break: break-all; 
+                       cursor: pointer; font-weight: 500; transition: color 0.2s;"
+                onmouseover="this.style.color='#1d4ed8'; this.style.textDecoration='underline';"
+                onmouseout="this.style.color='#2563eb'; this.style.textDecoration='underline';"
+                title="اضغط لفتح الرابط">${icon} ${cleanUrl}</a>${trailingPunctuation}`;
+    });
+    
+    // ✅ تحويل الروابط التي تبدأ بـ www. إلى https://
+    formattedText = formattedText.replace(/(^|\s)www\.[^\s]+/g, function(match) {
+        const url = match.trim();
+        const fullUrl = 'https://' + url;
+        return ` <a href="${fullUrl}" target="_blank" rel="noopener noreferrer" 
+                style="color: #2563eb; text-decoration: underline; word-break: break-all; 
+                       cursor: pointer; font-weight: 500;"
+                title="اضغط لفتح الرابط">🔗 ${url}</a>`;
+    });
+    
+    // ✅ تحويل الروابط التي تبدأ بـ https:// ولكن بدون http
+    // (هذا يتم التعامل معه في النمط الأول)
+    
+    return formattedText;
 }
 
 // ============================================================
@@ -7253,7 +7998,12 @@ async function deleteTicketAfterChat(ticketId) {
     }
 }
 
+// ============================================================
+//  دالة إرسال رسالة البوت (معدلة للتأكد من الفواصل)
+// ============================================================
+
 async function sendBotMessage(ticketId, message) {
+    // ✅ تقسيم النص إلى أجزاء إذا كان طويلاً
     const msgData = {
         senderId: 'bot',
         senderName: '🤖 البوت',
@@ -7261,6 +8011,7 @@ async function sendBotMessage(ticketId, message) {
         timestamp: new Date().toISOString(),
         isBot: true
     };
+    
     try {
         const newRef = db.ref(`tickets/${ticketId}/messages`).push();
         await newRef.set(msgData);
@@ -7286,7 +8037,7 @@ function updateBotStatus(isActive) {
 
 
 // ============================================================
-//  دالة معالجة رد البوت (مع دعم أسئلة البرامج والأسعار)
+//  دالة معالجة رد البوت - النسخة الكاملة مع جميع التحديثات
 // ============================================================
 
 async function handleBotResponse(ticketId, userMessage) {
@@ -7333,9 +8084,90 @@ async function handleBotResponse(ticketId, userMessage) {
         }
         
         // ============================================================
-        // ✅ 4. التحقق من أسئلة البرامج (ما هي البرامج؟)
+        // ✅ 4. التحقق من أسئلة المواقع وإنشاء المواقع (أولوية قصوى)
         // ============================================================
-        if (message.includes('البرامج') || message.includes('ما هي') || message.includes('ما هي البرامج')) {
+        
+        // كلمات مفتاحية لأسئلة المواقع
+        const sitesKeywords = [
+            'ما هي المواقع', 'المواقع التي تم تصميمها', 'مواقع صممناها', 'قائمة المواقع',
+            'ما المواقع المتاحة', 'المواقع المتاحة', 'عرض المواقع', 'المواقع المطورة',
+            'ما هي المواقع التي قمتم بتطويرها', 'مواقع قمت بتصميمها', 'أعمالنا', 'مشاريعنا',
+            'هل لديكم مواقع', 'هل لديك مواقع', 'عندكم مواقع', 'عندك مواقع',
+            'مواقع عندكم', 'مواقع لديكم', 'هل يوجد مواقع', 'هل توجد مواقع',
+            'عندكم موقع', 'عندك موقع', 'المواقع التي عندكم', 'ما المواقع التي لديكم',
+            'استفسار عن المواقع', 'عندي استفسار عن المواقع', 'مواقع تصممونها',
+            'مواقع بتصمموها', 'المواقع التي تصممونها', 'هل تصممون مواقع',
+            'بتصمموا مواقع', 'بتعملوا مواقع'
+        ];
+        
+        // كلمات مفتاحية لأسئلة إنشاء موقع
+        const createSiteKeywords = [
+            'كيف أنشئ موقع', 'إنشاء موقع', 'عمل موقع', 'تصميم موقع', 'طريقة عمل موقع',
+            'أريد موقع', 'كيف اعمل موقع', 'بناء موقع', 'كيفية إنشاء موقع', 'كيف اسوي موقع',
+            'عايز موقع', 'اريد موقع', 'اعمل موقع', 'موقع جديد', 'إنشاء موقع إلكتروني',
+            'تصميم موقع إلكتروني', 'كيف أنشئ موقعاً', 'كيف أنشئ موقع إلكتروني', 'طريقة تصميم موقع',
+            'كيف ابدا موقع', 'كيف اطور موقع', 'كيف اسوي موقع الكتروني', 'عايز اعمل موقع',
+            'عايز أسوي موقع', 'اريد انشاء موقع', 'أريد إنشاء موقع', 'كيف أنشئ متجر',
+            'كيف اعمل متجر', 'عايز متجر', 'اريد متجر', 'كيف أنشئ منصة', 'كيف اعمل منصة'
+        ];
+        
+        // التحقق من أسئلة المواقع
+        const isSiteQuestion = sitesKeywords.some(kw => message.includes(kw));
+        if (isSiteQuestion) {
+            const answer = await getSitesListAnswer();
+            await sendBotMessage(ticketId, answer);
+            await sendBotMessage(ticketId, '📋 هل لديك أي سؤال آخر؟ اكتب "نعم" للمتابعة أو "لا" لإنهاء المحادثة.');
+            return;
+        }
+        
+        // التحقق من أسئلة إنشاء موقع
+        const isCreateSiteQuestion = createSiteKeywords.some(kw => message.includes(kw));
+        if (isCreateSiteQuestion) {
+            const answer = getCreateSiteAnswer();
+            await sendBotMessage(ticketId, answer);
+            await sendBotMessage(ticketId, '📋 هل لديك أي سؤال آخر؟ اكتب "نعم" للمتابعة أو "لا" لإنهاء المحادثة.');
+            return;
+        }
+        
+        // ============================================================
+        // ✅ 5. التحقق من أسئلة المميزات (مميزات [اسم الموقع]) - محسنة
+        // ============================================================
+        
+        // أنماط مختلفة للبحث عن المميزات
+        const featuresPatterns = [
+            /مميزات\s*(.*)/i,
+            /ما هي مميزات\s*(.*)/i,
+            /شرح\s*(.*)/i,
+            /خصائص\s*(.*)/i,
+            /إمكانيات\s*(.*)/i,
+            /مميزات موقع\s*(.*)/i,
+            /ما هي خصائص\s*(.*)/i,
+            /معلومات عن\s*(.*)/i,
+            /وصف\s*(.*)/i
+        ];
+        
+        let featuresSiteName = null;
+        for (const pattern of featuresPatterns) {
+            const match = message.match(pattern);
+            if (match && match[1]) {
+                featuresSiteName = match[1].trim();
+                break;
+            }
+        }
+        
+        if (featuresSiteName) {
+            const featuresAnswer = await getSiteFeaturesAnswer(featuresSiteName);
+            if (featuresAnswer) {
+                await sendBotMessage(ticketId, featuresAnswer);
+                await sendBotMessage(ticketId, '📋 هل لديك أي سؤال آخر؟ اكتب "نعم" للمتابعة أو "لا" لإنهاء المحادثة.');
+                return;
+            }
+        }
+        
+        // ============================================================
+        // ✅ 6. التحقق من أسئلة البرامج (ما هي البرامج)
+        // ============================================================
+        if (message.includes('البرامج') || (message.includes('ما هي') && message.includes('البرامج'))) {
             const programsList = await getProgramsList();
             await sendBotMessage(ticketId, programsList);
             await sendBotMessage(ticketId, '📋 هل لديك أي سؤال آخر؟ اكتب "نعم" للمتابعة أو "لا" لإنهاء المحادثة.');
@@ -7343,7 +8175,7 @@ async function handleBotResponse(ticketId, userMessage) {
         }
         
         // ============================================================
-        // ✅ 5. التحقق من أسئلة الأسعار (ما هو سعر [اسم البرنامج]؟)
+        // ✅ 7. التحقق من أسئلة الأسعار (بعد أسئلة المواقع)
         // ============================================================
         const priceMatch = await checkPriceQuestion(message);
         if (priceMatch.found) {
@@ -7353,7 +8185,7 @@ async function handleBotResponse(ticketId, userMessage) {
         }
         
         // ============================================================
-        // ✅ 6. البحث عن إجابة في faqData
+        // ✅ 8. البحث عن إجابة في faqData
         // ============================================================
         const cached = findAnswerInFAQ(message, programName);
         if (cached.found) {
@@ -7364,7 +8196,7 @@ async function handleBotResponse(ticketId, userMessage) {
         }
         
         // ============================================================
-        // ✅ 7. استخدام DeepSeek
+        // ✅ 9. استخدام DeepSeek
         // ============================================================
         if (typeof askDeepSeek === 'function') {
             await sendBotMessage(ticketId, '⏳ جاري البحث عن إجابة...');
@@ -7378,7 +8210,7 @@ async function handleBotResponse(ticketId, userMessage) {
         }
         
         // ============================================================
-        // ✅ 8. إذا لم توجد إجابة
+        // ✅ 10. إذا لم توجد إجابة
         // ============================================================
         await sendBotMessage(ticketId, '⚠️ عذراً، لم أستطع فهم سؤالك بالكامل.');
         await sendBotMessage(ticketId, '💡 يرجى إعادة صياغة السؤال بشكل أوضح، أو اكتب "مساعدة" للحصول على قائمة بالأسئلة المتاحة.');
@@ -7391,7 +8223,168 @@ async function handleBotResponse(ticketId, userMessage) {
 
 
 // ============================================================
-//  دالة جلب قائمة البرامج من Firebase
+//  دالة الحصول على قائمة المواقع
+// ============================================================
+
+async function getSitesListAnswer() {
+    return `🌐 *قائمة المواقع التي تم تصميمها بواسطة Tecno Shark:*
+
+📌 *1. منصة Imtihan - الامتحانات الإلكترونية*
+   🔗 https://imtihan-eight.vercel.app/
+   📝 منصة متكاملة لإنشاء وإدارة الامتحانات الإلكترونية.
+
+📌 *2. متجر نبض - الملابس والهوديز*
+   🔗 https://nabd-ten.vercel.app/
+   📝 متجر إلكتروني متخصص في بيع الهوديز والملابس الرجالية.
+
+📌 *3. موقع Scout DoJo - الكشافة البحرية*
+   🔗 https://kayan-cyan.vercel.app/
+   📝 نظام إدارة متكامل للمجموعات الكشفية والأعضاء والأنشطة.
+
+📌 *4. موقع TS مقاولات - إدارة مواد البناء*
+   🔗 https://ts-construction-final.vercel.app/
+   📝 نظام إدارة مواد البناء والحجوزات والموردين.
+
+📌 *5. نظام TS POS - نقاط البيع*
+   🔗 https://ts-pos-final.vercel.app/
+   📝 نظام نقاط بيع متكامل لإدارة المتاجر والمخزون.
+
+📌 *6. نظام TS Attend Pro - الحضور والغياب*
+   🔗 https://ts-attend-pro.vercel.app/
+   📝 نظام إدارة الحضور والغياب للطلاب والفصول.
+
+💡 *للاستفسار عن مميزات أي موقع:*
+   اكتب 'مميزات [اسم الموقع]'
+   مثال: 'مميزات Imtihan' أو 'مميزات نبض'`;
+}
+
+// ============================================================
+//  دالة الحصول على إجابة إنشاء موقع
+// ============================================================
+
+function getCreateSiteAnswer() {
+    return `🌐 *كيف تنشئ موقعاً إلكترونياً مع Tecno Shark؟*
+
+📌 *الخطوات بسيطة:*
+
+1️⃣ *تواصل معنا* عبر الأرقام التالية:
+   📞 01144100018
+   📞 01126125881
+
+2️⃣ *أخبرنا بفكرتك*: ما هو نوع الموقع الذي تريده؟ (متجر، منصة تعليمية، نظام إدارة، موقع تعريفي، إلخ).
+
+3️⃣ *نقوم بالتصميم والتطوير*: نستخدم أحدث التقنيات لتصميم موقع احترافي.
+
+4️⃣ *نقدم لك الموقع جاهزاً* مع تدريب على الاستخدام.
+
+✨ *ماذا نقدم في تصميم المواقع؟*
+✅ تصميم عصري وجذاب.
+✅ متجاوب مع جميع الأجهزة (كمبيوتر - جوال - تابلت).
+✅ سرعة في التحميل.
+✅ سهولة في التحديث.
+✅ أمان وحماية.
+✅ دعم فني مستمر.
+✅ تحسين محركات البحث (SEO).
+✅ تكامل مع أنظمة الدفع.
+
+💡 *لا تتردد في التواصل معنا لتحويل فكرتك إلى واقع!*
+📞 01144100018 - 01126125881`;
+}
+
+// ============================================================
+//  دالة الحصول على مميزات موقع معين
+// ============================================================
+
+async function getSiteFeaturesAnswer(siteName) {
+    const siteNameLower = siteName.toLowerCase().trim();
+    
+    // البحث في faqData عن مميزات الموقع
+    const faqMatch = findAnswerInFAQ(`مميزات ${siteName}`, '');
+    if (faqMatch && faqMatch.found) {
+        return faqMatch.answer;
+    }
+    
+    // إذا لم يتم العثور على مميزات
+    return `❌ *لم أجد معلومات عن مميزات "${siteName}"*
+
+💡 يمكنك كتابة:
+- 'مميزات Imtihan' لمنصة الامتحانات
+- 'مميزات نبض' لمتجر الملابس
+- 'مميزات Scout DoJo' لنظام الكشافة
+
+📞 للتواصل: 01144100018 - 01126125881`;
+}
+// ============================================================
+//  دالة البحث عن مميزات برنامج معين في faqData
+// ============================================================
+
+function findFeaturesAnswer(programName) {
+    if (!programName) return null;
+    
+    const searchTerm = programName.toLowerCase().trim();
+    let bestMatch = null;
+    let bestScore = 0;
+    
+    // ✅ البحث في faqData عن عناصر تحتوي على اسم البرنامج وكلمة مميزات
+    faqData.forEach(item => {
+        let score = 0;
+        
+        // التحقق من وجود اسم البرنامج في الكلمات المفتاحية
+        item.keywords.forEach(keyword => {
+            const kwLower = keyword.toLowerCase();
+            
+            // تطابق تام مع اسم البرنامج
+            if (kwLower === searchTerm) {
+                score += 10;
+            }
+            // تطابق جزئي
+            else if (kwLower.includes(searchTerm) || searchTerm.includes(kwLower)) {
+                score += 5;
+            }
+            
+            // التحقق من وجود كلمات المميزات
+            if (kwLower.includes('مميزات') || kwLower.includes('خصائص') || 
+                kwLower.includes('إمكانيات') || kwLower.includes('شرح')) {
+                score += 3;
+            }
+        });
+        
+        // التحقق من وجود اسم البرنامج في الإجابة نفسها
+        if (item.answer && item.answer.toLowerCase().includes(searchTerm)) {
+            score += 2;
+        }
+        
+        if (score > bestScore) {
+            bestScore = score;
+            bestMatch = item;
+        }
+    });
+    
+    // ✅ إذا وجدنا تطابق جيد (score >= 5)
+    if (bestScore >= 5 && bestMatch) {
+        return bestMatch.answer;
+    }
+    
+    // ✅ إذا لم نجد تطابق، نبحث عن مميزات عامة
+    const generalMatch = faqData.find(item => 
+        item.keywords.some(kw => 
+            kw.toLowerCase().includes('مميزات البرنامج') || 
+            kw.toLowerCase().includes('خصائص النظام')
+        )
+    );
+    
+    if (generalMatch) {
+        return generalMatch.answer;
+    }
+    
+    // ✅ إذا لم نجد أي شيء
+    return `📋 *عذراً، لم أجد معلومات عن مميزات "${programName}"*\n\n` +
+           `💡 يمكنك كتابة "مميزات [اسم البرنامج]" مع اسم برنامج آخر\n` +
+           `مثال: "مميزات TS POS"`;
+}
+
+        // ============================================================
+//  دالة جلب قائمة البرامج (نسخة مع خطوط بسيطة)
 // ============================================================
 
 async function getProgramsList() {
@@ -7406,11 +8399,24 @@ async function getProgramsList() {
         let message = '📋 *قائمة البرامج المتاحة:*\n\n';
         let index = 1;
         
+        // ✅ خط فاصل
+        const divider = '•─•─•─•─•─•─•─•─•─•─•─•─•─•─•';
+        
         for (let id in programs) {
             const program = programs[id];
             const priceText = getPriceText(program.price || 0, program.priceType || 'free');
-            message += `${index}. *${program.name}*\n`;
-            message += `   💰 ${priceText}\n`;
+            
+            // ✅ اختيار أيقونة مناسبة
+            let icon = '💻';
+            if (program.priceType === 'free') icon = '🎁';
+            else if (program.priceType === 'custom') icon = '📋';
+            else if (program.priceType === 'permanent') icon = '♾️';
+            else if (program.priceType === 'monthly') icon = '📅';
+            else if (program.priceType === 'yearly') icon = '📆';
+            
+            message += `${divider}\n`;
+            message += `📌 ${index}. *${program.name}*\n`;
+            message += `   ${icon} ${priceText}\n`;
             if (program.priceDetails) {
                 message += `   📝 ${program.priceDetails}\n`;
             }
@@ -7418,9 +8424,11 @@ async function getProgramsList() {
             index++;
         }
         
-        message += '💡 *للاستفسار عن سعر برنامج معين:*\n';
-        message += 'اكتب "ما هو سعر [اسم البرنامج]"\n';
-        message += 'مثال: "ما هو سعر TS محاسبة"';
+        message += `${divider}\n\n`;
+        message += '💡 *للاستفسار عن السعر:*\n';
+        message += '   اكتب "سعر [اسم البرنامج]"\n';
+        message += '   مثال: "سعر TS POS"\n';
+        message += '   للسؤال عن المميزات بتعت برنامج اكتب" مميزات [اسم البرنامج]';
         
         return message;
         
@@ -7429,13 +8437,14 @@ async function getProgramsList() {
         return '❌ حدث خطأ في جلب قائمة البرامج. يرجى المحاولة لاحقاً.';
     }
 }
-
+        
+        
 // ============================================================
-//  دالة التحقق من أسئلة الأسعار
+//  دالة التحقق من أسئلة الأسعار (معدلة)
 // ============================================================
 
 async function checkPriceQuestion(message) {
-    // ✅ أنماط البحث عن السعر
+    // ✅ أنماط البحث عن السعر (مبسطة)
     const pricePatterns = [
         /سعر\s*(.*)/i,
         /كم\s*سعر\s*(.*)/i,
@@ -7459,12 +8468,12 @@ async function checkPriceQuestion(message) {
         }
     }
     
-    // ✅ إذا لم يتم العثور على اسم برنامج، حاول البحث عن كلمات مفتاحية
+    // ✅ إذا لم يتم العثور على اسم برنامج، حاول البحث عن كلمة مفتاحية
     if (!programName) {
-        // البحث عن أي كلمة تشبه اسم برنامج
-        const words = message.split(' ');
+        // البحث عن كلمات شائعة
+        const words = message.replace(/سعر|كم|بكم|ثمن|تكلفة|price|cost/gi, '').trim().split(' ');
         for (let word of words) {
-            if (word.length > 3) {
+            if (word.length > 2) {
                 programName = word;
                 break;
             }
@@ -7489,22 +8498,36 @@ async function checkPriceQuestion(message) {
         
         let foundProgram = null;
         let foundId = null;
+        let matchScore = 0;
         
-        // ✅ البحث عن برنامج مطابق للاسم
+        // ✅ البحث عن أفضل تطابق
         for (let id in programs) {
             const program = programs[id];
-            // مقارنة الأسماء (مع تجاهل الحروف)
-            if (program.name.toLowerCase().includes(programName.toLowerCase()) || 
-                programName.toLowerCase().includes(program.name.toLowerCase())) {
+            const nameLower = program.name.toLowerCase();
+            const searchLower = programName.toLowerCase();
+            
+            // تطابق تام
+            if (nameLower === searchLower) {
                 foundProgram = program;
                 foundId = id;
+                matchScore = 100;
                 break;
+            }
+            
+            // تطابق جزئي
+            if (nameLower.includes(searchLower) || searchLower.includes(nameLower)) {
+                const score = Math.max(nameLower.length, searchLower.length);
+                if (score > matchScore) {
+                    matchScore = score;
+                    foundProgram = program;
+                    foundId = id;
+                }
             }
         }
         
         if (!foundProgram) {
-            // ✅ عرض قائمة البرامج المتاحة
-            let programList = '📋 *البرامج المتاحة:*\n';
+            // ✅ عرض قائمة البرامج المتاحة مع أسمائها فقط
+            let programList = '📋 *البرامج المتاحة:*\n\n';
             let index = 1;
             for (let id in programs) {
                 programList += `${index}. ${programs[id].name}\n`;
@@ -7516,27 +8539,27 @@ async function checkPriceQuestion(message) {
             };
         }
         
-        // ✅ عرض تفاصيل السعر
+        // ✅ عرض تفاصيل السعر بشكل منظم
         const priceText = getPriceText(foundProgram.price || 0, foundProgram.priceType || 'free');
         let answer = `💰 *سعر برنامج ${foundProgram.name}*\n\n`;
-        answer += `📌 *السعر:* ${priceText}\n`;
+        answer += `   📌 ${priceText}\n`;
         
         if (foundProgram.priceDetails) {
-            answer += `📝 *تفاصيل:* ${foundProgram.priceDetails}\n`;
+            answer += `   📝 ${foundProgram.priceDetails}\n`;
         }
         
-        // ✅ إضافة معلومات إضافية حسب نوع السعر
+        // ✅ إضافة معلومات حسب نوع السعر
         const priceType = foundProgram.priceType || 'free';
-        if (priceType === 'monthly') {
-            answer += `\n📅 *اشتراك شهري:* يمكنك التجديد شهرياً.`;
-        } else if (priceType === 'yearly') {
-            answer += `\n📆 *اشتراك سنوي:* تجديد سنوي مع خصم.`;
-        } else if (priceType === 'permanent') {
-            answer += `\n♾️ *شراء دائم:* مرة واحدة مدى الحياة.`;
-        } else if (priceType === 'free') {
-            answer += `\n🎁 *مجاني:* نسخة تجريبية أو محدودة.`;
-        } else if (priceType === 'custom') {
-            answer += `\n📋 *مخصص:* يرجى الاتصال بنا للحصول على عرض سعر.`;
+        const typeInfo = {
+            'monthly': '📅 اشتراك شهري - يتم التجديد شهرياً',
+            'yearly': '📆 اشتراك سنوي - تجديد سنوي مع خصم',
+            'permanent': '♾️ شراء دائم - مرة واحدة مدى الحياة',
+            'free': '🎁 مجاني - نسخة تجريبية أو محدودة',
+            'custom': '📋 مخصص - يرجى الاتصال بنا للحصول على عرض سعر'
+        };
+        
+        if (typeInfo[priceType]) {
+            answer += `\n   ${typeInfo[priceType]}`;
         }
         
         answer += `\n\n💡 للتواصل: 📞 01144100018 - 01126125881`;
@@ -7930,6 +8953,108 @@ function showSpecificPage(pageId) {
     return false;
 }
 
+
+// ============================================================
+//  دالة الحصول على مميزات موقع معين (ذكية)
+// ============================================================
+
+async function getSiteFeaturesAnswer(siteName) {
+    if (!siteName) return null;
+    
+    const siteNameLower = siteName.toLowerCase().trim();
+    
+    // ✅ قائمة مرادفات المواقع (للتطابق)
+    const siteAliases = {
+        'imtihan': ['imtihan', 'امتحان', 'منصة امتحان', 'الامتحانات', 'منصة الامتحانات', 'منصة الاختبارات', 'اختبارات'],
+        'nabd': ['nabd', 'نبض', 'متجر نبض', 'هوديز', 'ملابس نبض', 'نبض ملابس'],
+        'scout': ['scout', 'dojo', 'scout dojo', 'كشافة', 'الكشافة', 'الكشافة البحرية', 'الكشافه البحريه', 'كشافه بحريه', 'نظام الكشافة'],
+        'ts construction': ['ts مقاولات', 'مقاولات', 'مواد بناء', 'مقاولات مواد', 'ts construction', 'نظام مواد البناء', 'مواد البناء']
+    };
+    
+    // ✅ تحديد الموقع المطلوب بناءً على الاسم المدخل
+    let targetSite = null;
+    let targetKey = null;
+    
+    for (const [key, aliases] of Object.entries(siteAliases)) {
+        for (const alias of aliases) {
+            // التحقق من تطابق الاسم المدخل مع أي من المرادفات
+            if (siteNameLower === alias || 
+                siteNameLower.includes(alias) || 
+                alias.includes(siteNameLower) ||
+                // التحقق من التشابه (أقل من 3 أحرف اختلاف)
+                levenshteinDistance(siteNameLower, alias) <= 2) {
+                targetKey = key;
+                targetSite = alias;
+                break;
+            }
+        }
+        if (targetSite) break;
+    }
+    
+    // ✅ إذا تم تحديد الموقع، ابحث في faqData عن مميزاته
+    if (targetSite) {
+        // بناء كلمة مفتاحية للبحث (مميزات + اسم الموقع)
+        const searchTerms = [
+            `مميزات ${targetSite}`,
+            `مميزات ${targetKey}`,
+            targetKey,
+            targetSite
+        ];
+        
+        for (const term of searchTerms) {
+            const result = findAnswerInFAQ(term, '');
+            if (result && result.found) {
+                return result.answer;
+            }
+        }
+        
+        // محاولة البحث في faqData عن أي عنصر يحتوي على اسم الموقع
+        for (const item of faqData) {
+            for (const keyword of item.keywords) {
+                if (keyword.toLowerCase().includes(targetSite) || 
+                    targetSite.includes(keyword.toLowerCase())) {
+                    return item.answer;
+                }
+            }
+        }
+    }
+    
+    // ✅ إذا لم يتم العثور على مميزات
+    return `❌ *لم أجد معلومات عن مميزات "${siteName}"*
+
+💡 يمكنك كتابة:
+- 'مميزات Imtihan' - لمنصة الامتحانات الإلكترونية
+- 'مميزات نبض' - لمتجر الملابس والهوديز
+- 'مميزات Scout DoJo' - لنظام الكشافة البحرية
+- 'مميزات TS مقاولات' - لنظام إدارة مواد البناء
+
+📞 للتواصل: 01144100018 - 01126125881`;
+}
+
+// ============================================================
+//  دالة حساب التشابه بين النصوص (Levenshtein Distance)
+// ============================================================
+
+function levenshteinDistance(str1, str2) {
+    const m = str1.length;
+    const n = str2.length;
+    const dp = Array(m + 1).fill(null).map(() => Array(n + 1).fill(0));
+    
+    for (let i = 0; i <= m; i++) dp[i][0] = i;
+    for (let j = 0; j <= n; j++) dp[0][j] = j;
+    
+    for (let i = 1; i <= m; i++) {
+        for (let j = 1; j <= n; j++) {
+            if (str1[i - 1] === str2[j - 1]) {
+                dp[i][j] = dp[i - 1][j - 1];
+            } else {
+                dp[i][j] = Math.min(dp[i - 1][j - 1] + 1, dp[i - 1][j] + 1, dp[i][j - 1] + 1);
+            }
+        }
+    }
+    
+    return dp[m][n];
+}
 // ============================================================
 //  دالة عرض الصفحة - مع إخفاء صحيح للشات
 // ============================================================
@@ -9808,31 +10933,41 @@ async function saveProgram(event) {
 }
 
 // ============================================================
-//  دالة مساعدة: تحويل السعر ونوعه إلى نص
+//  دالة مساعدة: تحويل السعر ونوعه إلى نص (مصححة)
 // ============================================================
 
 function getPriceText(price, priceType) {
+    // ✅ التأكد من وجود priceType صحيح
+    const validTypes = ['monthly', 'yearly', 'permanent', 'free', 'custom'];
+    if (!validTypes.includes(priceType)) {
+        priceType = 'free';
+    }
+    
     const typeMap = {
         'monthly': 'شهري',
         'yearly': 'سنوي',
         'permanent': 'دائم (مرة واحدة)',
         'free': 'مجاني',
-        'custom': 'مخصص (اتصل بنا)'
+        'custom': 'مخصص - اتصل بنا'
     };
     
-    const typeText = typeMap[priceType] || priceType;
+    const typeText = typeMap[priceType] || 'مجاني';
+    
+    // ✅ التأكد من أن price رقم صحيح
+    const validPrice = typeof price === 'number' && !isNaN(price) ? price : 0;
     
     if (priceType === 'free') {
         return '🎁 مجاني';
     } else if (priceType === 'custom') {
         return '📋 مخصص - اتصل بنا';
-    } else if (price > 0) {
-        return `${price.toLocaleString()} ج.م / ${typeText}`;
+    } else if (validPrice > 0) {
+        // ✅ تنسيق الأرقام بفواصل
+        const formattedPrice = validPrice.toLocaleString();
+        return `${formattedPrice} ج.م / ${typeText}`;
     } else {
         return `💰 ${typeText}`;
     }
 }
-
 // ============================================================
 //  دالة حذف برنامج مع تأكيد
 // ============================================================
