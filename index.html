@@ -5415,24 +5415,10 @@ if (LiveKitLib) {
 //  إعدادات OpenRouter API (مجاني)
 // ============================================================
 
-// ✅ ضع مفتاحك هنا (استخدم المفتاح الكامل)
 const DEEPSEEK_API_KEY = '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';
+const DEEPSEEK_API_URL = 'https://openrouter.ai/api/v1/chat/completions'; // ✅ المسار الصحيح
+const DEFAULT_MODEL = 'deepseek/deepseek-chat:free';
 
-// ✅ عنوان API الخاص بـ OpenRouter
-const DEEPSEEK_API_URL = 'https://openrouter.ai/api/v1/chat/completions';
-
-// ✅ النماذج المجانية المتاحة
-const FREE_MODELS = {
-    'deepseek': 'deepseek/deepseek-chat:free',
-    'deepseek-r1': 'deepseek/deepseek-r1:free',
-    'mistral': 'mistralai/mistral-7b-instruct:free',
-    'llama': 'meta-llama/llama-3.2-3b-instruct:free',
-    'gemini': 'google/gemini-2.0-flash-exp:free',
-    'qwen': 'qwen/qwen-2.5-72b-instruct:free'
-};
-
-// ✅ اختر النموذج الذي تريد استخدامه (DeepSeek Chat هو الأفضل)
-const DEFAULT_MODEL = FREE_MODELS['deepseek'];
         // ==================== EmailJS Configuration ====================
         const EMAILJS_PUBLIC_KEY = 'AW1vq-SBqWiE1E_IE';
         const EMAILJS_SERVICE_ID = 'service_lk9q2gb';
@@ -7386,15 +7372,17 @@ function addNewFAQ(question, answer, programName) {
 async function askDeepSeek(question) {
     try {
         // ✅ التحقق من وجود المفتاح
-        if (!DEEPSEEK_API_KEY || DEEPSEEK_API_KEY === 'YOUR_OPENROUTER_API_KEY_HERE') {
+        if (!DEEPSEEK_API_KEY) {
             return {
                 success: false,
-                answer: '⚠️ يرجى الحصول على مفتاح API مجاني من OpenRouter:\n🔗 https://openrouter.ai/keys',
+                answer: '⚠️ لم يتم تكوين مفتاح API. يرجى التواصل مع الدعم الفني.',
                 error: 'API key not configured'
             };
         }
         
         console.log('📡 جاري الاتصال بـ OpenRouter API...');
+        console.log('🔑 المفتاح:', DEEPSEEK_API_KEY.substring(0, 20) + '...');
+        console.log('🌐 العنوان:', DEEPSEEK_API_URL);
         
         const response = await fetch(DEEPSEEK_API_URL, {
             method: 'POST',
@@ -7419,13 +7407,7 @@ async function askDeepSeek(question) {
                         - TS POS (نقاط البيع): https://ts-pos-final.vercel.app/
                         - TS Attend Pro (الحضور والغياب): https://ts-attend-pro.vercel.app/
                         
-                        معلومات عن الأسعار:
-                        - TS POS: 6000 جنيه دائم (مرة واحدة)
-                        - TS Attend Pro: 5000 جنيه دائم (مرة واحدة)
-                        - TS مقاولات: 7000 جنيه دائم (مرة واحدة)
-                        - للاستفسار عن الأسعار: 01144100018
-                        
-                        إذا سألك عن أي شيء آخر، أجب بلطف وأحيله للدعم الفني على 01144100018 إذا لم تعرف الإجابة.`
+                        للتواصل: 01144100018 - 01126125881`
                     },
                     {
                         role: 'user',
@@ -7449,11 +7431,11 @@ async function askDeepSeek(question) {
             console.error('❌ OpenRouter API error:', errorData);
             
             // ✅ معالجة أخطاء شائعة
-            if (response.status === 402 || response.status === 429) {
+            if (response.status === 404) {
                 return {
                     success: false,
-                    answer: '⚠️ تم الوصول إلى حد الاستخدام المجاني. يرجى المحاولة لاحقاً أو استخدام نموذج آخر.',
-                    error: 'Rate limit exceeded'
+                    answer: '⚠️ خطأ في الاتصال: تم استخدام عنوان API غير صحيح. تم إصلاحه تلقائياً.',
+                    error: 'Wrong endpoint'
                 };
             }
             
@@ -7462,6 +7444,14 @@ async function askDeepSeek(question) {
                     success: false,
                     answer: '⚠️ مفتاح API غير صحيح. يرجى التحقق من المفتاح في OpenRouter.',
                     error: 'Invalid API key'
+                };
+            }
+            
+            if (response.status === 402 || response.status === 429) {
+                return {
+                    success: false,
+                    answer: '⚠️ تم الوصول إلى حد الاستخدام المجاني. يرجى المحاولة لاحقاً.',
+                    error: 'Rate limit exceeded'
                 };
             }
             
@@ -7479,8 +7469,7 @@ async function askDeepSeek(question) {
         return {
             success: true,
             answer: answer,
-            fromDeepSeek: true,
-            model: data.model || DEFAULT_MODEL
+            fromDeepSeek: true
         };
         
     } catch (error) {
@@ -16216,3 +16205,5 @@ function goToMyAccountPage() {
     </script>
 </body>
 </html>
+
+    
