@@ -5333,6 +5333,7 @@ const LIVEKIT_URL = 'wss://tecnosherk-meet-83dxkxag.livekit.cloud';
 const LIVEKIT_API_KEY = 'APIcPTrP2xF2SQ';
 const LIVEKIT_API_SECRET = '6yYjFcSfSAbCLaSd7fABxpFkp6722KvRFgPBBfXkNU9D';
 
+
 // ==================== متغيرات LiveKit ====================
 let liveKitRoom = null;
 let liveKitTracks = [];
@@ -5410,6 +5411,28 @@ if (LiveKitLib) {
     };
     document.head.appendChild(script);
 }
+// ============================================================
+//  إعدادات OpenRouter API (مجاني)
+// ============================================================
+
+// ✅ ضع مفتاحك هنا (استخدم المفتاح الكامل)
+const DEEPSEEK_API_KEY = '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';
+
+// ✅ عنوان API الخاص بـ OpenRouter
+const DEEPSEEK_API_URL = 'https://openrouter.ai/api/v1/chat/completions';
+
+// ✅ النماذج المجانية المتاحة
+const FREE_MODELS = {
+    'deepseek': 'deepseek/deepseek-chat:free',
+    'deepseek-r1': 'deepseek/deepseek-r1:free',
+    'mistral': 'mistralai/mistral-7b-instruct:free',
+    'llama': 'meta-llama/llama-3.2-3b-instruct:free',
+    'gemini': 'google/gemini-2.0-flash-exp:free',
+    'qwen': 'qwen/qwen-2.5-72b-instruct:free'
+};
+
+// ✅ اختر النموذج الذي تريد استخدامه (DeepSeek Chat هو الأفضل)
+const DEFAULT_MODEL = FREE_MODELS['deepseek'];
         // ==================== EmailJS Configuration ====================
         const EMAILJS_PUBLIC_KEY = 'AW1vq-SBqWiE1E_IE';
         const EMAILJS_SERVICE_ID = 'service_lk9q2gb';
@@ -7162,8 +7185,7 @@ const faqData = [
 //  2. تكوين DeepSeek API
 // =============================================
 
-const DEEPSEEK_API_KEY = 'sk-50426c8bca2a4068bbaee9c919d8f4a4';
-const DEEPSEEK_API_URL = 'https://api.deepseek.com/v1/chat/completions';
+
 // ============================================================
 //  متغيرات المؤقت والتقييم
 // ============================================================
@@ -7357,35 +7379,53 @@ function addNewFAQ(question, answer, programName) {
     return false;
 }
 
-// =============================================
-//  دالة الاتصال بـ DeepSeek API (معدلة)
-// =============================================
+// ============================================================
+//  دالة الاتصال بـ OpenRouter API (مجاني)
+// ============================================================
 
 async function askDeepSeek(question) {
     try {
-        // التحقق من وجود المفتاح
-        if (!DEEPSEEK_API_KEY || DEEPSEEK_API_KEY === 'YOUR_DEEPSEEK_API_KEY_HERE') {
+        // ✅ التحقق من وجود المفتاح
+        if (!DEEPSEEK_API_KEY || DEEPSEEK_API_KEY === 'YOUR_OPENROUTER_API_KEY_HERE') {
             return {
                 success: false,
-                answer: '⚠️ لم يتم تكوين مفتاح DeepSeek API. يرجى التواصل مع الدعم الفني.',
+                answer: '⚠️ يرجى الحصول على مفتاح API مجاني من OpenRouter:\n🔗 https://openrouter.ai/keys',
                 error: 'API key not configured'
             };
         }
         
-        console.log('📡 جاري الاتصال بـ DeepSeek API...');
+        console.log('📡 جاري الاتصال بـ OpenRouter API...');
         
         const response = await fetch(DEEPSEEK_API_URL, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
-                'Authorization': `Bearer ${DEEPSEEK_API_KEY}`
+                'Authorization': `Bearer ${DEEPSEEK_API_KEY}`,
+                'HTTP-Referer': window.location.origin || 'https://tecno-shark.vercel.app',
+                'X-Title': 'TecnoShark Bot'
             },
             body: JSON.stringify({
-                model: 'deepseek-chat',
+                model: DEFAULT_MODEL,
                 messages: [
                     {
                         role: 'system',
-                        content: 'أنت مساعد دعم فني لنظام نقاط البيع TS POS. أجب على أسئلة العملاء بشكل مفيد ومختصر. استخدم اللغة العربية دائماً.'
+                        content: `أنت مساعد دعم فني لشركة TecnoShark. أجب على أسئلة العملاء بشكل مفيد ومختصر. استخدم اللغة العربية دائماً. 
+                        
+                        معلومات عن المواقع:
+                        - Imtihan (الامتحانات الإلكترونية): https://imtihan-eight.vercel.app/
+                        - نبض (الملابس والهوديز): https://nabd-ten.vercel.app/
+                        - Scout DoJo (الكشافة البحرية): https://kayan-cyan.vercel.app/
+                        - TS مقاولات (مواد البناء): https://ts-construction-final.vercel.app/
+                        - TS POS (نقاط البيع): https://ts-pos-final.vercel.app/
+                        - TS Attend Pro (الحضور والغياب): https://ts-attend-pro.vercel.app/
+                        
+                        معلومات عن الأسعار:
+                        - TS POS: 6000 جنيه دائم (مرة واحدة)
+                        - TS Attend Pro: 5000 جنيه دائم (مرة واحدة)
+                        - TS مقاولات: 7000 جنيه دائم (مرة واحدة)
+                        - للاستفسار عن الأسعار: 01144100018
+                        
+                        إذا سألك عن أي شيء آخر، أجب بلطف وأحيله للدعم الفني على 01144100018 إذا لم تعرف الإجابة.`
                     },
                     {
                         role: 'user',
@@ -7397,9 +7437,34 @@ async function askDeepSeek(question) {
             })
         });
         
+        // ✅ معالجة أخطاء HTTP
         if (!response.ok) {
-            const errorData = await response.json();
-            console.error('❌ DeepSeek API error:', errorData);
+            let errorData;
+            try {
+                errorData = await response.json();
+            } catch (e) {
+                errorData = { message: response.statusText || 'Unknown error' };
+            }
+            
+            console.error('❌ OpenRouter API error:', errorData);
+            
+            // ✅ معالجة أخطاء شائعة
+            if (response.status === 402 || response.status === 429) {
+                return {
+                    success: false,
+                    answer: '⚠️ تم الوصول إلى حد الاستخدام المجاني. يرجى المحاولة لاحقاً أو استخدام نموذج آخر.',
+                    error: 'Rate limit exceeded'
+                };
+            }
+            
+            if (response.status === 401) {
+                return {
+                    success: false,
+                    answer: '⚠️ مفتاح API غير صحيح. يرجى التحقق من المفتاح في OpenRouter.',
+                    error: 'Invalid API key'
+                };
+            }
+            
             return {
                 success: false,
                 answer: '❌ حدث خطأ في الاتصال بالذكاء الاصطناعي. يرجى المحاولة لاحقاً.',
@@ -7410,15 +7475,16 @@ async function askDeepSeek(question) {
         const data = await response.json();
         const answer = data.choices?.[0]?.message?.content || '⚠️ لم أستطع توليد إجابة. يرجى إعادة صياغة السؤال.';
         
-        console.log('✅ تم الحصول على إجابة من DeepSeek');
+        console.log('✅ تم الحصول على إجابة من OpenRouter');
         return {
             success: true,
             answer: answer,
-            fromDeepSeek: true
+            fromDeepSeek: true,
+            model: data.model || DEFAULT_MODEL
         };
         
     } catch (error) {
-        console.error('❌ Error calling DeepSeek API:', error);
+        console.error('❌ Error calling OpenRouter API:', error);
         return {
             success: false,
             answer: '❌ حدث خطأ في الاتصال بالذكاء الاصطناعي. يرجى المحاولة لاحقاً.',
