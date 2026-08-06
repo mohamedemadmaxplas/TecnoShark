@@ -1,40 +1,26 @@
 // ============================================================
-//  ملف: api/chat.js
-//  دالة Vercel Serverless للاتصال بـ OpenRouter API
+//  ملف: api/chat.js (نسخة مبسطة للتجربة)
 // ============================================================
 
-// ✅ مفتاح OpenRouter API (يُفضل وضعه في متغيرات البيئة)
+// ✅ استخدم متغير البيئة أو المفتاح مباشرة
 const OPENROUTER_API_KEY = process.env.OPENROUTER_API_KEY || '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';
 const OPENROUTER_URL = 'https://openrouter.ai/api/v1/chat/completions';
 
-// ✅ النماذج المجانية المتاحة
-const FREE_MODELS = [
-    'google/gemini-2.0-flash-exp:free',
-    'mistralai/mistral-7b-instruct:free',
-    'meta-llama/llama-3.2-3b-instruct:free',
-    'qwen/qwen-2.5-72b-instruct:free',
-    'deepseek/deepseek-chat:free'
-];
-
-// ✅ دالة Vercel الرئيسية
 module.exports = async (req, res) => {
-    // ✅ السماح بـ CORS (للاستقبال من أي مكان)
+    // ✅ إعدادات CORS
     res.setHeader('Access-Control-Allow-Origin', '*');
     res.setHeader('Access-Control-Allow-Methods', 'POST, OPTIONS');
     res.setHeader('Access-Control-Allow-Headers', 'Content-Type');
     
-    // ✅ التعامل مع طلب OPTIONS (preflight)
     if (req.method === 'OPTIONS') {
         return res.status(200).end();
     }
     
-    // ✅ التأكد من أن الطلب هو POST
     if (req.method !== 'POST') {
         return res.status(405).json({ error: 'Method Not Allowed' });
     }
     
     try {
-        // ✅ استخراج السؤال من الطلب
         const { question } = req.body;
         
         if (!question) {
@@ -43,78 +29,83 @@ module.exports = async (req, res) => {
         
         console.log('📡 جاري الاتصال بـ OpenRouter API...');
         console.log('❓ السؤال:', question);
+        console.log('🔑 المفتاح:', OPENROUTER_API_KEY ? 'موجود ✅' : 'غير موجود ❌');
         
-        // ✅ محاولة الاتصال بـ OpenRouter مع كل نموذج حتى النجاح
-        let lastError = null;
+        // ✅ استخدام نموذج واحد فقط للتجربة
+        const model = 'google/gemini-2.0-flash-exp:free';
+        console.log(`🤖 النموذج: ${model}`);
         
-        for (const model of FREE_MODELS) {
-            try {
-                console.log(`🔄 جرب النموذج: ${model}`);
-                
-                const response = await fetch(OPENROUTER_URL, {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                        'Authorization': `Bearer ${OPENROUTER_API_KEY}`,
-                        'HTTP-Referer': 'https://tecno-shark.vercel.app',
-                        'X-Title': 'TecnoShark Bot'
+        const response = await fetch(OPENROUTER_URL, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${OPENROUTER_API_KEY}`,
+                'HTTP-Referer': 'https://tecno-shark.vercel.app',
+                'X-Title': 'TecnoShark Bot'
+            },
+            body: JSON.stringify({
+                model: model,
+                messages: [
+                    {
+                        role: 'system',
+                        content: 'أنت مساعد دعم فني. أجب بالعربية بشكل مختصر ومفيد.'
                     },
-                    body: JSON.stringify({
-                        model: model,
-                        messages: [
-                            {
-                                role: 'system',
-                                content: `أنت مساعد دعم فني لشركة TecnoShark. أجب على أسئلة العملاء بشكل مفيد ومختصر. استخدم اللغة العربية دائماً. 
-                                
-                                معلومات عن المواقع:
-                                - Imtihan (الامتحانات الإلكترونية): https://imtihan-eight.vercel.app/
-                                - نبض (الملابس والهوديز): https://nabd-ten.vercel.app/
-                                - Scout DoJo (الكشافة البحرية): https://kayan-cyan.vercel.app/
-                                - TS مقاولات (مواد البناء): https://ts-construction-final.vercel.app/
-                                - TS POS (نقاط البيع): https://ts-pos-final.vercel.app/
-                                - TS Attend Pro (الحضور والغياب): https://ts-attend-pro.vercel.app/
-                                
-                                للتواصل: 01144100018 - 01126125881`
-                            },
-                            {
-                                role: 'user',
-                                content: question
-                            }
-                        ],
-                        max_tokens: 500,
-                        temperature: 0.7
-                    })
-                });
-                
-                if (response.ok) {
-                    const data = await response.json();
-                    const answer = data.choices?.[0]?.message?.content || 'لم أستطع توليد إجابة.';
-                    
-                    console.log(`✅ نجح النموذج: ${model}`);
-                    
-                    return res.status(200).json({
-                        success: true,
-                        answer: answer,
-                        model: model
-                    });
-                } else {
-                    // ✅ حفظ الخطأ للمحاولة التالية
-                    const errorData = await response.json();
-                    lastError = errorData;
-                    console.warn(`⚠️ فشل النموذج ${model}:`, errorData);
-                }
-            } catch (error) {
-                lastError = error.message;
-                console.warn(`⚠️ خطأ في النموذج ${model}:`, error.message);
+                    {
+                        role: 'user',
+                        content: question
+                    }
+                ],
+                max_tokens: 300,
+                temperature: 0.7
+            })
+        });
+        
+        // ✅ قراءة الاستجابة كـ text أولاً لتشخيص المشكلة
+        const responseText = await response.text();
+        console.log('📥 استجابة OpenRouter:', response.status, responseText.substring(0, 200));
+        
+        if (!response.ok) {
+            let errorData;
+            try {
+                errorData = JSON.parse(responseText);
+            } catch (e) {
+                errorData = { message: responseText || 'Unknown error' };
             }
+            
+            console.error('❌ خطأ من OpenRouter:', errorData);
+            
+            // ✅ رسائل خطأ مفهومة
+            if (response.status === 401) {
+                return res.status(401).json({
+                    success: false,
+                    error: 'مفتاح API غير صحيح. تأكد من المفتاح في متغيرات البيئة.',
+                    details: errorData
+                });
+            }
+            
+            if (response.status === 402 || response.status === 429) {
+                return res.status(429).json({
+                    success: false,
+                    error: 'تم تجاوز حد الاستخدام المجاني. حاول لاحقاً.',
+                    details: errorData
+                });
+            }
+            
+            return res.status(response.status).json({
+                success: false,
+                error: `فشل الاتصال بـ OpenRouter (${response.status})`,
+                details: errorData
+            });
         }
         
-        // ✅ إذا فشلت جميع النماذج
-        console.error('❌ جميع النماذج فشلت');
-        return res.status(500).json({
-            success: false,
-            error: 'All models failed',
-            details: lastError
+        const data = JSON.parse(responseText);
+        const answer = data.choices?.[0]?.message?.content || 'لم أستطع توليد إجابة.';
+        
+        console.log('✅ تم الحصول على إجابة بنجاح');
+        return res.status(200).json({
+            success: true,
+            answer: answer,
+            model: model
         });
         
     } catch (error) {
