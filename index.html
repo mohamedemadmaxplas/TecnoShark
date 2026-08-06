@@ -5415,9 +5415,27 @@ if (LiveKitLib) {
 //  إعدادات OpenRouter API (مجاني)
 // ============================================================
 
+// ============================================================
+//  إعدادات OpenRouter API (مجاني)
+// ============================================================
+
+// ✅ مفتاح API الخاص بك من OpenRouter
 const DEEPSEEK_API_KEY = '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';
-const DEEPSEEK_API_URL = 'https://openrouter.ai/api/v1/chat/completions'; // ✅ المسار الصحيح
-const DEFAULT_MODEL = 'deepseek/deepseek-chat:free';
+
+// ✅ عنوان API الصحيح
+const DEEPSEEK_API_URL = 'https://openrouter.ai/api/v1/chat/completions';
+
+// ✅ النماذج المجانية المتاحة (جرب واحداً منها)
+const FREE_MODELS = {
+    'gemini': 'google/gemini-2.0-flash-exp:free',
+    'mistral': 'mistralai/mistral-7b-instruct:free',
+    'llama': 'meta-llama/llama-3.2-3b-instruct:free',
+    'qwen': 'qwen/qwen-2.5-72b-instruct:free',
+    'deepseek': 'deepseek/deepseek-chat:free'
+};
+
+// ✅ اختر النموذج الأساسي (يمكن تغييره لاحقاً)
+let currentModel = FREE_MODELS['gemini']; // جرب gemini أولاً
 
         // ==================== EmailJS Configuration ====================
         const EMAILJS_PUBLIC_KEY = 'AW1vq-SBqWiE1E_IE';
@@ -7366,16 +7384,16 @@ function addNewFAQ(question, answer, programName) {
 }
 
 // ============================================================
-//  دالة الاتصال بـ OpenRouter API (مجاني)
+//  دالة الاتصال بـ OpenRouter API مع الهيدرات الصحيحة
 // ============================================================
 
 async function askDeepSeek(question) {
     try {
         // ✅ التحقق من وجود المفتاح
-        if (!DEEPSEEK_API_KEY) {
+        if (!DEEPSEEK_API_KEY || DEEPSEEK_API_KEY === 'YOUR_OPENROUTER_API_KEY_HERE') {
             return {
                 success: false,
-                answer: '⚠️ لم يتم تكوين مفتاح API. يرجى التواصل مع الدعم الفني.',
+                answer: '⚠️ يرجى الحصول على مفتاح API مجاني من OpenRouter:\n🔗 https://openrouter.ai/keys',
                 error: 'API key not configured'
             };
         }
@@ -7383,17 +7401,20 @@ async function askDeepSeek(question) {
         console.log('📡 جاري الاتصال بـ OpenRouter API...');
         console.log('🔑 المفتاح:', DEEPSEEK_API_KEY.substring(0, 20) + '...');
         console.log('🌐 العنوان:', DEEPSEEK_API_URL);
+        console.log('🤖 النموذج:', currentModel);
         
+        // ✅ إرسال الطلب مع الهيدرات الصحيحة
         const response = await fetch(DEEPSEEK_API_URL, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
                 'Authorization': `Bearer ${DEEPSEEK_API_KEY}`,
-                'HTTP-Referer': window.location.origin || 'https://tecno-shark.vercel.app',
+                // ✅ الهيدرات المطلوبة لتحديد تطبيقك
+                'HTTP-Referer': 'https://tecno-shark.vercel.app',
                 'X-Title': 'TecnoShark Bot'
             },
             body: JSON.stringify({
-                model: DEFAULT_MODEL,
+                model: currentModel,
                 messages: [
                     {
                         role: 'system',
@@ -7432,10 +7453,27 @@ async function askDeepSeek(question) {
             
             // ✅ معالجة أخطاء شائعة
             if (response.status === 404) {
+                // ✅ جرب نموذجاً آخر إذا فشل النموذج الحالي
+                const fallbackModels = [
+                    FREE_MODELS['mistral'],
+                    FREE_MODELS['llama'],
+                    FREE_MODELS['qwen'],
+                    FREE_MODELS['deepseek']
+                ];
+                
+                for (const model of fallbackModels) {
+                    if (model !== currentModel) {
+                        console.log(`🔄 جرب النموذج: ${model}`);
+                        currentModel = model;
+                        // ✅ إعادة المحاولة مع النموذج الجديد
+                        return await askDeepSeek(question);
+                    }
+                }
+                
                 return {
                     success: false,
-                    answer: '⚠️ خطأ في الاتصال: تم استخدام عنوان API غير صحيح. تم إصلاحه تلقائياً.',
-                    error: 'Wrong endpoint'
+                    answer: '⚠️ جميع النماذج المجانية غير متاحة حالياً. يرجى المحاولة لاحقاً.',
+                    error: 'All free models unavailable'
                 };
             }
             
@@ -7466,10 +7504,13 @@ async function askDeepSeek(question) {
         const answer = data.choices?.[0]?.message?.content || '⚠️ لم أستطع توليد إجابة. يرجى إعادة صياغة السؤال.';
         
         console.log('✅ تم الحصول على إجابة من OpenRouter');
+        console.log('📊 النموذج المستخدم:', data.model || currentModel);
+        
         return {
             success: true,
             answer: answer,
-            fromDeepSeek: true
+            fromDeepSeek: true,
+            model: data.model || currentModel
         };
         
     } catch (error) {
@@ -7480,6 +7521,47 @@ async function askDeepSeek(question) {
             error: error.message
         };
     }
+}
+
+
+// ============================================================
+//  دوال تغيير النموذج وعرض النماذج المتاحة
+// ============================================================
+
+function changeModel(modelKey) {
+    const models = {
+        'gemini': 'google/gemini-2.0-flash-exp:free',
+        'mistral': 'mistralai/mistral-7b-instruct:free',
+        'llama': 'meta-llama/llama-3.2-3b-instruct:free',
+        'qwen': 'qwen/qwen-2.5-72b-instruct:free',
+        'deepseek': 'deepseek/deepseek-chat:free'
+    };
+    
+    if (models[modelKey]) {
+        currentModel = models[modelKey];
+        showToast(`✅ تم تغيير النموذج إلى: ${modelKey}`);
+        return true;
+    }
+    
+    showToast(`❌ النموذج ${modelKey} غير متاح`);
+    return false;
+}
+
+function showAvailableModels() {
+    const modelsList = `
+📋 *النماذج المجانية المتاحة عبر OpenRouter:*
+
+1. 🌟 Gemini Flash - الأفضل للسرعة والدقة
+2. 🌀 Mistral - الأفضل للدقة العالية
+3. 🦙 Llama 3.2 - الأفضل للردود المختصرة
+4. 📚 Qwen - الأفضل للغة العربية
+5. 🤖 DeepSeek - الأفضل للأسئلة العامة
+
+💡 *لتغيير النموذج:* اكتب "نموذج [الرقم أو الاسم]"
+   مثال: "نموذج 1" أو "نموذج gemini"
+    `;
+    
+    showToast(modelsList);
 }
 
 // =============================================
@@ -16205,5 +16287,3 @@ function goToMyAccountPage() {
     </script>
 </body>
 </html>
-
-    
