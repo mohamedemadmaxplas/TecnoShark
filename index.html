@@ -3898,6 +3898,243 @@
     0%, 100% { transform: scale(1); }
     50% { transform: scale(0.85); }
 }
+
+/* ============================================================
+   🟢 زر البوت العائم الذكي - Floating Bot Button
+   ============================================================ */
+
+/* الحاوية الرئيسية للزر */
+.bot-float-container {
+    position: fixed;
+    bottom: 100px;
+    right: -10px;
+    z-index: 9999;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    transition: all 0.5s cubic-bezier(0.34, 1.56, 0.64, 1);
+    cursor: pointer;
+}
+
+/* الزر نفسه */
+.bot-float-btn {
+    width: 60px;
+    height: 60px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, #2563eb, #1d4ed8, #7c3aed);
+    border: none;
+    box-shadow: 0 4px 20px rgba(37, 99, 235, 0.4);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: all 0.5s cubic-bezier(0.34, 1.56, 0.64, 1);
+    color: white;
+    font-size: 28px;
+    position: relative;
+    flex-shrink: 0;
+}
+
+.bot-float-btn:hover {
+    transform: scale(1.1);
+    box-shadow: 0 8px 35px rgba(37, 99, 235, 0.5);
+}
+
+/* تأثير النبض للزر */
+.bot-float-btn::after {
+    content: '';
+    position: absolute;
+    top: -4px;
+    left: -4px;
+    right: -4px;
+    bottom: -4px;
+    border-radius: 50%;
+    border: 2px solid rgba(37, 99, 235, 0.3);
+    animation: botPulse 2s ease-in-out infinite;
+}
+
+@keyframes botPulse {
+    0%, 100% {
+        transform: scale(1);
+        opacity: 0.5;
+    }
+    50% {
+        transform: scale(1.15);
+        opacity: 0.1;
+    }
+}
+
+/* أيقونة البوت */
+.bot-float-btn i {
+    font-size: 30px;
+    animation: botIconFloat 3s ease-in-out infinite;
+}
+
+@keyframes botIconFloat {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(-4px); }
+}
+
+/* شارة الإشعارات (النقطة الحمراء) */
+.bot-float-btn .bot-badge {
+    position: absolute;
+    top: -2px;
+    right: -2px;
+    width: 18px;
+    height: 18px;
+    background: #ef4444;
+    border-radius: 50%;
+    border: 2px solid white;
+    font-size: 9px;
+    font-weight: bold;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    animation: botBadgePulse 1.5s ease-in-out infinite;
+}
+
+@keyframes botBadgePulse {
+    0%, 100% { transform: scale(1); }
+    50% { transform: scale(1.2); }
+}
+
+/* ===== حالة الخروج (الزر يخرج للخارج عند hover) ===== */
+.bot-float-container.bot-exit {
+    right: -60px;
+}
+
+.bot-float-container.bot-exit .bot-float-btn {
+    transform: scale(0.95);
+    opacity: 0.8;
+}
+
+.bot-float-container.bot-exit .bot-float-btn::after {
+    animation: none;
+}
+
+.bot-float-container.bot-exit .bot-label {
+    opacity: 1;
+    transform: translateX(0) scale(1);
+}
+
+/* ===== حالة الدخول (الزر يدخل داخل الشاشة مع شفافية) ===== */
+.bot-float-container.bot-enter {
+    right: -20px;
+}
+
+.bot-float-container.bot-enter .bot-float-btn {
+    transform: scale(0.7);
+    opacity: 0.4;
+}
+
+.bot-float-container.bot-enter .bot-float-btn::after {
+    animation: none;
+}
+
+.bot-float-container.bot-enter .bot-label {
+    opacity: 0;
+    transform: translateX(20px) scale(0.9);
+}
+
+/* ===== النص الجانبي ===== */
+.bot-float-container .bot-label {
+    background: rgba(0, 0, 0, 0.8);
+    backdrop-filter: blur(10px);
+    color: white;
+    padding: 8px 16px;
+    border-radius: 30px;
+    font-size: 14px;
+    font-weight: 500;
+    white-space: nowrap;
+    opacity: 0;
+    transform: translateX(20px) scale(0.9);
+    transition: all 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+    pointer-events: none;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+}
+
+/* ===== الشاشات الصغيرة (موبايل) ===== */
+@media (max-width: 768px) {
+    .bot-float-container {
+        bottom: 80px;
+        right: -8px;
+    }
+    
+    .bot-float-btn {
+        width: 50px;
+        height: 50px;
+        font-size: 22px;
+    }
+    
+    .bot-float-btn i {
+        font-size: 24px;
+    }
+    
+    .bot-float-container .bot-label {
+        font-size: 12px;
+        padding: 6px 12px;
+    }
+    
+    .bot-float-container.bot-exit {
+        right: -50px;
+    }
+    
+    .bot-float-container.bot-enter {
+        right: -15px;
+    }
+    
+    .bot-float-container.bot-enter .bot-float-btn {
+        transform: scale(0.6);
+        opacity: 0.3;
+    }
+}
+
+@media (max-width: 480px) {
+    .bot-float-container {
+        bottom: 70px;
+        right: -6px;
+    }
+    
+    .bot-float-btn {
+        width: 44px;
+        height: 44px;
+        font-size: 18px;
+    }
+    
+    .bot-float-btn i {
+        font-size: 20px;
+    }
+    
+    .bot-float-container.bot-exit {
+        right: -44px;
+    }
+    
+    .bot-float-container.bot-enter {
+        right: -12px;
+    }
+    
+    .bot-float-container.bot-enter .bot-float-btn {
+        transform: scale(0.5);
+        opacity: 0.2;
+    }
+    
+    .bot-float-container .bot-label {
+        font-size: 10px;
+        padding: 4px 10px;
+    }
+}
+
+/* ===== تأثير اهتزاز عند النقر ===== */
+.bot-float-btn:active {
+    animation: botClick 0.3s ease;
+}
+
+@keyframes botClick {
+    0%, 100% { transform: scale(1); }
+    50% { transform: scale(0.85); }
+}
     </style>
 </head>
 <body class="bg-gradient-to-br from-blue-50 to-indigo-100 min-h-screen">
@@ -4700,8 +4937,8 @@
     </div>
 </div>
 
-    <!-- ==================== لوحة المدير ==================== -->
-  <div id="adminPanelPage" class="hidden page-container py-8">
+  <!-- ==================== لوحة المدير ==================== -->
+<div id="adminPanelPage" class="hidden page-container py-8">
     <div class="container mx-auto px-4">
         <!-- قفل المدير -->
         <div id="adminLockScreen" class="bg-white rounded-3xl shadow-xl p-8 max-w-md mx-auto text-center">
@@ -4733,14 +4970,18 @@
                 <button onclick="adminShowTab('users')" class="admin-tab-btn px-4 py-2 rounded-lg bg-gray-200 text-gray-700 hover:bg-gray-300 text-sm" data-tab="users">
                     <i class="fas fa-users ml-1"></i> المستخدمين
                 </button>
+                <button onclick="adminShowTab('ratings')" class="admin-tab-btn px-4 py-2 rounded-lg bg-gray-200 text-gray-700 hover:bg-gray-300 text-sm" data-tab="ratings">
+                    <i class="fas fa-star ml-1 text-yellow-500"></i> التقييمات
+                </button>
                 <button onclick="logoutAdmin()" class="text-red-500 hover:text-red-700 text-sm mr-auto">
                     <i class="fas fa-sign-out-alt ml-1"></i> خروج
                 </button>
             </div>
             
-            <!-- تبويب الإحصائيات -->
+            <!-- ==================== تبويب الإحصائيات ==================== -->
             <div id="adminTabDashboard" class="admin-tab-content">
                 <div class="grid grid-cols-2 md:grid-cols-5 gap-4 mb-8">
+                    <!-- إحصائيات التذاكر -->
                     <div class="bg-white rounded-2xl p-4 shadow text-center">
                         <i class="fas fa-ticket-alt text-2xl text-blue-500"></i>
                         <p class="text-2xl font-bold" id="adminTotalTickets">0</p>
@@ -4768,13 +5009,48 @@
                     </div>
                 </div>
                 
-                <div class="bg-white rounded-2xl p-4 shadow">
-                    <h4 class="font-bold mb-3">آخر التذاكر</h4>
-                    <div id="adminRecentTickets" class="divide-y max-h-60 overflow-y-auto"></div>
+                <!-- إحصائيات التقييمات -->
+                <div class="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8">
+                    <div class="bg-white rounded-2xl p-4 shadow text-center">
+                        <i class="fas fa-star text-2xl text-yellow-500"></i>
+                        <p class="text-2xl font-bold" id="adminTotalRatings">0</p>
+                        <p class="text-gray-500 text-sm">إجمالي التقييمات</p>
+                    </div>
+                    <div class="bg-white rounded-2xl p-4 shadow text-center">
+                        <i class="fas fa-star-half-alt text-2xl text-blue-500"></i>
+                        <p class="text-2xl font-bold" id="adminAvgRating">0.0</p>
+                        <p class="text-gray-500 text-sm">متوسط التقييم</p>
+                    </div>
+                    <div class="bg-white rounded-2xl p-4 shadow text-center col-span-2">
+                        <h4 class="font-bold text-sm text-gray-700 mb-2">
+                            <i class="fas fa-chart-pie text-yellow-500 ml-1"></i> توزيع التقييمات
+                        </h4>
+                        <div id="adminRatingStats">
+                            <div class="flex gap-2 flex-wrap justify-center">
+                                <span class="text-xs bg-gray-200 px-2 py-1 rounded-full">جاري التحميل...</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- آخر التذاكر والتقييمات -->
+                <div class="grid md:grid-cols-2 gap-4">
+                    <div class="bg-white rounded-2xl p-4 shadow">
+                        <h4 class="font-bold mb-3 text-gray-700">
+                            <i class="fas fa-ticket-alt text-blue-500 ml-1"></i> آخر التذاكر
+                        </h4>
+                        <div id="adminRecentTickets" class="divide-y max-h-60 overflow-y-auto"></div>
+                    </div>
+                    <div class="bg-white rounded-2xl p-4 shadow">
+                        <h4 class="font-bold mb-3 text-gray-700">
+                            <i class="fas fa-star text-yellow-500 ml-1"></i> آخر التقييمات
+                        </h4>
+                        <div id="adminRecentRatings" class="divide-y max-h-60 overflow-y-auto"></div>
+                    </div>
                 </div>
             </div>
             
-            <!-- تبويب التذاكر -->
+            <!-- ==================== تبويب التذاكر ==================== -->
             <div id="adminTabTickets" class="admin-tab-content hidden">
                 <div class="bg-white rounded-3xl shadow-xl overflow-hidden">
                     <div class="p-4 border-b bg-gray-50 flex justify-between items-center flex-wrap gap-2">
@@ -4793,25 +5069,23 @@
                 </div>
             </div>
             
-           <!-- تبويب إدارة البرامج -->
-<div id="adminTabPrograms" class="admin-tab-content hidden">
-    <div class="bg-white rounded-3xl shadow-xl overflow-hidden">
-        <div class="p-4 border-b bg-gray-50 flex justify-between items-center flex-wrap gap-2">
-            <h3 class="font-bold">
-                <i class="fas fa-code ml-2 text-green-600"></i> 
-                إدارة البرامج
-            </h3>
-            <button onclick="openAddProgramModal()" class="bg-green-600 text-white px-4 py-2 rounded-lg hover:bg-green-700 transition text-sm">
-                <i class="fas fa-plus ml-1"></i> إضافة برنامج جديد
-            </button>
-        </div>
-        <div id="adminProgramsList" class="divide-y max-h-96 overflow-y-auto p-2">
-            <!-- سيتم عرض البرامج هنا بواسطة JavaScript -->
-        </div>
-    </div>
-</div>
+            <!-- ==================== تبويب إدارة البرامج ==================== -->
+            <div id="adminTabPrograms" class="admin-tab-content hidden">
+                <div class="bg-white rounded-3xl shadow-xl overflow-hidden">
+                    <div class="p-4 border-b bg-gray-50 flex justify-between items-center flex-wrap gap-2">
+                        <h3 class="font-bold">
+                            <i class="fas fa-code ml-2 text-green-600"></i> 
+                            إدارة البرامج
+                        </h3>
+                        <button onclick="openAddProgramModal()" class="bg-green-600 text-white px-4 py-2 rounded-lg hover:bg-green-700 transition text-sm">
+                            <i class="fas fa-plus ml-1"></i> إضافة برنامج جديد
+                        </button>
+                    </div>
+                    <div id="adminProgramsList" class="divide-y max-h-96 overflow-y-auto p-2"></div>
+                </div>
+            </div>
             
-            <!-- تبويب المستخدمين -->
+            <!-- ==================== تبويب المستخدمين ==================== -->
             <div id="adminTabUsers" class="admin-tab-content hidden">
                 <div class="bg-white rounded-3xl shadow-xl overflow-hidden">
                     <div class="p-4 border-b bg-gray-50">
@@ -4820,10 +5094,40 @@
                     <div id="adminUsersList" class="divide-y max-h-96 overflow-y-auto"></div>
                 </div>
             </div>
+            
+            <!-- ==================== تبويب التقييمات ==================== -->
+            <div id="adminTabRatings" class="admin-tab-content hidden">
+                <div class="bg-white rounded-3xl shadow-xl overflow-hidden">
+                    <div class="p-4 border-b bg-gray-50 flex justify-between items-center flex-wrap gap-2">
+                        <h3 class="font-bold">
+                            <i class="fas fa-star text-yellow-500 ml-2"></i> 
+                            تقييمات العملاء
+                            <span id="ratingsCount" class="text-sm text-gray-500 font-normal mr-2"></span>
+                        </h3>
+                        <div class="flex gap-2 flex-wrap">
+                            <button onclick="adminFilterRatings('all')" class="ratings-filter-btn px-3 py-1 rounded-full text-xs bg-blue-600 text-white" data-filter="all">الكل</button>
+                            <button onclick="adminFilterRatings('5')" class="ratings-filter-btn px-3 py-1 rounded-full text-xs bg-gray-200 text-gray-700 hover:bg-green-100" data-filter="5">⭐ 5 نجوم</button>
+                            <button onclick="adminFilterRatings('4')" class="ratings-filter-btn px-3 py-1 rounded-full text-xs bg-gray-200 text-gray-700 hover:bg-green-100" data-filter="4">⭐ 4 نجوم</button>
+                            <button onclick="adminFilterRatings('3')" class="ratings-filter-btn px-3 py-1 rounded-full text-xs bg-gray-200 text-gray-700 hover:bg-yellow-100" data-filter="3">⭐ 3 نجوم</button>
+                            <button onclick="adminFilterRatings('2')" class="ratings-filter-btn px-3 py-1 rounded-full text-xs bg-gray-200 text-gray-700 hover:bg-orange-100" data-filter="2">⭐ 2 نجوم</button>
+                            <button onclick="adminFilterRatings('1')" class="ratings-filter-btn px-3 py-1 rounded-full text-xs bg-gray-200 text-gray-700 hover:bg-red-100" data-filter="1">⭐ 1 نجمة</button>
+                            <button onclick="adminRefreshRatings()" class="text-blue-500 hover:text-blue-700 text-sm">
+                                <i class="fas fa-sync-alt ml-1"></i>
+                            </button>
+                        </div>
+                    </div>
+                    <div id="adminRatingsList" class="divide-y max-h-96 overflow-y-auto">
+                        <div class="text-center py-8 text-gray-400">
+                            <i class="fas fa-star text-3xl mb-2 text-yellow-400"></i>
+                            <p>جاري تحميل التقييمات...</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
         </div>
     </div>
 </div>
-
 
 <!-- ============================================ -->
 <!--  نافذة إضافة برنامج (مع السعر ونوعه)        -->
@@ -4979,7 +5283,23 @@
         </div>
     </div>
 </div>
-
+<!-- ============================================================
+     🟢 زر البوت العائم - يفتح شات مباشر بدون تذكرة
+     ============================================================ -->
+     <div id="botFloatContainer" class="bot-float-container bot-enter" 
+     onmouseenter="botFloatExit()" 
+     onmouseleave="botFloatEnter()">
+    
+    <span class="bot-label" id="botLabel">
+        <i class="fas fa-robot ml-1"></i> 
+        تحدث مع البوت
+    </span>
+    
+    <button class="bot-float-btn" id="botFloatBtn" onclick="openDirectBotChat()" title="فتح شات البوت">
+        <i class="fas fa-robot"></i>
+        <span class="bot-badge">●</span>
+    </button>
+</div>
 
 
     <script>
@@ -6946,7 +7266,6 @@ function findAnswerInFAQ(userMessage, programName) {
 function generateHelpMessage(programName) {
     let helpMessage = `📋 *قائمة الأسئلة المتاحة:*\n\n`;
     
-    // ✅ تصفية الأسئلة المرتبطة بالبرنامج المختار
     let relevantQuestions = [];
     let generalQuestions = [];
     
@@ -6977,7 +7296,6 @@ function generateHelpMessage(programName) {
         });
     }
     
-    // ✅ عرض الأسئلة المرتبطة بالبرنامج أولاً
     if (relevantQuestions.length > 0) {
         helpMessage += `📌 *أسئلة متعلقة بـ ${programName}:*\n`;
         relevantQuestions.slice(0, 10).forEach((q, i) => {
@@ -6986,7 +7304,6 @@ function generateHelpMessage(programName) {
         helpMessage += '\n';
     }
     
-    // ✅ عرض الأسئلة العامة
     if (generalQuestions.length > 0) {
         helpMessage += `📌 *أسئلة عامة:*\n`;
         generalQuestions.slice(0, 15).forEach((q, i) => {
@@ -7500,6 +7817,149 @@ function formatMessageWithLinks(text) {
     // (هذا يتم التعامل معه في النمط الأول)
     
     return formattedText;
+}
+
+// ============================================================
+//   دوال زر البوت العائم الذكي
+// ============================================================
+
+let botFloatTimer = null;
+let botFloatState = 'enter'; // 'enter' | 'exit'
+
+// ===== خروج الزر للخارج عند hover =====
+function botFloatExit() {
+    const container = document.getElementById('botFloatContainer');
+    if (!container) return;
+    
+    clearTimeout(botFloatTimer);
+    container.classList.remove('bot-enter');
+    container.classList.add('bot-exit');
+    botFloatState = 'exit';
+}
+
+// ===== دخول الزر للداخل مع شفافية عند عدم التفاعل =====
+function botFloatEnter() {
+    const container = document.getElementById('botFloatContainer');
+    if (!container) return;
+    
+    clearTimeout(botFloatTimer);
+    
+    // تأخير بسيط قبل الدخول للداخل
+    botFloatTimer = setTimeout(() => {
+        container.classList.remove('bot-exit');
+        container.classList.add('bot-enter');
+        botFloatState = 'enter';
+    }, 300);
+}
+
+// ============================================================
+//   فتح شات البوت المباشر (يستخدم نفس دوال التذكرة)
+// ============================================================
+
+function openDirectBotChat() {
+    // ✅ التحقق من تسجيل الدخول
+    if (!currentUser) {
+        showToast('❌ الرجاء تسجيل الدخول أولاً');
+        showLoginPage();
+        return;
+    }
+    
+    // ✅ إنشاء تذكرة مؤقتة للشات المباشر
+    const ticketId = 'direct_' + Date.now() + '_' + Math.random().toString(36).substring(2, 6);
+    
+    const ticketData = {
+        clientName: currentUser.name || currentUser.username || 'مستخدم',
+        phone: currentUser.phone || 'غير مسجل',
+        issue: 'محادثة مباشرة مع البوت',
+        userId: currentUser.uid,
+        userName: currentUser.name || currentUser.username || 'مستخدم',
+        status: 'active',
+        createdAt: new Date().toISOString(),
+        ticketNumber: 'DIR-' + Date.now().toString().slice(-6),
+        botActive: true,
+        botStep: 1,
+        botProgram: 'الدعم المباشر',
+        isDirectChat: true,
+        messages: {},
+        botQuestions: [
+            'ما هو سؤالك عن برامجنا؟',
+            'هل لديك استفسار محدد؟',
+            'كيف يمكننا مساعدتك؟'
+        ],
+        botCurrentStep: 0
+    };
+    
+    // ✅ حفظ التذكرة المؤقتة في Firebase
+    db.ref(`tickets/${ticketId}`).set(ticketData).then(() => {
+        // ✅ إضافة رسالة ترحيب من البوت (بنفس نظام التذكرة)
+        const welcomeMsg = {
+            senderId: 'bot',
+            senderName: '🤖 البوت',
+            message: '👋 مرحباً بك في شات الدعم المباشر!\n\n💬 أنا هنا لمساعدتك في أي استفسار عن برامجنا وخدماتنا.\n\n📌 اكتب سؤالك وسأجيبك فوراً.\n\n🤖 يمكنك أيضاً كتابة "مساعدة" لعرض قائمة الأسئلة المتاحة.',
+            timestamp: new Date().toISOString(),
+            isBot: true
+        };
+        
+        db.ref(`tickets/${ticketId}/messages`).push().set(welcomeMsg);
+        
+        // ✅ تعيين المعرف الحالي
+        currentTicketId = ticketId;
+        isAdminMode = false;
+        chatEnded = false;
+        
+        // ✅ فتح شات التذكرة (نفس الدالة المستخدمة للتذاكر العادية)
+        openTicketChat(ticketId);
+        
+        showToast('💬 تم فتح شات الدعم المباشر');
+        
+    }).catch(error => {
+        console.error('❌ خطأ في فتح شات البوت:', error);
+        showToast('❌ حدث خطأ في فتح الشات');
+    });
+}
+
+// ===== تبديل حالة الزر تلقائياً بعد فترة عدم نشاط =====
+function startBotFloatAutoCycle() {
+    // كل 10 ثواني، إذا كان الزر في حالة exit، ارجعه للداخل
+    setInterval(() => {
+        const container = document.getElementById('botFloatContainer');
+        if (!container) return;
+        
+        // إذا كان الماوس ليس فوق الزر
+        if (botFloatState === 'exit' && !container.matches(':hover')) {
+            botFloatEnter();
+        }
+    }, 10000);
+}
+
+// ===== بدء التشغيل التلقائي للزر =====
+setTimeout(() => {
+    startBotFloatAutoCycle();
+}, 5000);
+
+
+function hideTicketChat() {
+    const chatPage = document.getElementById('ticketChatPage');
+    if (chatPage) {
+        chatPage.style.display = 'none';
+        chatPage.classList.add('hidden');
+        chatPage.style.position = 'static';
+        chatPage.style.zIndex = 'auto';
+    }
+    
+    // ✅ إذا كانت التذكرة مؤقتة (شات مباشر) ولا توجد رسائل مهمة، حذفها
+    if (currentTicketId && currentTicketId.startsWith('direct_')) {
+        // نترك التذكرة مؤقتاً في حالة إعادة فتحها
+        // يمكن حذفها بعد فترة من عدم النشاط
+    }
+    
+    const ticketsPage = document.getElementById('ticketsPage');
+    if (ticketsPage) {
+        ticketsPage.style.display = 'block';
+        ticketsPage.classList.remove('hidden');
+        ticketsPage.style.position = 'relative';
+        ticketsPage.style.zIndex = '10';
+    }
 }
 
 // ============================================================
@@ -8037,7 +8497,7 @@ function updateBotStatus(isActive) {
 
 
 // ============================================================
-//  دالة معالجة رد البوت - النسخة الكاملة مع جميع التحديثات
+//  دالة معالجة رد البوت - مع دعم أسئلة المواقع
 // ============================================================
 
 async function handleBotResponse(ticketId, userMessage) {
@@ -8048,6 +8508,7 @@ async function handleBotResponse(ticketId, userMessage) {
         
         const message = userMessage.toLowerCase().trim();
         const programName = ticket.botProgram || '';
+        const isDirectChat = ticket.isDirectChat || false;
         
         // ============================================================
         // ✅ 1. التحقق من "لا" - إنهاء المحادثة
@@ -8060,8 +8521,19 @@ async function handleBotResponse(ticketId, userMessage) {
             await db.ref(`tickets/${ticketId}/endedAt`).set(new Date().toISOString());
             chatEnded = true;
             updateBotStatus(false);
-            setTimeout(() => { if (typeof showModernRatingModal === 'function') showModernRatingModal(ticketId); }, 1500);
-            setTimeout(() => { if (typeof deleteTicketAfterChat === 'function') deleteTicketAfterChat(ticketId); }, 35000);
+            
+            if (isDirectChat) {
+                setTimeout(() => {
+                    if (typeof showModernRatingModal === 'function') {
+                        showModernRatingModal(ticketId);
+                    }
+                }, 1500);
+                setTimeout(() => {
+                    if (typeof deleteTicketAfterChat === 'function') {
+                        deleteTicketAfterChat(ticketId);
+                    }
+                }, 35000);
+            }
             return;
         }
         
@@ -8084,11 +8556,51 @@ async function handleBotResponse(ticketId, userMessage) {
         }
         
         // ============================================================
-        // ✅ 4. التحقق من أسئلة المواقع وإنشاء المواقع (أولوية قصوى)
+        // ✅ 4. التحقق من أسئلة المواقع (جديد)
         // ============================================================
         
-        // كلمات مفتاحية لأسئلة المواقع
-        const sitesKeywords = [
+        // ✅ أنماط للتعرف على أسئلة المواقع
+        const sitePatterns = [
+            /موقع\s*(.*)/i,                    // "موقع نبض"
+            /موقع\s+([^\s]+)/i,                // "موقع imtihan"
+            /مميزات\s+موقع\s*(.*)/i,           // "مميزات موقع نبض"
+            /مميزات\s+([^\s]+)/i,              // "مميزات نبض"
+            /ما هي مميزات\s+موقع\s*(.*)/i,     // "ما هي مميزات موقع نبض"
+            /ما هي مميزات\s+([^\s]+)/i,        // "ما هي مميزات نبض"
+            /عرفني على\s+موقع\s*(.*)/i,        // "عرفني على موقع نبض"
+            /عرفني على\s+([^\s]+)/i,           // "عرفني على نبض"
+            /اشرح لي\s+موقع\s*(.*)/i,          // "اشرح لي موقع نبض"
+            /معلومات عن\s+موقع\s*(.*)/i,       // "معلومات عن موقع نبض"
+            /خصائص\s+موقع\s*(.*)/i,            // "خصائص موقع نبض"
+            /خصائص\s+([^\s]+)/i                // "خصائص نبض"
+        ];
+        
+        let extractedSite = null;
+        let matchedPattern = null;
+        
+        // ✅ محاولة استخراج اسم الموقع من السؤال
+        for (const pattern of sitePatterns) {
+            const match = message.match(pattern);
+            if (match && match[1]) {
+                extractedSite = match[1].trim();
+                matchedPattern = pattern;
+                break;
+            }
+        }
+        
+        // ✅ إذا تم استخراج اسم موقع
+        if (extractedSite) {
+            // ✅ البحث عن مميزات الموقع
+            const featuresAnswer = await getSiteFeaturesAnswer(extractedSite);
+            if (featuresAnswer && !featuresAnswer.includes('لم أجد معلومات')) {
+                await sendBotMessage(ticketId, featuresAnswer);
+                await sendBotMessage(ticketId, '📋 هل لديك أي سؤال آخر؟ اكتب "نعم" للمتابعة أو "لا" لإنهاء المحادثة.');
+                return;
+            }
+        }
+        
+        // ✅ التحقق من أسئلة المواقع العامة (بدون اسم محدد)
+        const generalSiteKeywords = [
             'ما هي المواقع', 'المواقع التي تم تصميمها', 'مواقع صممناها', 'قائمة المواقع',
             'ما المواقع المتاحة', 'المواقع المتاحة', 'عرض المواقع', 'المواقع المطورة',
             'ما هي المواقع التي قمتم بتطويرها', 'مواقع قمت بتصميمها', 'أعمالنا', 'مشاريعنا',
@@ -8096,11 +8608,20 @@ async function handleBotResponse(ticketId, userMessage) {
             'مواقع عندكم', 'مواقع لديكم', 'هل يوجد مواقع', 'هل توجد مواقع',
             'عندكم موقع', 'عندك موقع', 'المواقع التي عندكم', 'ما المواقع التي لديكم',
             'استفسار عن المواقع', 'عندي استفسار عن المواقع', 'مواقع تصممونها',
-            'مواقع بتصمموها', 'المواقع التي تصممونها', 'هل تصممون مواقع',
-            'بتصمموا مواقع', 'بتعملوا مواقع'
+            'مواقع بتصمموها', 'المواقع التي تصممونها', 'هل تصممون مواقع'
         ];
         
-        // كلمات مفتاحية لأسئلة إنشاء موقع
+        const isGeneralSiteQuestion = generalSiteKeywords.some(kw => message.includes(kw));
+        if (isGeneralSiteQuestion) {
+            const answer = await getSitesListAnswer();
+            await sendBotMessage(ticketId, answer);
+            await sendBotMessage(ticketId, '📋 هل لديك أي سؤال آخر؟ اكتب "نعم" للمتابعة أو "لا" لإنهاء المحادثة.');
+            return;
+        }
+        
+        // ============================================================
+        // ✅ 5. التحقق من أسئلة إنشاء موقع
+        // ============================================================
         const createSiteKeywords = [
             'كيف أنشئ موقع', 'إنشاء موقع', 'عمل موقع', 'تصميم موقع', 'طريقة عمل موقع',
             'أريد موقع', 'كيف اعمل موقع', 'بناء موقع', 'كيفية إنشاء موقع', 'كيف اسوي موقع',
@@ -8111,16 +8632,6 @@ async function handleBotResponse(ticketId, userMessage) {
             'كيف اعمل متجر', 'عايز متجر', 'اريد متجر', 'كيف أنشئ منصة', 'كيف اعمل منصة'
         ];
         
-        // التحقق من أسئلة المواقع
-        const isSiteQuestion = sitesKeywords.some(kw => message.includes(kw));
-        if (isSiteQuestion) {
-            const answer = await getSitesListAnswer();
-            await sendBotMessage(ticketId, answer);
-            await sendBotMessage(ticketId, '📋 هل لديك أي سؤال آخر؟ اكتب "نعم" للمتابعة أو "لا" لإنهاء المحادثة.');
-            return;
-        }
-        
-        // التحقق من أسئلة إنشاء موقع
         const isCreateSiteQuestion = createSiteKeywords.some(kw => message.includes(kw));
         if (isCreateSiteQuestion) {
             const answer = getCreateSiteAnswer();
@@ -8130,42 +8641,7 @@ async function handleBotResponse(ticketId, userMessage) {
         }
         
         // ============================================================
-        // ✅ 5. التحقق من أسئلة المميزات (مميزات [اسم الموقع]) - محسنة
-        // ============================================================
-        
-        // أنماط مختلفة للبحث عن المميزات
-        const featuresPatterns = [
-            /مميزات\s*(.*)/i,
-            /ما هي مميزات\s*(.*)/i,
-            /شرح\s*(.*)/i,
-            /خصائص\s*(.*)/i,
-            /إمكانيات\s*(.*)/i,
-            /مميزات موقع\s*(.*)/i,
-            /ما هي خصائص\s*(.*)/i,
-            /معلومات عن\s*(.*)/i,
-            /وصف\s*(.*)/i
-        ];
-        
-        let featuresSiteName = null;
-        for (const pattern of featuresPatterns) {
-            const match = message.match(pattern);
-            if (match && match[1]) {
-                featuresSiteName = match[1].trim();
-                break;
-            }
-        }
-        
-        if (featuresSiteName) {
-            const featuresAnswer = await getSiteFeaturesAnswer(featuresSiteName);
-            if (featuresAnswer) {
-                await sendBotMessage(ticketId, featuresAnswer);
-                await sendBotMessage(ticketId, '📋 هل لديك أي سؤال آخر؟ اكتب "نعم" للمتابعة أو "لا" لإنهاء المحادثة.');
-                return;
-            }
-        }
-        
-        // ============================================================
-        // ✅ 6. التحقق من أسئلة البرامج (ما هي البرامج)
+        // ✅ 6. التحقق من أسئلة البرامج
         // ============================================================
         if (message.includes('البرامج') || (message.includes('ما هي') && message.includes('البرامج'))) {
             const programsList = await getProgramsList();
@@ -8175,7 +8651,7 @@ async function handleBotResponse(ticketId, userMessage) {
         }
         
         // ============================================================
-        // ✅ 7. التحقق من أسئلة الأسعار (بعد أسئلة المواقع)
+        // ✅ 7. التحقق من أسئلة الأسعار
         // ============================================================
         const priceMatch = await checkPriceQuestion(message);
         if (priceMatch.found) {
@@ -8187,7 +8663,7 @@ async function handleBotResponse(ticketId, userMessage) {
         // ============================================================
         // ✅ 8. البحث عن إجابة في faqData
         // ============================================================
-        const cached = findAnswerInFAQ(message, programName);
+        const cached = findAnswerInFAQWithProgram(message, programName);
         if (cached.found) {
             await sendBotMessage(ticketId, cached.answer);
             await sendBotMessage(ticketId, '📋 هل لديك أي سؤال آخر؟ اكتب "نعم" للمتابعة أو "لا" لإنهاء المحادثة.');
@@ -8196,14 +8672,14 @@ async function handleBotResponse(ticketId, userMessage) {
         }
         
         // ============================================================
-        // ✅ 9. استخدام DeepSeek
+        // ✅ 9. استخدام DeepSeek API
         // ============================================================
         if (typeof askDeepSeek === 'function') {
             await sendBotMessage(ticketId, '⏳ جاري البحث عن إجابة...');
             const aiResponse = await askDeepSeek(userMessage);
             if (aiResponse.success) {
                 await sendBotMessage(ticketId, aiResponse.answer);
-                addNewFAQ(userMessage, aiResponse.answer, programName);
+                addNewFAQWithProgram(userMessage, aiResponse.answer, programName);
                 await sendBotMessage(ticketId, '📋 هل لديك أي سؤال آخر؟ اكتب "نعم" للمتابعة أو "لا" لإنهاء المحادثة.');
                 return;
             }
@@ -8241,17 +8717,6 @@ async function getSitesListAnswer() {
    🔗 https://kayan-cyan.vercel.app/
    📝 نظام إدارة متكامل للمجموعات الكشفية والأعضاء والأنشطة.
 
-📌 *4. موقع TS مقاولات - إدارة مواد البناء*
-   🔗 https://ts-construction-final.vercel.app/
-   📝 نظام إدارة مواد البناء والحجوزات والموردين.
-
-📌 *5. نظام TS POS - نقاط البيع*
-   🔗 https://ts-pos-final.vercel.app/
-   📝 نظام نقاط بيع متكامل لإدارة المتاجر والمخزون.
-
-📌 *6. نظام TS Attend Pro - الحضور والغياب*
-   🔗 https://ts-attend-pro.vercel.app/
-   📝 نظام إدارة الحضور والغياب للطلاب والفصول.
 
 💡 *للاستفسار عن مميزات أي موقع:*
    اكتب 'مميزات [اسم الموقع]'
@@ -8291,29 +8756,7 @@ function getCreateSiteAnswer() {
 📞 01144100018 - 01126125881`;
 }
 
-// ============================================================
-//  دالة الحصول على مميزات موقع معين
-// ============================================================
 
-async function getSiteFeaturesAnswer(siteName) {
-    const siteNameLower = siteName.toLowerCase().trim();
-    
-    // البحث في faqData عن مميزات الموقع
-    const faqMatch = findAnswerInFAQ(`مميزات ${siteName}`, '');
-    if (faqMatch && faqMatch.found) {
-        return faqMatch.answer;
-    }
-    
-    // إذا لم يتم العثور على مميزات
-    return `❌ *لم أجد معلومات عن مميزات "${siteName}"*
-
-💡 يمكنك كتابة:
-- 'مميزات Imtihan' لمنصة الامتحانات
-- 'مميزات نبض' لمتجر الملابس
-- 'مميزات Scout DoJo' لنظام الكشافة
-
-📞 للتواصل: 01144100018 - 01126125881`;
-}
 // ============================================================
 //  دالة البحث عن مميزات برنامج معين في faqData
 // ============================================================
@@ -8772,11 +9215,19 @@ function verifyAdminPassword() {
     }
 }
 
-   // =============================================
-//  تعديل دالة تحميل لوحة المدير - إضافة إحصائيات البرامج
-// =============================================
+   // ============================================================
+//  دالة تحميل لوحة المدير - النسخة الكاملة مع التقييمات
+// ============================================================
+
+// ============================================================
+//  دالة تحميل لوحة المدير - النسخة المعدلة مع التحقق من العناصر
+// ============================================================
+
 async function loadAdminDashboard() {
     try {
+        // ============================================================
+        // ✅ 1. تحميل التذاكر
+        // ============================================================
         const ticketsSnapshot = await db.ref('tickets').once('value');
         const tickets = ticketsSnapshot.val();
         let total = 0, active = 0, waiting = 0, completed = 0;
@@ -8796,17 +9247,77 @@ async function loadAdminDashboard() {
             recentTickets = recentTickets.slice(0, 5);
         }
         
-        document.getElementById('adminTotalTickets').innerText = total;
-        document.getElementById('adminActiveTickets').innerText = active;
-        document.getElementById('adminWaitingTickets').innerText = waiting;
-        document.getElementById('adminCompletedTickets').innerText = completed;
+        // ✅ تحديث إحصائيات التذاكر (مع التحقق من وجود العناصر)
+        const totalTicketsEl = document.getElementById('adminTotalTickets');
+        if (totalTicketsEl) totalTicketsEl.innerText = total;
         
-        // ✅ جديد: عدد البرامج
+        const activeTicketsEl = document.getElementById('adminActiveTickets');
+        if (activeTicketsEl) activeTicketsEl.innerText = active;
+        
+        const waitingTicketsEl = document.getElementById('adminWaitingTickets');
+        if (waitingTicketsEl) waitingTicketsEl.innerText = waiting;
+        
+        const completedTicketsEl = document.getElementById('adminCompletedTickets');
+        if (completedTicketsEl) completedTicketsEl.innerText = completed;
+        
+        // ============================================================
+        // ✅ 2. تحميل البرامج
+        // ============================================================
         const programsSnapshot = await db.ref('programs').once('value');
         const programs = programsSnapshot.val();
-        document.getElementById('adminTotalPrograms').innerText = programs ? Object.keys(programs).length : 0;
+        const totalPrograms = programs ? Object.keys(programs).length : 0;
         
-        // عرض آخر التذاكر
+        const totalProgramsEl = document.getElementById('adminTotalPrograms');
+        if (totalProgramsEl) totalProgramsEl.innerText = totalPrograms;
+        
+        // ============================================================
+        // ✅ 3. تحميل التقييمات (مع التحقق من وجود العناصر)
+        // ============================================================
+        const ratingsSnapshot = await db.ref('ratings').once('value');
+        const ratings = ratingsSnapshot.val();
+        let totalRatings = 0;
+        let sumRatings = 0;
+        let ratingDistribution = { 1: 0, 2: 0, 3: 0, 4: 0, 5: 0 };
+        
+        if (ratings) {
+            for (let id in ratings) {
+                const rating = ratings[id];
+                const ratingValue = rating.rating || 0;
+                totalRatings++;
+                sumRatings += ratingValue;
+                
+                if (ratingValue >= 1 && ratingValue <= 5) {
+                    ratingDistribution[ratingValue]++;
+                }
+            }
+        }
+        
+        const avgRating = totalRatings > 0 ? (sumRatings / totalRatings).toFixed(1) : '0.0';
+        
+        // ✅ تحديث إحصائيات التقييمات (مع التحقق)
+        const totalRatingsEl = document.getElementById('adminTotalRatings');
+        if (totalRatingsEl) totalRatingsEl.innerText = totalRatings;
+        
+        const avgRatingEl = document.getElementById('adminAvgRating');
+        if (avgRatingEl) avgRatingEl.innerText = avgRating;
+        
+        // ✅ تحديث توزيع التقييمات (مع التحقق)
+        const ratingStats = document.getElementById('adminRatingStats');
+        if (ratingStats) {
+            ratingStats.innerHTML = `
+                <div class="flex gap-2 flex-wrap mt-2">
+                    <span class="text-xs bg-green-100 text-green-700 px-2 py-1 rounded-full">⭐5: ${ratingDistribution[5]}</span>
+                    <span class="text-xs bg-green-50 text-green-600 px-2 py-1 rounded-full">⭐4: ${ratingDistribution[4]}</span>
+                    <span class="text-xs bg-yellow-50 text-yellow-600 px-2 py-1 rounded-full">⭐3: ${ratingDistribution[3]}</span>
+                    <span class="text-xs bg-orange-50 text-orange-600 px-2 py-1 rounded-full">⭐2: ${ratingDistribution[2]}</span>
+                    <span class="text-xs bg-red-50 text-red-600 px-2 py-1 rounded-full">⭐1: ${ratingDistribution[1]}</span>
+                </div>
+            `;
+        }
+        
+        // ============================================================
+        // ✅ 4. عرض آخر التذاكر (مع التحقق)
+        // ============================================================
         const recentContainer = document.getElementById('adminRecentTickets');
         if (recentContainer) {
             if (recentTickets.length === 0) {
@@ -8817,15 +9328,16 @@ async function loadAdminDashboard() {
                     const statusLabels = { active: 'نشطة', waiting: 'قيد الانتظار', ended: 'منتهية' };
                     const statusColors = { active: 'text-green-600', waiting: 'text-yellow-600', ended: 'text-red-600' };
                     const status = ticket.status || 'waiting';
+                    
                     html += `
-                        <div class="p-3 flex justify-between items-center hover:bg-gray-50">
+                        <div class="p-3 flex justify-between items-center hover:bg-gray-50 border-b">
                             <div>
-                                <div class="font-bold">${ticket.clientName}</div>
+                                <div class="font-bold">${ticket.clientName || 'مستخدم'}</div>
                                 <div class="text-sm text-gray-500">${ticket.program || 'بدون برنامج'}</div>
                             </div>
                             <div class="text-right">
-                                <div class="text-sm ${statusColors[status]}">${statusLabels[status]}</div>
-                                <div class="text-xs text-gray-400">${new Date(ticket.createdAt).toLocaleDateString('ar-EG')}</div>
+                                <div class="text-sm ${statusColors[status] || 'text-gray-500'}">${statusLabels[status] || status}</div>
+                                <div class="text-xs text-gray-400">${ticket.createdAt ? new Date(ticket.createdAt).toLocaleDateString('ar-EG') : ''}</div>
                             </div>
                         </div>
                     `;
@@ -8834,9 +9346,62 @@ async function loadAdminDashboard() {
             }
         }
         
+        // ============================================================
+        // ✅ 5. عرض آخر التقييمات (مع التحقق)
+        // ============================================================
+        const recentRatingsContainer = document.getElementById('adminRecentRatings');
+        if (recentRatingsContainer) {
+            let recentRatings = [];
+            if (ratings) {
+                for (let id in ratings) {
+                    recentRatings.push({ id, ...ratings[id] });
+                }
+                recentRatings.sort((a, b) => new Date(b.createdAt || b.timestamp || 0) - new Date(a.createdAt || a.timestamp || 0));
+                recentRatings = recentRatings.slice(0, 3);
+            }
+            
+            if (recentRatings.length === 0) {
+                recentRatingsContainer.innerHTML = '<div class="text-center py-2 text-gray-400 text-sm">لا توجد تقييمات حديثة</div>';
+            } else {
+                let html = '';
+                recentRatings.forEach(rating => {
+                    const stars = createStarsHtml(rating.rating || 0);
+                    html += `
+                        <div class="p-2 flex justify-between items-center hover:bg-gray-50 border-b text-sm">
+                            <div>
+                                <div class="font-bold">${rating.clientName || rating.name || 'مستخدم'}</div>
+                                <div class="text-xs text-gray-500">${stars}</div>
+                            </div>
+                            <div class="text-xs text-gray-400">${rating.createdAt || rating.timestamp ? new Date(rating.createdAt || rating.timestamp).toLocaleDateString('ar-EG') : ''}</div>
+                        </div>
+                    `;
+                });
+                recentRatingsContainer.innerHTML = html;
+            }
+        }
+        
+        console.log('✅ تم تحميل لوحة المدير بنجاح');
+        
     } catch (error) {
-        console.error('خطأ في تحميل لوحة المدير:', error);
+        console.error('❌ خطأ في تحميل لوحة المدير:', error);
+        showToast('❌ حدث خطأ في تحميل البيانات');
     }
+}
+
+// ============================================================
+//  دالة مساعدة: إنشاء نجوم التقييم
+// ============================================================
+
+function createStarsHtml(rating) {
+    let stars = '';
+    for (let i = 1; i <= 5; i++) {
+        if (i <= rating) {
+            stars += '<i class="fas fa-star text-yellow-400" style="font-size: 12px;"></i>';
+        } else {
+            stars += '<i class="far fa-star text-gray-300" style="font-size: 12px;"></i>';
+        }
+    }
+    return stars;
 }
 
         function renderAdminTickets(tickets) {
@@ -8955,7 +9520,7 @@ function showSpecificPage(pageId) {
 
 
 // ============================================================
-//  دالة الحصول على مميزات موقع معين (ذكية)
+//  دالة الحصول على مميزات موقع معين - تدعم جميع الصيغ
 // ============================================================
 
 async function getSiteFeaturesAnswer(siteName) {
@@ -8963,74 +9528,126 @@ async function getSiteFeaturesAnswer(siteName) {
     
     const siteNameLower = siteName.toLowerCase().trim();
     
-    // ✅ قائمة مرادفات المواقع (للتطابق)
+    // ✅ قائمة مرادفات المواقع (شاملة)
     const siteAliases = {
-        'imtihan': ['imtihan', 'امتحان', 'منصة امتحان', 'الامتحانات', 'منصة الامتحانات', 'منصة الاختبارات', 'اختبارات'],
-        'nabd': ['nabd', 'نبض', 'متجر نبض', 'هوديز', 'ملابس نبض', 'نبض ملابس'],
-        'scout': ['scout', 'dojo', 'scout dojo', 'كشافة', 'الكشافة', 'الكشافة البحرية', 'الكشافه البحريه', 'كشافه بحريه', 'نظام الكشافة'],
-        'ts construction': ['ts مقاولات', 'مقاولات', 'مواد بناء', 'مقاولات مواد', 'ts construction', 'نظام مواد البناء', 'مواد البناء']
+        'imtihan': {
+            keywords: [
+                'imtihan', 'امتحان', 'منصة امتحان', 'الامتحانات', 'منصة الامتحانات', 
+                'منصة الاختبارات', 'اختبارات', 'امتحانات', 'منصة imtihan', 'imtihan منصة',
+                'موقع امتحان', 'موقع imtihan', 'منصة امتحانات', 'الامتحان', 'الاختبارات'
+            ]
+        },
+        'nabd': {
+            keywords: [
+                'nabd', 'نبض', 'متجر نبض', 'هوديز', 'ملابس نبض', 'نبض ملابس',
+                'متجر نبض', 'موقع نبض', 'نبض متجر', 'nabd store', 'store nabd',
+                'هودي', 'تيشيرتات', 'ملابس', 'موقع نبض'
+            ]
+        },
+        'scout': {
+            keywords: [
+                'scout', 'dojo', 'scout dojo', 'كشافة', 'الكشافة', 'الكشافة البحرية',
+                'الكشافه البحريه', 'كشافه بحريه', 'نظام الكشافة', 'كشافة بحرية',
+                'موقع كشافة', 'scout dojo', 'dojo scout', 'الكشافة', 'كشافه',
+                'كشافة البحرية', 'البحرية', 'موقع scout'
+            ]
+        }
+       
     };
     
-    // ✅ تحديد الموقع المطلوب بناءً على الاسم المدخل
-    let targetSite = null;
+    // ✅ البحث عن المطابقة
     let targetKey = null;
+    let matchedKeyword = null;
     
-    for (const [key, aliases] of Object.entries(siteAliases)) {
-        for (const alias of aliases) {
-            // التحقق من تطابق الاسم المدخل مع أي من المرادفات
-            if (siteNameLower === alias || 
-                siteNameLower.includes(alias) || 
-                alias.includes(siteNameLower) ||
-                // التحقق من التشابه (أقل من 3 أحرف اختلاف)
-                levenshteinDistance(siteNameLower, alias) <= 2) {
+    for (const [key, data] of Object.entries(siteAliases)) {
+        for (const keyword of data.keywords) {
+            // ✅ تطابق تام
+            if (siteNameLower === keyword) {
                 targetKey = key;
-                targetSite = alias;
+                matchedKeyword = keyword;
+                break;
+            }
+            // ✅ تطابق جزئي (السؤال يحتوي على الكلمة المفتاحية)
+            if (siteNameLower.includes(keyword) || keyword.includes(siteNameLower)) {
+                targetKey = key;
+                matchedKeyword = keyword;
+                break;
+            }
+            // ✅ تطابق باستخدام Levenshtein (للأخطاء الإملائية البسيطة)
+            if (levenshteinDistance(siteNameLower, keyword) <= 2) {
+                targetKey = key;
+                matchedKeyword = keyword;
                 break;
             }
         }
-        if (targetSite) break;
+        if (targetKey) break;
     }
     
-    // ✅ إذا تم تحديد الموقع، ابحث في faqData عن مميزاته
-    if (targetSite) {
-        // بناء كلمة مفتاحية للبحث (مميزات + اسم الموقع)
-        const searchTerms = [
-            `مميزات ${targetSite}`,
-            `مميزات ${targetKey}`,
-            targetKey,
-            targetSite
-        ];
+    // ✅ إذا تم تحديد الموقع، عرض مميزاته
+    if (targetKey) {
+        // ✅ مميزات كل موقع
+        const features = {
+            'imtihan': `📚 *مميزات منصة Imtihan - الامتحانات الإلكترونية:*\n\n` +
+                       `✅ *إنشاء امتحانات:* أنشئ امتحاناتك بسهولة مع أسئلة اختيار من متعدد، صح/خطأ، وأسئلة مقالية.\n` +
+                       `✅ *تصحيح تلقائي:* النظام يصحح الإجابات تلقائياً ويعطي النتيجة فوراً.\n` +
+                       `✅ *تقارير فورية:* احصل على تقارير مفصلة عن أداء الطلاب.\n` +
+                       `✅ *رابط امتحان:* شارك رابط الامتحان مع طلابك بسهولة.\n` +
+                       `✅ *بنك الأسئلة:* خزّن أسئلتك واستخدمها في أي وقت.\n` +
+                       `✅ *تحليلات متقدمة:* تتبع أداء الطلاب ونسب النجاح.\n` +
+                       `✅ *إدارة الطلاب:* تتبع نتائج كل طالب على حدة.\n\n` +
+                       `🔗 *رابط المنصة:* https://imtihan-eight.vercel.app/\n\n` +
+                       `💡 للاستفسار: 📞 01144100018 - 01126125881`,
+            
+            'nabd': `👕 *مميزات متجر نبض - الملابس والهوديز:*\n\n` +
+                    `✅ *هوديز عالية الجودة:* تشكيلة واسعة من الهوديز بألوان ومقاسات مختلفة.\n` +
+                    `✅ *ملابس رجالية:* تيشيرتات، جواكيت، وعروض حصرية.\n` +
+                    `✅ *أسعار تنافسية:* جودة عالية بأسعار مناسبة للجميع.\n` +
+                    `✅ *توصيل سريع:* نوصل طلباتك في أسرع وقت.\n` +
+                    `✅ *تجربة تسوق سهلة:* واجهة بسيطة وسهلة الاستخدام.\n` +
+                    `✅ *نظام طلبات متكامل:* تتبع طلباتك بسهولة.\n` +
+                    `✅ *تقييمات العملاء:* اقرأ تقييمات العملاء قبل الشراء.\n\n` +
+                    `🔗 *رابط المتجر:* https://nabd-ten.vercel.app/\n\n` +
+                    `💡 للاستفسار: 📞 01144100018 - 01126125881`,
+            
+            'scout': `⛵ *مميزات موقع Scout DoJo - نظام إدارة الكشافة البحرية:*\n\n` +
+                     `✅ *إدارة الأعضاء:* تسجيل الأعضاء وإدارة بياناتهم ورتبهم.\n` +
+                     `✅ *إدارة المجموعات والهيئات:* إنشاء مجموعات وهيئات وطلايع.\n` +
+                     `✅ *نظام النقاط والترتيب:* منح نقاط للأعضاء وعرض الترتيب.\n` +
+                     `✅ *إدارة التكاليف:* إنشاء تكاليف ومهام للأعضاء.\n` +
+                     `✅ *نظام الحضور والغياب:* تتبع حضور الأعضاء.\n` +
+                     `✅ *الفورمات والتقييمات:* إنشاء فورمات وتقييمات للأعضاء.\n` +
+                     `✅ *لوحة تحكم متكاملة:* للمدير والقادة والأعضاء.\n\n` +
+                     `🔗 *رابط الموقع:* https://kayan-cyan.vercel.app/\n\n` +
+                     `💡 للاستفسار: 📞 01144100018 - 01126125881`,
+            
+           
+        };
         
-        for (const term of searchTerms) {
-            const result = findAnswerInFAQ(term, '');
-            if (result && result.found) {
-                return result.answer;
-            }
-        }
-        
-        // محاولة البحث في faqData عن أي عنصر يحتوي على اسم الموقع
-        for (const item of faqData) {
-            for (const keyword of item.keywords) {
-                if (keyword.toLowerCase().includes(targetSite) || 
-                    targetSite.includes(keyword.toLowerCase())) {
-                    return item.answer;
-                }
-            }
+        if (features[targetKey]) {
+            return features[targetKey];
         }
     }
     
-    // ✅ إذا لم يتم العثور على مميزات
-    return `❌ *لم أجد معلومات عن مميزات "${siteName}"*
+    // ✅ إذا لم يتم العثور على مميزات، عرض قائمة بالمواقع المتاحة
+    return `❌ *لم أجد معلومات عن "${siteName}"*
 
-💡 يمكنك كتابة:
-- 'مميزات Imtihan' - لمنصة الامتحانات الإلكترونية
-- 'مميزات نبض' - لمتجر الملابس والهوديز
-- 'مميزات Scout DoJo' - لنظام الكشافة البحرية
-- 'مميزات TS مقاولات' - لنظام إدارة مواد البناء
+📋 *المواقع المتاحة للاستفسار:*
+
+
+4. 📚 Imtihan - الامتحانات الإلكترونية
+5. 👕 نبض - الملابس والهوديز
+6. ⛵ Scout DoJo - الكشافة البحرية
+
+💡 *يمكنك الكتابة بأي من هذه الصيغ:*
+• "مميزات نبض" أو "موقع نبض"
+• "مميزات Imtihan" أو "موقع imtihan"
+• "مميزات Scout DoJo" أو "موقع scout"
+• "مميزات مقاولات" أو "موقع مقاولات"
+• "مميزات نقاط البيع" أو "موقع نقاط البيع"
+• "مميزات حضور" أو "موقع حضور"
 
 📞 للتواصل: 01144100018 - 01126125881`;
 }
-
 // ============================================================
 //  دالة حساب التشابه بين النصوص (Levenshtein Distance)
 // ============================================================
@@ -9302,6 +9919,209 @@ function hideTicketChat() {
                 document.getElementById('myAccountUsername').innerText = 'الرجاء تسجيل الدخول';
             }
         }
+
+// ============================================================
+//   دوال إدارة تقييمات العملاء في لوحة المدير
+// ============================================================
+
+let adminRatingsFilter = 'all';
+let allRatings = [];
+
+// ===== تحميل التقييمات =====
+async function loadAdminRatings() {
+    const container = document.getElementById('adminRatingsList');
+    if (!container) return;
+    
+    try {
+        const snapshot = await db.ref('ratings').once('value');
+        const ratings = snapshot.val();
+        
+        allRatings = [];
+        
+        if (ratings) {
+            for (let id in ratings) {
+                const rating = ratings[id];
+                // ✅ إضافة معرف التذكرة ووقت الإنشاء
+                allRatings.push({
+                    id: id,
+                    ...rating,
+                    ticketId: rating.ticketId || id
+                });
+            }
+            
+            // ✅ ترتيب من الأحدث إلى الأقدم
+            allRatings.sort((a, b) => {
+                return new Date(b.createdAt || b.timestamp || 0) - new Date(a.createdAt || a.timestamp || 0);
+            });
+        }
+        
+        // ✅ تحديث العدد
+        const countSpan = document.getElementById('ratingsCount');
+        if (countSpan) {
+            countSpan.innerText = `(${allRatings.length})`;
+        }
+        
+        // ✅ عرض التقييمات
+        renderAdminRatings(allRatings);
+        
+    } catch (error) {
+        console.error('❌ خطأ في تحميل التقييمات:', error);
+        container.innerHTML = `
+            <div class="text-center py-8 text-red-400">
+                <i class="fas fa-exclamation-triangle text-3xl mb-2"></i>
+                <p>حدث خطأ في تحميل التقييمات</p>
+            </div>
+        `;
+    }
+}
+
+// ===== عرض التقييمات =====
+function renderAdminRatings(ratings) {
+    const container = document.getElementById('adminRatingsList');
+    if (!container) return;
+    
+    // ✅ تطبيق الفلتر
+    let filtered = ratings;
+    if (adminRatingsFilter !== 'all') {
+        const filterNum = parseInt(adminRatingsFilter);
+        filtered = ratings.filter(r => r.rating === filterNum);
+    }
+    
+    if (filtered.length === 0) {
+        container.innerHTML = `
+            <div class="text-center py-8 text-gray-400">
+                <i class="fas fa-star text-3xl mb-2 text-yellow-400"></i>
+                <p>لا توجد تقييمات ${adminRatingsFilter !== 'all' ? 'بـ ' + adminRatingsFilter + ' نجوم' : ''}</p>
+            </div>
+        `;
+        return;
+    }
+    
+    let html = '';
+    filtered.forEach(rating => {
+        // ✅ إنشاء نجوم التقييم
+        const starsHtml = createStarsHtml(rating.rating);
+        
+        // ✅ تحديد لون التقييم
+        let ratingColor = 'text-gray-500';
+        let bgColor = 'bg-gray-50';
+        if (rating.rating >= 4) {
+            ratingColor = 'text-green-600';
+            bgColor = 'bg-green-50';
+        } else if (rating.rating >= 3) {
+            ratingColor = 'text-yellow-600';
+            bgColor = 'bg-yellow-50';
+        } else {
+            ratingColor = 'text-red-600';
+            bgColor = 'bg-red-50';
+        }
+        
+        // ✅ نص التقييم
+        const ratingTexts = {
+            1: 'سيء جداً',
+            2: 'سيء',
+            3: 'مقبول',
+            4: 'جيد',
+            5: 'ممتاز'
+        };
+        
+        // ✅ تاريخ التقييم
+        const date = new Date(rating.createdAt || rating.timestamp || Date.now());
+        const dateStr = date.toLocaleDateString('ar-EG') + ' ' + date.toLocaleTimeString('ar-EG', {hour: '2-digit', minute: '2-digit'});
+        
+        html += `
+            <div class="p-4 hover:bg-gray-50 flex flex-col md:flex-row justify-between items-start md:items-center gap-3 border-b ${bgColor}">
+                <div class="flex-1">
+                    <div class="flex items-center gap-3 flex-wrap">
+                        <div class="font-bold text-gray-800 text-lg">
+                            ${rating.clientName || rating.name || 'مستخدم'}
+                        </div>
+                        <div class="text-sm text-gray-500">
+                            <i class="fas fa-phone ml-1 text-green-500"></i> ${rating.clientPhone || rating.phone || 'غير مسجل'}
+                        </div>
+                        <div class="text-sm text-gray-400">
+                            <i class="fas fa-ticket ml-1 text-blue-500"></i> ${rating.ticketId || 'N/A'}
+                        </div>
+                    </div>
+                    <div class="flex items-center gap-3 mt-1 flex-wrap">
+                        <span class="flex items-center gap-1">
+                            ${starsHtml}
+                        </span>
+                        <span class="text-sm font-bold ${ratingColor}">
+                            (${rating.rating} ${ratingTexts[rating.rating] || ''})
+                        </span>
+                    </div>
+                    ${rating.feedback ? `
+                        <div class="mt-2 text-sm text-gray-600 bg-white p-2 rounded-lg border border-gray-100">
+                            <i class="fas fa-quote-right ml-1 text-gray-400"></i>
+                            ${rating.feedback}
+                        </div>
+                    ` : ''}
+                </div>
+                <div class="text-xs text-gray-400 whitespace-nowrap">
+                    <i class="fas fa-clock ml-1"></i> ${dateStr}
+                </div>
+            </div>
+        `;
+    });
+    
+    container.innerHTML = html;
+}
+
+// ===== إنشاء نجوم التقييم =====
+function createStarsHtml(rating) {
+    let stars = '';
+    for (let i = 1; i <= 5; i++) {
+        if (i <= rating) {
+            stars += '<i class="fas fa-star text-yellow-400"></i>';
+        } else {
+            stars += '<i class="far fa-star text-gray-300"></i>';
+        }
+    }
+    return stars;
+}
+
+// ===== فلتر التقييمات =====
+function adminFilterRatings(filter) {
+    adminRatingsFilter = filter;
+    
+    // ✅ تحديث الأزرار
+    document.querySelectorAll('.ratings-filter-btn').forEach(btn => {
+        btn.className = 'ratings-filter-btn px-3 py-1 rounded-full text-xs bg-gray-200 text-gray-700 hover:bg-gray-300';
+    });
+    const activeBtn = document.querySelector(`.ratings-filter-btn[data-filter="${filter}"]`);
+    if (activeBtn) {
+        let color = 'bg-blue-600 text-white';
+        if (filter === '5') color = 'bg-green-600 text-white';
+        else if (filter === '4') color = 'bg-green-500 text-white';
+        else if (filter === '3') color = 'bg-yellow-500 text-white';
+        else if (filter === '2') color = 'bg-orange-500 text-white';
+        else if (filter === '1') color = 'bg-red-500 text-white';
+        activeBtn.className = `ratings-filter-btn px-3 py-1 rounded-full text-xs ${color}`;
+    }
+    
+    renderAdminRatings(allRatings);
+}
+
+// ===== تحديث التقييمات =====
+function adminRefreshRatings() {
+    loadAdminRatings();
+    showToast('🔄 تم تحديث التقييمات');
+}
+
+// ===== حذف تقييم =====
+async function deleteRating(ratingId) {
+    if (!confirm('⚠️ هل أنت متأكد من حذف هذا التقييم؟')) return;
+    
+    try {
+        await db.ref(`ratings/${ratingId}`).remove();
+        showToast('✅ تم حذف التقييم');
+        loadAdminRatings();
+    } catch (error) {
+        console.error('❌ خطأ في حذف التقييم:', error);
+        showToast('❌ حدث خطأ في حذف التقييم');
+    }
+}
 
         // ==================== تحديث واجهة المستخدم ====================
         function updateHomeUI() {
@@ -11399,35 +12219,48 @@ function viewProgramQuestions(programId) {
 //  12. دوال لوحة المدير المحسنة
 // =============================================
 let adminCurrentFilter = 'all';
+// ============================================================
+//  دالة عرض تبويب معين في لوحة المدير
+// ============================================================
 
 function adminShowTab(tab) {
-    // إخفاء كل المحتويات
+    // ✅ 1. إخفاء جميع محتويات التبويبات
     document.querySelectorAll('.admin-tab-content').forEach(el => {
         el.classList.add('hidden');
+        el.style.display = 'none';  // تأكيد الإخفاء
     });
     
-    // إظهار التبويب المحدد
-    const content = document.getElementById(`adminTab${tab.charAt(0).toUpperCase() + tab.slice(1)}`);
-    if (content) content.classList.remove('hidden');
+    // ✅ 2. إظهار التبويب المحدد فقط
+    const tabName = tab.charAt(0).toUpperCase() + tab.slice(1);
+    const content = document.getElementById(`adminTab${tabName}`);
+    if (content) {
+        content.classList.remove('hidden');
+        content.style.display = 'block';
+    } else {
+        console.warn(`⚠️ التبويب adminTab${tabName} غير موجود`);
+    }
     
-    // تحديث الأزرار
+    // ✅ 3. تحديث أزرار التبويبات
     document.querySelectorAll('.admin-tab-btn').forEach(btn => {
         btn.className = 'admin-tab-btn px-4 py-2 rounded-lg bg-gray-200 text-gray-700 hover:bg-gray-300 text-sm';
     });
+    
     const activeBtn = document.querySelector(`.admin-tab-btn[data-tab="${tab}"]`);
     if (activeBtn) {
         activeBtn.className = 'admin-tab-btn px-4 py-2 rounded-lg bg-blue-600 text-white text-sm';
     }
     
-    // تحميل البيانات حسب التبويب
+    // ✅ 4. تحميل البيانات حسب التبويب
     if (tab === 'programs') {
-        loadAdminPrograms();
+        if (typeof loadAdminPrograms === 'function') loadAdminPrograms();
     } else if (tab === 'users') {
-        loadAdminUsers();
+        if (typeof loadAdminUsers === 'function') loadAdminUsers();
     } else if (tab === 'tickets') {
-        adminRefreshTickets();
+        if (typeof adminRefreshTickets === 'function') adminRefreshTickets();
     } else if (tab === 'dashboard') {
-        loadAdminDashboard();
+        if (typeof loadAdminDashboard === 'function') loadAdminDashboard();
+    } else if (tab === 'ratings') {
+        if (typeof loadAdminRatings === 'function') loadAdminRatings();
     }
 }
 
@@ -15086,7 +15919,7 @@ async function loadTickets() {
     }
 }
 
-       function renderTickets(tickets) {
+function renderTickets(tickets) {
     const container = document.getElementById('ticketsList');
     const noMessage = document.getElementById('noTicketsMessage');
     if (!container) return;
@@ -15120,28 +15953,65 @@ async function loadTickets() {
                     <span>🕐 ${new Date(ticket.createdAt).toLocaleString('ar-EG')}</span>
                     <span>#${ticket.ticketNumber || 'N/A'}</span>
                 </div>
-                <div class="mt-3 flex gap-2">
+                <div class="mt-3 flex gap-2 flex-wrap">
                     ${status === 'active' ? `
                         <button onclick="openTicketChat('${ticket.id}')" class="flex-1 bg-green-600 text-white py-2 rounded-lg hover:bg-green-700 transition text-sm">
                             <i class="fas fa-comment"></i> شات
                         </button>
                     ` : status === 'waiting' ? `
-                        <button class="flex-1 bg-gray-300 text-gray-500 py-2 rounded-lg text-sm cursor-not-allowed" disabled>
-                            ⏳ انتظار
+                        <button onclick="openTicketChat('${ticket.id}')" class="flex-1 bg-blue-600 text-white py-2 rounded-lg hover:bg-blue-700 transition text-sm">
+                            <i class="fas fa-comment"></i> شات
                         </button>
                     ` : `
                         <button class="flex-1 bg-gray-300 text-gray-500 py-2 rounded-lg text-sm cursor-not-allowed" disabled>
                             ✅ منتهية
                         </button>
                     `}
-                    <button onclick="openTicketChat('${ticket.id}')" class="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition text-sm">
-                        <i class="fas fa-comment"></i> شات
+                    <!-- ✅ زر حذف التذكرة (جديد) -->
+                    <button onclick="deleteTicketFromCard('${ticket.id}')" class="bg-red-500 text-white px-4 py-2 rounded-lg hover:bg-red-600 transition text-sm" title="حذف التذكرة">
+                        <i class="fas fa-trash"></i>
                     </button>
                 </div>
             </div>
         `;
     }).join('');
 }
+
+// ==================== حذف التذكرة من البطاقة مباشرة ====================
+async function deleteTicketFromCard(ticketId) {
+    // ✅ استخدام نافذة التأكيد المخصصة
+    openCustomConfirm(
+        '⚠️ هل أنت متأكد من حذف هذه التذكرة؟',
+        'سيتم حذف التذكرة وجميع رسائل الشات المرتبطة بها!',
+        async function(confirmed) {
+            if (confirmed) {
+                try {
+                    // حذف التذكرة من Firebase
+                    await db.ref(`tickets/${ticketId}`).remove();
+                    
+                    // حذف رسائل الشات المرتبطة (إن وجدت)
+                    await db.ref(`tickets/${ticketId}/messages`).remove();
+                    
+                    showToast('✅ تم حذف التذكرة بنجاح');
+                    
+                    // تحديث القائمة
+                    loadTickets();
+                    
+                    // إذا كانت هذه التذكرة مفتوحة في الشات، أغلقها
+                    if (currentTicketId === ticketId) {
+                        closeTicketChat();
+                    }
+                    
+                } catch (error) {
+                    console.error('❌ خطأ في حذف التذكرة:', error);
+                    showToast('❌ حدث خطأ في حذف التذكرة');
+                }
+            }
+        },
+        ticketId
+    );
+}
+
 function goToMyAccountPage() {
     showSpecificPage('myAccountPage');
     updateSidebarUI();
