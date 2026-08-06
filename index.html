@@ -7384,63 +7384,25 @@ function addNewFAQ(question, answer, programName) {
 }
 
 // ============================================================
-//  دالة الاتصال بـ OpenRouter API مع الهيدرات الصحيحة
+//  الاتصال بالخادم الوسيط بدلاً من OpenRouter مباشرة
 // ============================================================
 
 async function askDeepSeek(question) {
     try {
-        // ✅ التحقق من وجود المفتاح
-        if (!DEEPSEEK_API_KEY || DEEPSEEK_API_KEY === 'YOUR_OPENROUTER_API_KEY_HERE') {
-            return {
-                success: false,
-                answer: '⚠️ يرجى الحصول على مفتاح API مجاني من OpenRouter:\n🔗 https://openrouter.ai/keys',
-                error: 'API key not configured'
-            };
-        }
+        console.log('📡 جاري الاتصال بالخادم الوسيط...');
         
-        console.log('📡 جاري الاتصال بـ OpenRouter API...');
-        console.log('🔑 المفتاح:', DEEPSEEK_API_KEY.substring(0, 20) + '...');
-        console.log('🌐 العنوان:', DEEPSEEK_API_URL);
-        console.log('🤖 النموذج:', currentModel);
-        
-        // ✅ إرسال الطلب مع الهيدرات الصحيحة
-        const response = await fetch(DEEPSEEK_API_URL, {
+        // ✅ إرسال الطلب إلى الخادم الخاص بك
+        const response = await fetch('/api/chat', {
             method: 'POST',
             headers: {
-                'Content-Type': 'application/json',
-                'Authorization': `Bearer ${DEEPSEEK_API_KEY}`,
-                // ✅ الهيدرات المطلوبة لتحديد تطبيقك
-                'HTTP-Referer': 'https://tecno-shark.vercel.app',
-                'X-Title': 'TecnoShark Bot'
+                'Content-Type': 'application/json'
             },
             body: JSON.stringify({
-                model: currentModel,
-                messages: [
-                    {
-                        role: 'system',
-                        content: `أنت مساعد دعم فني لشركة TecnoShark. أجب على أسئلة العملاء بشكل مفيد ومختصر. استخدم اللغة العربية دائماً. 
-                        
-                        معلومات عن المواقع:
-                        - Imtihan (الامتحانات الإلكترونية): https://imtihan-eight.vercel.app/
-                        - نبض (الملابس والهوديز): https://nabd-ten.vercel.app/
-                        - Scout DoJo (الكشافة البحرية): https://kayan-cyan.vercel.app/
-                        - TS مقاولات (مواد البناء): https://ts-construction-final.vercel.app/
-                        - TS POS (نقاط البيع): https://ts-pos-final.vercel.app/
-                        - TS Attend Pro (الحضور والغياب): https://ts-attend-pro.vercel.app/
-                        
-                        للتواصل: 01144100018 - 01126125881`
-                    },
-                    {
-                        role: 'user',
-                        content: question
-                    }
-                ],
-                max_tokens: 500,
-                temperature: 0.7
+                question: question
             })
         });
         
-        // ✅ معالجة أخطاء HTTP
+        // ✅ معالجة الاستجابة
         if (!response.ok) {
             let errorData;
             try {
@@ -7449,75 +7411,55 @@ async function askDeepSeek(question) {
                 errorData = { message: response.statusText || 'Unknown error' };
             }
             
-            console.error('❌ OpenRouter API error:', errorData);
+            console.error('❌ خطأ من الخادم:', errorData);
             
-            // ✅ معالجة أخطاء شائعة
+            // ✅ رسائل خطأ مفهومة
             if (response.status === 404) {
-                // ✅ جرب نموذجاً آخر إذا فشل النموذج الحالي
-                const fallbackModels = [
-                    FREE_MODELS['mistral'],
-                    FREE_MODELS['llama'],
-                    FREE_MODELS['qwen'],
-                    FREE_MODELS['deepseek']
-                ];
-                
-                for (const model of fallbackModels) {
-                    if (model !== currentModel) {
-                        console.log(`🔄 جرب النموذج: ${model}`);
-                        currentModel = model;
-                        // ✅ إعادة المحاولة مع النموذج الجديد
-                        return await askDeepSeek(question);
-                    }
-                }
-                
                 return {
                     success: false,
-                    answer: '⚠️ جميع النماذج المجانية غير متاحة حالياً. يرجى المحاولة لاحقاً.',
-                    error: 'All free models unavailable'
+                    answer: '⚠️ الخادم الوسيط غير موجود. تأكد من وجود ملف api/chat.js.',
+                    error: 'Backend not found'
                 };
             }
             
-            if (response.status === 401) {
+            if (response.status === 500) {
                 return {
                     success: false,
-                    answer: '⚠️ مفتاح API غير صحيح. يرجى التحقق من المفتاح في OpenRouter.',
-                    error: 'Invalid API key'
-                };
-            }
-            
-            if (response.status === 402 || response.status === 429) {
-                return {
-                    success: false,
-                    answer: '⚠️ تم الوصول إلى حد الاستخدام المجاني. يرجى المحاولة لاحقاً.',
-                    error: 'Rate limit exceeded'
+                    answer: '❌ حدث خطأ في الخادم. يرجى المحاولة لاحقاً.',
+                    error: 'Server error'
                 };
             }
             
             return {
                 success: false,
-                answer: '❌ حدث خطأ في الاتصال بالذكاء الاصطناعي. يرجى المحاولة لاحقاً.',
+                answer: '❌ حدث خطأ في الاتصال بالخادم.',
                 error: errorData
             };
         }
         
         const data = await response.json();
-        const answer = data.choices?.[0]?.message?.content || '⚠️ لم أستطع توليد إجابة. يرجى إعادة صياغة السؤال.';
         
-        console.log('✅ تم الحصول على إجابة من OpenRouter');
-        console.log('📊 النموذج المستخدم:', data.model || currentModel);
-        
-        return {
-            success: true,
-            answer: answer,
-            fromDeepSeek: true,
-            model: data.model || currentModel
-        };
+        if (data.success) {
+            console.log('✅ تم الحصول على إجابة من الخادم');
+            console.log('🤖 النموذج المستخدم:', data.model || 'غير معروف');
+            return {
+                success: true,
+                answer: data.answer,
+                fromDeepSeek: true
+            };
+        } else {
+            return {
+                success: false,
+                answer: '❌ فشل الخادم في الحصول على إجابة.',
+                error: data.error
+            };
+        }
         
     } catch (error) {
-        console.error('❌ Error calling OpenRouter API:', error);
+        console.error('❌ خطأ في الاتصال بالخادم:', error);
         return {
             success: false,
-            answer: '❌ حدث خطأ في الاتصال بالذكاء الاصطناعي. يرجى المحاولة لاحقاً.',
+            answer: '❌ حدث خطأ في الاتصال بالخادم الوسيط.',
             error: error.message
         };
     }
