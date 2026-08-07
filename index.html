@@ -8195,10 +8195,16 @@ async function handleBotResponse(ticketId, userMessage) {
         const programName = ticket.botProgram || '';
         const isDirectChat = ticket.isDirectChat || false;
         
+        // ✅ تطبيع الرسالة (توحيد التاء المربوطة والهاء)
+        const normalizedMessage = normalizeText(message);
+        
         // ============================================================
         // ✅ 1. التحقق من "لا" - إنهاء المحادثة
         // ============================================================
-        if (message === 'لا' || message === 'no' || message === 'كفاية' || message === 'انتهيت' || message === 'خلاص') {
+        if (normalizedMessage === 'لا' || normalizedMessage === 'no' || 
+            normalizedMessage === 'كفايه' || normalizedMessage === 'انتهيت' || 
+            normalizedMessage === 'خلاص' || message === 'لا' || message === 'no') {
+            
             await sendBotMessage(ticketId, '👋 تم إنهاء المحادثة بناءً على طلبك.');
             await sendBotMessage(ticketId, '📋 شكراً لتواصلك معنا.');
             await db.ref(`tickets/${ticketId}/botActive`).set(false);
@@ -8225,7 +8231,9 @@ async function handleBotResponse(ticketId, userMessage) {
         // ============================================================
         // ✅ 2. التحقق من "نعم" - متابعة المحادثة
         // ============================================================
-        if (message === 'نعم' || message === 'yes' || message === 'أكيد' || message === 'طبعاً' || message === 'موافق') {
+        if (normalizedMessage === 'نعم' || normalizedMessage === 'yes' || 
+            normalizedMessage === 'أكيد' || normalizedMessage === 'طبعاً' || 
+            normalizedMessage === 'موافق') {
             await sendBotMessage(ticketId, '👋 رائع! اكتب سؤالك الجديد وسأجيبك فوراً.');
             await db.ref(`tickets/${ticketId}/botStep`).set(1);
             return;
@@ -8234,17 +8242,17 @@ async function handleBotResponse(ticketId, userMessage) {
         // ============================================================
         // ✅ 3. التحقق من "مساعدة" - عرض القائمة
         // ============================================================
-        if (message === 'مساعدة' || message === 'help' || message === 'أسئلة' || message === 'استفسار' || message === 'ممكن اسأل') {
+        if (normalizedMessage === 'مساعده' || normalizedMessage === 'help' || 
+            normalizedMessage === 'أسئله' || normalizedMessage === 'استفسار' || 
+            normalizedMessage === 'ممكن اسال' || message.includes('مساعدة')) {
             const helpMessage = generateHelpMessage(programName);
             await sendBotMessage(ticketId, helpMessage);
             return;
         }
         
         // ============================================================
-        // ✅ 4. التحقق من أسئلة المواقع (جديد)
+        // ✅ 4. التحقق من أسئلة المواقع
         // ============================================================
-        
-        // أنماط للتعرف على أسئلة المواقع
         const sitePatterns = [
             /موقع\s*(.*)/i,
             /موقع\s+([^\s]+)/i,
@@ -8261,7 +8269,6 @@ async function handleBotResponse(ticketId, userMessage) {
         ];
         
         let extractedSite = null;
-        
         for (const pattern of sitePatterns) {
             const match = message.match(pattern);
             if (match && match[1]) {
@@ -8285,12 +8292,10 @@ async function handleBotResponse(ticketId, userMessage) {
             'ما هي المواقع التي قمتم بتطويرها', 'مواقع قمت بتصميمها', 'أعمالنا', 'مشاريعنا',
             'هل لديكم مواقع', 'هل لديك مواقع', 'عندكم مواقع', 'عندك مواقع',
             'مواقع عندكم', 'مواقع لديكم', 'هل يوجد مواقع', 'هل توجد مواقع',
-            'عندكم موقع', 'عندك موقع', 'المواقع التي عندكم', 'ما المواقع التي لديكم',
-            'استفسار عن المواقع', 'عندي استفسار عن المواقع', 'مواقع تصممونها',
-            'مواقع بتصمموها', 'المواقع التي تصممونها', 'هل تصممون مواقع'
+            'عندكم موقع', 'عندك موقع', 'المواقع التي عندكم', 'ما المواقع التي لديكم'
         ];
         
-        const isGeneralSiteQuestion = generalSiteKeywords.some(kw => message.includes(kw));
+        const isGeneralSiteQuestion = generalSiteKeywords.some(kw => normalizedMessage.includes(normalizeText(kw)));
         if (isGeneralSiteQuestion) {
             const answer = await getSitesListAnswer();
             await sendBotMessage(ticketId, answer);
@@ -8305,13 +8310,10 @@ async function handleBotResponse(ticketId, userMessage) {
             'كيف أنشئ موقع', 'إنشاء موقع', 'عمل موقع', 'تصميم موقع', 'طريقة عمل موقع',
             'أريد موقع', 'كيف اعمل موقع', 'بناء موقع', 'كيفية إنشاء موقع', 'كيف اسوي موقع',
             'عايز موقع', 'اريد موقع', 'اعمل موقع', 'موقع جديد', 'إنشاء موقع إلكتروني',
-            'تصميم موقع إلكتروني', 'كيف أنشئ موقعاً', 'كيف أنشئ موقع إلكتروني', 'طريقة تصميم موقع',
-            'كيف ابدا موقع', 'كيف اطور موقع', 'كيف اسوي موقع الكتروني', 'عايز اعمل موقع',
-            'عايز أسوي موقع', 'اريد انشاء موقع', 'أريد إنشاء موقع', 'كيف أنشئ متجر',
-            'كيف اعمل متجر', 'عايز متجر', 'اريد متجر', 'كيف أنشئ منصة', 'كيف اعمل منصة'
+            'تصميم موقع إلكتروني', 'كيف أنشئ موقعاً', 'كيف أنشئ موقع إلكتروني', 'طريقة تصميم موقع'
         ];
         
-        const isCreateSiteQuestion = createSiteKeywords.some(kw => message.includes(kw));
+        const isCreateSiteQuestion = createSiteKeywords.some(kw => normalizedMessage.includes(normalizeText(kw)));
         if (isCreateSiteQuestion) {
             const answer = getCreateSiteAnswer();
             await sendBotMessage(ticketId, answer);
@@ -8323,14 +8325,28 @@ async function handleBotResponse(ticketId, userMessage) {
         // ✅ 6. التحقق من أسئلة الشركة (الأولوية العالية)
         // ============================================================
         const companyKeywords = [
-            'الشركة', 'اسم الشركة', 'إيه الشركة', 'ما الشركة', 'شركة إيه', 'الشركة دي',
-            'prime vision', 'برايم فيجن', 'اسمها إيه', 'المنصة دي', 'دي شركة إيه',
-            'مين الشركة', 'الشركة مين', 'صاحب الشركة', 'مالك الشركة', 'المؤسس',
-            'مؤسس الشركة', 'primevision', 'برايم', 'فيجن', 'Prime Vision',
-            'عن الشركة', 'من نحن', 'تعريف الشركة', 'شركتكم', 'شركتنا'
+            'الشركه', 'الشركت', 'الشركة', 'شركه', 'شركت', 'شركة',
+            'اسم الشركه', 'اسم الشركت', 'اسم الشركة',
+            'ايه الشركه', 'اية الشركه', 'اية الشركة', 'ايه الشركة',
+            'ما الشركه', 'ما الشركت', 'ما الشركة',
+            'prime vision', 'برايم فيجن', 'primevision',
+            'مين الشركه', 'مين الشركت', 'مين الشركة',
+            'صاحب الشركه', 'صاحب الشركت', 'صاحب الشركة',
+            'مالك الشركه', 'مالك الشركت', 'مالك الشركة',
+            'المؤسس', 'مؤسس الشركه', 'مؤسس الشركة',
+            'عن الشركه', 'عن الشركت', 'عن الشركة',
+            'من نحن', 'تعريف الشركه', 'تعريف الشركة',
+            'شركتكم', 'شركتنا', 'الشركه دي', 'الشركة دي',
+            'دي شركه ايه', 'دي شركة ايه', 'دي شركه', 'دي شركة',
+            'المنصه دي', 'المنصة دي'
         ];
         
-        const isCompanyQuestion = companyKeywords.some(kw => message.includes(kw));
+        const normalizedCompanyKeywords = companyKeywords.map(kw => normalizeText(kw));
+        const isCompanyQuestion = normalizedCompanyKeywords.some(kw => 
+            normalizedMessage.includes(kw) || 
+            message.toLowerCase().includes(kw) ||
+            message.includes(kw)
+        );
         
         if (isCompanyQuestion) {
             const companyAnswer = `🏢 *شركة Prime Vision* هي شركة رائدة في مجال البرمجيات والحلول الرقمية، تأسست لتقديم خدمات متكاملة في تصميم وتطوير المواقع والتطبيقات.\n\n📌 *رؤيتنا:* أن نكون الشريك الموثوق في التحول الرقمي.\n\n📌 *رسالتنا:* تقديم حلول برمجية عالية الجودة تلبي احتياجات عملائنا.\n\n📍 *مقر الشركة:* مصر\n\n👨‍💼 *المدير التنفيذي:* محمد عماد عبد العاطي\n👨‍💻 *مدير التكنولوجيا:* عبد الرحمن محمد صبحي\n\n📞 *للتواصل:* 01144100018 - 01126125881\n✉️ *البريد:* mohammedemadpromax@gmail.com`;
@@ -8342,7 +8358,9 @@ async function handleBotResponse(ticketId, userMessage) {
         // ============================================================
         // ✅ 7. التحقق من أسئلة البرامج
         // ============================================================
-        if (message.includes('البرامج') || (message.includes('ما هي') && message.includes('البرامج'))) {
+        if (normalizedMessage.includes('البرامج') || 
+            (normalizedMessage.includes('ما هي') && normalizedMessage.includes('البرامج')) ||
+            message.includes('البرامج')) {
             const programsList = await getProgramsList();
             await sendBotMessage(ticketId, programsList);
             await sendBotMessage(ticketId, '📋 هل لديك أي سؤال آخر؟ اكتب "نعم" للمتابعة أو "لا" لإنهاء المحادثة.');
@@ -8360,7 +8378,7 @@ async function handleBotResponse(ticketId, userMessage) {
         }
         
         // ============================================================
-        // ✅ 9. البحث عن إجابة في faqData
+        // ✅ 9. البحث عن إجابة في faqData (مع التطبيع)
         // ============================================================
         const cached = findAnswerInFAQWithProgram(message, programName);
         if (cached.found) {
@@ -8581,39 +8599,37 @@ async function getProgramsList() {
 }
         
         
-// ============================================================
-//  دالة التحقق من أسئلة الأسعار (معدلة)
-// ============================================================
-
 async function checkPriceQuestion(message) {
-    // ✅ أنماط البحث عن السعر (مبسطة)
+    // ✅ تطبيع الرسالة
+    const normalizedMessage = normalizeText(message);
+    
+    // ✅ أنماط البحث عن السعر (مع دعم التطبيع)
     const pricePatterns = [
         /سعر\s*(.*)/i,
         /كم\s*سعر\s*(.*)/i,
         /بكم\s*(.*)/i,
         /ثمن\s*(.*)/i,
+        /تكلفه\s*(.*)/i,
         /تكلفة\s*(.*)/i,
         /price\s*(.*)/i,
         /cost\s*(.*)/i,
         /ما هو سعر\s*(.*)/i,
+        /كم تكلفه\s*(.*)/i,
         /كم تكلفة\s*(.*)/i
     ];
     
     let programName = null;
     
-    // ✅ محاولة استخراج اسم البرنامج من السؤال
     for (let pattern of pricePatterns) {
-        const match = message.match(pattern);
+        const match = normalizedMessage.match(pattern);
         if (match && match[1]) {
             programName = match[1].trim();
             break;
         }
     }
     
-    // ✅ إذا لم يتم العثور على اسم برنامج، حاول البحث عن كلمة مفتاحية
     if (!programName) {
-        // البحث عن كلمات شائعة
-        const words = message.replace(/سعر|كم|بكم|ثمن|تكلفة|price|cost/gi, '').trim().split(' ');
+        const words = normalizedMessage.replace(/سعر|كم|بكم|ثمن|تكلفه|تكلفة|price|cost/gi, '').trim().split(' ');
         for (let word of words) {
             if (word.length > 2) {
                 programName = word;
@@ -8626,30 +8642,28 @@ async function checkPriceQuestion(message) {
         return { found: false, answer: '' };
     }
     
-    // ✅ البحث عن البرنامج في Firebase
     try {
         const snapshot = await db.ref('programs').once('value');
         const programs = snapshot.val();
         
         if (!programs) {
-            return { 
-                found: true, 
-                answer: '📋 *لا توجد برامج مسجلة حالياً*\n\nيرجى التواصل مع الإدارة.'
+            return {
+                found: true,
+                answer: '📋 *لا توجد برامج مسجله حالياً*\n\nيرجى التواصل مع الإداره.'
             };
         }
         
         let foundProgram = null;
         let foundId = null;
         let matchScore = 0;
+        const normalizedProgramName = normalizeText(programName);
         
-        // ✅ البحث عن أفضل تطابق
         for (let id in programs) {
             const program = programs[id];
-            const nameLower = program.name.toLowerCase();
-            const searchLower = programName.toLowerCase();
+            const normalizedProgram = normalizeText(program.name);
             
             // تطابق تام
-            if (nameLower === searchLower) {
+            if (normalizedProgram === normalizedProgramName) {
                 foundProgram = program;
                 foundId = id;
                 matchScore = 100;
@@ -8657,8 +8671,8 @@ async function checkPriceQuestion(message) {
             }
             
             // تطابق جزئي
-            if (nameLower.includes(searchLower) || searchLower.includes(nameLower)) {
-                const score = Math.max(nameLower.length, searchLower.length);
+            if (normalizedProgram.includes(normalizedProgramName) || normalizedProgramName.includes(normalizedProgram)) {
+                const score = Math.max(normalizedProgram.length, normalizedProgramName.length);
                 if (score > matchScore) {
                     matchScore = score;
                     foundProgram = program;
@@ -8668,8 +8682,7 @@ async function checkPriceQuestion(message) {
         }
         
         if (!foundProgram) {
-            // ✅ عرض قائمة البرامج المتاحة مع أسمائها فقط
-            let programList = '📋 *البرامج المتاحة:*\n\n';
+            let programList = '📋 *البرامج المتاحه:*\n\n';
             let index = 1;
             for (let id in programs) {
                 programList += `${index}. ${programs[id].name}\n`;
@@ -8681,7 +8694,6 @@ async function checkPriceQuestion(message) {
             };
         }
         
-        // ✅ عرض تفاصيل السعر بشكل منظم
         const priceText = getPriceText(foundProgram.price || 0, foundProgram.priceType || 'free');
         let answer = `💰 *سعر برنامج ${foundProgram.name}*\n\n`;
         answer += `   📌 ${priceText}\n`;
@@ -8690,13 +8702,12 @@ async function checkPriceQuestion(message) {
             answer += `   📝 ${foundProgram.priceDetails}\n`;
         }
         
-        // ✅ إضافة معلومات حسب نوع السعر
         const priceType = foundProgram.priceType || 'free';
         const typeInfo = {
             'monthly': '📅 اشتراك شهري - يتم التجديد شهرياً',
             'yearly': '📆 اشتراك سنوي - تجديد سنوي مع خصم',
-            'permanent': '♾️ شراء دائم - مرة واحدة مدى الحياة',
-            'free': '🎁 مجاني - نسخة تجريبية أو محدودة',
+            'permanent': '♾️ شراء دائم - مره واحده مدى الحياه',
+            'free': '🎁 مجاني - نسخه تجريبيه أو محدوده',
             'custom': '📋 مخصص - يرجى الاتصال بنا للحصول على عرض سعر'
         };
         
@@ -8712,23 +8723,19 @@ async function checkPriceQuestion(message) {
         console.error('❌ خطأ في البحث عن السعر:', error);
         return {
             found: true,
-            answer: '❌ حدث خطأ في البحث عن السعر. يرجى المحاولة لاحقاً.'
+            answer: '❌ حدث خطأ في البحث عن السعر. يرجى المحاوله لاحقاً.'
         };
     }
 }
-// ============================================================
-//  دالة تطبيع النص - توحيد الهاء والتاء المربوطة
-// ============================================================
-
 function normalizeText(text) {
     if (!text) return '';
     return text
         .toLowerCase()
-        .replace(/ة/g, 'ه')   // تحويل التاء المربوطة إلى هاء
-        .replace(/أ/g, 'ا')   // توحيد الألف
+        .replace(/ة/g, 'ه')   // التاء المربوطة → هاء
+        .replace(/أ/g, 'ا')
         .replace(/إ/g, 'ا')
         .replace(/آ/g, 'ا')
-        .replace(/ى/g, 'ي')   // توحيد الياء
+        .replace(/ى/g, 'ي')
         .replace(/ؤ/g, 'و')
         .replace(/ئ/g, 'ي')
         .trim();
