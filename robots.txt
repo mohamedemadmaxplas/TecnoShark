@@ -1,0 +1,16 @@
+# ==================== Robots.txt لموقع Prime Vision ====================
+
+User-agent: *
+Allow: /
+
+# منع الزحف لصفحات معينة (لو مش عايز جوجل يزورها)
+Disallow: /admin/
+Disallow: /dashboard/
+Disallow: /login/
+Disallow: /register/
+
+# مكان خريطة الموقع
+Sitemap: https://prime-vision-one.vercel.app/sitemap.xml
+
+# وقت إعادة الزيارة
+Crawl-delay: 5
