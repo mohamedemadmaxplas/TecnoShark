@@ -6,7 +6,7 @@
 
     <!-- الصفحة الرئيسية -->
     <url>
-        <loc>https://prime-vision-one.vercel.app/</loc>
+        <loc>https://tecno-shark.vercel.app/</loc>
         <lastmod>2026-08-07</lastmod>
         <changefreq>daily</changefreq>
         <priority>1.0</priority>
@@ -14,7 +14,7 @@
 
     <!-- صفحة عن الشركة -->
     <url>
-        <loc>https://prime-vision-one.vercel.app/#about</loc>
+        <loc>https://tecno-shark.vercel.app/#about</loc>
         <lastmod>2026-08-07</lastmod>
         <changefreq>monthly</changefreq>
         <priority>0.8</priority>
@@ -22,7 +22,7 @@
 
     <!-- صفحة الخدمات -->
     <url>
-        <loc>https://prime-vision-one.vercel.app/#services</loc>
+        <loc>https://tecno-shark.vercel.app/#services</loc>
         <lastmod>2026-08-07</lastmod>
         <changefreq>weekly</changefreq>
         <priority>0.9</priority>
@@ -30,7 +30,7 @@
 
     <!-- صفحة التذاكر -->
     <url>
-        <loc>https://prime-vision-one.vercel.app/tickets</loc>
+        <loc>https://tecno-shark.vercel.app/tickets</loc>
         <lastmod>2026-08-07</lastmod>
         <changefreq>daily</changefreq>
         <priority>0.7</priority>
@@ -38,7 +38,7 @@
 
     <!-- صفحة الاجتماعات -->
     <url>
-        <loc>https://prime-vision-one.vercel.app/meetings</loc>
+        <loc>https://tecno-shark.vercel.app/meetings</loc>
         <lastmod>2026-08-07</lastmod>
         <changefreq>weekly</changefreq>
         <priority>0.6</priority>
@@ -46,7 +46,7 @@
 
     <!-- صفحة البريد -->
     <url>
-        <loc>https://prime-vision-one.vercel.app/mail</loc>
+        <loc>https://tecno-shark.vercel.app/mail</loc>
         <lastmod>2026-08-07</lastmod>
         <changefreq>weekly</changefreq>
         <priority>0.5</priority>
@@ -54,7 +54,7 @@
 
     <!-- صفحة حسابي -->
     <url>
-        <loc>https://prime-vision-one.vercel.app/account</loc>
+        <loc>https://tecno-shark.vercel.app/account</loc>
         <lastmod>2026-08-07</lastmod>
         <changefreq>monthly</changefreq>
         <priority>0.4</priority>
@@ -62,7 +62,7 @@
 
     <!-- صفحة تسجيل الدخول -->
     <url>
-        <loc>https://prime-vision-one.vercel.app/login</loc>
+        <loc>https://tecno-shark.vercel.app/login</loc>
         <lastmod>2026-08-07</lastmod>
         <changefreq>monthly</changefreq>
         <priority>0.3</priority>
@@ -70,7 +70,7 @@
 
     <!-- صفحة إنشاء حساب -->
     <url>
-        <loc>https://prime-vision-one.vercel.app/register</loc>
+        <loc>https://tecno-shark.vercel.app/register</loc>
         <lastmod>2026-08-07</lastmod>
         <changefreq>monthly</changefreq>
         <priority>0.3</priority>
