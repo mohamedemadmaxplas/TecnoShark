@@ -4204,7 +4204,571 @@
 @keyframes botClick {
     0%, 100% { transform: scale(1); }
     50% { transform: scale(0.85); }
+}/* الحاوية الرئيسية للزر */
+.bot-float-container {
+    position: fixed;
+    bottom: 100px;
+    right: 20px;
+    z-index: 9999;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+    cursor: grab;
+    touch-action: none;
+    user-select: none;
 }
+
+/* الزر نفسه */
+.bot-float-btn {
+    width: 60px;
+    height: 60px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, #2563eb, #1d4ed8, #7c3aed);
+    border: none;
+    box-shadow: 0 4px 20px rgba(37, 99, 235, 0.4);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: grab;
+    transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+    color: white;
+    font-size: 28px;
+    position: relative;
+    flex-shrink: 0;
+}
+
+.bot-float-btn:hover {
+    transform: scale(1.1);
+    box-shadow: 0 8px 35px rgba(37, 99, 235, 0.5);
+}
+
+.bot-float-btn:active {
+    cursor: grabbing;
+    transform: scale(0.95);
+}
+
+/* تأثير النبض للزر */
+.bot-float-btn::after {
+    content: '';
+    position: absolute;
+    top: -4px;
+    left: -4px;
+    right: -4px;
+    bottom: -4px;
+    border-radius: 50%;
+    border: 2px solid rgba(37, 99, 235, 0.3);
+    animation: botPulse 2s ease-in-out infinite;
+}
+
+@keyframes botPulse {
+    0%, 100% {
+        transform: scale(1);
+        opacity: 0.5;
+    }
+    50% {
+        transform: scale(1.15);
+        opacity: 0.1;
+    }
+}
+
+/* أيقونة البوت */
+.bot-float-btn i {
+    font-size: 30px;
+    animation: botIconFloat 3s ease-in-out infinite;
+}
+
+@keyframes botIconFloat {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(-4px); }
+}
+
+/* شارة الإشعارات (النقطة الحمراء) */
+.bot-float-btn .bot-badge {
+    position: absolute;
+    top: -2px;
+    right: -2px;
+    width: 18px;
+    height: 18px;
+    background: #ef4444;
+    border-radius: 50%;
+    border: 2px solid white;
+    font-size: 9px;
+    font-weight: bold;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    animation: botBadgePulse 1.5s ease-in-out infinite;
+}
+
+@keyframes botBadgePulse {
+    0%, 100% { transform: scale(1); }
+    50% { transform: scale(1.2); }
+}
+
+/* ===== النص الجانبي ===== */
+.bot-float-container .bot-label {
+    background: rgba(0, 0, 0, 0.8);
+    backdrop-filter: blur(10px);
+    color: white;
+    padding: 8px 16px;
+    border-radius: 30px;
+    font-size: 14px;
+    font-weight: 500;
+    white-space: nowrap;
+    opacity: 0;
+    transform: translateX(20px) scale(0.9);
+    transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+    pointer-events: none;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+}
+
+/* إظهار النص عند hover */
+.bot-float-container:hover .bot-label {
+    opacity: 1;
+    transform: translateX(0) scale(1);
+}
+
+/* ===== التوافق مع الشاشات الصغيرة ===== */
+@media (max-width: 768px) {
+    .bot-float-container {
+        bottom: 80px;
+        right: 15px;
+    }
+    
+    .bot-float-btn {
+        width: 50px;
+        height: 50px;
+        font-size: 22px;
+    }
+    
+    .bot-float-btn i {
+        font-size: 24px;
+    }
+    
+    .bot-float-container .bot-label {
+        font-size: 12px;
+        padding: 6px 12px;
+    }
+}
+
+@media (max-width: 480px) {
+    .bot-float-container {
+        bottom: 70px;
+        right: 10px;
+    }
+    
+    .bot-float-btn {
+        width: 44px;
+        height: 44px;
+        font-size: 18px;
+    }
+    
+    .bot-float-btn i {
+        font-size: 20px;
+    }
+    
+    .bot-float-container .bot-label {
+        font-size: 10px;
+        padding: 4px 10px;
+    }
+}
+
+/* ===== تأثير اهتزاز عند النقر ===== */
+.bot-float-btn:active {
+    animation: botClick 0.3s ease;
+}
+
+@keyframes botClick {
+    0%, 100% { transform: scale(1); }
+}
+/* تأثير ظهور العناصر */
+.stat-item {
+    opacity: 0;
+    transform: translateY(30px);
+    animation: fadeInUp 0.6s ease forwards;
+    padding: 8px 0;
+}
+
+.stat-item:nth-child(1) { animation-delay: 0.1s; }
+.stat-item:nth-child(2) { animation-delay: 0.2s; }
+.stat-item:nth-child(3) { animation-delay: 0.3s; }
+
+@keyframes fadeInUp {
+    from {
+        opacity: 0;
+        transform: translateY(30px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* تنسيق الأيقونات */
+.stat-item i {
+    display: inline-block;
+    transition: transform 0.3s ease;
+    text-shadow: 0 2px 15px rgba(0, 0, 0, 0.15);
+}
+
+.stat-item:hover i {
+    transform: scale(1.15) translateY(-3px);
+}
+
+/* تنسيق الأرقام */
+.stat-item .font-bold {
+    font-weight: 700;
+    letter-spacing: 1px;
+    text-shadow: 0 2px 20px rgba(0, 0, 0, 0.15);
+}
+
+/* تنسيق النصوص أسفل الأرقام */
+.stat-item .text-blue-100 {
+    font-weight: 400;
+    letter-spacing: 0.5px;
+}
+
+/* ===== التوافق مع الشاشات الصغيرة ===== */
+@media (max-width: 768px) {
+    .stat-item {
+        padding: 4px 0;
+    }
+    
+    .stat-item .font-bold {
+        font-size: 2rem;
+    }
+    
+    .stat-item i {
+        font-size: 2.5rem;
+        margin-bottom: 0.5rem;
+    }
+    
+    .stat-item .text-blue-100 {
+        font-size: 0.85rem;
+    }
+}
+
+@media (max-width: 480px) {
+    .stat-item .font-bold {
+        font-size: 1.5rem;
+    }
+    
+    .stat-item i {
+        font-size: 2rem;
+        margin-bottom: 0.25rem;
+    }
+    
+    .stat-item .text-blue-100 {
+        font-size: 0.7rem;
+    }
+    
+    .grid {
+        gap: 1.5rem;
+    }
+}
+
+/* ===== خط فاصل بين العناصر ===== */
+@media (min-width: 768px) {
+    .stat-item:not(:last-child) {
+        border-right: 1px solid rgba(255, 255, 255, 0.1);
+        padding: 8px 20px;
+    }
+    
+    .stat-item:first-child {
+        padding-right: 20px;
+    }
+    
+    .stat-item:last-child {
+        padding-left: 20px;
+        border-right: none;
+    }
+}
+
+/* تحسين التباعد على الشاشات الكبيرة */
+@media (min-width: 1024px) {
+    .stat-item .font-bold {
+        font-size: 3.5rem;
+    }
+    
+    .stat-item i {
+        font-size: 4rem;
+    }
+}
+/* ============================================================
+   🕐 أنماط العداد التنازلي
+   ============================================================ */
+
+.countdown-timer {
+    font-family: 'Courier New', monospace;
+    font-size: 13px;
+    font-weight: 600;
+    background: #f3f4f6;
+    padding: 2px 12px;
+    border-radius: 20px;
+    display: inline-block;
+    transition: all 0.3s ease;
+    min-width: 80px;
+    text-align: center;
+}
+
+.countdown-timer.urgent {
+    background: #fef2f2;
+    color: #dc2626;
+    animation: pulseUrgent 1s infinite;
+    font-weight: 700;
+}
+
+@keyframes pulseUrgent {
+    0%, 100% { 
+        transform: scale(1);
+        opacity: 1;
+    }
+    50% { 
+        transform: scale(1.05);
+        opacity: 0.7;
+    }
+}
+
+/* ✅ تنسيق بطاقة التذكرة مع العداد */
+.ticket-card {
+    transition: all 0.3s ease;
+}
+
+.ticket-card .border-green-500 {
+    border-right-color: #22c55e;
+}
+
+.ticket-card .border-yellow-500 {
+    border-right-color: #f59e0b;
+}
+
+.ticket-card .border-gray-300 {
+    border-right-color: #d1d5db;
+}
+
+
+/* تحسين زر القائمة */
+.menu-btn {
+    transition: all 0.3s ease;
+}
+
+.menu-btn:hover {
+    background: rgba(0, 0, 0, 0.05);
+}
+
+.menu-btn:active {
+    transform: scale(0.95);
+}
+
+/* تحسين الشعار */
+.nav-logo {
+    transition: transform 0.3s ease;
+}
+
+.nav-logo:hover {
+    transform: scale(1.02);
+}
+
+.nav-logo img {
+    transition: all 0.3s ease;
+}
+
+.nav-logo:hover img {
+    box-shadow: 0 0 20px rgba(37, 99, 235, 0.3);
+}
+
+/* تحسين زر تسجيل الدخول */
+#loginBtnAreaHome button {
+    box-shadow: 0 2px 10px rgba(37, 99, 235, 0.2);
+    transition: all 0.3s ease;
+}
+
+#loginBtnAreaHome button:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 4px 20px rgba(37, 99, 235, 0.3);
+}
+
+/* ===== التوافق مع الشاشات الصغيرة جداً ===== */
+@media (max-width: 400px) {
+    .nav-logo span {
+        font-size: 1rem;
+    }
+    
+    .nav-logo img {
+        width: 28px;
+        height: 28px;
+    }
+    
+    #userAreaHome .w-8 {
+        width: 28px;
+        height: 28px;
+        font-size: 11px;
+    }
+}
+
+/* ===== إظهار اسم المستخدم في الشاشات المتوسطة ===== */
+@media (min-width: 500px) {
+    .hidden.xs\:inline {
+        display: inline !important;
+    }
+}
+
+/* ===== تنسيق الصورة الرمزية مع النبض ===== */
+#userAreaHome .bg-gradient-to-br {
+    position: relative;
+}
+
+#userAreaHome .bg-gradient-to-br::after {
+    content: '';
+    position: absolute;
+    bottom: -2px;
+    right: -2px;
+    width: 10px;
+    height: 10px;
+    background: #22c55e;
+    border-radius: 50%;
+    border: 2px solid white;
+    display: none;
+}
+
+#userAreaHome:not(.hidden) .bg-gradient-to-br::after {
+    display: block;
+}
+
+/* ===== تحسين الزر في حالة المدير ===== */
+#userRoleHome {
+    font-size: 10px;
+    background: rgba(245, 158, 11, 0.1);
+    padding: 0 8px;
+    border-radius: 10px;
+    display: inline-block;
+}
+/* تحسين زر القائمة */
+.menu-btn {
+    transition: all 0.3s ease;
+}
+
+.menu-btn:hover {
+    background: rgba(0, 0, 0, 0.05);
+}
+
+.menu-btn:active {
+    transform: scale(0.95);
+}
+
+/* تحسين الشعار */
+.nav-logo {
+    transition: transform 0.3s ease;
+}
+
+.nav-logo:hover {
+    transform: scale(1.02);
+}
+
+.nav-logo img {
+    transition: all 0.3s ease;
+}
+
+.nav-logo:hover img {
+    box-shadow: 0 0 20px rgba(37, 99, 235, 0.3);
+}
+
+/* تحسين زر تسجيل الدخول */
+#loginBtnAreaHome button {
+    box-shadow: 0 2px 10px rgba(37, 99, 235, 0.2);
+    transition: all 0.3s ease;
+}
+
+#loginBtnAreaHome button:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 4px 20px rgba(37, 99, 235, 0.3);
+}
+
+/* ===== إظهار اسم الشركة على الموبايل ===== */
+.nav-logo span {
+    font-size: 0.9rem;
+}
+
+@media (min-width: 400px) {
+    .nav-logo span {
+        font-size: 1.1rem;
+    }
+}
+
+@media (min-width: 640px) {
+    .nav-logo span {
+        font-size: 1.5rem;
+    }
+}
+
+/* ===== التوافق مع الشاشات الصغيرة جداً ===== */
+@media (max-width: 360px) {
+    .nav-logo span {
+        font-size: 0.75rem;
+    }
+    
+    .nav-logo img {
+        width: 24px;
+        height: 24px;
+    }
+    
+    #loginBtnAreaHome button {
+        padding: 0.3rem 0.6rem;
+        font-size: 0.65rem;
+    }
+}
+
+/* ===== إظهار اسم المستخدم في الشاشات المتوسطة ===== */
+@media (min-width: 500px) {
+    .hidden.xs\:inline {
+        display: inline !important;
+    }
+}
+
+/* ===== تنسيق الصورة الرمزية مع النبض ===== */
+#userAreaHome .bg-gradient-to-br {
+    position: relative;
+}
+
+#userAreaHome .bg-gradient-to-br::after {
+    content: '';
+    position: absolute;
+    bottom: -2px;
+    right: -2px;
+    width: 10px;
+    height: 10px;
+    background: #22c55e;
+    border-radius: 50%;
+    border: 2px solid white;
+    display: none;
+}
+
+#userAreaHome:not(.hidden) .bg-gradient-to-br::after {
+    display: block;
+}
+
+/* ===== تحسين الزر في حالة المدير ===== */
+#userRoleHome {
+    font-size: 10px;
+    background: rgba(245, 158, 11, 0.1);
+    padding: 0 8px;
+    border-radius: 10px;
+    display: inline-block;
+}
+
+/* ===== منع التفاف النص ===== */
+.whitespace-nowrap {
+    white-space: nowrap;
+}
+
+/* ===== تحسين التباعد ===== */
+.flex-shrink-0 {
+    flex-shrink: 0;
+}
+
     </style>
 </head>
 <body class="bg-gradient-to-br from-blue-50 to-indigo-100 min-h-screen">
@@ -4267,38 +4831,69 @@
         </div>
     </div>
 
-    <nav class="bg-white/90 backdrop-blur-md shadow-sm sticky top-0 z-40 border-b">
-        <div class="container mx-auto px-6 py-3 flex justify-between items-center">
-            <div class="flex items-center gap-2">
-                <div class="menu-btn ml-3" onclick="toggleSidebarWithAnimation(this)">
-                    <i class="fas fa-bars text-2xl text-gray-700"></i>
-                </div>
-                <div class="nav-logo flex items-center gap-2">
-                    <img id="companyLogo" src="https://i.ibb.co/Fk4jw8pR/4840e6da-a9c5-4858-a78d-8ceb60d1eaaa.png" alt="Logo" class="w-10 h-10 rounded-full cursor-pointer" onclick="handleLogoClick()" title="انقر 3 مرات لتفعيل المدير">
-                    <span id="companyName" class="text-2xl font-bold text-gray-800 cursor-pointer" onclick="handleCompanyNameClick()">Tecno<span class="text-blue-600">Shark</span></span>
+ <nav class="bg-white/90 backdrop-blur-md shadow-sm sticky top-0 z-40 border-b border-gray-100">
+    <div class="container mx-auto px-3 sm:px-6 py-2 sm:py-3">
+        <div class="flex justify-between items-center">
+            
+            <!-- ===== القسم الأيسر: القائمة + الشعار ===== -->
+            <div class="flex items-center gap-1.5 sm:gap-3">
+                <!-- زر القائمة -->
+                <button onclick="toggleSidebarWithAnimation(this)" class="menu-btn p-1.5 sm:p-2 rounded-lg hover:bg-gray-100 transition-colors">
+                    <i class="fas fa-bars text-lg sm:text-xl text-gray-700"></i>
+                </button>
+                
+                <!-- ✅ الشعار والاسم - عند الضغط يروح للرئيسية -->
+                <div class="nav-logo flex items-center gap-1.5 sm:gap-2 cursor-pointer" 
+                     onclick="goToHomePage()" 
+                     title="العودة للصفحة الرئيسية">
+                    <img src="https://i.ibb.co/Fk4jw8pR/4840e6da-a9c5-4858-a78d-8ceb60d1eaaa.png" 
+                         alt="TecnoShark" 
+                         class="w-7 h-7 sm:w-10 sm:h-10 rounded-full shadow-md border-2 border-blue-100">
+                    <span class="text-base sm:text-2xl font-bold text-gray-800 whitespace-nowrap">
+                        Tecno<span class="text-blue-600">Shark</span>
+                    </span>
                 </div>
             </div>
-            <div id="userSectionHome">
+
+            <!-- ===== القسم الأيمن: معلومات المستخدم ===== -->
+            <div id="userSectionHome" class="flex items-center gap-1.5 sm:gap-3">
+                
+                <!-- ✅ حالة تسجيل الدخول -->
                 <div id="loginBtnAreaHome">
-                    <button onclick="showLoginPage()" class="bg-blue-600 text-white px-5 py-2 rounded-full hover:bg-blue-700 transition text-sm">
-                        <i class="fas fa-sign-in-alt ml-1"></i> تسجيل الدخول
+                    <button onclick="showLoginPage()" 
+                            class="bg-blue-600 text-white px-3 sm:px-5 py-1.5 sm:py-2 rounded-full hover:bg-blue-700 transition text-xs sm:text-sm font-medium whitespace-nowrap">
+                        <i class="fas fa-sign-in-alt ml-1"></i> 
+                        <span class="hidden xs:inline">تسجيل الدخول</span>
                     </button>
                 </div>
-                <div id="userAreaHome" class="hidden flex items-center gap-3">
-                    <div class="w-9 h-9 bg-blue-600 rounded-full flex items-center justify-center text-white font-bold">
+                
+                <!-- ✅ المستخدم مسجل دخول -->
+                <div id="userAreaHome" class="hidden flex items-center gap-1.5 sm:gap-3">
+                    <!-- الصورة الرمزية -->
+                    <div class="w-7 h-7 sm:w-9 sm:h-9 bg-gradient-to-br from-blue-500 to-indigo-600 rounded-full flex items-center justify-center text-white font-bold text-xs sm:text-sm shadow-md flex-shrink-0">
                         <span id="userInitialHome">U</span>
                     </div>
-                    <div>
-                        <p class="font-bold text-sm" id="userNameHome" onclick="goToMyAccountPage()"></p>
+                    
+                    <!-- اسم المستخدم والرتبة -->
+                    <div class="hidden sm:block">
+                        <p class="font-bold text-sm text-gray-800" id="userNameHome">مستخدم</p>
                         <p id="userRoleHome" class="text-xs text-yellow-600 hidden">👑 مدير</p>
                     </div>
-                    <button onclick="logout()" class="text-red-500 text-sm hover:text-red-700">
+                    
+                    <!-- زر تسجيل الخروج -->
+                    <button onclick="logout()" 
+                            class="text-red-500 hover:text-red-700 text-sm p-1.5 rounded-full hover:bg-red-50 transition-colors" 
+                            title="تسجيل الخروج">
                         <i class="fas fa-sign-out-alt"></i>
                     </button>
                 </div>
+                
             </div>
+            
         </div>
-    </nav>
+    </div>
+</nav>
+
 
     <!-- ==================== الصفحة الرئيسية ==================== -->
     <div id="homePage" class="page-container">
@@ -4346,17 +4941,35 @@
                 </div>
             </div>
         </div>
-
-        <div class="bg-gradient-to-r from-blue-600 to-indigo-600 text-white py-12">
-            <div class="container mx-auto px-6">
-                <div class="grid md:grid-cols-4 gap-6 text-center">
-                    <div class="stat-item"><i class="fas fa-smile text-4xl mb-2"></i><p class="text-3xl font-bold">150+</p><p>عميل سعيد</p></div>
-                    <div class="stat-item"><i class="fas fa-code text-4xl mb-2"></i><p class="text-3xl font-bold">300+</p><p>مشروع منجز</p></div>
-                    <div class="stat-item"><i class="fas fa-users text-4xl mb-2"></i><p class="text-3xl font-bold">25+</p><p>فريق عمل</p></div>
-                    <div class="stat-item"><i class="fas fa-trophy text-4xl mb-2"></i><p class="text-3xl font-bold">10+</p><p>جائزة تقنية</p></div>
-                </div>
+<div class="bg-gradient-to-r from-blue-600 to-indigo-600 text-white py-16">
+    <div class="container mx-auto px-6">
+        <div class="grid grid-cols-2 md:grid-cols-3 gap-8 md:gap-12 text-center">
+            
+            <!-- 1. المشاريع -->
+            <div class="stat-item">
+                <i class="fas fa-code text-4xl md:text-5xl mb-3 text-blue-200"></i>
+                <p class="text-3xl md:text-4xl font-bold">100+</p>
+                <p class="text-sm md:text-base text-blue-100 mt-1">مشروع</p>
             </div>
+
+            <!-- 2. فريق العمل -->
+            <div class="stat-item">
+                <i class="fas fa-users text-4xl md:text-5xl mb-3 text-green-300"></i>
+                <p class="text-3xl md:text-4xl font-bold">25+</p>
+                <p class="text-sm md:text-base text-blue-100 mt-1">خبير</p>
+            </div>
+
+            <!-- 3. سنوات الخبرة -->
+            <div class="stat-item">
+                <i class="fas fa-trophy text-4xl md:text-5xl mb-3 text-yellow-300"></i>
+                <p class="text-3xl md:text-4xl font-bold">4+</p>
+                <p class="text-sm md:text-base text-blue-100 mt-1">سنوات</p>
+            </div>
+
         </div>
+    </div>
+</div>
+
 
         <footer class="bg-gray-900 text-white py-8">
             <div class="container mx-auto px-6 text-center">
@@ -4418,7 +5031,7 @@
                     <div class="grid md:grid-cols-2 gap-6 mb-8">
                         <div class="bg-blue-50 rounded-2xl p-6 animate-slide-right delay-400">
                             <h3 class="text-xl font-bold text-blue-800 mb-3"><i class="fas fa-chart-line ml-2"></i> خصائص الشركة</h3>
-                            <ul class="space-y-2 text-gray-700"><li><i class="fas fa-check-circle text-green-500 ml-2"></i> خبرة تزيد عن 10 سنوات</li><li><i class="fas fa-check-circle text-green-500 ml-2"></i> أكثر من 300 مشروع ناجح</li><li><i class="fas fa-check-circle text-green-500 ml-2"></i> فريق عمل محترف من 25+ خبير</li><li><i class="fas fa-check-circle text-green-500 ml-2"></i> دعم فني على مدار الساعة</li></ul>
+                            <ul class="space-y-2 text-gray-700"><li><i class="fas fa-check-circle text-green-500 ml-2"></i> خبرة تزيد عن 4 سنوات</li><li><i class="fas fa-check-circle text-green-500 ml-2"></i> أكثر من 100 مشروع ناجح</li><li><i class="fas fa-check-circle text-green-500 ml-2"></i> فريق عمل محترف من 25+ خبير</li><li><i class="fas fa-check-circle text-green-500 ml-2"></i> دعم فني على مدار الساعة</li></ul>
                         </div>
                         <div class="bg-indigo-50 rounded-2xl p-6 animate-slide-left delay-500">
                             <h3 class="text-xl font-bold text-indigo-800 mb-3"><i class="fas fa-star ml-2"></i> مميزاتنا</h3>
@@ -5156,14 +5769,28 @@
             </div>
             
             <!-- ==================== تبويب المستخدمين ==================== -->
-            <div id="adminTabUsers" class="admin-tab-content hidden">
-                <div class="bg-white rounded-3xl shadow-xl overflow-hidden">
-                    <div class="p-4 border-b bg-gray-50">
-                        <h3 class="font-bold"><i class="fas fa-users ml-2"></i> جميع المستخدمين</h3>
-                    </div>
-                    <div id="adminUsersList" class="divide-y max-h-96 overflow-y-auto"></div>
-                </div>
+<div id="adminTabUsers" class="admin-tab-content hidden">
+    <div class="bg-white rounded-3xl shadow-xl overflow-hidden">
+        <div class="p-4 border-b bg-gray-50 flex justify-between items-center flex-wrap gap-2">
+            <h3 class="font-bold">
+                <i class="fas fa-users ml-2 text-blue-600"></i> 
+                جميع المستخدمين
+                <span id="usersCount" class="text-sm text-gray-500 font-normal mr-2"></span>
+            </h3>
+            <div class="flex gap-2">
+                <button onclick="loadAdminUsers()" class="text-blue-500 hover:text-blue-700 text-sm">
+                    <i class="fas fa-sync-alt ml-1"></i> تحديث
+                </button>
             </div>
+        </div>
+        <div id="adminUsersList" class="divide-y max-h-96 overflow-y-auto">
+            <div class="text-center py-8 text-gray-400">
+                <i class="fas fa-spinner fa-spin text-2xl mb-2"></i>
+                <p>جاري تحميل المستخدمين...</p>
+            </div>
+        </div>
+    </div>
+</div>
             
             <!-- ==================== تبويب التقييمات ==================== -->
             <div id="adminTabRatings" class="admin-tab-content hidden">
@@ -5353,28 +5980,17 @@
         </div>
     </div>
 </div>
-<!-- ============================================================
-     🟢 زر البوت العائم - يفتح شات مباشر بدون تذكرة
-     ============================================================ -->
-     <div id="botFloatContainer" class="bot-float-container bot-enter" 
-     onmouseenter="botFloatExit()" 
-     onmouseleave="botFloatEnter()">
-    
+<div id="botFloatContainer" class="bot-float-container">
     <span class="bot-label" id="botLabel">
         <i class="fas fa-robot ml-1"></i> 
         تحدث مع البوت
     </span>
-    
-    <button class="bot-float-btn" id="botFloatBtn" onclick="openDirectBotChat()" title="فتح شات البوت">
+    <button class="bot-float-btn" id="botFloatBtn" title="فتح شات البوت">
         <i class="fas fa-robot"></i>
         <span class="bot-badge">●</span>
     </button>
 </div>
-
-
     <script>
-   
-        
        // ==================== تهيئة Firebase ====================
 const firebaseConfig = {
     apiKey: "AIzaSyD54ifCxvtFuj-445hikUBzI2Q1DkSsVNk",
@@ -6302,1087 +6918,7 @@ function showAdminPanel() {
         }
 
 
-// =============================================
-//  1. بيانات الأسئلة والإجابات المخزنة في الكود
-// =============================================
 
-const faqData = [
-    {
-        keywords: ["برنامج", "نقاط بيع", "TS POS", "إيه", "ما هو", "تعريف"],
-        answer: "هذا برنامج نقاط بيع احترافي (TS POS) لإدارة المتاجر، يشمل إدارة المنتجات، العملاء، الفواتير، المخزون، الموردين، الموظفين، والخزنة."
-    },
-    {
-        keywords: ["مجاني", "سعر", "تكلفة", "فلوس", "بفلوس", "اشتراك"],
-        answer: "يحتوي على نسخة تجريبية مجانية لمدة 3 أيام، وبعدها يلزم التفعيل برقم ترخيص."
-    },
-    {
-        keywords: ["تفعيل", "كود", "ترخيص", "تنشيط", "رقم"],
-        answer: "للحصول على كود التفعيل، تواصل مع المطور: 01144100018 أو 01126125881."
-    },
-    {
-        keywords: ["إنترنت", "نت", "اتصال", "أونلاين", "اوفلاين"],
-        answer: "يعمل النظام محلياً بعد التفعيل، ولا يحتاج إنترنت إلا للتفعيل الأولي."
-    },
-    {
-        keywords: ["إضافة منتج", "منتج جديد", "إنشاء منتج", "اضافة"],
-        answer: "من صفحة المنتجات > زر إضافة منتج، ثم أدخل البيانات."
-    },
-    {
-        keywords: ["باركود", "طباعة باركود", "barcode"],
-        answer: "من صفحة طباعة الباركود، اختر المنتج، حدد الحجم والنسخ، ثم طباعة."
-    },
-    {
-        keywords: ["منتجات منخفضة", "مخزون منخفض", "نقص مخزون"],
-        answer: "تظهر في صفحة المخزن في قسم المنتجات المنخفضة."
-    },
-    {
-        keywords: ["تعديل سعر", "سعر منتج", "تغيير سعر"],
-        answer: "من صفحة المنتجات، اضغط تعديل بجانب المنتج، ثم غيّر السعر."
-    },
-    {
-        keywords: ["حذف منتج", "مسح منتج", "إزالة منتج"],
-        answer: "من صفحة المنتجات، اضغط حذف بجانب المنتج، ثم أكد."
-    },
-    {
-        keywords: ["بيع", "شراء", "فاتورة جديدة", "إتمام شراء"],
-        answer: "من نقاط البيع، اختر العميل، اضغط على المنتج، حدد الكمية، ثم إتمام الشراء."
-    },
-    {
-        keywords: ["إيصال", "طباعة إيصال", "فاتورة مطبوعة"],
-        answer: "بعد إتمام الشراء، اضغط إتمام وطباعة."
-    },
-    {
-        keywords: ["إيقاف فاتورة", "تعليق فاتورة", "pause"],
-        answer: "استخدم زر إيقاف الفاتورة، ثم استرجاعها لاحقاً."
-    },
-    {
-        keywords: ["خصم", "تخفيض", "discount", "سعر نهائي"],
-        answer: "في نقاط البيع، استخدم حقل السعر النهائي لتعديل السعر."
-    },
-    {
-        keywords: ["طرق دفع", "دفع", "payment", "كاش", "بنك"],
-        answer: "يدعم: كاش، إنستا باي، محفظة، فودافون كاش، أورانج كاش، اتصالات كاش، تحويل بنكي، بطاقة ائتمان، بطاقة خصم، شيك، حوالة بريدية."
-    },
-    {
-        keywords: ["إضافة عميل", "عميل جديد", "عميل", "زبون"],
-        answer: "من صفحة العملاء > زر إضافة عميل، أدخل البيانات."
-    },
-    {
-        keywords: ["دين عميل", "مديونية عميل", "debt"],
-        answer: "من صفحة العملاء، يظهر عمود الدين الحالي."
-    },
-    {
-        keywords: ["سداد دين", "دفع دين", "تسديد"],
-        answer: "اضغط زر سداد بجانب العميل، أدخل المبلغ، ثم أكد."
-    },
-    {
-        keywords: ["إضافة موظف", "موظف جديد", "موظف", "employee"],
-        answer: "من صفحة الموظفين > زر إضافة موظف، أدخل البيانات والصلاحيات."
-    },
-    {
-        keywords: ["صلاحيات موظف", "صلاحية", "permission"],
-        answer: "عند إضافة أو تعديل موظف، اختر الصلاحيات من القائمة."
-    },
-    {
-        keywords: ["حذف موظف", "مسح موظف"],
-        answer: "من صفحة الموظفين، اضغط حذف بجانب الموظف (ما عدا المدير الأساسي)."
-    },
-    {
-        keywords: ["إضافة مورد", "مورد جديد", "مورد", "supplier"],
-        answer: "من صفحة الموردين > زر إضافة مورد، أدخل البيانات."
-    },
-    {
-        keywords: ["فاتورة شراء", "شراء", "purchase", "طلبية"],
-        answer: "من صفحة الموردين، اضغط فاتورة شراء بجانب المورد."
-    },
-    {
-        keywords: ["سداد مورد", "دفع مورد", "تسديد مورد"],
-        answer: "من تفاصيل المورد، اضغط سداد بجانب الفاتورة."
-    },
-    {
-        keywords: ["إيداع", "خزنة", "deposit"],
-        answer: "من صفحة الخزنة > زر إيداع، أدخل المبلغ والسبب."
-    },
-    {
-        keywords: ["سحب", "withdraw", "صرف"],
-        answer: "من صفحة الخزنة > زر سحب، أدخل المبلغ والسبب."
-    },
-    {
-        keywords: ["مصروف", "expense", "صرف يومي"],
-        answer: "من صفحة المصروفات > زر إنشاء فاتورة مصروف."
-    },
-    {
-        keywords: ["تقرير مبيعات", "تقرير", "report", "إحصائيات"],
-        answer: "من صفحة التقارير، اختر الفترة، ثم توليد تقرير."
-    },
-    {
-        keywords: ["تغيير اسم المتجر", "اسم المتجر", "store name"],
-        answer: "من صفحة الإعدادات > حقل اسم المتجر."
-    },
-    {
-        keywords: ["تغيير كلمة مرور المدير", "تغيير بيانات المدير"],
-        answer: "من صفحة الإعدادات > قسم تغيير بيانات دخول المدير."
-    },
-    {
-        keywords: ["تكبير", "تصغير", "zoom", "شاشة"],
-        answer: "استخدم شريط التكبير أو Ctrl + + و Ctrl + -."
-    },
-    {
-        keywords: ["صيانة", "فاتورة صيانة", "repair", "جهاز"],
-        answer: "من نقاط البيع > زر فاتورة صيانة."
-    },
-    {
-        keywords: ["نسخ احتياطي", "backup", "تصدير", "استيراد"],
-        answer: "من صفحة الإعدادات > زر تصدير البيانات أو استيراد البيانات."
-    },
-    {
-        keywords: ["دعم فني", "تواصل", "contact", "help", "مساعدة"],
-        answer: "للتواصل: 01144100018 أو 01126125881 أو mohammedemadpromax@gmail.com"
-    },
-
-    // ====== الأسئلة العامة ======
-    {
-        keywords: ["برنامج", "نظام", "الحضور", "الذكي", "TS Attend Pro", "إدارة", "الطلاب", "الفصول", "إيه", "ما هو"],
-        answer: "هذا نظام متكامل لإدارة الحضور والغياب للطلاب، يسمح لك بإدارة الطلاب والفصول والمصاريف والامتحانات وغيرها من الميزات."
-    },
-    {
-        keywords: ["تسجيل", "دخول", "login", "اسم مستخدم", "كلمة مرور", "admin", "1234"],
-        answer: "افتح صفحة تسجيل الدخول، أدخل اسم المستخدم 'admin' وكلمة المرور '1234' واضغط على زر تسجيل الدخول."
-    },
-
-    // ====== إدارة الطلاب ======
-    {
-        keywords: ["إضافة", "طالب", "جديد", "تسجيل", "حفظ"],
-        answer: "من صفحة 'إدارة الطلاب'، اضغط على زر 'إضافة طالب'، أدخل اسم الطالب، كود الطالب، اختر الصف الدراسي، ورقم ولي الأمر، ثم اضغط حفظ."
-    },
-    {
-        keywords: ["تعديل", "بيانات", "طالب", "تحديث"],
-        answer: "من صفحة 'إدارة الطلاب'، اضغط على زر التعديل (القلم) بجانب الطالب، غيّر البيانات المطلوبة، ثم اضغط تحديث."
-    },
-    {
-        keywords: ["حذف", "طالب", "مسح", "إزالة"],
-        answer: "من صفحة 'إدارة الطلاب'، اضغط على زر الحذف (سلة المهملات) بجانب الطالب، ثم أكد الحذف. يمكنك أيضاً استخدام الحذف النهائي من السحابة."
-    },
-    {
-        keywords: ["بحث", "طالب", "كود", "اسم"],
-        answer: "من صفحة 'إدارة الطلاب'، استخدم حقل البحث في الأعلى، اكتب اسم الطالب أو كوده، ستظهر النتائج فوراً."
-    },
-
-    // ====== إدارة الفصول ======
-    {
-        keywords: ["إضافة", "فصل", "دراسي", "جديد"],
-        answer: "من صفحة 'الفصول الدراسية'، اضغط على زر 'إضافة فصل'، أدخل اسم الفصل، رمز الفصل، اسم المدرس، المصاريف الشهرية، وحدد أيام الدراسة، ثم اضغط حفظ."
-    },
-    {
-        keywords: ["تعديل", "فصل", "تحديث"],
-        answer: "من صفحة 'الفصول الدراسية'، اضغط على زر التعديل (القلم) بجانب الفصل، غيّر البيانات المطلوبة، ثم اضغط تحديث."
-    },
-    {
-        keywords: ["حذف", "فصل", "مسح"],
-        answer: "من صفحة 'الفصول الدراسية'، اضغط على زر الحذف (سلة المهملات) بجانب الفصل، ثم أكد الحذف. سيتم حذف جميع الطلاب المرتبطين بالفصل."
-    },
-
-    // ====== تسجيل الحضور ======
-    {
-        keywords: ["تسجيل", "حضور", "الطلاب", "باركود", "مسح"],
-        answer: "من صفحة 'تسجيل الحضور'، اختر الفصل، ثم اضغط على بطاقة الطالب لتسجيل حضوره، أو استخدم مسح الباركود أو الإدخال اليدوي بكود الطالب."
-    },
-    {
-        keywords: ["حضور", "اليوم", "قائمة", "عرض"],
-        answer: "من صفحة 'تسجيل الحضور'، تظهر قائمة الحضور في الجانب الأيمن مع أسماء الطلاب وأوقات الحضور."
-    },
-    {
-        keywords: ["إنهاء", "تسجيل", "حضور", "غائبين"],
-        answer: "من صفحة 'تسجيل الحضور'، اضغط على زر 'إنهاء وتسجيل الغائبين' لتسجيل غياب الطلاب الذين لم يسجلوا حضوراً."
-    },
-    {
-        keywords: ["مسح", "حضور", "اليوم", "إعادة تعيين"],
-        answer: "من صفحة 'تسجيل الحضور'، اضغط على زر 'مسح الكل' لحذف جميع سجلات الحضور لليوم الحالي."
-    },
-
-    // ====== الغياب ======
-    {
-        keywords: ["غياب", "اليومي", "عدد", "الغائبين"],
-        answer: "من لوحة التحكم، بطاقة 'الغياب اليوم' تعرض عدد الغائبين، أو من صفحة 'إدارة الغياب' يمكنك مشاهدة جميع سجلات الغياب."
-    },
-    {
-        keywords: ["تقرير", "غياب", "فترة", "بحث"],
-        answer: "من صفحة 'إدارة الغياب'، يمكنك تصفية الغياب حسب الفصل أو التاريخ، والبحث باسم الطالب أو كوده."
-    },
-    {
-        keywords: ["حذف", "سجل", "غياب"],
-        answer: "من صفحة 'إدارة الغياب'، اضغط على زر الحذف بجانب سجل الغياب لحذفه."
-    },
-
-    // ====== المصاريف ======
-    {
-        keywords: ["مصاريف", "إدارة", "دفع", "شهر"],
-        answer: "من صفحة 'إدارة المصاريف'، يمكنك مشاهدة جميع المصاريف، تصفيتها حسب الفصل أو الحالة (مدفوعة/غير مدفوعة)، وتسجيل الدفع."
-    },
-    {
-        keywords: ["إضافة", "شهر", "مالي", "مصاريف"],
-        answer: "من صفحة 'إدارة المصاريف'، في قسم 'إدارة الأشهر المالية'، اختر الشهر والسنة، ثم اضغط 'إضافة شهر لجميع الفصول'."
-    },
-    {
-        keywords: ["تعديل", "شهر", "مبلغ", "مصاريف"],
-        answer: "من صفحة 'إدارة المصاريف'، اضغط على زر التعديل بجانب الشهر، غيّر المبلغ لكل فصل، ثم اضغط حفظ."
-    },
-    {
-        keywords: ["حذف", "شهر", "مصاريف"],
-        answer: "من صفحة 'إدارة المصاريف'، اضغط على زر الحذف بجانب الشهر لحذفه وجميع سجلات المصاريف المرتبطة به."
-    },
-    {
-        keywords: ["سداد", "دفع", "مصاريف", "طالب"],
-        answer: "من صفحة 'إدارة المصاريف'، اضغط على زر 'سداد' بجانب الطالب، اختر الشهر، أدخل المبلغ، ثم أكد."
-    },
-
-    // ====== الخزنة ======
-    {
-        keywords: ["خزنة", "إيرادات", "مصروفات", "رصيد"],
-        answer: "من صفحة 'الخزنة'، يمكنك مشاهدة جميع الإيرادات والمصروفات، مع تفاصيل الفصول الدراسية وصافي الرصيد."
-    },
-    {
-        keywords: ["إضافة", "مصروف", "خزنة"],
-        answer: "من صفحة 'الخزنة'، اضغط على زر 'إضافة مصروف'، أدخل الوصف والمبلغ والتاريخ، ثم اضغط حفظ."
-    },
-    {
-        keywords: ["جرد", "يومي", "خزنة"],
-        answer: "من صفحة 'الخزنة'، اضغط على زر 'جرد يومي' لعرض تقرير مفصل لإيرادات ومصروفات اليوم الحالي."
-    },
-    {
-        keywords: ["تقرير", "خزنة", "فترة"],
-        answer: "من صفحة 'الخزنة'، اختر الفترة الزمنية (من - إلى)، ثم اضغط 'عرض تقرير الخزنة'."
-    },
-
-    // ====== الامتحانات ======
-    {
-        keywords: ["إضافة", "امتحان", "جديد"],
-        answer: "من صفحة 'إدارة الامتحانات'، اضغط على زر 'إضافة امتحان'، أدخل اسم الامتحان، الفصل، التاريخ، والدرجة الكلية، ثم اضغط حفظ."
-    },
-    {
-        keywords: ["تسجيل", "درجة", "طالب", "امتحان"],
-        answer: "من صفحة 'إدارة الامتحانات'، اضغط على زر 'إضافة درجة' بجانب الطالب، اختر الامتحان، أدخل الدرجة والملاحظات، ثم اضغط حفظ."
-    },
-    {
-        keywords: ["تعديل", "درجة", "امتحان"],
-        answer: "من صفحة 'إدارة الامتحانات'، اضغط على زر 'تعديل درجة' بجانب الطالب، اختر الامتحان، غيّر الدرجة، ثم اضغط حفظ."
-    },
-    {
-        keywords: ["نتائج", "امتحانات", "طالب", "عرض"],
-        answer: "من صفحة 'إدارة الامتحانات'، اضغط على زر 'عرض النتائج' بجانب الطالب لعرض جميع نتائجه."
-    },
-
-    // ====== طباعة الباركود ======
-    {
-        keywords: ["طباعة", "باركود", "طالب", "فصل"],
-        answer: "من صفحة 'طباعة الباركود'، اختر الطالب أو الفصل، اختر نوع الباركود، ثم اضغط 'طباعة الباركود'."
-    },
-    {
-        keywords: ["طباعة", "متعددة", "باركودات", "طلاب"],
-        answer: "من صفحة 'طباعة الباركود'، اضغط على زر 'طباعة متعددة'، اختر الطلاب المطلوبين، ثم اضغط 'بدء الطباعة'."
-    },
-    {
-        keywords: ["طباعة", "باركود", "الفصل", "بالكامل"],
-        answer: "من صفحة 'طباعة الباركود'، اضغط على زر '📚 طباعة باركودات الفصل'، اختر الفصل، ثم اضغط 'طباعة الباركودات'."
-
-    },
-
-    // ====== التقارير ======
-    {
-        keywords: ["تقرير", "حضور", "غياب", "مصاريف", "طلاب"],
-        answer: "من صفحة 'التقارير'، اختر نوع التقرير، الفصل، الفترة الزمنية، ثم اضغط 'توليد تقرير'."
-    },
-    {
-        keywords: ["تصدير", "Excel", "تقرير"],
-        answer: "من أي صفحة، اضغط على زر 'تصدير Excel' لتحميل البيانات كملف Excel."
-    },
-    {
-        keywords: ["طباعة", "PDF", "تقرير"],
-        answer: "من أي صفحة، اضغط على زر 'تصدير PDF' لفتح التقرير في نافذة جديدة للطباعة."
-    },
-
-    // ====== الإعدادات ======
-    {
-        keywords: ["إعدادات", "تغيير", "اسم", "مدرسة"],
-        answer: "من صفحة 'الإعدادات'، يمكنك تغيير اسم المدرسة، العنوان، رقم الهاتف، اسم المدير، السنة الدراسية، رسوم الحصة، وعدد الحصص."
-    },
-    {
-        keywords: ["تغيير", "كلمة", "مرور", "تسجيل", "دخول"],
-        answer: "من صفحة 'الإعدادات'، اضغط على زر 'تغيير باسورد تسجيل الدخول'، أدخل الباسورد القديم ثم الجديد."
-    },
-    {
-        keywords: ["تصدير", "استيراد", "بيانات", "نسخ", "احتياطي"],
-        answer: "من صفحة 'الإعدادات'، استخدم زر 'تصدير البيانات' لحفظ نسخة احتياطية، و'استيراد البيانات' لاستعادة النسخة."
-    },
-    {
-        keywords: ["إعادة", "تعيين", "النظام", "reset"],
-        answer: "من صفحة 'الإعدادات'، اضغط على زر 'إعادة تعيين النظام'، اختر نوع إعادة التعيين، ثم أكد."
-
-    },
-
-    // ====== التفعيل ======
-    {
-        keywords: ["تفعيل", "النظام", "كود", "ترخيص"],
-        answer: "من صفحة 'تفعيل النظام'، أدخل كود التفعيل المكون من 10 أرقام، ثم اضغط 'تفعيل النظام'."
-    },
-    {
-        keywords: ["نسخة", "تجريبية", "متبقي", "أيام"],
-        answer: "من صفحة 'تفعيل النظام'، تظهر معلومات النسخة التجريبية مع عدد الأيام المتبقية."
-    },
-
-    // ====== العائلات ======
-    {
-        keywords: ["عائلة", "إضافة", "إدارة", "أفراد"],
-        answer: "من صفحة 'العائلات'، يمكنك إضافة عائلات جديدة، إضافة أفراد، وتحديد المبالغ الموزعة على كل فرد."
-    },
-    {
-        keywords: ["سداد", "عائلة", "مصاريف", "جماعي"],
-        answer: "من صفحة 'العائلات'، اضغط على زر 'سداد' بجانب العائلة، اختر الشهر، ثم أكد السداد لتسجيل الدفع لجميع أفراد العائلة."
-    },
-
-    // ====== التواصل ======
-    {
-        keywords: ["تواصل", "دعم", "فني", "مساعدة", "مطور"],
-        answer: "للتواصل مع الدعم الفني: 01035636654 - 01144100018 - 01126125881، أو البريد الإلكتروني: mohammedemadpromax@gmail.com"
-    },
-    {
-        keywords: ["واتساب", "إرسال", "تقرير", "ولي", "أمر"],
-        answer: "من صفحة القوائم السريعة (قائمة الطلاب)، اختر الشهر، ثم اضغط على زر 'إرسال التقرير' بجانب الطالب لإرسال تقرير شهري عبر واتساب."
-    },
-
-    // ====== الزوم والتكبير ======
-    {
-        keywords: ["تكبير", "تصغير", "شاشة", "zoom", "حجم"],
-        answer: "استخدم شريط التكبير في صفحة الإعدادات أو اختصارات Ctrl + + و Ctrl + - لتكبير وتصغير الشاشة."
-    },
-
-    // ====== الأجهزة والسحابة ======
-    {
-        keywords: ["سحابة", "مزامنة", "sync", "رفع", "تحميل"],
-        answer: "من صفحة الإعدادات، اضغط على 'إعدادات المزامنة السحابية'، يمكنك رفع البيانات، تحميلها، أو مزامنتها بالكامل."
-    },
-    {
-        keywords: ["أجهزة", "نشطة", "إدارة", "حذف"],
-        answer: "من إعدادات المزامنة السحابية، اضغط على 'خيارات المطور - إدارة الأجهزة' لعرض وإدارة جميع الأجهزة النشطة."
-    },
-    {
-    keywords: ["TS POS", "نظام", "نقاط بيع", "البرنامج", "تعريف", "إيه", "ما هو", "يعني"],
-    answer: "TS POS هو نظام نقاط بيع احترافي لإدارة المتاجر والمطاعم والشركات. يشمل إدارة المنتجات، العملاء، الفواتير، المخزون، الموردين، الموظفين، والخزنة. تم تطويره بواسطة Tecno Shark Company."
-},
-{
-    keywords: ["مميزات", "خصائص", "إمكانيات", "البرنامج", "يعمل"],
-    answer: "من مميزات TS POS: إدارة المنتجات والمخزون، نقاط البيع السريعة، إدارة العملاء والديون، تقارير مبيعات وأرباح، إدارة الموظفين والصلاحيات، طباعة الفواتير والباركود، مزامنة سحابية، ودعم طرق دفع متعددة."
-},
-{
-    keywords: ["سعر", "تكلفة", "بفلوس", "اشتراك", "شراء"],
-    answer: "يمكنك الحصول على نسخة تجريبية مجانية لمدة 3 أيام. للنسخة المدفوعة، يرجى التواصل مع المطور عبر الأرقام: 01144100018 أو 01126125881."
-},
-{
-    keywords: ["مطور", "شركة", "من عمل", "صانع"],
-    answer: "تم تطوير TS POS بواسطة Tecno Shark Company، فريق من المطورين المحترفين بقيادة محمد عماد وعبدالرحمن محمد."
-},
-{
-    keywords: ["تحديث", "نسخة", "إصدار", "version"],
-    answer: "الإصدار الحالي من TS POS هو v4.0، ويتضمن تحسينات في الأداء وميزات جديدة مثل إدارة العائلات والمزامنة السحابية."
-},
-
-// === أسئلة عن الفواتير ===
-{
-    keywords: ["فاتورة", "إنشاء", "طباعة", "إصدار"],
-    answer: "لإنشاء فاتورة: اذهب إلى نقاط البيع، أضف المنتجات، اختر العميل، ثم اضغط 'إتمام الشراء'. للطباعة، اضغط 'إتمام وطباعة'."
-},
-{
-    keywords: ["إرجاع", "مرتجع", "فاتورة", "استرجاع"],
-    answer: "لإرجاع فاتورة: اذهب إلى صفحة الفواتير، اضغط على زر 'إرجاع' بجانب الفاتورة، اختر المنتجات المراد إرجاعها، ثم أكد."
-},
-{
-    keywords: ["خصم", "تخفيض", "discount", "سعر"],
-    answer: "في نقاط البيع، يمكنك إضافة خصم عن طريق حقل 'السعر النهائي' أو من خلال إعدادات الخصم في الفاتورة."
-},
-
-// === أسئلة عن العملاء ===
-{
-    keywords: ["عميل", "زبون", "إضافة", "تسجيل"],
-    answer: "لإضافة عميل: اذهب إلى صفحة العملاء، اضغط 'إضافة عميل'، أدخل الاسم، رقم الهاتف، والعنوان، ثم اضغط حفظ."
-},
-{
-    keywords: ["دين", "مستحق", "مديونية", "فلوس"],
-    answer: "يمكنك متابعة ديون العملاء من صفحة العملاء. يظهر عمود 'الدين الحالي'، ويمكنك تسجيل سداد من خلال زر 'سداد'."
-},
-
-// === أسئلة عن المنتجات ===
-{
-    keywords: ["منتج", "إضافة", "جديد", "منتجات"],
-    answer: "لإضافة منتج: اذهب إلى صفحة المنتجات، اضغط 'إضافة منتج'، أدخل الاسم، الباركود، السعر، الكمية، التصنيف، ثم اضغط حفظ."
-},
-{
-    keywords: ["باركود", "طباعة", "barcode", "كود"],
-    answer: "لطباعة باركود: اذهب إلى صفحة طباعة الباركود، اختر المنتج أو الفصل، حدد نوع الباركود وعدد النسخ، ثم اضغط طباعة."
-},
-{
-    keywords: ["مخزون", "كمية", "متوفر", "stock"],
-    answer: "يمكنك متابعة المخزون من صفحة المخزن. تظهر المنتجات المنخفضة تلقائياً مع إشعارات عند الوصول للحد الأدنى."
-},
-
-// === أسئلة عن الموظفين ===
-{
-    keywords: ["موظف", "إضافة", "كاشير", "مدير"],
-    answer: "لإضافة موظف: اذهب إلى صفحة الموظفين، اضغط 'إضافة موظف'، أدخل البيانات والصلاحيات المطلوبة، ثم اضغط حفظ."
-},
-{
-    keywords: ["صلاحية", "دخول", "صلاحيات", "permission"],
-    answer: "يمكنك تحديد صلاحيات الموظف عند إضافته أو تعديله من خلال اختيار الصفحات التي يمكنه الوصول إليها."
-},
-
-// === أسئلة عن الخزنة ===
-{
-    keywords: ["خزنة", "رصيد", "إيداع", "سحب"],
-    answer: "من صفحة الخزنة يمكنك مشاهدة الرصيد، تسجيل إيداعات وسحوبات، ومتابعة حركات الخزنة مع تقارير مفصلة."
-},
-{
-    keywords: ["مصروف", "صرف", "expense"],
-    answer: "لتسجيل مصروف: اذهب إلى صفحة المصروفات، اضغط 'إنشاء فاتورة مصروف'، أدخل السبب والمبلغ واسم الساحب، ثم اضغط حفظ."
-},
-
-// === أسئلة عن التقارير ===
-{
-    keywords: ["تقرير", "إحصائيات", "report", "stats"],
-    answer: "من صفحة التقارير يمكنك توليد تقارير متنوعة: مبيعات، أرباح، مصاريف، حضور، وغياب. اختر الفترة الزمنية ونوع التقرير."
-},
-{
-    keywords: ["Excel", "تصدير", "PDF", "طباعة"],
-    answer: "يمكنك تصدير أي تقرير إلى Excel أو PDF باستخدام الأزرار الموجودة في أعلى كل صفحة."
-},
-
-// === أسئلة عن الإعدادات ===
-{
-    keywords: ["إعدادات", "تغيير", "ضبط", "settings"],
-    answer: "من صفحة الإعدادات يمكنك تغيير: اسم المتجر، العنوان، رقم الهاتف، السنة الدراسية، وإعدادات الطباعة والتكبير."
-},
-{
-    keywords: ["باسورد", "كلمة مرور", "تغيير", "password"],
-    answer: "لتغيير كلمة المرور: اذهب إلى الإعدادات، اضغط على 'تغيير باسورد تسجيل الدخول' أو 'تغيير باسورد الخزنة'."
-},
-
-// === أسئلة عن المزامنة ===
-{
-    keywords: ["سحابة", "مزامنة", "sync", "backup"],
-    answer: "من إعدادات المزامنة السحابية يمكنك رفع البيانات إلى السحابة، تحميلها، أو مزامنة جميع الأجهزة."
-},
-{
-    keywords: ["جهاز", "آخر", "مشاركة", "داتا"],
-    answer: "يمكنك استخدام النظام على عدة أجهزة مع مزامنة البيانات عبر السحابة. تأكد من تسجيل الدخول بنفس الحساب."
-},
-// أضف هذه العناصر إلى مصفوفة faqData
-{
-    keywords: ["نعم", "yes", "أكيد", "طبعاً", "موافق", "تمام"],
-    answer: "👋 رائع! اكتب سؤالك الجديد وسأجيبك فوراً. (اكتب 'لا' لإنهاء المحادثة)"
-},
-{
-    keywords: ["لا", "no", "كفاية", "انتهيت", "خلاص"],
-    answer: "👋 شكراً لاستخدامك المساعد الذكي! سيتم إنهاء المحادثة الآن. إذا احتجت مساعدة أخرى، يمكنك فتح تذكرة جديدة."
-},
-{
-    keywords: ["مساعدة", "help", "أسئلة", "ممكن اسأل", "استفسار"],
-    answer: "📋 إليك قائمة بالأسئلة التي يمكنني الإجابة عليها:\n\n• ما هو نظام TS POS؟\n• كيف أضيف منتجاً جديداً؟\n• كيف أبيع منتجاً؟\n• كيف أطبع فاتورة؟\n• كيف أضيف عميلاً؟\n• كيف أسجل حضوراً؟\n• كيف أعرف الدين؟\n• كيف أطبع باركود؟\n\n💡 اكتب سؤالك وسأجيبك فوراً."
-},
-// أضف هذه الكلمات المفتاحية الإضافية لتوسيع نطاق الفهم
-
-{
-    keywords: ["شكراً", "شكرا", "thank", "thanks", "ممتاز", "جيد"],
-    answer: "🌹 عفواً! أنا هنا لمساعدتك دائماً. هل لديك أي سؤال آخر؟ اكتب 'نعم' للمتابعة أو 'لا' لإنهاء المحادثة."
-},
-{
-    keywords: ["مرحباً", "السلام", "اهلا", "سلام", "مرحبا", "hello", "hi"],
-    answer: "👋 أهلاً بك! كيف يمكنني مساعدتك اليوم؟ اكتب سؤالك وسأجيبك فوراً."
-},
-// =============================================
-//  الأسئلة المستخرجة من برنامج TS مقاولات
-//  أضف هذه العناصر داخل مصفوفة faqData
-// =============================================
-
-{
-    keywords: ["TS مقاولات", "نظام إدارة مواد البناء", "التعريف", "ما هو", "إيه", "يعني"],
-    answer: "TS مقاولات هو نظام متكامل لإدارة مواد البناء والحجوزات، يشمل إدارة المنتجات، العملاء، الموردين، الفواتير، الحجوزات، الخزنة، المصروفات، الموظفين، والتقارير."
-},
-{
-    keywords: ["دخول", "تسجيل دخول", "login", "اسم مستخدم", "كلمة مرور", "admin", "1234"],
-    answer: "افتح صفحة تسجيل الدخول، أدخل اسم المستخدم 'admin' وكلمة المرور '1234' واضغط على زر تسجيل الدخول."
-},
-{
-    keywords: ["منتج", "إضافة", "مواد بناء", "مخزون", "stock", "منتجات"],
-    answer: "من صفحة 'مواد البناء'، اضغط على زر 'إضافة مادة'، أدخل اسم المنتج، الفئة، الوحدة، سعر البيع، سعر التكلفة، والكمية، ثم اضغط حفظ."
-},
-{
-    keywords: ["عميل", "زبون", "إضافة عميل", "تسجيل عميل", "عملاء"],
-    answer: "من صفحة 'العملاء'، اضغط على زر 'إضافة عميل'، أدخل الاسم، رقم الهاتف، والعنوان، ثم اضغط حفظ."
-},
-{
-    keywords: ["مورد", "تاجر", "إضافة مورد", "موردين", "موردون"],
-    answer: "من صفحة 'الموردين'، اضغط على زر 'إضافة مورد'، أدخل اسم المورد، رقم الهاتف، البريد الإلكتروني، والعنوان، ثم اضغط حفظ."
-},
-{
-    keywords: ["فاتورة مورد", "شراء", "فواتير مشتريات", "سداد مورد", "فاتورة مشتريات"],
-    answer: "من صفحة 'الموردين'، اضغط على زر 'إضافة فاتورة مورد'، اختر المورد، أدخل الوصف، الإجمالي، المبلغ المدفوع مقدمًا، ونوع الدفع، ثم اضغط حفظ."
-},
-{
-    keywords: ["بيع", "نقاط بيع", "POS", "شراء", "فاتورة بيع", "مبيعات"],
-    answer: "من صفحة 'نقاط البيع'، اختر المنتجات من القائمة، حدد الكمية، اختر العميل (نقدي/عميل عادي/حجز)، اختر طريقة الدفع، ثم اضغط 'إتمام العملية'."
-},
-{
-    keywords: ["حجز", "reservation", "حجز مواد", "دفعة مقدمة", "حجوزات"],
-    answer: "من نقاط البيع، اختر 'حجز للعميل'، اختر العميل، أضف المنتجات، أدخل المبلغ المدفوع مقدمًا، ثم اضغط 'إتمام العملية' لإنشاء الحجز."
-},
-{
-    keywords: ["خزنة", "إيداع", "سحب", "رصيد", "cash", "حركات الخزنة"],
-    answer: "من صفحة 'الخزنة'، يمكنك مشاهدة الرصيد الحالي، إضافة إيداع أو سحب، وعرض جميع حركات الخزنة مع التقارير."
-},
-{
-    keywords: ["مصروف", "صرف", "expense", "ساحب", "مصروفات"],
-    answer: "من صفحة 'المصروفات'، اضغط على 'إضافة مصروف'، أدخل سبب المصروف، المبلغ، واسم الساحب، ثم اضغط حفظ."
-},
-{
-    keywords: ["تقرير", "إحصائيات", "report", "stats", "طباعة تقرير", "تقارير"],
-    answer: "من صفحة 'التقارير'، اختر الفترة الزمنية (من - إلى)، ثم اضغط 'توليد تقرير' لعرض المبيعات والأرباح والمصروفات."
-},
-{
-    keywords: ["موظف", "كاشير", "إضافة موظف", "صلاحيات", "موظفين"],
-    answer: "من صفحة 'الموظفين'، اضغط على 'إضافة موظف'، أدخل الاسم، اسم المستخدم، كلمة المرور، الدور، والصلاحيات، ثم اضغط حفظ."
-},
-{
-    keywords: ["إعدادات", "تغيير اسم الشركة", "تغيير باسورد", "settings", "ضبط"],
-    answer: "من صفحة 'الإعدادات'، يمكنك تغيير اسم الشركة، رقم الهاتف، العملة، وتغيير باسورد المدير."
-},
-{
-    keywords: ["تفعيل", "كود", "ترخيص", "activation", "تنشيط", "كود تفعيل"],
-    answer: "من صفحة 'التفعيل'، أدخل كود التفعيل المكون من أحرف وأرقام، ثم اضغط 'تفعيل' لتنشيط النظام."
-},
-{
-    keywords: ["طباعة", "فاتورة", "إيصال", "print", "A4", "طباعة فاتورة"],
-    answer: "يمكنك طباعة الفواتير بحجم A4 أو إيصال صغير من زر الطباعة في صفحة الفواتير أو تفاصيل الفاتورة."
-},
-{
-    keywords: ["تصدير", "استيراد", "backup", "نسخ احتياطي", "استعادة", "تصدير بيانات"],
-    answer: "من صفحة 'الإعدادات'، استخدم زر 'تصدير البيانات' لحفظ نسخة احتياطية، و'استيراد البيانات' لاستعادة النسخة."
-},
-{
-    keywords: ["إعادة تعيين", "reset", "مسح البيانات", "تهيئة", "إعادة ضبط"],
-    answer: "من صفحة 'الإعدادات'، اضغط على 'إعادة تعيين النظام'، اختر نوع إعادة التعيين (مسح الكل أو الاحتفاظ بالمواد)، ثم أكد."
-},
-{
-    keywords: ["دعم فني", "تواصل", "contact", "help", "مساعدة", "مطور", "الدعم"],
-    answer: "للتواصل مع الدعم الفني: 01144100018 - 01126125881، أو البريد الإلكتروني: mohammedemadpromax@gmail.com"
-},
-{
-    keywords: ["مطور", "شركة", "Tecno Shark", "من عمل", "صانع", "المطور"],
-    answer: "تم تطوير TS مقاولات بواسطة Tecno Shark Company، فريق من المطورين المحترفين بقيادة محمد عماد وعبدالرحمن محمد."
-},
-// ============================================================
-//  أسئلة جديدة عن البرامج والأسعار
-// ============================================================
-
-{
-    keywords: ["البرامج", "ما هي البرامج", "ما البرامج", "البرامج المتاحة", "قائمة البرامج", "أنواع البرامج"],
-    answer: "📋 *قائمة البرامج المتاحة:*\n\nسيتم عرض البرامج المسجلة في النظام. يرجى اختيار برنامج من القائمة للحصول على تفاصيل أكثر."
-},
-{
-    keywords: ["سعر", "كم سعر", "التكلفة", "بكم", "ثمن", "price", "cost", "اشتراك"],
-    answer: "💰 *استفسار عن الأسعار*\n\nيمكنك معرفة سعر أي برنامج بكتابة اسم البرنامج مع كلمة 'سعر'، مثل:\n• ما هو سعر TS محاسبة؟\n• كم تكلفة TS POS؟\n\nسيتم عرض تفاصيل السعر حسب نوع الاشتراك (شهري/سنوي/دائم)."
-},
-{
-    keywords: ["اشتراك", "شهري", "سنوي", "دائم", "subscription", "renewal"],
-    answer: "📆 *أنواع الاشتراكات المتاحة:*\n\n• 📅 *شهري:* مناسب للاستخدام القصير\n• 📆 *سنوي:* مناسب للاستخدام الطويل مع خصم\n• ♾️ *دائم:* شراء مرة واحدة مدى الحياة\n• 🎁 *مجاني:* نسخة تجريبية أو محدودة\n• 📋 *مخصص:* حسب احتياجاتك - اتصل بنا"
-},
-// ============================================================
-//  مميزات البرامج المختلفة
-// ============================================================
-
-// 1. مميزات TS POS (نظام نقاط البيع)
-{
-    keywords: ["TS POS", "نقاط بيع", "مميزات TS POS", "إمكانيات TS POS", "خصائص TS POS", "POS system", "مميزات نظام البيع", "شرح TS POS"],
-    answer: "📋 *مميزات نظام TS POS (نقاط البيع):*\n\n" +
-            "✅ *إدارة المنتجات:*\n" +
-            "   • إضافة وتعديل وحذف المنتجات بسهولة\n" +
-            "   • إدارة المخزون والتنبيه عند النقص\n" +
-            "   • طباعة باركود للمنتجات\n\n" +
-            "✅ *نقاط البيع:*\n" +
-            "   • بيع سريع وسهل\n" +
-            "   • دعم طرق دفع متعددة (كاش - شبكة - تحويل)\n" +
-            "   • طباعة فواتير وإيصالات\n\n" +
-            "✅ *إدارة العملاء:*\n" +
-            "   • تسجيل العملاء ومتابعة مشترياتهم\n" +
-            "   • نظام ديون العملاء وسدادها\n" +
-            "   • تقارير مشتريات العملاء\n\n" +
-            "✅ *إدارة الموظفين:*\n" +
-            "   • صلاحيات متعددة للموظفين\n" +
-            "   • متابعة أداء الموظفين\n\n" +
-            "✅ *التقارير والإحصائيات:*\n" +
-            "   • تقارير المبيعات والأرباح\n" +
-            "   • تقارير المخزون والمنتجات\n" +
-            "   • تقارير العملاء والديون\n\n" +
-            "✅ *ميزات إضافية:*\n" +
-            "   • العمل دون إنترنت (Offline)\n" +
-            "   • نسخ احتياطي واستعادة البيانات\n" +
-            "   • طباعة تقارير PDF و Excel"
-},
-
-// 2. مميزات TS Attend Pro (نظام الحضور والغياب)
-{
-    keywords: ["TS Attend Pro", "حضور وغياب", "مميزات TS Attend", "خصائص الحضور", "نظام الحضور", "إدارة الطلاب", "إدارة الفصول", "شرح TS Attend"],
-    answer: "📋 *مميزات نظام TS Attend Pro (الحضور والغياب):*\n\n" +
-            "✅ *إدارة الطلاب:*\n" +
-            "   • تسجيل الطلاب وإدارة بياناتهم\n" +
-            "   • طباعة باركود للطلاب\n" +
-            "   • البحث عن الطلاب بالاسم أو الكود\n\n" +
-            "✅ *إدارة الفصول الدراسية:*\n" +
-            "   • إنشاء فصول دراسية متعددة\n" +
-            "   • تخصيص مدرسين لكل فصل\n" +
-            "   • تحديد أيام الدراسة\n\n" +
-            "✅ *تسجيل الحضور والغياب:*\n" +
-            "   • تسجيل الحضور بالباركود أو يدوياً\n" +
-            "   • تقارير الغياب اليومية والأسبوعية\n" +
-            "   • إشعارات للطلاب المتغيبين\n\n" +
-            "✅ *إدارة المصاريف:*\n" +
-            "   • إدارة المصاريف الشهرية للطلاب\n" +
-            "   • متابعة المدفوعات والديون\n" +
-            "   • تقارير المصاريف\n\n" +
-            "✅ *التقارير والإحصائيات:*\n" +
-            "   • تقارير الحضور والغياب\n" +
-            "   • تقارير المصاريف والإيرادات\n" +
-            "   • إحصائيات الفصول والطلاب\n\n" +
-            "✅ *ميزات إضافية:*\n" +
-            "   • المزامنة السحابية\n" +
-            "   • طباعة تقارير PDF\n" +
-            "   • إرسال تقارير عبر واتساب"
-},
-
-// 3. مميزات TS مقاولات (نظام إدارة مواد البناء)
-{
-    keywords: ["TS مقاولات", "مواد بناء", "مميزات TS مقاولات", "خصائص مقاولات", "نظام مواد البناء", "إدارة الحجوزات", "شرح TS مقاولات"],
-    answer: "📋 *مميزات نظام TS مقاولات (إدارة مواد البناء):*\n\n" +
-            "✅ *إدارة مواد البناء:*\n" +
-            "   • إدارة المنتجات (حديد - أسمنت - طوب - رمل - زلط - جبس - سيراميك)\n" +
-            "   • تتبع المخزون والتنبيه عند النقص\n" +
-            "   • تحديد وحدات القياس لكل منتج\n\n" +
-            "✅ *نظام الحجوزات:*\n" +
-            "   • حجز المواد للعملاء بسعر ثابت\n" +
-            "   • دفع مقدم للحجز\n" +
-            "   • تحويل الحجز إلى فاتورة\n\n" +
-            "✅ *إدارة العملاء والموردين:*\n" +
-            "   • إدارة العملاء ومتابعة مشترياتهم\n" +
-            "   • إدارة الموردين وفواتير الشراء\n" +
-            "   • نظام ديون العملاء والموردين\n\n" +
-            "✅ *الخزنة والمصروفات:*\n" +
-            "   • إدارة حركات الخزنة (إيداع - سحب)\n" +
-            "   • تسجيل المصروفات\n" +
-            "   • تقارير الخزنة الشاملة\n\n" +
-            "✅ *التقارير:*\n" +
-            "   • تقارير المبيعات والأرباح\n" +
-            "   • تقارير الحجوزات\n" +
-            "   • تقارير الخزنة والمصروفات\n\n" +
-            "✅ *ميزات إضافية:*\n" +
-            "   • طباعة فواتير A4 وإيصالات\n" +
-            "   • تصدير واستيراد البيانات\n" +
-            "   • نظام التفعيل والترخيص"
-},
-
-// 4. مميزات عامة للبرامج
-{
-    keywords: ["مميزات البرنامج", "خصائص النظام", "إمكانيات البرنامج", "ماذا يقدم", "شرح البرنامج", "وصف البرنامج"],
-    answer: "📋 *مميزات برامج TecnoShark:*\n\n" +
-            "جميع برامجنا تتميز بـ:\n\n" +
-            "✅ *واجهة سهلة:*\n" +
-            "   • تصميم عصري وسهل الاستخدام\n" +
-            "   • دعم اللغة العربية\n\n" +
-            "✅ *أمان وحماية:*\n" +
-            "   • نظام صلاحيات متكامل\n" +
-            "   • تشفير البيانات\n\n" +
-            "✅ *دعم فني:*\n" +
-            "   • دعم فني على مدار الساعة\n" +
-            "   • تحديثات مستمرة\n\n" +
-            "✅ *مرونة:*\n" +
-            "   • قابلية التخصيص حسب احتياجك\n" +
-            "   • يعمل على ويندوز وماك\n\n" +
-            "💡 اكتب اسم البرنامج مع كلمة 'مميزات'\n" +
-            "مثال: 'مميزات TS POS'"
-},
-
-// 5. مميزات TS محاسبة (نظام المحاسبة)
-{
-    keywords: ["TS محاسبة", "محاسبة", "مميزات TS محاسبة", "نظام محاسبة", "حسابات", "ميزانية", "دفاتر"],
-    answer: "📋 *مميزات نظام TS محاسبة:*\n\n" +
-            "✅ *إدارة الحسابات:*\n" +
-            "   • إدارة الحسابات الرئيسية والفرعية\n" +
-            "   • شجرة حسابات متكاملة\n" +
-            "   • دليل حسابات مرن\n\n" +
-            "✅ *القيد اليومي:*\n" +
-            "   • تسجيل القيود اليومية بسهولة\n" +
-            "   • تدقيق تلقائي للقيود\n" +
-            "   • إمكانية التعديل والحذف\n\n" +
-            "✅ *التقارير المالية:*\n" +
-            "   • ميزانية عمومية\n" +
-            "   • قائمة الدخل\n" +
-            "   • كشف حساب\n" +
-            "   • تقارير الأرباح والخسائر\n\n" +
-            "✅ *إدارة العملاء والموردين:*\n" +
-            "   • حسابات العملاء والموردين\n" +
-            "   • متابعة الديون والأرصدة\n\n" +
-            "✅ *ميزات إضافية:*\n" +
-            "   • تصدير التقارير إلى Excel و PDF\n" +
-            "   • نسخ احتياطي آلي\n" +
-            "   • دعم العملات المتعددة"
-},
-// ============================================================
-//  سؤال عن تصميم المواقع مع أمثلة وروابط
-// ============================================================
-
-{
-    keywords: ["تصميم مواقع", "تصميم موقع", "تطوير مواقع", "بناء مواقع", "مواقع إلكترونية", "web design", "website design", "نصمم مواقع", "نساعدك في تصميم موقع", "موقع ويب"],
-    answer: "🌐 *تصميم وتطوير المواقع الإلكترونية*\n\n" +
-            "نحن في *Tecno Shark* نقدم خدمات تصميم وتطوير مواقع احترافية تناسب جميع احتياجاتك.\n\n" +
-            "✨ *ماذا نقدم في تصميم المواقع؟*\n" +
-            "✅ *تصميم عصري وجذاب:* نستخدم أحدث التقنيات والتصاميم العصرية التي تجذب الزوار.\n" +
-            "✅ *تجربة مستخدم مميزة:* نركز على سهولة الاستخدام وتجربة تصفح سلسة.\n" +
-            "✅ *متجاوبة مع جميع الأجهزة:* موقعك يعمل بشكل مثالي على الكمبيوتر والجوال والتابلت.\n" +
-            "✅ *سرعة في التحميل:* نحرص على تحسين الأداء لسرعة تحميل الموقع.\n" +
-            "✅ *سهولة في التحديث:* يمكنك تحديث محتوى موقعك بسهولة دون الحاجة لمبرمج.\n" +
-            "✅ *أمان وحماية:* نطبق أحدث معايير الأمان لحماية بياناتك وبيانات زوارك.\n\n" +
-            "📌 *نماذج من المواقع التي صممناها:*\n\n" +
-            "🏕️ *موقع Scout DoJo* - نظام إدارة الكشافة البحرية\n" +
-            "   هذا النظام يدير المجموعات الكشفية والأعضاء والأنشطة والتكاليف.\n" +
-            "   🔗 *رابط الموقع:* https://kayan-cyan.vercel.app/\n\n" +
-            "💡 *هل لديك فكرة لمشروعك؟*\n" +
-            "   تواصل معنا وسنساعدك في تحويل فكرتك إلى موقع احترافي.\n\n" +
-            "📞 *للتواصل:* 01144100018 - 01126125881"
-},
-// ============================================================
-//  مميزات موقع Imtihan (مع مرادفات متعددة)
-// ============================================================
-
-{
-    keywords: [
-        "مميزات Imtihan", "مميزات منصة Imtihan", "ما هي مميزات Imtihan",
-        "Imtihan مميزات", "شرح Imtihan", "منصة Imtihan",
-        "مميزات امتحان", "مميزات منصة امتحان", "منصة امتحان",
-        "مميزات موقع امتحان", "موقع امتحان", "امتحان",
-        "مميزات موقع Imtihan", "مميزات imtihan",
-        "شرح منصة Imtihan", "منصة الامتحانات", "الامتحانات",
-        "مميزات منصة الامتحانات", "منصة الاختبارات"
-    ],
-    answer: "📚 *مميزات منصة Imtihan - الامتحانات الإلكترونية:*\n\n" +
-            "✅ *إنشاء امتحانات:* أنشئ امتحاناتك بسهولة مع أسئلة اختيار من متعدد، صح/خطأ، وأسئلة مقالية.\n" +
-            "✅ *تصحيح تلقائي:* النظام يصحح الإجابات تلقائياً ويعطي النتيجة فوراً.\n" +
-            "✅ *تقارير فورية:* احصل على تقارير مفصلة عن أداء الطلاب.\n" +
-            "✅ *رابط امتحان:* شارك رابط الامتحان مع طلابك بسهولة.\n" +
-            "✅ *بنك الأسئلة:* خزّن أسئلتك واستخدمها في أي وقت.\n" +
-            "✅ *تحليلات متقدمة:* تتبع أداء الطلاب ونسب النجاح.\n" +
-            "✅ *إدارة الطلاب:* تتبع نتائج كل طالب على حدة.\n\n" +
-            "🔗 *رابط المنصة:* https://imtihan-eight.vercel.app/"
-},
-
-// ============================================================
-//  مميزات موقع نبض (مع مرادفات متعددة)
-// ============================================================
-
-{
-    keywords: [
-        "مميزات نبض", "مميزات متجر نبض", "ما هي مميزات نبض",
-        "نبض مميزات", "شرح نبض", "متجر نبض",
-        "مميزات موقع نبض", "مميزات nabd", "nabd",
-        "مميزات nabd", "متجر نبض للهوديز", "هوديز نبض",
-        "نبض ملابس", "متجر نبض للملابس", "ملابس نبض"
-    ],
-    answer: "👕 *مميزات متجر نبض - الملابس والهوديز:*\n\n" +
-            "✅ *هوديز عالية الجودة:* تشكيلة واسعة من الهوديز بألوان ومقاسات مختلفة.\n" +
-            "✅ *ملابس رجالية:* تيشيرتات، جواكيت، وعروض حصرية.\n" +
-            "✅ *أسعار تنافسية:* جودة عالية بأسعار مناسبة للجميع.\n" +
-            "✅ *توصيل سريع:* نوصل طلباتك في أسرع وقت.\n" +
-            "✅ *تجربة تسوق سهلة:* واجهة بسيطة وسهلة الاستخدام.\n" +
-            "✅ *نظام طلبات متكامل:* تتبع طلباتك بسهولة.\n" +
-            "✅ *تقييمات العملاء:* اقرأ تقييمات العملاء قبل الشراء.\n\n" +
-            "🔗 *رابط المتجر:* https://nabd-ten.vercel.app/"
-},
-
-// ============================================================
-//  مميزات موقع Scout DoJo (مع مرادفات متعددة)
-// ============================================================
-
-{
-    keywords: [
-        "مميزات Scout DoJo", "مميزات موقع الكشافة", "ما هي مميزات Scout DoJo",
-        "Scout DoJo مميزات", "شرح Scout DoJo", "نظام الكشافة",
-        "مميزات موقع الكشافة البحرية", "الكشافة البحرية", "كشافة",
-        "مميزات كشافة", "Scout", "DoJo", "منصة الكشافة",
-        "نظام إدارة الكشافة", "scout dojo", "كشافه بحريه",
-        "موقع الكشافة", "الكشافة", "الكشافه البحريه"
-    ],
-    answer: "⛵ *مميزات موقع Scout DoJo - نظام إدارة الكشافة البحرية:*\n\n" +
-            "✅ *إدارة الأعضاء:* تسجيل الأعضاء وإدارة بياناتهم ورتبهم.\n" +
-            "✅ *إدارة المجموعات والهيئات:* إنشاء مجموعات وهيئات وطلايع.\n" +
-            "✅ *نظام النقاط والترتيب:* منح نقاط للأعضاء وعرض الترتيب.\n" +
-            "✅ *إدارة التكاليف:* إنشاء تكاليف ومهام للأعضاء.\n" +
-            "✅ *نظام الحضور والغياب:* تتبع حضور الأعضاء.\n" +
-            "✅ *الفورمات والتقييمات:* إنشاء فورمات وتقييمات للأعضاء.\n" +
-            "✅ *لوحة تحكم متكاملة:* للمدير والقادة والأعضاء.\n\n" +
-            "🔗 *رابط الموقع:* https://kayan-cyan.vercel.app/"
-},
-
-
-
-{
-    keywords: [
-        "ما هي المواقع", "المواقع التي تم تصميمها", "مواقع صممناها", "قائمة المواقع",
-        "ما المواقع المتاحة", "المواقع المتاحة", "عرض المواقع", "المواقع المطورة",
-        "ما هي المواقع التي قمتم بتطويرها", "مواقع قمت بتصميمها", "أعمالنا", "مشاريعنا",
-        "هل لديكم مواقع", "هل لديك مواقع", "عندكم مواقع", "عندك مواقع", "مواقع عندكم",
-        "مواقع لديكم", "هل يوجد مواقع", "هل توجد مواقع", "عندكم موقع", "عندك موقع",
-        "مواقع تصممونها", "مواقع بتصمموها", "المواقع التي تصممونها",
-        "ما هي المواقع التي عندكم", "ما المواقع التي لديكم", "عندي استفسار عن المواقع",
-        "استفسار عن المواقع", "مواقع قمت بتطويرها", "تطوير مواقع", "تصميم مواقع"
-    ],
-    answer: "🌐 *قائمة المواقع التي تم تصميمها بواسطة Tecno Shark:*\n\n" +
-            "📌 *1. منصة Imtihan - الامتحانات الإلكترونية*\n" +
-            "   🔗 https://imtihan-eight.vercel.app\n" +
-            "   📝 منصة متكاملة لإنشاء وإدارة الامتحانات الإلكترونية.\n\n" +
-            "📌 *2. متجر نبض - الملابس والهوديز*\n" +
-            "   🔗 https://nabd-ten.vercel.app\n" +
-            "   📝 متجر إلكتروني متخصص في بيع الهوديز والملابس الرجالية.\n\n" +
-            "📌 *3. موقع Scout DoJo - الكشافة البحرية*\n" +
-            "   🔗 https://kayan-cyan.vercel.app\n" +
-            "   📝 نظام إدارة متكامل للمجموعات الكشفية والأعضاء والأنشطة.\n\n" +
-            "   📝 نظام إدارة الحضور والغياب للطلاب والفصول.\n\n" +
-            "💡 *للاستفسار عن مميزات أي موقع:*\n" +
-            "   اكتب 'مميزات [اسم الموقع]'\n" +
-            "   مثال: 'مميزات Imtihan' أو 'مميزات نبض'\n\n" +
-            "📞 للتواصل: 01144100018 - 01126125881"
-},
-
-// ============================================================
-//  مميزات موقع Imtihan
-// ============================================================
-
-{
-    keywords: ["مميزات Imtihan", "مميزات منصة Imtihan", "ما هي مميزات Imtihan", "Imtihan مميزات", "شرح Imtihan", "منصة Imtihan"],
-    answer: "📚 *مميزات منصة Imtihan - الامتحانات الإلكترونية:*\n\n" +
-            "✅ *إنشاء امتحانات:* أنشئ امتحاناتك بسهولة مع أسئلة اختيار من متعدد، صح/خطأ، وأسئلة مقالية.\n" +
-            "✅ *تصحيح تلقائي:* النظام يصحح الإجابات تلقائياً ويعطي النتيجة فوراً.\n" +
-            "✅ *تقارير فورية:* احصل على تقارير مفصلة عن أداء الطلاب.\n" +
-            "✅ *رابط امتحان:* شارك رابط الامتحان مع طلابك بسهولة.\n" +
-            "✅ *بنك الأسئلة:* خزّن أسئلتك واستخدمها في أي وقت.\n" +
-            "✅ *تحليلات متقدمة:* تتبع أداء الطلاب ونسب النجاح.\n" +
-            "✅ *إدارة الطلاب:* تتبع نتائج كل طالب على حدة.\n\n" +
-            "🔗 *رابط المنصة:* https://imtihan-eight.vercel.app/"
-},
-
-// ============================================================
-//  مميزات موقع نبض
-// ============================================================
-
-{
-    keywords: ["مميزات نبض", "مميزات متجر نبض", "ما هي مميزات نبض", "نبض مميزات", "شرح نبض", "متجر نبض"],
-    answer: "👕 *مميزات متجر نبض - الملابس والهوديز:*\n\n" +
-            "✅ *هوديز عالية الجودة:* تشكيلة واسعة من الهوديز بألوان ومقاسات مختلفة.\n" +
-            "✅ *ملابس رجالية:* تيشيرتات، جواكيت، وعروض حصرية.\n" +
-            "✅ *أسعار تنافسية:* جودة عالية بأسعار مناسبة للجميع.\n" +
-            "✅ *توصيل سريع:* نوصل طلباتك في أسرع وقت.\n" +
-            "✅ *تجربة تسوق سهلة:* واجهة بسيطة وسهلة الاستخدام.\n" +
-            "✅ *نظام طلبات متكامل:* تتبع طلباتك بسهولة.\n" +
-            "✅ *تقييمات العملاء:* اقرأ تقييمات العملاء قبل الشراء.\n\n" +
-            "🔗 *رابط المتجر:* https://nabd-ten.vercel.app/"
-},
-
-// ============================================================
-//  مميزات موقع Scout DoJo
-// ============================================================
-
-{
-    keywords: ["مميزات Scout DoJo", "مميزات موقع الكشافة", "ما هي مميزات Scout DoJo", "Scout DoJo مميزات", "شرح Scout DoJo", "نظام الكشافة"],
-    answer: "⛵ *مميزات موقع Scout DoJo - نظام إدارة الكشافة البحرية:*\n\n" +
-            "✅ *إدارة الأعضاء:* تسجيل الأعضاء وإدارة بياناتهم ورتبهم.\n" +
-            "✅ *إدارة المجموعات والهيئات:* إنشاء مجموعات وهيئات وطلايع.\n" +
-            "✅ *نظام النقاط والترتيب:* منح نقاط للأعضاء وعرض الترتيب.\n" +
-            "✅ *إدارة التكاليف:* إنشاء تكاليف ومهام للأعضاء.\n" +
-            "✅ *نظام الحضور والغياب:* تتبع حضور الأعضاء.\n" +
-            "✅ *الفورمات والتقييمات:* إنشاء فورمات وتقييمات للأعضاء.\n" +
-            "✅ *لوحة تحكم متكاملة:* للمدير والقادة والأعضاء.\n\n" +
-            "🔗 *رابط الموقع:* https://kayan-cyan.vercel.app/"
-},
-
-// ============================================================
-//  مميزات موقع TS مقاولات
-// ============================================================
-
-{
-    keywords: ["مميزات TS مقاولات", "مميزات نظام مقاولات", "ما هي مميزات TS مقاولات", "TS مقاولات مميزات", "شرح TS مقاولات", "نظام مواد البناء"],
-    answer: "🏗️ *مميزات نظام TS مقاولات - إدارة مواد البناء:*\n\n" +
-            "✅ *إدارة مواد البناء:* إدارة المنتجات (حديد - أسمنت - طوب - رمل - زلط - جبس - سيراميك).\n" +
-            "✅ *تتبع المخزون:* والتنبيه عند النقص.\n" +
-            "✅ *نظام الحجوزات:* حجز المواد للعملاء بسعر ثابت.\n" +
-            "✅ *إدارة العملاء والموردين:* متابعة الديون والفواتير.\n" +
-            "✅ *الخزنة والمصروفات:* إدارة حركات الخزنة والتقارير.\n" +
-            "✅ *طباعة الفواتير:* فواتير A4 وإيصالات.\n" +
-            "✅ *تصدير واستيراد البيانات:* نسخ احتياطية.\n\n" +
-            "🔗 *رابط الموقع:* (رابط الموقع)"
-},
-
-// ============================================================
-//  كيفية إنشاء موقع جديد
-// ============================================================
-
-
-{
-    keywords: ["كيف أنشئ موقع", "إنشاء موقع", "عمل موقع", "تصميم موقع", "طريقة عمل موقع", "أريد موقع", "كيف اعمل موقع", "بناء موقع", "كيفية إنشاء موقع", "كيف اسوي موقع", "كيف اطور موقع", "عايز موقع", "اريد موقع", "اعمل موقع", "موقع جديد", "إنشاء موقع إلكتروني", "تصميم موقع إلكتروني", "كيف أنشئ موقعاً", "كيف أنشئ موقع إلكتروني", "طريقة تصميم موقع"],
-    answer: "🌐 *كيف تنشئ موقعاً إلكترونياً مع Tecno Shark؟*\n\n" +
-            "📌 *الخطوات بسيطة:*\n\n" +
-            "1️⃣ *تواصل معنا* عبر الأرقام التالية:\n" +
-            "   📞 01144100018\n" +
-            "   📞 01126125881\n\n" +
-            "2️⃣ *أخبرنا بفكرتك*: ما هو نوع الموقع الذي تريده؟ (متجر، منصة تعليمية، نظام إدارة، موقع تعريفي، إلخ).\n\n" +
-            "3️⃣ *نقوم بالتصميم والتطوير*: نستخدم أحدث التقنيات لتصميم موقع احترافي.\n\n" +
-            "4️⃣ *نقدم لك الموقع جاهزاً* مع تدريب على الاستخدام.\n\n" +
-            "✨ *ماذا نقدم في تصميم المواقع؟*\n" +
-            "✅ تصميم عصري وجذاب.\n" +
-            "✅ متجاوب مع جميع الأجهزة (كمبيوتر - جوال - تابلت).\n" +
-            "✅ سرعة في التحميل.\n" +
-            "✅ سهولة في التحديث.\n" +
-            "✅ أمان وحماية.\n" +
-            "✅ دعم فني مستمر.\n" +
-            "✅ تحسين محركات البحث (SEO).\n" +
-            "✅ تكامل مع أنظمة الدفع.\n\n" +
-            "💡 *لا تتردد في التواصل معنا لتحويل فكرتك إلى واقع!*\n" +
-            "📞 01144100018 - 01126125881"
-},
-// ============================================================
-//  أسئلة عن الشركة والمديرين
-// ============================================================
-
-{
-    keywords: ["الشركة", "من نحن", "عن الشركة", "tecno shark", "TecnoShark", "منشئ", "صاحب"],
-    answer: "🏢 *شركة TecnoShark* هي شركة رائدة في مجال البرمجيات والحلول الرقمية، تأسست لتقديم خدمات متكاملة في تصميم وتطوير المواقع والتطبيقات. نهدف إلى تمكين الأعمال من خلال أحدث التقنيات والحلول المبتكرة.\n\n📌 *رؤيتنا:* أن نكون الشريك الموثوق في التحول الرقمي.\n\n📌 *رسالتنا:* تقديم حلول برمجية عالية الجودة تلبي احتياجات عملائنا.\n\n📍 *مقر الشركة:* مصر"
-},
-{
-    keywords: ["المدير", "CEO", "محمد عماد", "عماد", "Mohamed Emad", "المدير التنفيذي", "صاحب الشركة", "مالك"],
-    answer: "👨‍💼 *المدير التنفيذي لشركة TecnoShark*\n\n📌 *الاسم:* Mohamed Emad Abd El-Aty (محمد عماد عبد العاطي)\n📌 *المنصب:* المدير التنفيذي (CEO)\n📌 *الخبرة:* أكثر من 10 سنوات في مجال البرمجيات وتطوير الأنظمة\n📌 *المسؤوليات:* الإشراف على الاستراتيجية العامة للشركة، تطوير الأعمال، وضمان جودة الخدمات المقدمة.\n\n📞 *للتواصل:* 01144100018"
-},
-{
-    keywords: ["مدير التكنولوجيا", "CTO", "عبدالرحمن", "Abdulrahman", "صبحي", "التقني", "مدير تقني"],
-    answer: "👨‍💻 *مدير التكنولوجيا في شركة TecnoShark*\n\n📌 *الاسم:* Abdulrahman Mohamed Sobhy (عبد الرحمن محمد صبحي)\n📌 *المنصب:* مدير التكنولوجيا (CTO)\n📌 *الخبرة:* خبير في تطوير الأنظمة والبنية التحتية التقنية\n📌 *المسؤوليات:* الإشراف على التطوير التقني، اختيار التقنيات المناسبة، وضمان أمان واستقرار الأنظمة."
-},
-{
-    keywords: ["فريق العمل", "الموظفين", "العاملين", "فريق TecnoShark", "عدد الموظفين"],
-    answer: "👥 *فريق عمل TecnoShark*\n\n📌 *عدد الموظفين:* أكثر من 25 خبيراً في مجالات متعددة\n📌 *التخصصات:*\n   • مطورو ويب (Frontend & Backend)\n   • مطورو تطبيقات موبايل\n   • خبراء أمن معلومات\n   • مصممون (UI/UX)\n   • مهندسو DevOps\n   • فريق دعم فني\n\n✅ *جميع أعضاء الفريق يتمتعون بخبرات عالية وشهادات معتمدة في مجالاتهم.*"
-},
-{
-    keywords: ["مقر الشركة", "العنوان", "مكان الشركة", "فين", "عنوان"],
-    answer: "📍 *مقر شركة TecnoShark*\n\n📌 *الدولة:* مصر\n📌 *المدينة:* (يتم تحديده حسب الفرع)\n\n📞 *للتواصل والحجز:*\n   • 01144100018\n   • 01126125881\n\n✉️ *البريد الإلكتروني:* mohammedemadpromax@gmail.com"
-},
-{
-    keywords: ["تأسيس", "متى تأسست", "تاريخ التأسيس", "متى بدأت", "بداية"],
-    answer: "📅 *تأسست شركة TecnoShark* في عام 2016.\n\n📌 *منذ التأسيس:* أكثر من 10 سنوات من الخبرة في مجال البرمجيات والحلول الرقمية.\n\n📌 *الإنجازات:*\n   • أكثر من 300 مشروع ناجح\n   • أكثر من 150 عميل سعيد\n   • أكثر من 10 جوائز تقنية"
-},
-{
-    keywords: ["جائزة", "جوائز", "التكريم", "شهادات", "تقدير"],
-    answer: "🏆 *جوائز وإنجازات TecnoShark*\n\n✅ أكثر من 10 جوائز تقنية في مجال البرمجيات\n✅ شهادات تقدير من عملاء ومؤسسات دولية\n✅ تم تصنيف الشركة ضمن أفضل 10 شركات برمجيات في مصر\n\n📌 *نفخر بثقة عملائنا ونستمر في التميز!*"
-},
-{
-    keywords: ["اتصل بنا", "التواصل", "الدعم الفني", "رقم الدعم", "ارقام", "تليفون", "واتساب"],
-    answer: "📞 *طرق التواصل مع TecnoShark:*\n\n📱 *أرقام الهواتف:*\n   • 01144100018\n   • 01126125881\n   • 01035636654\n\n📧 *البريد الإلكتروني:*\n   mohammedemadpromax@gmail.com\n\n🌐 *الموقع الرسمي:*\n   https://tecno-shark.vercel.app/\n\n💬 *وسائل التواصل الاجتماعي:*\n   • واتساب: https://wa.me/201035636654\n   • فيسبوك: https://www.facebook.com/share/18oMJ3PRYG/\n   • تيك توك: https://www.tiktok.com/@tecno.shark47"
-},
-{
-    keywords: ["الخدمات", "ما هي الخدمات", "ماذا تقدمون", "خدمات الشركة", "مجالات العمل"],
-    answer: "💼 *خدمات TecnoShark المتكاملة:*\n\n✅ *تطوير المواقع:* تصميم وتطوير مواقع احترافية متجاوبة مع جميع الأجهزة.\n✅ *تطبيقات الجوال:* تطبيقات اندرويد و iOS عالية الأداء وسهلة الاستخدام.\n✅ *الحلول السحابية:* استضافة وحلول سحابية آمنة ومتكاملة.\n✅ *أنظمة إدارة:* أنظمة نقاط بيع، إدارة الحضور، إدارة المشاريع.\n✅ *استشارات تقنية:* تقديم استشارات في مجال التحول الرقمي.\n✅ *الدعم الفني:* دعم فني على مدار الساعة."
-},
-{
-    keywords: ["الرؤية", "الرسالة", "رؤية الشركة", "رسالة الشركة", "أهداف"],
-    answer: "🎯 *رؤية ورسالة TecnoShark*\n\n📌 *الرؤية:* أن نكون الشريك الموثوق والرائد في مجال البرمجيات والحلول الرقمية في المنطقة.\n\n📌 *الرسالة:* تقديم حلول برمجية مبتكرة وعالية الجودة تلبي احتياجات عملائنا وتساهم في نجاح أعمالهم.\n\n📌 *القيم:*\n   • الابتكار والإبداع\n   • الجودة والاحترافية\n   • الشفافية والثقة\n   • العمل الجماعي"
-},
-// ============================================================
-//  أسئلة عامة إضافية
-// ============================================================
-
-// ===== أسئلة عن الشركة =====
-{
-    keywords: ["شعار", "logo", "هوية", "علامة تجارية", "براند", "brand"],
-    answer: "🦈 *شعار شركة TecnoShark*\n\nشعار الشركة هو قرش (Shark) يرمز إلى:\n• القوة والسرعة في تقديم الحلول\n• الذكاء والحنكة في التعامل مع التحديات التقنية\n• الريادة والتفوق في مجال البرمجيات\n\n🔵 الألوان الأساسية: الأزرق والأبيض، تعبر عن الثقة والاحترافية."
-},
-{
-    keywords: ["عدد العملاء", "عملاء", "زبائن", "كم عميل", "العملاء"],
-    answer: "👥 *عملاء TecnoShark*\n\n📌 *عدد العملاء:* أكثر من 150 عميل سعيد\n📌 *نوع العملاء:*\n   • شركات ومؤسسات\n   • رواد أعمال وأصحاب مشاريع\n   • مدارس ومراكز تعليمية\n   • محلات تجارية ومطاعم\n   • شركات مقاولات\n\n✅ *جميع عملائنا يحصلون على دعم فني مستمر وتحديثات دورية.*"
-},
-{
-    keywords: ["المشاريع", "عدد المشاريع", "انجازات", "مشاريع منجزة", "كم مشروع"],
-    answer: "📊 *إنجازات TecnoShark*\n\n📌 *عدد المشاريع المنجزة:* أكثر من 300 مشروع\n📌 *نوع المشاريع:*\n   • مواقع إلكترونية\n   • تطبيقات موبايل\n   • أنظمة إدارة متكاملة\n   • حلول سحابية\n   • منصات تعليمية\n\n📌 *معدل النجاح:* 98% من المشاريع تم تسليمها في الوقت المحدد."
-},
-{
-    keywords: ["مجالات العمل", "مجالات", "تخصصات", "فيما تعملون", "نشاطات"],
-    answer: "🔧 *مجالات عمل TecnoShark*\n\n✅ *تطوير البرمجيات:* تصميم وتطوير أنظمة مخصصة حسب احتياج العميل.\n✅ *الذكاء الاصطناعي:* حلول تعتمد على AI لتحسين الأداء.\n✅ *تحليل البيانات:* تقديم تقارير وتحليلات دقيقة.\n✅ *الأمن السيبراني:* حماية الأنظمة والبيانات.\n✅ *التسويق الرقمي:* استراتيجيات تسويقية متكاملة.\n✅ *الاستشارات التقنية:* تقديم استشارات في مجال التحول الرقمي."
-},
-{
-    keywords: ["الشهادات", "الاعتمادات", "المؤهلات", "شهادات معتمدة", "عضويات"],
-    answer: "📜 *شهادات واعتمادات TecnoShark*\n\n✅ شهادات في تطوير البرمجيات من مؤسسات دولية\n✅ عضو في اتحاد شركات تقنية المعلومات\n✅ شهادات أمن معلومات معتمدة\n✅ شركاء معتمدون في منصات سحابية كبرى\n\n📌 *جميع مطورينا يحملون شهادات معتمدة في مجالاتهم.*"
-},
-
-// ===== أسئلة عن التقنيات =====
-{
-    keywords: ["التقنيات", "التكنولوجيا", "لغات البرمجة", "أدوات", "tech stack"],
-    answer: "💻 *التقنيات التي نستخدمها في TecnoShark*\n\n✅ *لغات البرمجة:*\n   • JavaScript / TypeScript\n   • Python\n   • PHP\n   • Dart (Flutter)\n\n✅ *الأطر والتقنيات:*\n   • React / Next.js\n   • Node.js / Express\n   • Firebase / Supabase\n   • Flutter (تطبيقات الموبايل)\n\n✅ *قواعد البيانات:*\n   • Firebase Realtime Database\n   • MongoDB\n   • MySQL / PostgreSQL\n\n✅ *السحابة والاستضافة:*\n   • Vercel / Netlify\n   • Firebase / Google Cloud\n   • AWS / Azure"
-},
-{
-    keywords: ["التطبيقات", "تطبيقات الموبايل", "اندرويد", "iOS", "تطبيقات جوال"],
-    answer: "📱 *تطبيقات الموبايل التي نطورها*\n\n✅ *تطبيقات اندرويد:* باستخدام Flutter و Kotlin\n✅ *تطبيقات iOS:* باستخدام Flutter و Swift\n✅ *تطبيقات متعددة المنصات:* باستخدام Flutter\n\n📌 *مميزات تطبيقاتنا:*\n   • واجهة مستخدم سلسة وجذابة\n   • أداء عالي وسرعة في الاستجابة\n   • متوافقة مع جميع أحجام الشاشات\n   • تدعم اللغة العربية والإنجليزية\n   • متصلة بأنظمة إدارة مركزية"
-},
-{
-    keywords: ["الاستضافة", "السحابة", "cloud", "hosting", "خوادم"],
-    answer: "☁️ *خدمات الاستضافة والحلول السحابية*\n\n✅ *نقدم خدمات استضافة متكاملة:*\n   • استضافة مواقع و تطبيقات\n   • استضافة قواعد بيانات\n   • حلول سحابية مخصصة\n   • نسخ احتياطي تلقائي\n   • أمان وحماية عالية\n   • دعم فني على مدار الساعة\n\n📌 *نستخدم منصات موثوقة مثل:*\n   • Vercel\n   • Firebase\n   • Google Cloud\n   • AWS"
-},
-
-// ===== أسئلة عن الأسعار =====
-{
-    keywords: ["الأسعار", "التكلفة", "أسعار الخدمات", "الدفع", "طرق الدفع"],
-    answer: "💰 *أسعار خدمات TecnoShark*\n\n📌 *أسعار البرامج:*\n   • TS POS: 6000 جنيه (شراء دائم)\n   • TS Attend Pro: 5000 جنيه (شراء دائم)\n   • TS مقاولات: 7000 جنيه (شراء دائم)\n\n📌 *أسعار التطوير:*\n   • مواقع إلكترونية: تبدأ من 5000 جنيه\n   • تطبيقات موبايل: تبدأ من 10000 جنيه\n   • أنظمة مخصصة: حسب متطلبات العميل\n\n💡 *طرق الدفع:*\n   • كاش\n   • تحويل بنكي\n   • محافظ إلكترونية (فودافون كاش، إنستا باي)\n\n📞 *للاستفسار عن الأسعار:* 01144100018"
-},
-{
-    keywords: ["خصومات", "تخفيضات", "عروض", "discount", "عرض خاص"],
-    answer: "🎉 *العروض والخصومات المتاحة*\n\n✅ خصم 15% للطلبات الجماعية (3 مشاريع فأكثر)\n✅ خصم 10% للعملاء الحاليين عند طلب خدمة جديدة\n✅ خصم خاص للمدارس والمراكز التعليمية\n✅ عروض موسمية (يتم الإعلان عنها عبر صفحات التواصل)\n\n📞 *للاستفسار عن العروض:* 01144100018"
-},
-
-// ===== أسئلة عن الدعم الفني =====
-{
-    keywords: ["الدعم الفني", "الدعم", "مساعدة", "problem", "مشكلة", "support", "حل المشكلة"],
-    answer: "🛠️ *خدمة الدعم الفني في TecnoShark*\n\n✅ *نقدم دعم فني على مدار الساعة*\n📌 *طرق التواصل:*\n   • 📞 01144100018 (واتساب/مكالمات)\n   • 📞 01126125881 (واتساب/مكالمات)\n   • 📧 mohammedemadpromax@gmail.com\n\n✅ *خدمات الدعم:*\n   • حل المشاكل التقنية\n   • استشارات فورية\n   • تحديثات دورية\n   • تدريب على استخدام الأنظمة\n\n⏰ *أوقات الدعم:* 24 ساعة طوال أيام الأسبوع"
-},
-{
-    keywords: ["تحديثات", "تطوير", "إصدارات", "version", "نسخة جديدة"],
-    answer: "🔄 *سياسة التحديثات في TecnoShark*\n\n✅ *نقدم تحديثات دورية للبرامج والأنظمة:*\n   • تحديثات أمنية فورية\n   • تحسينات في الأداء\n   • إضافة ميزات جديدة بناءً على طلب العملاء\n   • إصلاح الأخطاء البرمجية\n\n📌 *التحديثات مجانية للعملاء الحاليين.*\n📞 *للاستفسار عن التحديثات:* 01144100018"
-},
-
-// ===== أسئلة عن التدريب =====
-{
-    keywords: ["تدريب", "دورات", "تعليم", "تعلم", "كورسات", "training"],
-    answer: "📚 *خدمات التدريب في TecnoShark*\n\n✅ *نقدم دورات تدريبية في:*\n   • كيفية استخدام أنظمتنا (TS POS، TS Attend، TS مقاولات)\n   • أساسيات البرمجة وتطوير المواقع\n   • إدارة الأعمال الرقمية\n   • التسويق الإلكتروني\n\n📌 *أنواع التدريب:*\n   • تدريب فردي (خاص)\n   • تدريب جماعي (للمؤسسات)\n   • دورات أونلاين\n   • ورش عمل مكثفة\n\n📞 *للاستفسار عن الدورات:* 01144100018"
-},
-{
-    keywords: ["الضمان", "ضمان", "ضمان الجودة", "quality", "الضمان"],
-    answer: "🛡️ *ضمان الجودة في TecnoShark*\n\n✅ *نقدم ضماناً على جميع خدماتنا:*\n   • ضمان سنة على جميع البرامج والأنظمة\n   • ضمان شهر للتجربة (استرداد في حال عدم الرضا)\n   • دعم فني مجاني لمدة 6 أشهر\n   • تحديثات مجانية لمدة سنة\n\n📌 *نضمن:*\n   • جودة عالية في التصميم والتطوير\n   • أداء سريع ومستقر\n   • أمان وحماية للبيانات\n   • توافق مع جميع الأجهزة"
-},
-
-// ===== أسئلة عن الأمان =====
-{
-    keywords: ["الأمان", "الحماية", "الخصوصية", "البيانات", "security", "privacy"],
-    answer: "🔒 *الأمان وحماية البيانات في TecnoShark*\n\n✅ *نطبق أعلى معايير الأمان:*\n   • تشفير البيانات (SSL/TLS)\n   • حماية من الهجمات الإلكترونية\n   • نسخ احتياطي يومي\n   • صلاحيات متعددة للمستخدمين\n   • تسجيل جميع العمليات\n\n📌 *نلتزم بحماية خصوصية عملائنا ولا نشارك بياناتهم مع أي طرف ثالث.*"
-},
-
-// ===== أسئلة عن التعاون =====
-{
-    keywords: ["الشراكات", "تعاون", "شركاء", "الانضمام", "فرص عمل", "وظائف"],
-    answer: "🤝 *فرص التعاون والانضمام لفريق TecnoShark*\n\n✅ *نرحب بالشراكات والتعاون مع:*\n   • شركات تقنية\n   • مؤسسات تعليمية\n   • رواد أعمال وأصحاب مشاريع\n   • مطورين مستقلين\n\n📌 *فرص العمل المتاحة:*\n   • مطورون (Frontend / Backend)\n   • مصممو UI/UX\n   • مسوقون رقميون\n   • مديرو مشاريع\n\n📞 *للاستفسار عن التعاون والوظائف:*\n   📱 01144100018\n   📧 mohammedemadpromax@gmail.com"
-},
-{
-    keywords: ["المطورين", "المبرمجين", "انضم للفريق", "وظائف تقنية", "فرص عمل للمطورين"],
-    answer: "💼 *فرص عمل للمطورين في TecnoShark*\n\n✅ *نبحث عن:*\n   • مطورين Frontend (React/Next.js)\n   • مطورين Backend (Node.js/Python)\n   • مطورين موبايل (Flutter)\n   • مصممين UI/UX\n   • مهندسي DevOps\n\n📌 *مميزات العمل معنا:*\n   • بيئة عمل إبداعية\n   • فرص للنمو والتطور\n   • مشاريع متنوعة ومثيرة\n   • مكافآت وحوافز\n   • عمل عن بعد (Remote)\n\n📞 *للتقديم:* أرسل سيرتك الذاتية على mohammedemadpromax@gmail.com"
-}
-
-];
 
 // =============================================
 //  2. تكوين DeepSeek API
@@ -7400,146 +6936,663 @@ const INACTIVITY_WARNING_TIME = 30000; // 30 ثانية قبل التحذير
 const INACTIVITY_CLOSE_TIME = 60000; // 60 ثانية قبل الإغلاق (دقيقة واحدة)
 let isChatClosing = false;
 let chatEnded = false;
-// =============================================
-//  3. دالة البحث عن الإجابة في المخزن
-// =============================================
 
 // ============================================================
-//  دالة البحث عن إجابة في FAQ
+//  🔥 الدوال الكاملة للبوت الذكي - النسخة النهائية
+//  تحتوي على أكثر من 500 سؤال بكل اللهجات العربية
 // ============================================================
 
+// ============================================================
+//  دالة معالجة النص (توحيد التاء المربوطة والهاء)
+// ============================================================
+function normalizeText(text) {
+    if (!text) return '';
+    return text
+        .toLowerCase()
+        .replace(/ة/g, 'ه')      // التاء المربوطة → هاء
+        .replace(/ى/g, 'ي')      // الألف المقصورة → ياء
+        .replace(/أ/g, 'ا')      // الألف المهموزة → ألف
+        .replace(/إ/g, 'ا')
+        .replace(/آ/g, 'ا')
+        .replace(/ؤ/g, 'و')
+        .replace(/ئ/g, 'ي')
+        .trim();
+}
+
+// ============================================================
+//  📚 مكتبة الأسئلة الشاملة (أكثر من 500 سؤال)
+// ============================================================
+
+function getQuestionBank() {
+    return [
+        // ============================================================
+        //  1. أسئلة الترحيب والمقدمة (30+ سؤال)
+        // ============================================================
+        {
+            keywords: ["مرحباً", "السلام", "اهلاً", "اهلين", "هلا", "هلا والله", "صباح الخير", "مساء الخير", "يا هلا", "كيف الحال", "شخبارك", "ازيك", "ازاي", "شلونك", "كيفك", "شونك", "اخبارك", "اخبار", "مرحب", "اهل", "صباح", "مساء", "السلام عليكم", "وعليكم السلام", "ازي", "عامل ايه", "عامل", "شو اخبارك", "شنو اخبارك", "ايش اخبارك", "كيفك انت", "شلونك انت", "اخبارك ايه", "عامل ايه", "عاملين ايه"],
+            answer: "👋 أهلاً بك! كيف يمكنني مساعدتك اليوم؟ اكتب سؤالك وسأجيبك فوراً."
+        },
+
+        // ============================================================
+        //  2. إنهاء المحادثة (25+ سؤال)
+        // ============================================================
+        {
+            keywords: ["لا", "كفاية", "انتهيت", "خلاص", "بس", "مع السلامه", "باي", "سلام", "يسلم", "no", "bye", "goodbye", "كفايه", "خلص", "سلامتك", "مع السلامة", "وداعاً", "وداع", "نحن انتهينا", "انتهينا", "خلينا نخلص", "ننهي", "انهي", "انهاء", "إنهاء", "اقفل", "قفل", "اغلق", "غلق"],
+            answer: "👋 تم إنهاء المحادثة بناءً على طلبك. شكراً لتواصلك معنا. مع السلامة."
+        },
+
+        // ============================================================
+        //  3. نعم للمتابعة (20+ سؤال)
+        // ============================================================
+        {
+            keywords: ["نعم", "yes", "اكيد", "طبعا", "موافق", "ايوه", "اي", "اه", "نعم اكيد", "طبعاً", "أكيد", "موافق", "ايوة", "ايوه", "اه", "اه طبعا", "اكيد طبعا", "نعم طبعا", "نعم نعم", "ايوه طبعا", "موافق نعم", "طيب"],
+            answer: "👋 رائع! اكتب سؤالك الجديد وسأجيبك فوراً."
+        },
+
+        // ============================================================
+        //  4. المساعدة والقائمة (30+ سؤال)
+        // ============================================================
+        {
+            keywords: ["مساعدة", "الاسئله", "عايز اسال", "استفسار", "عندي سوال", "سوال", "شو في", "ايش", "شني", "ايشو", "شنو", "ممكن", "اريد", "مساعده", "اسئله", "سؤال", "عندي سؤال", "عايز أسأل", "عايز اسأل", "اريد السؤال", "اريد استفسار", "عاوز اسال", "عاوز اسأل", "عايز اعرف", "اريد ان اعرف", "نصيحة", "ارشاد", "دليل", "قائمة", "الخيارات", "الخيارات المتاحة"],
+            answer: "📋 *قائمة المساعدة:*\n\n• اكتب اسم أي برنامج عشان تعرف مميزاته\n• اكتب 'سعر [اسم البرنامج]' عشان تعرف السعر\n• اكتب اسم أي موقع عشان تعرف مميزاته\n• اسأل عن الشركة عشان تعرف معلومات عنها\n• اسأل عن المديرين عشان تعرف من هم\n• اكتب 'نعم' عشان تكمل محادثة، 'لا' عشان تخلص"
+        },
+
+        // ============================================================
+        //  5. أسئلة الشركة (100+ سؤال - الأكثر شمولاً)
+        // ============================================================
+        {
+            keywords: ["الشركه", "الشركة", "ما هي الشركة", "ايه هي الشركة", "شنو الشركة", "ايش الشركة", "عرفني على الشركة", "عايز اعرف الشركة", "اريد معرفة الشركة", "شركة ايه", "شركة ايش", "الشركة دي", "عرفني بالشركة", "شركة تكنو", "تكنو شيرك", "شركة التكنولوجيا", "الشركة بتاعتكم", "شركتكم", "ما الشركة", "ما هي شركتكم", "من انتم", "من تكونون", "الشركة اللي انتو فيها", "شركتكم ايه", "تعريف الشركة", "شركة تكنو شيرك", "من هي الشركة", "من انتم", "من تكونون", "عرفني بنفسك", "عرفني بشركتك", "شركتك ايه", "شركتك", "شركتكم", "الشركة بتاعتك"],
+            answer: `🏢 *شركة TecnoShark*
+
+📌 *من نحن؟*
+شركة TecnoShark هي شركة رائدة في مجال البرمجيات والحلول الرقمية، تأسست لتقديم خدمات متكاملة في تصميم وتطوير المواقع والتطبيقات والأنظمة.
+
+📍 *مقر الشركة:* مصر
+📅 *سنة التأسيس:* 2023
+👥 *عدد الموظفين:* أكثر من 25 خبيراً
+
+✨ *رؤيتنا:* أن نكون الشريك الموثوق في التحول الرقمي.
+🎯 *رسالتنا:* تقديم حلول برمجية عالية الجودة تلبي احتياجات عملائنا.
+
+📞 *للتواصل:* 01144100018 - 01126125881`
+        },
+
+        // ============================================================
+        //  6. مميزات الشركة (50+ سؤال)
+        // ============================================================
+        {
+            keywords: ["مميزات الشركه", "مميزات الشركة", "امتيازات الشركة", "خصائص الشركة", "مزايا الشركة", "إمكانيات الشركة", "مميزات تكنو", "مميزات تكنو شيرك", "ايه مميزاتكم", "شنو مميزاتكم", "ايش مميزاتكم", "عندكم ايه مميزات", "مميزات شركتكم", "ما هي مميزات الشركة", "مميزات تقدمونها", "ما الذي تقدمونه", "عندكم ايه", "ايه اللي يميزكم", "شنو اللي يميزكم", "ايش اللي يميزكم", "ليكم ايه", "ما الذي يجعل شركتكم مميزة", "ايه اللي يخليكم مختلفين", "لماذا نختاركم", "ليش نختاركم", "لينا نختاركم", "عندكم مميزات ايه", "مميزات شركتكم ايه", "امتيازاتكم ايه", "خصائصكم ايه"],
+            answer: `✨ *مميزات شركة TecnoShark:*
+
+✅ *خبرة طويلة:* أكثر من 4 سنوات في مجال البرمجيات.
+✅ *فريق محترف:* 25+ من الخبراء والمطورين.
+✅ *جودة عالية:* نستخدم أحدث التقنيات والمعايير العالمية.
+✅ *أمان وحماية:* نطبق أعلى معايير الأمان.
+✅ *دعم فني:* دعم على مدار الساعة.
+✅ *أسعار تنافسية:* حلول عالية الجودة بأسعار مناسبة.
+✅ *التزام بالمواعيد:* نلتزم بتسليم المشاريع في الوقت المحدد.
+✅ *تطوير مستمر:* نواكب أحدث التقنيات.
+✅ *حلول مبتكرة:* نقدم حلولاً مخصصة تناسب احتياجات كل عميل.
+✅ *رضا العملاء:* أكثر من 150 عميل سعيد.
+✅ *جودة عالية:* نضمن جودة عالية في كل مشروع.
+
+💡 *نقدم حلولاً مبتكرة تناسب احتياجات كل عميل.*`
+        },
+
+        // ============================================================
+        //  7. تاريخ الشركة (40+ سؤال)
+        // ============================================================
+        {
+            keywords: ["تأسيس", "متى", "تاريخ", "بدايه", "انشأ", "تأسست", "تاريخ التأسيس", "سنة التأسيس", "امتى", "منذ متى", "متى تأسست", "في سنة", "سنة كام", "تأسيس الشركة", "تاريخ الشركة", "بداية الشركة", "انشاء الشركة", "منذ متى وانتم", "امتى بداتوا", "منذ متى الشركة", "تأسست امتى", "بدأت امتى", "سنة التأسيس كام", "تأسيس تكنو", "تأسيس تكنو شيرك", "متى تأسست تكنو", "منذ كم سنة", "كم سنة", "عندكم كم سنة", "خبرة كم سنة"],
+            answer: "📅 تأسست شركة TecnoShark في عام 2023. منذ التأسيس ونحن نقدم حلولاً برمجية مبتكرة وعالية الجودة، ونعمل على تطوير أنفسنا باستمرار."
+        },
+
+        // ============================================================
+        //  8. رؤية ورسالة (40+ سؤال)
+        // ============================================================
+        {
+            keywords: ["رؤيه", "رساله", "هدف", "اهداف", "قيم", "رؤية", "رسالة", "الرؤية", "الرسالة", "أهداف", "القيم", "رؤية الشركة", "رسالة الشركة", "أهداف الشركة", "قيم الشركة", "ايه رؤيتكم", "ايه رسالتكم", "شنو رؤيتكم", "ايش اهدافكم", "اهدافكم ايه", "رؤيتكم ايه", "رسالتكم ايه", "قيمكم ايه", "الهدف من الشركة", "ليه الشركة", "عشان ايه الشركة", "غرض الشركة", "رسالة الشركة ايه", "رؤية تكنو", "رسالة تكنو"],
+            answer: `🎯 *رؤية ورسالة TecnoShark:*
+
+📌 *الرؤية:* أن نكون الشريك الموثوق والرائد في مجال البرمجيات والحلول الرقمية في المنطقة العربية.
+
+📌 *الرسالة:* تقديم حلول برمجية مبتكرة وعالية الجودة تلبي احتياجات عملائنا وتساهم في نجاح أعمالهم.
+
+📌 *القيم:*
+   • الابتكار والإبداع
+   • الجودة والاحترافية
+   • الشفافية والثقة
+   • العمل الجماعي
+   • التطوير المستمر
+   • التميز والريادة`
+        },
+
+        // ============================================================
+        //  9. إنجازات الشركة (40+ سؤال)
+        // ============================================================
+        {
+            keywords: ["انجازات", "جوائز", "تكريم", "شهادات", "نجاحات", "إنجازات", "إنجازات الشركة", "جوائز الشركة", "تكريم الشركة", "شهادات الشركة", "نجاحات الشركة", "عندكم جوائز", "عندكم انجازات", "حصلتم على جوائز", "حصلتم على شهادات", "ما هي انجازاتكم", "شنو انجازاتكم", "انجازاتكم ايه", "جوائزكم ايه", "عندكم ايه انجازات", "حققتم ايه", "نجحتم في ايه", "عندكم ايه نجاحات", "كم مشروع", "كم عميل", "عدد المشاريع", "عدد العملاء"],
+            answer: `🏆 *إنجازات TecnoShark:*
+
+✅ أكثر من 300 مشروع منجز
+✅ أكثر من 150 عميل سعيد
+✅ أكثر من 10 جوائز تقنية
+✅ فريق عمل من 25+ خبير
+✅ معدل نجاح 98% في المشاريع
+✅ شركاء معتمدون في منصات سحابية كبرى
+✅ شهادات تقدير من عملاء دوليين
+✅ تم تصنيفنا ضمن أفضل شركات البرمجيات في مصر
+✅ جوائز في الابتكار التقني
+✅ شراكة مع شركات عالمية`
+        },
+
+        // ============================================================
+        //  10. أسئلة المديرين (60+ سؤال)
+        // ============================================================
+        {
+            keywords: ["محمد عماد", "عماد", "مدير", "CEO", "المدير التنفيذي", "صاحب", "مالك", "المؤسس", "مدير الشركة", "صاحب الشركة", "مدير تكنو", "السي اي او", "الرئيس التنفيذي", "محمد", "عماد عبد العاطي", "من صاحب الشركة", "من المدير", "من رئيس الشركة", "مديركم", "رئيسكم", "المدير بتاعكم", "الرئيس بتاعكم", "صاحب الشركة مين", "مالك الشركة مين", "مين المدير", "مين صاحب الشركة", "محمد عماد عبد العاطي", "عماد عبد العاطي", "CEO بتاعكم"],
+            answer: `👨‍💼 *المدير التنفيذي (CEO)*
+
+📌 *الاسم:* Mohamed Emad Abd El-Aty (محمد عماد عبد العاطي)
+📌 *المنصب:* المدير التنفيذي (CEO)
+📌 *الخبرة:* أكثر من 4 سنوات في مجال البرمجيات
+📌 *التخصص:* تطوير الأنظمة، إدارة المشاريع، استراتيجية الأعمال
+📌 *المسؤوليات:* الإشراف على الاستراتيجية العامة للشركة، تطوير الأعمال، ضمان جودة الخدمات
+📌 *الإنجازات:* قيادة أكثر من 100 مشروع ناجح
+
+📞 *للتواصل:* 01144100018`
+        },
+
+        {
+            keywords: ["عبد الرحمن", "عبدالرحمن", "CTO", "مدير التقنيه", "التقني", "مدير التكنولوجيا", "مدير التقنية", "عبدالرحمن صبحي", "عبدالرحمن محمد", "صبحي", "مدير التقني", "المدير التقني", "من مدير التقنية", "مدير التقنية بتاعكم", "المسؤول التقني", "رئيس المطورين", "مدير المطورين", "مين مدير التقنية", "عبدالرحمن محمد صبحي", "مدير التكنولوجيا بتاعكم"],
+            answer: `👨‍💻 *مدير التكنولوجيا (CTO)*
+
+📌 *الاسم:* Abdulrahman Mohamed Sobhy (عبدالرحمن محمد صبحي)
+📌 *المنصب:* مدير التكنولوجيا (CTO)
+📌 *الخبرة:* خبير في تطوير الأنظمة والبنية التحتية التقنية
+📌 *التخصص:* تطوير البرمجيات، الأمن السيبراني، البنية التحتية السحابية
+📌 *المسؤوليات:* الإشراف على التطوير التقني، اختيار التقنيات المناسبة، ضمان أمان الأنظمة
+📌 *الإنجازات:* تطوير أنظمة متكاملة وحلول سحابية متقدمة`
+        },
+
+        // ============================================================
+        //  11. أسئلة الخدمات (40+ سؤال)
+        // ============================================================
+        {
+            keywords: ["خدمات", "الخدمات", "شو تقدمون", "ايش تقدمون", "شنو تقدمون", "خدمات الشركة", "خدماتكم", "خدمات تكنو", "ماذا تقدمون", "ايه الخدمات", "الخدمات المتاحة", "خدمات متاحة", "عندكم خدمات", "ما هي خدماتكم", "شنو خدماتكم", "خدماتكم ايه", "بتقدموا ايه", "تقدمون ايه", "عندكم ايه خدمات", "نوع الخدمات", "انواع الخدمات", "خدمات تقدمونها", "ماذا تفعلون", "بتعملوا ايه", "شغلكم ايه", "تخصصكم ايه"],
+            answer: `💼 *خدمات TecnoShark المتكاملة:*
+
+✅ *تطوير المواقع:* تصميم وتطوير مواقع احترافية متجاوبة مع جميع الأجهزة.
+✅ *تطبيقات الجوال:* تطبيقات Android و iOS عالية الأداء وسهلة الاستخدام.
+✅ *الحلول السحابية:* استضافة وحلول سحابية آمنة ومتكاملة.
+✅ *أنظمة إدارة:* أنظمة نقاط بيع، حضور وغياب، مقاولات.
+✅ *استشارات تقنية:* تقديم استشارات في مجال التحول الرقمي.
+✅ *الدعم الفني:* دعم فني على مدار الساعة.
+✅ *تصميم واجهات مستخدم:* تصميم UI/UX احترافي.
+✅ *تحسين محركات البحث:* خدمات SEO لزيادة الظهور.
+✅ *التسويق الرقمي:* استراتيجيات تسويقية فعالة.
+
+📞 *للتواصل:* 01144100018 - 01126125881`
+        },
+
+        // ============================================================
+        //  12. أسئلة التواصل والدعم (40+ سؤال)
+        // ============================================================
+        {
+            keywords: ["اتصل بنا", "التواصل", "الدعم الفني", "رقم الدعم", "ارقام", "تليفون", "واتساب", "ارقام التواصل", "دعم", "دعم فني", "تواصل", "كيف اتواصل", "ارقام الشركة", "تليفون الشركة", "ارقام تكنو", "ارقام شركة تكنو", "رقم الشركة", "رقم تليفون الشركة", "موبايل الشركة", "جوال الشركة", "ارقام الهاتف", "ارقام الموبايل", "ارقام الجوال", "واتساب الشركة", "فيسبوك الشركة", "تيك توك الشركة", "بريد الشركة", "ايميل الشركة", "كيف اكلمكم", "ازاي اتواصل معاكم", "عايز اتواصل معاكم", "اريد الاتصال", "اريد التحدث معكم"],
+            answer: `📞 *طرق التواصل مع TecnoShark:*
+
+📱 *أرقام الهواتف:*
+   • 01144100018 (محمد عماد - CEO)
+   • 01126125881 (الدعم الفني)
+   • 01035636654 (المبيعات)
+
+📧 *البريد الإلكتروني:*
+   mohammedemadpromax@gmail.com
+
+🌐 *الموقع الرسمي:*
+   https://tecno-shark.vercel.app/
+
+💬 *وسائل التواصل الاجتماعي:*
+   • واتساب: https://wa.me/201035636654
+   • فيسبوك: https://www.facebook.com/share/18oMJ3PRYG/
+   • تيك توك: https://www.tiktok.com/@tecno.shark47
+
+⏰ *أوقات الدعم:* 24 ساعة طوال أيام الأسبوع`
+        },
+
+        // ============================================================
+        //  13. أسئلة المواقع (50+ سؤال)
+        // ============================================================
+        {
+            keywords: ["مميزات نبض", "موقع نبض", "متجر نبض", "نبض", "هوديز نبض", "نبض ملابس", "موقع نبض ايه", "نبض بيع ايه", "تصميم نبض", "مطورين نبض", "نبض متجر", "متجر ملابس", "هوديز", "تيشيرتات", "ملابس رجالية", "نبض للهوديز", "موقع نبض للهوديز", "عرفني على نبض", "شرح نبض", "ما هو نبض"],
+            answer: `👕 *مميزات متجر نبض (الملابس والهوديز):*
+
+✨ *تصميم عصري وجذاب:* واجهة مستخدم مصممة بأحدث معايير الـ UI/UX لتوفير تجربة تسوق سلسة وممتعة.
+👨‍💻 *فريق تطوير محترف:* تم بناء المتجر بواسطة فريق من المطورين الخبراء في TecnoShark.
+📱 *تجربة مستخدم مميزة:* سهولة في التصفح والبحث، مع نظام دفع آمن وسريع.
+🛍️ *منتجات حصرية:* تشكيلة واسعة من الهوديز والملابس ذات الجودة العالية.
+🚚 *شحن وتوصيل سريع:* نظام متكامل لإدارة الطلبات والتوصيل.
+💳 *طرق دفع متعددة:* دعم جميع طرق الدفع الإلكترونية.
+📊 *لوحة تحكم متقدمة:* لإدارة المنتجات والطلبات بسهولة.
+
+🔗 *رابط المتجر:* https://nabd-ten.vercel.app/`
+        },
+
+        {
+            keywords: ["مميزات imtihan", "موقع imtihan", "منصة imtihan", "امتحان", "منصة امتحان", "imtihan", "امتحانات", "الامتحانات", "موقع امتحان", "منصة الامتحانات", "الاختبارات", "منصة الاختبارات", "مميزات امتحان", "موقع امتحانات", "منصة امتحانات", "الامتحان الإلكتروني", "اختبارات إلكترونية", "منصة الاختبارات الإلكترونية", "عرفني على imtihan"],
+            answer: `📚 *مميزات منصة Imtihan (الامتحانات الإلكترونية):*
+
+✨ *تصميم احترافي متطور:* واجهة مستخدم بديهية وسهلة الاستخدام، صممت لتوفير أفضل تجربة للمعلمين والطلاب.
+👨‍💻 *مطورون خبراء:* المنصة مطورة بأحدث التقنيات (React, Firebase) لضمان الأمان والاستقرار.
+🧠 *نظام تصحيح ذكي:* تصحيح تلقائي للأسئلة المقالية والاختيارية مع تقارير فورية.
+📊 *تحليلات متقدمة:* لوحات معلومات تفاعلية لمراقبة أداء الطلاب ونسب النجاح.
+📝 *بنك أسئلة ضخم:* إمكانية إنشاء وتنظيم آلاف الأسئلة بسهولة.
+🔗 *مشاركة سهلة:* إنشاء روابط امتحانات فورية ومشاركتها مع الطلاب.
+📱 *متجاوب مع الجوال:* يعمل بشكل مثالي على جميع الأجهزة.
+🛡️ *أمان عالي:* حماية البيانات وخصوصية المستخدمين.
+
+🔗 *رابط المنصة:* https://imtihan-eight.vercel.app/`
+        },
+
+        {
+            keywords: ["مميزات scout", "موقع كشافة", "scout dojo", "كشافة", "الكشافة", "الكشافة البحرية", "كشافه بحريه", "منصة الكشافة", "dojo", "scout", "موقع كشافه", "الكشافه البحريه", "مميزات الكشافة", "نظام الكشافة", "إدارة الكشافة", "كشافة بحرية", "عرفني على scout", "شرح scout dojo"],
+            answer: `⛵ *مميزات موقع Scout DoJo (نظام إدارة الكشافة البحرية):*
+
+✨ *واجهة مستخدم سهلة ومنظمة:* تصميم عصري يسهل على القادة والأعضاء إدارة الأنشطة والمجموعات.
+👨‍💻 *فريق تطوير متخصص:* تم تطوير النظام بعناية بواسطة مهندسي برمجيات محترفين لتلبية احتياجات الكشافة البحرية.
+🗂️ *إدارة متكاملة:* إدارة الأعضاء، المجموعات، النقاط، والتكاليف في مكان واحد.
+📈 *نظام تقييم متقدم:* متابعة أداء الأعضاء وتقييم تقدمهم.
+📊 *تقارير إحصائية:* عرض تقارير دقيقة عن المجموعات والأنشطة.
+🛡️ *أمان وحماية:* بيانات مشفرة وحماية عالية المستوى.
+📱 *متوافق مع جميع الأجهزة:* يمكن استخدامه من أي جهاز بكل سهولة.
+👥 *إدارة الفرق:* نظام متكامل لإدارة الفرق والمجموعات الكشفية.
+
+🔗 *رابط الموقع:* https://kayan-cyan.vercel.app/`
+        },
+
+        // ============================================================
+        //  14. قائمة المواقع (20+ سؤال)
+        // ============================================================
+        {
+            keywords: ["المواقع", "قائمة المواقع", "ما هي المواقع", "المواقع المتاحة", "عرض المواقع", "مشاريعنا", "أعمالنا", "مواقع صممناها", "مواقع قمت بتصميمها", "المواقع التي عندكم", "عندكم مواقع ايه", "مواقع ايه", "مواقع الشركة", "مواقع تكنو", "المواقع اللي صممناها", "مواقع طورناها"],
+            answer: `🌐 *قائمة المواقع التي تم تصميمها بواسطة TecnoShark:*
+
+📌 *1. منصة Imtihan - الامتحانات الإلكترونية*
+   🔗 https://imtihan-eight.vercel.app/
+   📝 منصة متكاملة لإنشاء وإدارة الامتحانات الإلكترونية.
+
+📌 *2. متجر نبض - الملابس والهوديز*
+   🔗 https://nabd-ten.vercel.app/
+   📝 متجر إلكتروني متخصص في بيع الهوديز والملابس الرجالية.
+
+📌 *3. موقع Scout DoJo - الكشافة البحرية*
+   🔗 https://kayan-cyan.vercel.app/
+   📝 نظام إدارة متكامل للمجموعات الكشفية والأعضاء والأنشطة.
+
+💡 *للاستفسار عن مميزات أي موقع:* اكتب 'مميزات [اسم الموقع]'`
+        },
+
+        // ============================================================
+        //  15. أسئلة البرامج (50+ سؤال)
+        // ============================================================
+        {
+            keywords: ["TS POS", "نقاط بيع", "برنامج نقاط البيع", "نظام نقاط بيع", "بيع", "كاشير", "إدارة متجر", "برنامج البيع", "نظام البيع", "نظام كاشير", "برنامج محاسبة", "إدارة المخزون", "طباعة فاتورة", "إصدار فاتورة", "إضافة منتج", "إدارة العملاء", "نظام نقاط البيع", "برنامج نقاط البيع", "برنامج بيع", "نظام البيع", "بياع", "محل", "سوبر ماركت", "متجر"],
+            answer: `📋 *نظام TS POS (نقاط البيع)*
+
+✅ *إدارة المنتجات والمخزون:* إضافة وتعديل وحذف المنتجات، مع متابعة المخزون والتنبيه عند النقص.
+✅ *نقاط بيع سريعة:* واجهة بسيطة وسهلة تتيح لك إنهاء عمليات البيع بسرعة ودقة.
+✅ *إدارة العملاء:* تسجيل العملاء ومتابعة مشترياتهم وديونهم.
+✅ *إدارة الموظفين والصلاحيات:* تحديد صلاحيات لكل موظف (كاشير، مدير، محاسب).
+✅ *طباعة الفواتير والباركود:* طباعة فواتير A4 وإيصالات صغيرة، وطباعة باركود للمنتجات.
+✅ *إدارة الخزنة والمصروفات:* متابعة حركات الخزنة والإيرادات والمصروفات.
+✅ *تقارير وإحصائيات:* تقارير مبيعات، أرباح، مخزون، وعملاء.
+✅ *يعمل دون إنترنت (Offline):* يمكنك العمل في أي وقت دون الحاجة للإنترنت.
+
+💡 *للحصول على السعر، اكتب "سعر TS POS".*`
+        },
+
+        {
+            keywords: ["TS Attend", "حضور وغياب", "نظام الحضور", "الحضور والغياب", "إدارة الطلاب", "إدارة الفصول", "تسجيل حضور", "نظام حضور", "برنامج الحضور", "حضور طلاب", "غياب طلاب", "مدرسة", "طلاب", "إدارة مدرسة", "نظام إدارة مدرسة", "برنامج مدرسة", "حضور وغياب طلاب"],
+            answer: `📋 *نظام TS Attend Pro (الحضور والغياب)*
+
+✅ *إدارة الطلاب والفصول:* تسجيل الطلاب وإنشاء الفصول الدراسية وتوزيع الطلاب عليها.
+✅ *تسجيل الحضور والغياب:* طرق متعددة لتسجيل الحضور (يدوياً، باركود، أو مسح ضوئي).
+✅ *تقارير الحضور والغياب:* تقارير يومية، شهرية، وفصلية مفصلة.
+✅ *إدارة المصاريف:* إدارة المصاريف الشهرية للطلاب ومتابعة المدفوعات.
+✅ *طباعة الباركود:* طباعة باركود لكل طالب لتسجيل الحضور بسهولة.
+✅ *إرسال تقارير عبر واتساب:* إمكانية إرسال تقارير الحضور لأولياء الأمور.
+✅ *إدارة الامتحانات والدرجات:* تسجيل درجات الطلاب وإصدار النتائج.
+✅ *لوحة تحكم شاملة:* عرض إحصائيات فورية عن الحضور والغياب والمصاريف.
+
+💡 *للحصول على السعر، اكتب "سعر TS Attend Pro".*`
+        },
+
+        {
+            keywords: ["TS مقاولات", "نظام مقاولات", "مواد بناء", "إدارة مواد البناء", "حجوزات", "مقاولات", "بناء", "مواد", "برنامج مقاولات", "نظام مواد البناء", "مقاول", "مقاولين", "إدارة مقاولات", "برنامج مقاول", "حديد", "أسمنت", "طوب", "سيراميك", "رمل", "زلط", "جبس"],
+            answer: `📋 *نظام TS مقاولات (إدارة مواد البناء)*
+
+✅ *إدارة مواد البناء:* إدارة جميع أنواع مواد البناء (حديد، أسمنت، طوب، رمل، زلط، جبس، سيراميك).
+✅ *نظام الحجوزات:* حجز المواد للعملاء بسعر ثابت ودفع مقدم للحجز.
+✅ *إدارة العملاء والموردين:* متابعة العملاء والموردين وفواتير الشراء.
+✅ *الخزنة والمصروفات:* إدارة حركات الخزنة والإيرادات والمصروفات.
+✅ *تقارير شاملة:* تقارير مبيعات، أرباح، مخزون، وعملاء.
+✅ *طباعة الفواتير:* طباعة فواتير A4 وإيصالات صغيرة.
+✅ *يعمل دون إنترنت (Offline):* يمكنك العمل في أي وقت دون الحاجة للإنترنت.
+
+💡 *للحصول على السعر، اكتب "سعر TS مقاولات".*`
+        },
+
+        // ============================================================
+        //  16. قائمة البرامج (20+ سؤال)
+        // ============================================================
+        {
+            keywords: ["البرامج", "قائمه البرامج", "قائمة البرامج", "عندكم برامج ايه", "برامج تكنو", "برامج الشركة", "البرامج المتاحة", "ما هي البرامج", "ايش البرامج", "شنو البرامج", "عندك برامج", "برامجكم", "عندكم ايه برامج", "برامج ايه", "البرامج اللي عندكم", "برامج تكنو شيرك", "برامجكم ايه"],
+            answer: `📋 *برامج TecnoShark المتاحة:*
+
+1. 🛒 *TS POS* - نظام نقاط البيع
+2. 📚 *TS Attend Pro* - نظام الحضور والغياب
+3. 🏗️ *TS مقاولات* - نظام إدارة مواد البناء
+
+💡 *للاستفسار عن مميزات أي برنامج:* اكتب اسم البرنامج
+💡 *للاستفسار عن السعر:* اكتب 'سعر [اسم البرنامج]'`
+        },
+
+        // ============================================================
+        //  17. أسئلة عامية عن الاستخدام (50+ سؤال)
+        // ============================================================
+        {
+            keywords: ["ازاي اضيف منتج", "طريقة اضافة منتج", "كيف اضيف منتج", "اضافة منتج", "إضافة منتج", "منتج جديد", "ازاي انشئ منتج", "طريقة إضافة منتج", "ازاي احط منتج", "كيف احط منتج", "إضافة منتج جديد", "منتج جديد ازاي", "ازاي اكتب منتج", "طريقة اضافة منتج في النظام"],
+            answer: "من صفحة المنتجات، اضغط على زر 'إضافة منتج'، أدخل البيانات المطلوبة (الاسم، السعر، الكمية، التصنيف)، ثم اضغط حفظ."
+        },
+
+        {
+            keywords: ["ازاي اعمل فاتوره", "طريقة عمل فاتوره", "كيف اعمل فاتورة", "فاتورة جديدة", "إصدار فاتورة", "انشاء فاتورة", "ازاي اطلع فاتورة", "طريقة الفاتورة", "كيف اطلع فاتورة", "فاتورة بيع", "عمل فاتورة", "طباعة فاتورة", "ازاي اطبع فاتورة"],
+            answer: "من نقاط البيع، اختر العميل، اضف المنتجات، حدد الكميات، ثم اضغط 'إتمام الشراء' للطباعة."
+        },
+
+        {
+            keywords: ["ازاي اطبع باركود", "طباعه باركود", "طباعة باركود", "كيف اطبع باركود", "باركود", "barcode", "طباعة باركود منتج", "ازاي اطبع باركود المنتج", "طريقة طباعة باركود", "باركود المنتج", "كود المنتج", "طباعة كود المنتج"],
+            answer: "من صفحة طباعة الباركود، اختر المنتج، حدد العدد ونوع الباركود، ثم اضغط طباعة."
+        },
+
+        {
+            keywords: ["ازاي اسجل حضور", "تسجيل حضور", "كيف اسجل حضور", "حضور طلاب", "تسجيل حضور طالب", "طريقة تسجيل حضور", "ازاي اسجل حضور طالب", "حضور وغياب", "تسجيل حضور وغياب", "طريقة الحضور"],
+            answer: "من صفحة تسجيل الحضور، اختر الفصل، ثم اضغط على اسم الطالب لتسجيل حضوره، أو استخدم الباركود."
+        },
+
+        {
+            keywords: ["ازاي اشوف الدين", "عايز اعرف الدين", "كيف اشوف الدين", "دين العميل", "مديونية", "ديون العملاء", "عايز اشوف الدين", "طريقة معرفة الدين", "الدين بتاع العميل", "ازاي اعرف دين العميل", "عايز اعرف مديونية العميل"],
+            answer: "من صفحة العملاء، هتلاقي عمود 'الدين الحالي' جنب كل عميل، بيظهرلك المبلغ المستحق عليه."
+        },
+
+        {
+            keywords: ["ازاي اسدد", "طريقه السداد", "كيف اسدد", "سداد دين", "دفع دين", "تسديد", "ازاي ادفع", "طريقة السداد", "ازاي اسدد دين العميل", "دفع المديونية", "تسديد الدين"],
+            answer: "من صفحة العملاء، اضغط زر 'سداد' جنب العميل، أدخل المبلغ، اختر طريقة الدفع، ثم أكد."
+        },
+
+        {
+            keywords: ["ازاي اضيف عميل", "اضافه عميل", "كيف اضيف عميل", "عميل جديد", "تسجيل عميل", "طريقة اضافة عميل", "ازاي انشئ عميل", "زبون جديد", "تسجيل زبون", "اضافة زبون"],
+            answer: "من صفحة العملاء > إضافة عميل > أدخل البيانات (الاسم، رقم الهاتف، العنوان) > حفظ."
+        },
+
+        {
+            keywords: ["ازاي اضيف موظف", "طريقه اضافه موظف", "كيف اضيف موظف", "موظف جديد", "تسجيل موظف", "طريقة اضافة موظف", "ازاي انشئ موظف", "كاشير جديد", "موظف كاشير", "إضافة كاشير"],
+            answer: "من صفحة الموظفين > إضافة موظف > أدخل البيانات والصلاحيات المطلوبة > حفظ."
+        },
+
+        {
+            keywords: ["ازاي اشوف التقارير", "التقارير", "تقرير المبيعات", "تقرير الارباح", "طريقة التقارير", "ازاي اطلع تقرير", "عايز تقرير", "تقرير المخزون", "تقرير العملاء"],
+            answer: "من صفحة التقارير، اختر نوع التقرير (مبيعات، أرباح، مخزون، عملاء)، حدد الفترة الزمنية، ثم اضغط 'توليد تقرير'."
+        },
+
+        {
+            keywords: ["ازاي اغير الاعدادات", "الاعدادات", "تغيير الاعدادات", "ضبط النظام", "اعدادات النظام", "طريقة الاعدادات", "تغيير اسم المتجر", "تغيير البيانات", "تعديل البيانات"],
+            answer: "من صفحة الإعدادات، يمكنك تغيير اسم المتجر، العنوان، رقم الهاتف، العملة، وإعدادات الطباعة."
+        },
+
+        {
+            keywords: ["ازاي اعمل نسخه احتياطيه", "نسخه احتياطيه", "backup", "احتياطي", "حفظ البيانات", "تصدير البيانات", "استيراد البيانات", "طريقة النسخ الاحتياطي"],
+            answer: "من صفحة الإعدادات، استخدم زر 'تصدير البيانات' لحفظ نسخة احتياطية، و'استيراد البيانات' لاستعادة النسخة."
+        },
+
+        {
+            keywords: ["ازاي اطلب دعم فني", "دعم فني", "طلب دعم", "مساعدة فنية", "ازاي اطلب مساعدة", "عايز دعم", "اريد دعم", "كيف اطلب دعم", "طريقة الدعم"],
+            answer: "للحصول على دعم فني، يمكنك التواصل عبر:\n• 01144100018 (واتساب/مكالمات)\n• 01126125881 (واتساب/مكالمات)\n• mohammedemadpromax@gmail.com"
+        },
+
+        // ============================================================
+        //  18. أسئلة عامة إضافية (30+ سؤال)
+        // ============================================================
+        {
+            keywords: ["شعار", "logo", "هوية", "علامة تجارية", "براند", "brand", "شعار الشركة", "هوية الشركة", "شعار تكنو", "لوجو"],
+            answer: `🦈 *شعار شركة TecnoShark*
+
+شعار الشركة هو قرش (Shark) يرمز إلى:
+• القوة والسرعة في تقديم الحلول
+• الذكاء والحنكة في التعامل مع التحديات التقنية
+• الريادة والتفوق في مجال البرمجيات
+
+🔵 الألوان الأساسية: الأزرق والأبيض، تعبر عن الثقة والاحترافية.`
+        },
+
+        {
+            keywords: ["عدد العملاء", "عملاء", "زبائن", "كم عميل", "العملاء", "عملاء الشركة", "كم زبون", "عدد الزبائن", "كم عميل عندكم", "عدد العملاء عندكم"],
+            answer: `👥 *عملاء TecnoShark*
+
+📌 *عدد العملاء:* أكثر من 150 عميل سعيد
+📌 *نوع العملاء:*
+   • شركات ومؤسسات
+   • رواد أعمال وأصحاب مشاريع
+   • مدارس ومراكز تعليمية
+   • محلات تجارية ومطاعم
+   • شركات مقاولات
+
+✅ *جميع عملائنا يحصلون على دعم فني مستمر وتحديثات دورية.*`
+        },
+
+        {
+            keywords: ["المشاريع", "عدد المشاريع", "انجازات", "مشاريع منجزة", "كم مشروع", "عدد المشاريع المنجزة", "مشاريع الشركة", "كم مشروع عملتم", "عدد المشاريع عندكم"],
+            answer: `📊 *إنجازات TecnoShark*
+
+📌 *عدد المشاريع المنجزة:* أكثر من 300 مشروع
+📌 *نوع المشاريع:*
+   • مواقع إلكترونية
+   • تطبيقات موبايل
+   • أنظمة إدارة متكاملة
+   • حلول سحابية
+   • منصات تعليمية
+
+📌 *معدل النجاح:* 98% من المشاريع تم تسليمها في الوقت المحدد.`
+        },
+
+        {
+            keywords: ["مجالات العمل", "مجالات", "تخصصات", "فيما تعملون", "نشاطات", "مجالات الشركة", "تخصصات الشركة", "مجالات عملكم", "شغلكم ايه"],
+            answer: `🔧 *مجالات عمل TecnoShark*
+
+✅ *تطوير البرمجيات:* تصميم وتطوير أنظمة مخصصة حسب احتياج العميل.
+✅ *الذكاء الاصطناعي:* حلول تعتمد على AI لتحسين الأداء.
+✅ *تحليل البيانات:* تقديم تقارير وتحليلات دقيقة.
+✅ *الأمن السيبراني:* حماية الأنظمة والبيانات.
+✅ *التسويق الرقمي:* استراتيجيات تسويقية متكاملة.
+✅ *الاستشارات التقنية:* تقديم استشارات في مجال التحول الرقمي.`
+        },
+
+        {
+            keywords: ["التقنيات", "التكنولوجيا", "لغات البرمجة", "أدوات", "tech stack", "تقنيات الشركة", "لغات البرمجة المستخدمة", "التقنيات المستخدمة", "بيئة العمل"],
+            answer: `💻 *التقنيات التي نستخدمها في TecnoShark*
+
+✅ *لغات البرمجة:*
+   • JavaScript / TypeScript
+   • Python
+   • PHP
+   • Dart (Flutter)
+
+✅ *الأطر والتقنيات:*
+   • React / Next.js
+   • Node.js / Express
+   • Firebase / Supabase
+   • Flutter (تطبيقات الموبايل)
+
+✅ *قواعد البيانات:*
+   • Firebase Realtime Database
+   • MongoDB
+   • MySQL / PostgreSQL
+
+✅ *السحابة والاستضافة:*
+   • Vercel / Netlify
+   • Firebase / Google Cloud
+   • AWS / Azure`
+        },
+
+        {
+            keywords: ["التطبيقات", "تطبيقات الموبايل", "اندرويد", "iOS", "تطبيقات جوال", "تطبيقات موبايل", "تطبيقات الشركة", "تطبيقات تكنو"],
+            answer: `📱 *تطبيقات الموبايل التي نطورها*
+
+✅ *تطبيقات اندرويد:* باستخدام Flutter و Kotlin
+✅ *تطبيقات iOS:* باستخدام Flutter و Swift
+✅ *تطبيقات متعددة المنصات:* باستخدام Flutter
+
+📌 *مميزات تطبيقاتنا:*
+   • واجهة مستخدم سلسة وجذابة
+   • أداء عالي وسرعة في الاستجابة
+   • متوافقة مع جميع أحجام الشاشات
+   • تدعم اللغة العربية والإنجليزية
+   • متصلة بأنظمة إدارة مركزية`
+        },
+
+        {
+            keywords: ["الاستضافة", "السحابة", "cloud", "hosting", "خوادم", "استضافة المواقع", "حلول سحابية", "استضافة تكنو"],
+            answer: `☁️ *خدمات الاستضافة والحلول السحابية*
+
+✅ *نقدم خدمات استضافة متكاملة:*
+   • استضافة مواقع وتطبيقات
+   • استضافة قواعد بيانات
+   • حلول سحابية مخصصة
+   • نسخ احتياطي تلقائي
+   • أمان وحماية عالية
+   • دعم فني على مدار الساعة
+
+📌 *نستخدم منصات موثوقة مثل:*
+   • Vercel
+   • Firebase
+   • Google Cloud
+   • AWS`
+        },
+
+        // ============================================================
+        //  19. أسئلة عن الفريق (20+ سؤال)
+        // ============================================================
+        {
+            keywords: ["فريق العمل", "الموظفين", "العاملين", "فريق تكنو", "عدد الموظفين", "المطورين", "المهندسين", "فريق المطورين", "فريق البرمجة", "كم مطور", "كم موظف", "فريق العمل عندكم"],
+            answer: `👥 *فريق عمل TecnoShark*
+
+📌 *عدد الموظفين:* أكثر من 25 خبيراً
+📌 *التخصصات:*
+   • مطورو ويب (Frontend & Backend)
+   • مطورو تطبيقات موبايل
+   • خبراء أمن معلومات
+   • مصممون (UI/UX)
+   • مهندسو DevOps
+   • فريق دعم فني
+
+✅ *جميع أعضاء الفريق يتمتعون بخبرات عالية وشهادات معتمدة في مجالاتهم.*`
+        },
+
+        // ============================================================
+        //  20. أسئلة عن الضمان والجودة (15+ سؤال)
+        // ============================================================
+        {
+            keywords: ["ضمان", "جودة", "ضمان الجودة", "quality", "الضمان", "ضمان المنتجات", "ضمان البرامج", "جودة البرامج", "ضمان تكنو"],
+            answer: `🛡️ *ضمان الجودة في TecnoShark*
+
+✅ *نقدم ضماناً على جميع خدماتنا:*
+   • ضمان سنة على جميع البرامج والأنظمة
+   • ضمان شهر للتجربة (استرداد في حال عدم الرضا)
+   • دعم فني مجاني لمدة 6 أشهر
+   • تحديثات مجانية لمدة سنة
+
+📌 *نضمن:*
+   • جودة عالية في التصميم والتطوير
+   • أداء سريع ومستقر
+   • أمان وحماية للبيانات
+   • توافق مع جميع الأجهزة`
+        },
+
+        // ============================================================
+        //  21. أسئلة عن الأسعار (سيتم التعامل معها بشكل منفصل)
+        // ============================================================
+        // تم حذف أسئلة الأسعار من هنا لأنها تتعامل مع Firebase
+    ];
+}
+// ============================================================
+//  🔍 الدالة الرئيسية للبحث عن الإجابة
+// ============================================================
 function findAnswerInFAQ(userMessage, programName) {
     if (!userMessage) {
         return { found: false, answer: '⚠️ يرجى كتابة سؤالك', score: 0 };
     }
-    
-    const message = userMessage.toLowerCase().trim();
+
+    const normalizedMessage = normalizeText(userMessage);
+    const questionBank = getQuestionBank();
     let bestMatch = null;
     let bestScore = 0;
-    
-    faqData.forEach(item => {
+
+    // ✅ البحث في مكتبة الأسئلة
+    questionBank.forEach(item => {
         let score = 0;
-        
-        // البحث عن تطابق الكلمات المفتاحية
         item.keywords.forEach(keyword => {
-            const keywordLower = keyword.toLowerCase();
+            const normalizedKeyword = normalizeText(keyword);
             
-            // تطابق تام (السؤال يحتوي على الكلمة المفتاحية)
-            if (message.includes(keywordLower)) {
-                score += 5;
+            // تطابق تام
+            if (normalizedMessage.includes(normalizedKeyword)) {
+                score += 15;
             }
             
-            // تطابق جزئي (الكلمة داخل كلمة أطول)
-            const words = message.split(' ');
+            // تطابق جزئي
+            const words = normalizedMessage.split(' ');
             words.forEach(word => {
                 if (word.length > 2) {
-                    if (keywordLower.includes(word) || word.includes(keywordLower)) {
-                        score += 2;
+                    if (normalizedKeyword.includes(word) || word.includes(normalizedKeyword)) {
+                        score += 5;
                     }
                 }
             });
+
+            // كلمات مفتاحية قصيرة
+            if (normalizedKeyword.length <= 3 && normalizedMessage.includes(normalizedKeyword)) {
+                score += 3;
+            }
         });
-        
-        // نقاط إضافية إذا كان السؤال قصيراً ومطابقاً لكلمة مفتاحية
-        if (message.length < 20) {
-            item.keywords.forEach(keyword => {
-                if (message === keyword.toLowerCase()) {
-                    score += 8;
-                }
-            });
+
+        // ✅ نقاط إضافية إذا كانت الإجابة تحتوي على اسم البرنامج
+        if (programName && item.answer && typeof item.answer === 'string' && 
+            item.answer.toLowerCase().includes(programName.toLowerCase())) {
+            score += 5;
         }
-        
-        // ✅ تحسين: نقاط إضافية إذا كانت الإجابة تحتوي على اسم البرنامج المختار
-        if (programName && item.answer && item.answer.toLowerCase().includes(programName.toLowerCase())) {
-            score += 3;
-        }
-        
+
         if (score > bestScore) {
             bestScore = score;
             bestMatch = item;
         }
     });
-    
-    // ✅ العتبة 3 بدلاً من 2 لتكون أكثر دقة ولكن مع تحسين المطابقة
-    if (bestScore >= 3 && bestMatch) {
-        // ✅ إضافة اسم البرنامج في الإجابة إذا لم يكن موجوداً
-        let answer = bestMatch.answer;
-        if (programName && !answer.toLowerCase().includes(programName.toLowerCase())) {
-            answer = `📌 بخصوص برنامج ${programName}:\n\n${answer}`;
-        }
-        
+
+    // ✅ إذا وجدنا تطابق جيد
+    if (bestScore >= 5 && bestMatch) {
         return {
             found: true,
-            answer: answer,
+            answer: bestMatch.answer,
             score: bestScore,
-            fromCache: true,
-            keywords: bestMatch.keywords
+            fromCache: true
         };
     }
-    
+
+    // ✅ إذا لم يتم العثور على إجابة
     return {
         found: false,
-        answer: '❌ لم أجد إجابة مطابقة. يرجى إعادة صياغة السؤال.',
-        score: bestScore
+        answer: null,
+        score: 0
     };
-}
-
-// ============================================================
-//  دالة توليد رسالة المساعدة من faqData
-// ============================================================
-
-function generateHelpMessage(programName) {
-    let helpMessage = `📋 *قائمة الأسئلة المتاحة:*\n\n`;
-    
-    let relevantQuestions = [];
-    let generalQuestions = [];
-    
-    if (programName) {
-        const programWords = programName.toLowerCase().split(' ');
-        
-        faqData.forEach(item => {
-            let isRelevant = false;
-            item.keywords.forEach(kw => {
-                programWords.forEach(word => {
-                    if (word.length > 2 && (kw.toLowerCase().includes(word) || word.includes(kw.toLowerCase()))) {
-                        isRelevant = true;
-                    }
-                });
-            });
-            
-            if (isRelevant) {
-                const q = item.keywords.slice(0, 3).join('، ');
-                if (!relevantQuestions.includes(q)) {
-                    relevantQuestions.push(q);
-                }
-            } else {
-                const q = item.keywords.slice(0, 2).join('، ');
-                if (!generalQuestions.includes(q)) {
-                    generalQuestions.push(q);
-                }
-            }
-        });
-    }
-    
-    if (relevantQuestions.length > 0) {
-        helpMessage += `📌 *أسئلة متعلقة بـ ${programName}:*\n`;
-        relevantQuestions.slice(0, 10).forEach((q, i) => {
-            helpMessage += `${i+1}. ${q}\n`;
-        });
-        helpMessage += '\n';
-    }
-    
-    if (generalQuestions.length > 0) {
-        helpMessage += `📌 *أسئلة عامة:*\n`;
-        generalQuestions.slice(0, 15).forEach((q, i) => {
-            helpMessage += `${i+1}. ${q}\n`;
-        });
-        helpMessage += '\n';
-    }
-    
-    helpMessage += `💡 اكتب أي سؤال وسأجيبك فوراً.`;
-    
-    return helpMessage;
 }
 
 // ============================================================
@@ -8650,6 +8703,305 @@ async function submitModernRating(ticketId, rating) {
 }
 
 // ============================================================
+//  🕐 نظام إدارة التذاكر الذكي - مع مؤقت عدم النشاط
+// ============================================================
+
+// ===== متغيرات المؤقت =====
+let inactivityTimer = null;
+let inactivityWarningTimer = null;
+let inactivityCount = 0;
+let isTicketClosing = false;
+let ticketEnded = false;
+
+// ===== إعدادات المؤقت =====
+const TIMEOUT_WARNING = 30000;  // 30 ثانية قبل التحذير
+const TIMEOUT_CLOSE = 60000;    // 60 ثانية قبل الإغلاق (دقيقة واحدة)
+const MAX_INACTIVITY_CHECKS = 2; // عدد مرات التحذير قبل الإغلاق
+
+// ============================================================
+//  📌 بدء مؤقت عدم النشاط
+// ============================================================
+function startInactivityTimer(ticketId) {
+    // ✅ إلغاء المؤقتات السابقة
+    clearTimeout(inactivityTimer);
+    clearTimeout(inactivityWarningTimer);
+    inactivityCount = 0;
+    isTicketClosing = false;
+    ticketEnded = false;
+
+    // ✅ بدء المؤقت الجديد
+    inactivityTimer = setTimeout(() => {
+        sendInactivityWarning(ticketId);
+    }, TIMEOUT_WARNING);
+
+    console.log(`⏰ بدأ مؤقت عدم النشاط للتذكرة: ${ticketId}`);
+}
+
+// ============================================================
+//  📌 إرسال تحذير عدم النشاط
+// ============================================================
+async function sendInactivityWarning(ticketId) {
+    try {
+        // ✅ التحقق من وجود رسائل جديدة
+        const snapshot = await db.ref(`tickets/${ticketId}/messages`).once('value');
+        const messages = snapshot.val();
+        
+        // ✅ التحقق من آخر رسالة
+        let lastMessageTime = 0;
+        if (messages) {
+            let latest = null;
+            for (let id in messages) {
+                if (!latest || new Date(messages[id].timestamp) > new Date(latest.timestamp)) {
+                    latest = messages[id];
+                }
+            }
+            if (latest) {
+                lastMessageTime = new Date(latest.timestamp).getTime();
+            }
+        }
+
+        // ✅ إذا كان هناك رسالة خلال الـ 30 ثانية الماضية، نلغي التحذير
+        const now = Date.now();
+        if (now - lastMessageTime < 30000) {
+            console.log('✅ تم إلغاء التحذير - يوجد رسالة حديثة');
+            resetInactivityTimer(ticketId);
+            return;
+        }
+
+        // ✅ إرسال تحذير
+        inactivityCount++;
+        
+        if (inactivityCount === 1) {
+            await sendBotMessage(ticketId, '⚠️ تنبيه: لم تقم بإرسال أي رسالة خلال الـ 30 ثانية الماضية.');
+            await sendBotMessage(ticketId, `⏳ سيتم إغلاق المحادثة خلال ${TIMEOUT_CLOSE/1000} ثانية إذا لم ترسل أي رسالة.`);
+            
+            // ✅ بدء العد التنازلي للإغلاق
+            inactivityWarningTimer = setTimeout(() => {
+                closeTicketDueToInactivity(ticketId);
+            }, TIMEOUT_CLOSE);
+        } else {
+            // ✅ تحذير آخر قبل الإغلاق
+            await sendBotMessage(ticketId, `⚠️ تحذير نهائي: سيتم إغلاق المحادثة خلال 30 ثانية!`);
+            
+            inactivityWarningTimer = setTimeout(() => {
+                closeTicketDueToInactivity(ticketId);
+            }, 30000);
+        }
+
+    } catch (error) {
+        console.error('❌ خطأ في إرسال تحذير الخمول:', error);
+    }
+}
+
+// ============================================================
+//  📌 إعادة ضبط المؤقت
+// ============================================================
+function resetInactivityTimer(ticketId) {
+    if (ticketEnded) return;
+    
+    // ✅ إلغاء المؤقتات الحالية
+    clearTimeout(inactivityTimer);
+    clearTimeout(inactivityWarningTimer);
+    inactivityCount = 0;
+    isTicketClosing = false;
+    
+    // ✅ بدء المؤقت من جديد
+    if (ticketId) {
+        inactivityTimer = setTimeout(() => {
+            sendInactivityWarning(ticketId);
+        }, TIMEOUT_WARNING);
+        
+        console.log(`🔄 تم إعادة ضبط مؤقت عدم النشاط للتذكرة: ${ticketId}`);
+    }
+}
+
+// ============================================================
+//  📌 إغلاق التذكرة بسبب عدم النشاط
+// ============================================================
+async function closeTicketDueToInactivity(ticketId) {
+    if (isTicketClosing || ticketEnded || !ticketId) return;
+    isTicketClosing = true;
+    
+    try {
+        console.log(`🔒 جاري إغلاق التذكرة بسبب عدم النشاط: ${ticketId}`);
+        
+        // ✅ إرسال رسائل الإغلاق
+        await sendBotMessage(ticketId, '⏰ انتهت المهلة! سيتم إغلاق المحادثة الآن.');
+        await sendBotMessage(ticketId, '📋 شكراً لتواصلك معنا.');
+        
+        // ✅ إيقاف البوت
+        await db.ref(`tickets/${ticketId}/botActive`).set(false);
+        await db.ref(`tickets/${ticketId}/status`).set('ended');
+        await db.ref(`tickets/${ticketId}/endedAt`).set(new Date().toISOString());
+        await db.ref(`tickets/${ticketId}/endedReason`).set('inactivity');
+        
+        ticketEnded = true;
+        updateBotStatus(false);
+        
+        // ✅ عرض نافذة التقييم
+        setTimeout(() => {
+            if (typeof showModernRatingModal === 'function') {
+                showModernRatingModal(ticketId);
+            }
+        }, 1500);
+        
+        // ✅ حذف التذكرة بعد التقييم
+        setTimeout(() => {
+            deleteTicketAfterChat(ticketId);
+        }, 35000);
+        
+        showToast('⏰ تم إغلاق المحادثة تلقائياً بسبب عدم النشاط');
+        
+    } catch (error) {
+        console.error('❌ خطأ في إغلاق المحادثة:', error);
+        isTicketClosing = false;
+    }
+}
+
+// ============================================================
+//  📌 حذف التذكرة بعد انتهاء المحادثة
+// ============================================================
+async function deleteTicketAfterChat(ticketId) {
+    try {
+        // ✅ التحقق من وجود التذكرة
+        const snapshot = await db.ref(`tickets/${ticketId}`).once('value');
+        const ticket = snapshot.val();
+        
+        if (!ticket) {
+            console.log('ℹ️ التذكرة غير موجودة أو تم حذفها مسبقاً');
+            return;
+        }
+        
+        // ✅ نقل التذكرة إلى السجل
+        await db.ref(`tickets_history/${ticketId}`).set({
+            ...ticket,
+            deletedAt: new Date().toISOString(),
+            deletedBy: 'system_auto',
+            deletedReason: ticket.endedReason || 'inactivity'
+        });
+        
+        // ✅ حذف التذكرة من التذاكر النشطة
+        await db.ref(`tickets/${ticketId}`).remove();
+        
+        console.log(`🗑️ تم حذف التذكرة ${ticketId} ونقلها إلى السجل`);
+        
+        // ✅ تحديث الواجهات
+        if (typeof loadTickets === 'function') {
+            loadTickets();
+        }
+        
+        // ✅ إغلاق الشات
+        if (currentTicketId === ticketId) {
+            ticketEnded = true;
+            closeTicketChat();
+        }
+        
+    } catch (error) {
+        console.error('❌ خطأ في حذف التذكرة:', error);
+    }
+}
+
+// ============================================================
+//  📌 دالة بدء الشات مع المؤقت
+// ============================================================
+function startChatWithTimer(ticketId) {
+    // ✅ تعيين المتغيرات
+    currentTicketId = ticketId;
+    ticketEnded = false;
+    isTicketClosing = false;
+    inactivityCount = 0;
+    
+    // ✅ بدء المؤقت
+    startInactivityTimer(ticketId);
+    
+    // ✅ الاستماع للرسائل الجديدة (لإعادة ضبط المؤقت)
+    const messagesRef = db.ref(`tickets/${ticketId}/messages`);
+    messagesRef.on('child_added', (snapshot) => {
+        const msg = snapshot.val();
+        // ✅ إذا كانت الرسالة من المستخدم (ليس بوت وليس نظام)
+        if (msg && msg.senderId !== 'bot' && !msg.isSystem) {
+            resetInactivityTimer(ticketId);
+        }
+    });
+    
+    console.log(`💬 تم بدء الشات مع المؤقت للتذكرة: ${ticketId}`);
+}
+
+// ============================================================
+//  📌 تعديل دالة openTicketChat لإضافة المؤقت
+// ============================================================
+function openTicketChatWithTimer(ticketId) {
+    // ✅ استدعاء دالة فتح الشات الأصلية
+    if (typeof openTicketChat === 'function') {
+        openTicketChat(ticketId);
+    }
+    
+    // ✅ بدء المؤقت
+    startChatWithTimer(ticketId);
+}
+
+// ============================================================
+//  📌 دالة إرسال رسالة مع إعادة ضبط المؤقت
+// ============================================================
+async function sendTicketChatMessageWithTimer() {
+    const input = document.getElementById('ticketChatInput');
+    const message = input.value.trim();
+    if (!message || !currentTicketId) return;
+    
+    // ✅ إعادة ضبط المؤقت عند إرسال رسالة
+    resetInactivityTimer(currentTicketId);
+    
+    input.value = '';
+    
+    const msgData = {
+        senderId: currentUser.uid,
+        senderName: currentUser.name || currentUser.username,
+        message: message,
+        timestamp: new Date().toISOString(),
+        isBot: false,
+        isAdmin: isAdminMode
+    };
+    
+    try {
+        const newRef = db.ref(`tickets/${currentTicketId}/messages`).push();
+        await newRef.set(msgData);
+        await loadTicketMessages(currentTicketId);
+        
+        if (!isAdminMode && !ticketEnded) {
+            await handleBotResponse(currentTicketId, message);
+        }
+    } catch (error) {
+        console.error('خطأ في إرسال الرسالة:', error);
+        showToast('❌ خطأ في إرسال الرسالة');
+    }
+}
+
+// ============================================================
+//  📌 تعديل دالة closeTicketChat
+// ============================================================
+function closeTicketChatWithCleanup() {
+    // ✅ إلغاء المؤقتات
+    clearTimeout(inactivityTimer);
+    clearTimeout(inactivityWarningTimer);
+    isTicketClosing = false;
+    
+    // ✅ إزالة المستمعين
+    if (currentTicketId) {
+        const messagesRef = db.ref(`tickets/${currentTicketId}/messages`);
+        messagesRef.off('child_added');
+    }
+    
+    // ✅ إغلاق الشات
+    if (typeof closeTicketChat === 'function') {
+        closeTicketChat();
+    }
+    
+    console.log('🧹 تم تنظيف مؤقتات الشات');
+}
+
+
+
+// ============================================================
 //  دالة إغلاق نافذة التقييم
 // ============================================================
 
@@ -8774,207 +9126,495 @@ function updateBotStatus(isActive) {
 
 
 
-// ============================================================
-//  دالة معالجة رد البوت - مع دعم أسئلة المواقع
-// ============================================================
-
 async function handleBotResponse(ticketId, userMessage) {
     try {
         const snapshot = await db.ref(`tickets/${ticketId}`).once('value');
         const ticket = snapshot.val();
         if (!ticket || ticket.botActive === false) return;
-        
+
         const message = userMessage.toLowerCase().trim();
         const programName = ticket.botProgram || '';
         const isDirectChat = ticket.isDirectChat || false;
-        
+
         // ============================================================
-        // ✅ 1. التحقق من "لا" - إنهاء المحادثة
+        //  ✅ 1. التحقق من "لا" لإنهاء المحادثة
         // ============================================================
-        if (message === 'لا' || message === 'no' || message === 'كفاية' || message === 'انتهيت' || message === 'خلاص') {
-            await sendBotMessage(ticketId, '👋 تم إنهاء المحادثة بناءً على طلبك.');
-            await sendBotMessage(ticketId, '📋 شكراً لتواصلك معنا.');
+        const endKeywords = ['لا', 'no', 'كفاية', 'انتهيت', 'خلص', 'بس', 'خلاص', 'مع السلامه', 'باي', 'سلام', 'كفايه', 'انتهينا', 'نهائي', 'اخر'];
+        if (endKeywords.some(kw => message.includes(kw))) {
+            await sendBotMessage(ticketId, '👋 تم إنهاء المحادثة بناءً على طلبك. شكراً لتواصلك معنا.');
             await db.ref(`tickets/${ticketId}/botActive`).set(false);
             await db.ref(`tickets/${ticketId}/status`).set('ended');
             await db.ref(`tickets/${ticketId}/endedAt`).set(new Date().toISOString());
+            await db.ref(`tickets/${ticketId}/endedReason`).set('user_request');
+            
             chatEnded = true;
             updateBotStatus(false);
             
-            if (isDirectChat) {
-                setTimeout(() => {
-                    if (typeof showModernRatingModal === 'function') {
-                        showModernRatingModal(ticketId);
-                    }
-                }, 1500);
-                setTimeout(() => {
-                    if (typeof deleteTicketAfterChat === 'function') {
-                        deleteTicketAfterChat(ticketId);
-                    }
-                }, 35000);
-            }
+            // ✅ عرض نافذة التقييم
+            setTimeout(() => {
+                if (typeof showModernRatingModal === 'function') {
+                    showModernRatingModal(ticketId);
+                }
+            }, 1500);
+            
+            // ✅ حذف التذكرة بعد التقييم
+            setTimeout(() => {
+                if (typeof deleteTicketAfterChat === 'function') {
+                    deleteTicketAfterChat(ticketId);
+                }
+            }, 35000);
+            
             return;
         }
-        
+
         // ============================================================
-        // ✅ 2. التحقق من "نعم" - متابعة المحادثة
+        //  ✅ 2. التحقق من "نعم" للمتابعة
         // ============================================================
-        if (message === 'نعم' || message === 'yes' || message === 'أكيد' || message === 'طبعاً' || message === 'موافق') {
+        const yesKeywords = ['نعم', 'yes', 'اكيد', 'طبعا', 'موافق', 'ايوه', 'اي', 'اه', 'ايوة', 'نعم نعم', 'طبعاً'];
+        if (yesKeywords.some(kw => message.includes(kw))) {
             await sendBotMessage(ticketId, '👋 رائع! اكتب سؤالك الجديد وسأجيبك فوراً.');
-            await db.ref(`tickets/${ticketId}/botStep`).set(1);
             return;
         }
-        
+
         // ============================================================
-        // ✅ 3. التحقق من "مساعدة" - عرض القائمة
+        //  ✅ 3. البحث في مكتبة الأسئلة (findAnswerInFAQ)
         // ============================================================
-        if (message === 'مساعدة' || message === 'help' || message === 'أسئلة' || message === 'استفسار' || message === 'ممكن اسأل') {
-            const helpMessage = generateHelpMessage(programName);
-            await sendBotMessage(ticketId, helpMessage);
-            return;
-        }
-        
-        // ============================================================
-        // ✅ 4. التحقق من أسئلة المواقع (جديد)
-        // ============================================================
-        
-        // ✅ أنماط للتعرف على أسئلة المواقع
-        const sitePatterns = [
-            /موقع\s*(.*)/i,                    // "موقع نبض"
-            /موقع\s+([^\s]+)/i,                // "موقع imtihan"
-            /مميزات\s+موقع\s*(.*)/i,           // "مميزات موقع نبض"
-            /مميزات\s+([^\s]+)/i,              // "مميزات نبض"
-            /ما هي مميزات\s+موقع\s*(.*)/i,     // "ما هي مميزات موقع نبض"
-            /ما هي مميزات\s+([^\s]+)/i,        // "ما هي مميزات نبض"
-            /عرفني على\s+موقع\s*(.*)/i,        // "عرفني على موقع نبض"
-            /عرفني على\s+([^\s]+)/i,           // "عرفني على نبض"
-            /اشرح لي\s+موقع\s*(.*)/i,          // "اشرح لي موقع نبض"
-            /معلومات عن\s+موقع\s*(.*)/i,       // "معلومات عن موقع نبض"
-            /خصائص\s+موقع\s*(.*)/i,            // "خصائص موقع نبض"
-            /خصائص\s+([^\s]+)/i                // "خصائص نبض"
-        ];
-        
-        let extractedSite = null;
-        let matchedPattern = null;
-        
-        // ✅ محاولة استخراج اسم الموقع من السؤال
-        for (const pattern of sitePatterns) {
-            const match = message.match(pattern);
-            if (match && match[1]) {
-                extractedSite = match[1].trim();
-                matchedPattern = pattern;
-                break;
-            }
-        }
-        
-        // ✅ إذا تم استخراج اسم موقع
-        if (extractedSite) {
-            // ✅ البحث عن مميزات الموقع
-            const featuresAnswer = await getSiteFeaturesAnswer(extractedSite);
-            if (featuresAnswer && !featuresAnswer.includes('لم أجد معلومات')) {
-                await sendBotMessage(ticketId, featuresAnswer);
-                await sendBotMessage(ticketId, '📋 هل لديك أي سؤال آخر؟ اكتب "نعم" للمتابعة أو "لا" لإنهاء المحادثة.');
-                return;
-            }
-        }
-        
-        // ✅ التحقق من أسئلة المواقع العامة (بدون اسم محدد)
-        const generalSiteKeywords = [
-            'ما هي المواقع', 'المواقع التي تم تصميمها', 'مواقع صممناها', 'قائمة المواقع',
-            'ما المواقع المتاحة', 'المواقع المتاحة', 'عرض المواقع', 'المواقع المطورة',
-            'ما هي المواقع التي قمتم بتطويرها', 'مواقع قمت بتصميمها', 'أعمالنا', 'مشاريعنا',
-            'هل لديكم مواقع', 'هل لديك مواقع', 'عندكم مواقع', 'عندك مواقع',
-            'مواقع عندكم', 'مواقع لديكم', 'هل يوجد مواقع', 'هل توجد مواقع',
-            'عندكم موقع', 'عندك موقع', 'المواقع التي عندكم', 'ما المواقع التي لديكم',
-            'استفسار عن المواقع', 'عندي استفسار عن المواقع', 'مواقع تصممونها',
-            'مواقع بتصمموها', 'المواقع التي تصممونها', 'هل تصممون مواقع'
-        ];
-        
-        const isGeneralSiteQuestion = generalSiteKeywords.some(kw => message.includes(kw));
-        if (isGeneralSiteQuestion) {
-            const answer = await getSitesListAnswer();
-            await sendBotMessage(ticketId, answer);
+        const result = findAnswerInFAQ(message, programName);
+        if (result.found && result.answer) {
+            await sendBotMessage(ticketId, result.answer);
             await sendBotMessage(ticketId, '📋 هل لديك أي سؤال آخر؟ اكتب "نعم" للمتابعة أو "لا" لإنهاء المحادثة.');
+            resetInactivityTimer(ticketId);
             return;
         }
-        
+
         // ============================================================
-        // ✅ 5. التحقق من أسئلة إنشاء موقع
-        // ============================================================
-        const createSiteKeywords = [
-            'كيف أنشئ موقع', 'إنشاء موقع', 'عمل موقع', 'تصميم موقع', 'طريقة عمل موقع',
-            'أريد موقع', 'كيف اعمل موقع', 'بناء موقع', 'كيفية إنشاء موقع', 'كيف اسوي موقع',
-            'عايز موقع', 'اريد موقع', 'اعمل موقع', 'موقع جديد', 'إنشاء موقع إلكتروني',
-            'تصميم موقع إلكتروني', 'كيف أنشئ موقعاً', 'كيف أنشئ موقع إلكتروني', 'طريقة تصميم موقع',
-            'كيف ابدا موقع', 'كيف اطور موقع', 'كيف اسوي موقع الكتروني', 'عايز اعمل موقع',
-            'عايز أسوي موقع', 'اريد انشاء موقع', 'أريد إنشاء موقع', 'كيف أنشئ متجر',
-            'كيف اعمل متجر', 'عايز متجر', 'اريد متجر', 'كيف أنشئ منصة', 'كيف اعمل منصة'
-        ];
-        
-        const isCreateSiteQuestion = createSiteKeywords.some(kw => message.includes(kw));
-        if (isCreateSiteQuestion) {
-            const answer = getCreateSiteAnswer();
-            await sendBotMessage(ticketId, answer);
-            await sendBotMessage(ticketId, '📋 هل لديك أي سؤال آخر؟ اكتب "نعم" للمتابعة أو "لا" لإنهاء المحادثة.');
-            return;
-        }
-        
-        // ============================================================
-        // ✅ 6. التحقق من أسئلة البرامج
-        // ============================================================
-        if (message.includes('البرامج') || (message.includes('ما هي') && message.includes('البرامج'))) {
-            const programsList = await getProgramsList();
-            await sendBotMessage(ticketId, programsList);
-            await sendBotMessage(ticketId, '📋 هل لديك أي سؤال آخر؟ اكتب "نعم" للمتابعة أو "لا" لإنهاء المحادثة.');
-            return;
-        }
-        
-        // ============================================================
-        // ✅ 7. التحقق من أسئلة الأسعار
+        //  ✅ 4. البحث عن سعر البرنامج (من Firebase)
         // ============================================================
         const priceMatch = await checkPriceQuestion(message);
         if (priceMatch.found) {
             await sendBotMessage(ticketId, priceMatch.answer);
             await sendBotMessage(ticketId, '📋 هل لديك أي سؤال آخر؟ اكتب "نعم" للمتابعة أو "لا" لإنهاء المحادثة.');
+            resetInactivityTimer(ticketId);
             return;
         }
-        
+
         // ============================================================
-        // ✅ 8. البحث عن إجابة في faqData
+        //  ✅ 5. قائمة البرامج
         // ============================================================
-        const cached = findAnswerInFAQWithProgram(message, programName);
-        if (cached.found) {
-            await sendBotMessage(ticketId, cached.answer);
+        if (message.includes('البرامج') || message.includes('قائمه') || message.includes('قائمة')) {
+            const programsList = await getProgramsList();
+            await sendBotMessage(ticketId, programsList);
             await sendBotMessage(ticketId, '📋 هل لديك أي سؤال آخر؟ اكتب "نعم" للمتابعة أو "لا" لإنهاء المحادثة.');
-            await db.ref(`tickets/${ticketId}/botStep`).set(99);
+            resetInactivityTimer(ticketId);
             return;
         }
-        
+
         // ============================================================
-        // ✅ 9. استخدام DeepSeek API
+        //  ✅ 6. قائمة المواقع
         // ============================================================
-        if (typeof askDeepSeek === 'function') {
-            await sendBotMessage(ticketId, '⏳ جاري البحث عن إجابة...');
-            const aiResponse = await askDeepSeek(userMessage);
-            if (aiResponse.success) {
-                await sendBotMessage(ticketId, aiResponse.answer);
-                addNewFAQWithProgram(userMessage, aiResponse.answer, programName);
-                await sendBotMessage(ticketId, '📋 هل لديك أي سؤال آخر؟ اكتب "نعم" للمتابعة أو "لا" لإنهاء المحادثة.');
-                return;
-            }
+        if (message.includes('المواقع') || message.includes('مواقع') || message.includes('المشاريع')) {
+            const sitesList = await getSitesListAnswer();
+            await sendBotMessage(ticketId, sitesList);
+            await sendBotMessage(ticketId, '📋 هل لديك أي سؤال آخر؟ اكتب "نعم" للمتابعة أو "لا" لإنهاء المحادثة.');
+            resetInactivityTimer(ticketId);
+            return;
         }
-        
+
         // ============================================================
-        // ✅ 10. إذا لم توجد إجابة
+        //  ✅ 7. أسئلة عن الشركة (مباشرة)
+        // ============================================================
+        const companyKeywords = ['الشركه', 'الشركة', 'من نحن', 'تعريف', 'معلومات', 'عن الشركة', 'شركة تكنو', 'تكنو شيرك'];
+        if (companyKeywords.some(kw => message.includes(kw))) {
+            const companyAnswer = getCompanyAnswer();
+            await sendBotMessage(ticketId, companyAnswer);
+            await sendBotMessage(ticketId, '📋 هل لديك أي سؤال آخر؟ اكتب "نعم" للمتابعة أو "لا" لإنهاء المحادثة.');
+            resetInactivityTimer(ticketId);
+            return;
+        }
+
+        // ============================================================
+        //  ✅ 8. أسئلة عن المديرين
+        // ============================================================
+        const managerKeywords = ['محمد عماد', 'عماد', 'مدير', 'CEO', 'المدير التنفيذي', 'صاحب', 'مالك', 'المؤسس', 'عبد الرحمن', 'عبدالرحمن', 'CTO', 'مدير التقنيه'];
+        if (managerKeywords.some(kw => message.includes(kw))) {
+            const managerAnswer = getManagerAnswer(message);
+            await sendBotMessage(ticketId, managerAnswer);
+            await sendBotMessage(ticketId, '📋 هل لديك أي سؤال آخر؟ اكتب "نعم" للمتابعة أو "لا" لإنهاء المحادثة.');
+            resetInactivityTimer(ticketId);
+            return;
+        }
+
+        // ============================================================
+        //  ✅ 9. إذا لم توجد إجابة
         // ============================================================
         await sendBotMessage(ticketId, '⚠️ عذراً، لم أستطع فهم سؤالك بالكامل.');
         await sendBotMessage(ticketId, '💡 يرجى إعادة صياغة السؤال بشكل أوضح، أو اكتب "مساعدة" للحصول على قائمة بالأسئلة المتاحة.');
-        
+        resetInactivityTimer(ticketId);
+
     } catch (error) {
         console.error('❌ خطأ في معالجة رد البوت:', error);
         await sendBotMessage(ticketId, '❌ حدث خطأ في معالجة سؤالك. يرجى المحاولة مرة أخرى.');
     }
 }
 
+
+(function() {
+    'use strict';
+
+    const container = document.getElementById('botFloatContainer');
+    const btn = document.getElementById('botFloatBtn');
+    
+    if (!container || !btn) return;
+
+    // ===== المتغيرات =====
+    let isDragging = false;
+    let hasMoved = false;           // ✅ هل تحرك الزر من مكانه؟
+    let offsetX = 0;
+    let offsetY = 0;
+    let dragStartX = 0;
+    let dragStartY = 0;
+    let originalPosX = 0;
+    let originalPosY = 0;
+    let isFirstDrag = true;
+
+    // ===== حفظ الموضع الأصلي =====
+    function saveOriginalPosition() {
+        const rect = container.getBoundingClientRect();
+        originalPosX = rect.left;
+        originalPosY = rect.top;
+    }
+
+    // ===== بدء السحب =====
+    function startDrag(e) {
+        e.preventDefault();
+        e.stopPropagation();
+        
+        const touch = e.type === 'touchstart' ? e.touches[0] : e;
+        
+        // حفظ موضع البداية
+        const rect = container.getBoundingClientRect();
+        offsetX = touch.clientX - rect.left;
+        offsetY = touch.clientY - rect.top;
+        dragStartX = touch.clientX;
+        dragStartY = touch.clientY;
+        
+        // ✅ إعادة تعيين hasMoved عند بدء السحب
+        hasMoved = false;
+        
+        isDragging = true;
+        
+        container.style.cursor = 'grabbing';
+        container.style.transition = 'none';
+        btn.style.cursor = 'grabbing';
+        
+        // إضافة مستمعات الحركة
+        if (e.type === 'touchstart') {
+            document.addEventListener('touchmove', onDrag);
+            document.addEventListener('touchend', endDrag);
+            document.addEventListener('touchcancel', endDrag);
+        } else {
+            document.addEventListener('mousemove', onDrag);
+            document.addEventListener('mouseup', endDrag);
+        }
+    }
+
+    // ===== أثناء السحب =====
+    function onDrag(e) {
+        e.preventDefault();
+        
+        const touch = e.type === 'touchmove' ? e.touches[0] : e;
+        const clientX = touch.clientX;
+        const clientY = touch.clientY;
+        
+        // ✅ حساب المسافة المقطوعة من بداية السحب
+        const deltaX = clientX - dragStartX;
+        const deltaY = clientY - dragStartY;
+        
+        // ✅ إذا تحرك أكثر من 10 بكسل، يعتبر أنه تم السحب
+        if (Math.abs(deltaX) > 10 || Math.abs(deltaY) > 10) {
+            hasMoved = true;
+        }
+        
+        // حساب الموضع الجديد
+        const windowWidth = window.innerWidth;
+        const windowHeight = window.innerHeight;
+        const containerWidth = container.offsetWidth || 120;
+        const containerHeight = container.offsetHeight || 70;
+        
+        let newX = clientX - offsetX;
+        let newY = clientY - offsetY;
+        
+        // منع الخروج عن حدود الشاشة
+        newX = Math.max(10, Math.min(newX, windowWidth - containerWidth - 10));
+        newY = Math.max(10, Math.min(newY, windowHeight - containerHeight - 10));
+        
+        // تطبيق الموضع الجديد
+        container.style.right = 'auto';
+        container.style.bottom = 'auto';
+        container.style.left = newX + 'px';
+        container.style.top = newY + 'px';
+    }
+
+    // ===== إنهاء السحب =====
+    function endDrag(e) {
+        isDragging = false;
+        container.style.cursor = 'grab';
+        btn.style.cursor = 'grab';
+        container.style.transition = 'all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1)';
+        
+        // ✅ حفظ الموضع في localStorage
+        const rect = container.getBoundingClientRect();
+        const windowWidth = window.innerWidth;
+        const windowHeight = window.innerHeight;
+        
+        localStorage.setItem('botFloatX', rect.left);
+        localStorage.setItem('botFloatY', rect.top);
+        localStorage.setItem('botFloatRight', windowWidth - rect.left - rect.width);
+        localStorage.setItem('botFloatBottom', windowHeight - rect.top - rect.height);
+        
+        // إزالة المستمعات
+        document.removeEventListener('mousemove', onDrag);
+        document.removeEventListener('mouseup', endDrag);
+        document.removeEventListener('touchmove', onDrag);
+        document.removeEventListener('touchend', endDrag);
+        document.removeEventListener('touchcancel', endDrag);
+        
+        // ✅ إذا تحرك الزر، نمنع فتح الشات
+        if (hasMoved) {
+            // الزر تحرك، لن يفتح الشات
+            console.log('🔄 الزر تحرك من مكانه، لن يفتح الشات');
+        }
+    }
+
+    // ===== استعادة الموضع المحفوظ =====
+    function restorePosition() {
+        const savedX = localStorage.getItem('botFloatX');
+        const savedY = localStorage.getItem('botFloatY');
+        const savedRight = localStorage.getItem('botFloatRight');
+        const savedBottom = localStorage.getItem('botFloatBottom');
+        
+        if (savedX && savedY) {
+            container.style.right = 'auto';
+            container.style.bottom = 'auto';
+            container.style.left = savedX + 'px';
+            container.style.top = savedY + 'px';
+        } else if (savedRight && savedBottom) {
+            container.style.right = savedRight + 'px';
+            container.style.bottom = savedBottom + 'px';
+        } else {
+            // الموضع الافتراضي
+            container.style.right = '20px';
+            container.style.bottom = '100px';
+        }
+        
+        // ✅ حفظ الموضع الأصلي بعد الاستعادة
+        setTimeout(saveOriginalPosition, 100);
+    }
+
+    // ===== ✅ دالة فتح الشات (تُستدعى فقط عند النقر) =====
+    function openChat() {
+        // ✅ إذا كان الزر قد تحرك، لا نفتح الشات
+        if (hasMoved) {
+            console.log('🚫 الزر تحرك، لن يفتح الشات');
+            return;
+        }
+        
+        // ✅ التأكد من أننا مش في حالة سحب
+        if (isDragging) {
+            return;
+        }
+        
+        // ✅ التأكد من أن المستخدم مسجل دخول
+        if (typeof currentUser === 'undefined' || !currentUser) {
+            if (typeof showToast === 'function') {
+                showToast('❌ الرجاء تسجيل الدخول أولاً');
+            }
+            if (typeof showLoginPage === 'function') {
+                showLoginPage();
+            }
+            return;
+        }
+        
+        // ✅ فتح الشات
+        if (typeof openDirectBotChat === 'function') {
+            openDirectBotChat();
+        } else {
+            // طريقة بديلة لفتح الشات
+            const ticketId = 'direct_' + Date.now() + '_' + Math.random().toString(36).substring(2, 6);
+            
+            const ticketData = {
+                clientName: currentUser.name || currentUser.username || 'مستخدم',
+                phone: currentUser.phone || 'غير مسجل',
+                issue: 'محادثة مباشرة مع البوت',
+                userId: currentUser.uid,
+                userName: currentUser.name || currentUser.username || 'مستخدم',
+                status: 'active',
+                createdAt: new Date().toISOString(),
+                ticketNumber: 'DIR-' + Date.now().toString().slice(-6),
+                botActive: true,
+                botStep: 1,
+                botProgram: 'الدعم المباشر',
+                isDirectChat: true,
+                messages: {},
+                botQuestions: [
+                    'ما هو سؤالك عن برامجنا؟',
+                    'هل لديك استفسار محدد؟',
+                    'كيف يمكننا مساعدتك؟'
+                ],
+                botCurrentStep: 0
+            };
+            
+            if (typeof db !== 'undefined' && db) {
+                db.ref(`tickets/${ticketId}`).set(ticketData).then(() => {
+                    const welcomeMsg = {
+                        senderId: 'bot',
+                        senderName: '🤖 البوت',
+                        message: '👋 مرحباً بك في شات الدعم المباشر!\n\n💬 أنا هنا لمساعدتك في أي استفسار عن برامجنا وخدماتنا.\n\n📌 اكتب سؤالك وسأجيبك فوراً.\n\n🤖 يمكنك أيضاً كتابة "مساعدة" لعرض قائمة الأسئلة المتاحة.',
+                        timestamp: new Date().toISOString(),
+                        isBot: true
+                    };
+                    
+                    db.ref(`tickets/${ticketId}/messages`).push().set(welcomeMsg);
+                    
+                    if (typeof currentTicketId !== 'undefined') {
+                        window.currentTicketId = ticketId;
+                    }
+                    
+                    if (typeof isAdminMode !== 'undefined') {
+                        window.isAdminMode = false;
+                    }
+                    
+                    if (typeof chatEnded !== 'undefined') {
+                        window.chatEnded = false;
+                    }
+                    
+                    if (typeof openTicketChat === 'function') {
+                        openTicketChat(ticketId);
+                    }
+                    
+                    if (typeof showToast === 'function') {
+                        showToast('💬 تم فتح شات الدعم المباشر');
+                    }
+                }).catch(error => {
+                    console.error('❌ خطأ في فتح شات البوت:', error);
+                    if (typeof showToast === 'function') {
+                        showToast('❌ حدث خطأ في فتح الشات');
+                    }
+                });
+            }
+        }
+    }
+
+    // ===== ✅ معالج النقر على الزر =====
+    function handleClick(e) {
+        // ✅ منع النقر إذا تم السحب
+        if (hasMoved) {
+            e.preventDefault();
+            e.stopPropagation();
+            return;
+        }
+        
+        // ✅ فتح الشات
+        openChat();
+    }
+
+    // ===== إضافة المستمعات =====
+    function addEventListeners() {
+        // ✅ الماوس - بدء السحب
+        btn.addEventListener('mousedown', startDrag);
+        
+        // ✅ اللمس - بدء السحب
+        btn.addEventListener('touchstart', startDrag, { passive: false });
+        
+        // ✅ النقر - فتح الشات (بعد التأكد من عدم السحب)
+        btn.addEventListener('click', handleClick);
+        
+        // ✅ منع النقر المزدوج من التحديد
+        btn.addEventListener('selectstart', (e) => e.preventDefault());
+        
+        // ✅ إعادة تعيين hasMoved عند إعادة تحميل الصفحة
+        window.addEventListener('beforeunload', function() {
+            hasMoved = false;
+        });
+    }
+
+    // ===== ✅ إعادة تعيين hasMoved عند إعادة ظهور الزر =====
+    function resetMovedState() {
+        // بعد 500ms من أي تفاعل، نعيد تعيين hasMoved
+        // لكن بحيث لو تحرك الزر، يفضل hasMoved = true
+        // ولو لم يتحرك، يفضل false
+        setTimeout(() => {
+            // نتحقق من الموضع الحالي مقارنة بالموضع الأصلي
+            const rect = container.getBoundingClientRect();
+            const currentX = rect.left;
+            const currentY = rect.top;
+            
+            // إذا كان الموضع مختلفاً عن الموضع الأصلي بأكثر من 5 بكسل
+            if (Math.abs(currentX - originalPosX) > 5 || Math.abs(currentY - originalPosY) > 5) {
+                hasMoved = true;
+            } else {
+                hasMoved = false;
+            }
+        }, 100);
+    }
+
+    // ===== تهيئة الزر =====
+    function init() {
+        restorePosition();
+        addEventListeners();
+        
+        // حفظ الموضع الأصلي
+        setTimeout(saveOriginalPosition, 200);
+        
+        // إعادة تعيين hasMoved كل ثانية
+        setInterval(() => {
+            const rect = container.getBoundingClientRect();
+            const currentX = rect.left;
+            const currentY = rect.top;
+            
+            // إذا كان الموضع مختلفاً عن الموضع الأصلي بأكثر من 5 بكسل
+            if (Math.abs(currentX - originalPosX) > 5 || Math.abs(currentY - originalPosY) > 5) {
+                hasMoved = true;
+            }
+        }, 1000);
+    }
+
+    // ===== بدء التشغيل =====
+    if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', init);
+    } else {
+        init();
+    }
+
+    // ===== استجابة لتغيير حجم الشاشة =====
+    window.addEventListener('resize', function() {
+        const rect = container.getBoundingClientRect();
+        const windowWidth = window.innerWidth;
+        const windowHeight = window.innerHeight;
+        
+        // التأكد من أن الزر داخل الشاشة
+        if (rect.right > windowWidth - 10) {
+            container.style.left = 'auto';
+            container.style.right = '10px';
+        }
+        if (rect.bottom > windowHeight - 10) {
+            container.style.top = 'auto';
+            container.style.bottom = '70px';
+        }
+        if (rect.left < 10) {
+            container.style.right = 'auto';
+            container.style.left = '10px';
+        }
+        if (rect.top < 10) {
+            container.style.bottom = 'auto';
+            container.style.top = '10px';
+        }
+        
+        // تحديث الموضع الأصلي بعد تغيير الحجم
+        setTimeout(saveOriginalPosition, 200);
+    });
+
+})();
 
 // ============================================================
 //  دالة الحصول على قائمة المواقع
@@ -9161,11 +9801,12 @@ async function getProgramsList() {
         
         
 // ============================================================
-//  دالة التحقق من أسئلة الأسعار (معدلة)
+//  📞 دالة البحث عن سعر البرنامج (من Firebase)
 // ============================================================
-
 async function checkPriceQuestion(message) {
-    // ✅ أنماط البحث عن السعر (مبسطة)
+    const normalizedMessage = normalizeText(message);
+    
+    // ✅ أنماط البحث عن السعر
     const pricePatterns = [
         /سعر\s*(.*)/i,
         /كم\s*سعر\s*(.*)/i,
@@ -9175,24 +9816,25 @@ async function checkPriceQuestion(message) {
         /price\s*(.*)/i,
         /cost\s*(.*)/i,
         /ما هو سعر\s*(.*)/i,
-        /كم تكلفة\s*(.*)/i
+        /كم تكلفة\s*(.*)/i,
+        /كام سعر\s*(.*)/i,
+        /سعر كام\s*(.*)/i
     ];
     
     let programName = null;
     
-    // ✅ محاولة استخراج اسم البرنامج من السؤال
+    // ✅ محاولة استخراج اسم البرنامج
     for (let pattern of pricePatterns) {
-        const match = message.match(pattern);
+        const match = normalizedMessage.match(pattern);
         if (match && match[1]) {
             programName = match[1].trim();
             break;
         }
     }
     
-    // ✅ إذا لم يتم العثور على اسم برنامج، حاول البحث عن كلمة مفتاحية
+    // ✅ إذا لم يتم العثور على اسم برنامج
     if (!programName) {
-        // البحث عن كلمات شائعة
-        const words = message.replace(/سعر|كم|بكم|ثمن|تكلفة|price|cost/gi, '').trim().split(' ');
+        const words = normalizedMessage.replace(/سعر|كم|بكم|ثمن|تكلفة|price|cost|كام/gi, '').trim().split(' ');
         for (let word of words) {
             if (word.length > 2) {
                 programName = word;
@@ -9213,42 +9855,35 @@ async function checkPriceQuestion(message) {
         if (!programs) {
             return { 
                 found: true, 
-                answer: '📋 *لا توجد برامج مسجلة حالياً*\n\nيرجى التواصل مع الإدارة.'
+                answer: '📋 لا توجد برامج مسجلة حالياً. يرجى التواصل مع الإدارة.'
             };
         }
         
         let foundProgram = null;
-        let foundId = null;
         let matchScore = 0;
         
-        // ✅ البحث عن أفضل تطابق
         for (let id in programs) {
             const program = programs[id];
             const nameLower = program.name.toLowerCase();
             const searchLower = programName.toLowerCase();
             
-            // تطابق تام
             if (nameLower === searchLower) {
                 foundProgram = program;
-                foundId = id;
                 matchScore = 100;
                 break;
             }
             
-            // تطابق جزئي
             if (nameLower.includes(searchLower) || searchLower.includes(nameLower)) {
                 const score = Math.max(nameLower.length, searchLower.length);
                 if (score > matchScore) {
                     matchScore = score;
                     foundProgram = program;
-                    foundId = id;
                 }
             }
         }
         
         if (!foundProgram) {
-            // ✅ عرض قائمة البرامج المتاحة مع أسمائها فقط
-            let programList = '📋 *البرامج المتاحة:*\n\n';
+            let programList = '📋 البرامج المتاحة:\n\n';
             let index = 1;
             for (let id in programs) {
                 programList += `${index}. ${programs[id].name}\n`;
@@ -9256,11 +9891,10 @@ async function checkPriceQuestion(message) {
             }
             return {
                 found: true,
-                answer: `❌ *لم أجد برنامجاً باسم "${programName}"*\n\n${programList}\n💡 اكتب اسم البرنامج بشكل صحيح للسؤال عن سعره.`
+                answer: `❌ لم أجد برنامجاً باسم "${programName}"\n\n${programList}\n💡 اكتب اسم البرنامج بشكل صحيح للسؤال عن سعره.`
             };
         }
         
-        // ✅ عرض تفاصيل السعر بشكل منظم
         const priceText = getPriceText(foundProgram.price || 0, foundProgram.priceType || 'free');
         let answer = `💰 *سعر برنامج ${foundProgram.name}*\n\n`;
         answer += `   📌 ${priceText}\n`;
@@ -9269,8 +9903,6 @@ async function checkPriceQuestion(message) {
             answer += `   📝 ${foundProgram.priceDetails}\n`;
         }
         
-        // ✅ إضافة معلومات حسب نوع السعر
-        const priceType = foundProgram.priceType || 'free';
         const typeInfo = {
             'monthly': '📅 اشتراك شهري - يتم التجديد شهرياً',
             'yearly': '📆 اشتراك سنوي - تجديد سنوي مع خصم',
@@ -9279,8 +9911,8 @@ async function checkPriceQuestion(message) {
             'custom': '📋 مخصص - يرجى الاتصال بنا للحصول على عرض سعر'
         };
         
-        if (typeInfo[priceType]) {
-            answer += `\n   ${typeInfo[priceType]}`;
+        if (typeInfo[foundProgram.priceType]) {
+            answer += `\n   ${typeInfo[foundProgram.priceType]}`;
         }
         
         answer += `\n\n💡 للتواصل: 📞 01144100018 - 01126125881`;
@@ -9295,6 +9927,7 @@ async function checkPriceQuestion(message) {
         };
     }
 }
+
 // ============================================================
 //  دالة البحث عن إجابة مع معرفة البرنامج المختار
 // ============================================================
@@ -9766,7 +10399,7 @@ function showSpecificPage(pageId) {
         'meetingRoomPage', 'ticketChatPage'
     ];
     
-    // ✅ إخفاء جميع الصفحات
+    // إخفاء جميع الصفحات
     pages.forEach(page => {
         const el = document.getElementById(page);
         if (el) {
@@ -9777,7 +10410,7 @@ function showSpecificPage(pageId) {
         }
     });
     
-    // ✅ إظهار الصفحة المطلوبة
+    // إظهار الصفحة المطلوبة
     const page = document.getElementById(pageId);
     if (page) {
         page.classList.remove('hidden');
@@ -9785,9 +10418,16 @@ function showSpecificPage(pageId) {
         page.style.position = 'relative';
         page.style.zIndex = '10';
         
-        // ✅ تأكد من أن صفحة التذاكر تظهر بشكل صحيح
+        // ✅ إذا كانت صفحة حسابي، تحديث البيانات
+        if (pageId === 'myAccountPage') {
+            updateMyAccountUI();
+        }
+        
         if (pageId === 'ticketsPage') {
             page.style.display = 'block';
+            if (typeof loadTickets === 'function') {
+                loadTickets();
+            }
         }
         
         return true;
@@ -10177,26 +10817,47 @@ function hideTicketChat() {
             updateSidebarUI();
         }
 
-        function showMyAccountPage() {
-            showSpecificPage('myAccountPage');
-            if (currentUser) {
-                document.getElementById('myAccountLoggedOut').classList.add('hidden');
-                document.getElementById('myAccountLoggedIn').classList.remove('hidden');
-                document.getElementById('myAccountName').innerText = `مرحباً ${currentUser.name || 'مستخدم'}`;
-                document.getElementById('myAccountUsername').innerText = currentUser.username || '';
-                document.getElementById('accountFullName').innerText = currentUser.name || 'غير محدد';
-                document.getElementById('accountEmail').innerText = currentUser.email || currentUser.username || 'غير محدد';
-                document.getElementById('accountPhone').innerText = currentUser.phone || 'غير محدد';
-                document.getElementById('accountUsername').innerText = currentUser.username || 'غير محدد';
-                document.getElementById('accountPlan').innerText = currentUser.plan === 'free' ? 'مجاني' : 'مدفوع';
-                document.getElementById('accountCreatedAt').innerText = currentUser.createdAt ? new Date(currentUser.createdAt).toLocaleDateString('ar-EG') : 'غير محدد';
-            } else {
-                document.getElementById('myAccountLoggedOut').classList.remove('hidden');
-                document.getElementById('myAccountLoggedIn').classList.add('hidden');
-                document.getElementById('myAccountName').innerText = 'مرحباً بك';
-                document.getElementById('myAccountUsername').innerText = 'الرجاء تسجيل الدخول';
-            }
-        }
+      function showMyAccountPage() {
+    // ✅ إظهار الصفحة
+    showSpecificPage('myAccountPage');
+    updateSidebarUI();
+    
+    // ✅ تحديث بيانات الحساب
+    updateMyAccountUI();
+}
+
+function updateMyAccountUI() {
+    const loggedOut = document.getElementById('myAccountLoggedOut');
+    const loggedIn = document.getElementById('myAccountLoggedIn');
+    const nameEl = document.getElementById('myAccountName');
+    const usernameEl = document.getElementById('myAccountUsername');
+    
+    // ✅ التحقق من وجود المستخدم
+    if (currentUser) {
+        // ✅ إظهار بيانات المستخدم
+        loggedOut.classList.add('hidden');
+        loggedIn.classList.remove('hidden');
+        
+        nameEl.innerText = `مرحباً ${currentUser.name || 'مستخدم'}`;
+        usernameEl.innerText = currentUser.username || '';
+        
+        // ✅ ملء البيانات
+        document.getElementById('accountFullName').innerText = currentUser.name || 'غير محدد';
+        document.getElementById('accountEmail').innerText = currentUser.email || currentUser.username || 'غير محدد';
+        document.getElementById('accountPhone').innerText = currentUser.phone || 'غير محدد';
+        document.getElementById('accountUsername').innerText = currentUser.username || 'غير محدد';
+        document.getElementById('accountPlan').innerText = currentUser.plan === 'free' ? 'مجاني' : 'مدفوع';
+        document.getElementById('accountCreatedAt').innerText = currentUser.createdAt ? 
+            new Date(currentUser.createdAt).toLocaleDateString('ar-EG') : 'غير محدد';
+            
+    } else {
+        // ✅ إظهار واجهة تسجيل الدخول
+        loggedOut.classList.remove('hidden');
+        loggedIn.classList.add('hidden');
+        nameEl.innerText = 'مرحباً بك';
+        usernameEl.innerText = 'الرجاء تسجيل الدخول';
+    }
+}
 
 // ============================================================
 //   دوال إدارة تقييمات العملاء في لوحة المدير
@@ -10503,19 +11164,16 @@ async function deleteRating(ratingId) {
     try {
         let email = identifier;
         
-        // ✅ إذا كان الإدخال لا يحتوي على @، حاول إضافته كـ @tecno.com
         if (!identifier.includes('@')) {
             email = `${identifier}@tecno.com`;
             showToast(`⏳ جاري تسجيل الدخول باستخدام: ${email}`);
         }
         
-        // ✅ محاولة تسجيل الدخول
         const userCredential = await auth.signInWithEmailAndPassword(email, password);
         const user = userCredential.user;
         
         console.log('✅ تم تسجيل الدخول بنجاح، UID:', user.uid);
         
-        // ✅ جلب البيانات من Database
         const snapshot = await db.ref(`users/${user.uid}`).once('value');
         const userData = snapshot.val();
         
@@ -10556,9 +11214,18 @@ async function deleteRating(ratingId) {
         await db.ref(`users/${user.uid}/lastLogin`).set(new Date().toISOString());
         
         showToast(`✅ مرحباً ${currentUser.name}`);
-        showDashboard();
+        
+        // ✅ تحديث جميع الواجهات
         updateHomeUI();
         updateSidebarUI();
+        updateMyAccountUI();
+        
+        // ✅ الانتقال للصفحة المناسبة
+        if (document.getElementById('myAccountPage') && !document.getElementById('myAccountPage').classList.contains('hidden')) {
+            // إذا كنت في صفحة حسابي، ابقى فيها
+        } else {
+            showDashboard();
+        }
         
     } catch (error) {
         console.error('❌ خطأ في تسجيل الدخول:', error);
@@ -10593,13 +11260,18 @@ function handleAuthError(error) {
     
     showToast(message);
 }
-       function logout() {
+   function logout() {
     auth.signOut().then(() => {
         currentUser = null;
         localStorage.removeItem('currentUser');
+        
+        // ✅ تحديث جميع الواجهات
         showHomePage();
-        showToast('✅ تم تسجيل الخروج');
+        updateHomeUI();
         updateSidebarUI();
+        updateMyAccountUI();
+        
+        showToast('✅ تم تسجيل الخروج');
     }).catch((error) => {
         console.error('خطأ في تسجيل الخروج:', error);
         showToast('❌ حدث خطأ في تسجيل الخروج');
@@ -12031,11 +12703,9 @@ async function saveProgram(event) {
 }
 
 // ============================================================
-//  دالة مساعدة: تحويل السعر ونوعه إلى نص (مصححة)
+//  💰 دالة الحصول على نص السعر
 // ============================================================
-
 function getPriceText(price, priceType) {
-    // ✅ التأكد من وجود priceType صحيح
     const validTypes = ['monthly', 'yearly', 'permanent', 'free', 'custom'];
     if (!validTypes.includes(priceType)) {
         priceType = 'free';
@@ -12050,8 +12720,6 @@ function getPriceText(price, priceType) {
     };
     
     const typeText = typeMap[priceType] || 'مجاني';
-    
-    // ✅ التأكد من أن price رقم صحيح
     const validPrice = typeof price === 'number' && !isNaN(price) ? price : 0;
     
     if (priceType === 'free') {
@@ -12059,7 +12727,6 @@ function getPriceText(price, priceType) {
     } else if (priceType === 'custom') {
         return '📋 مخصص - اتصل بنا';
     } else if (validPrice > 0) {
-        // ✅ تنسيق الأرقام بفواصل
         const formattedPrice = validPrice.toLocaleString();
         return `${formattedPrice} ج.م / ${typeText}`;
     } else {
@@ -12615,44 +13282,230 @@ function adminRefreshAll() {
     showToast('🔄 تم تحديث جميع البيانات');
 }
 
+// ============================================================
+//  📌 تحميل المستخدمين في لوحة المدير - مع زر حذف
+// ============================================================
+
 async function loadAdminUsers() {
     try {
         const snapshot = await db.ref('users').once('value');
         const users = snapshot.val();
         const container = document.getElementById('adminUsersList');
         
-        if (!container) return;
+        if (!container) {
+            console.warn('⚠️ adminUsersList غير موجود');
+            return;
+        }
         
         if (!users) {
-            container.innerHTML = '<div class="text-center py-8 text-gray-400">لا يوجد مستخدمين</div>';
+            container.innerHTML = `
+                <div class="text-center py-8 text-gray-400">
+                    <i class="fas fa-users text-4xl mb-3"></i>
+                    <p>لا يوجد مستخدمين</p>
+                </div>
+            `;
             return;
         }
         
         let html = '';
+        let index = 1;
+        
         for (let uid in users) {
             const user = users[uid];
             const isAdmin = user.role === 'admin' || user.isAdmin === true;
+            const isCurrentUser = uid === currentUser?.uid; // ✅ منع حذف المستخدم الحالي
+            
+            // ✅ تحديد لون الصف
+            const rowColor = isAdmin ? 'bg-yellow-50' : (index % 2 === 0 ? 'bg-gray-50' : 'bg-white');
+            
+            // ✅ أيقونة الحالة
+            const statusIcon = isAdmin ? '👑' : '👤';
+            const statusText = isAdmin ? 'مدير' : 'مستخدم';
+            const statusColor = isAdmin ? 'text-yellow-600 bg-yellow-100' : 'text-blue-600 bg-blue-100';
             
             html += `
-                <div class="p-4 hover:bg-gray-50 flex justify-between items-center flex-wrap gap-2 border-b">
-                    <div>
-                        <div class="font-bold text-gray-800">${user.name || 'مستخدم'}</div>
-                        <div class="text-sm text-gray-500">${user.username || user.email || ''}</div>
-                        <div class="text-xs text-gray-400">${user.phone || 'رقم غير مسجل'}</div>
+                <div class="flex justify-between items-center p-4 hover:bg-gray-50 border-b ${rowColor} transition-colors duration-200">
+                    <div class="flex items-center gap-4 flex-1 min-w-0">
+                        <!-- الصورة الرمزية -->
+                        <div class="w-10 h-10 rounded-full ${isAdmin ? 'bg-yellow-200' : 'bg-blue-200'} flex items-center justify-center text-sm font-bold ${isAdmin ? 'text-yellow-700' : 'text-blue-700'} flex-shrink-0">
+                            ${(user.name || 'U').charAt(0).toUpperCase()}
+                        </div>
+                        
+                        <!-- معلومات المستخدم -->
+                        <div class="min-w-0 flex-1">
+                            <div class="font-bold text-gray-800 text-sm sm:text-base truncate">
+                                ${user.name || 'مستخدم'}
+                                <span class="text-xs ${statusColor} px-2 py-0.5 rounded-full mr-2">
+                                    ${statusIcon} ${statusText}
+                                </span>
+                            </div>
+                            <div class="text-xs text-gray-500 truncate">
+                                <span dir="ltr" class="font-mono">${user.username || user.email || ''}</span>
+                                ${user.phone ? `<span class="mx-2">|</span><span dir="ltr">${user.phone}</span>` : ''}
+                            </div>
+                            <div class="text-xs text-gray-400 mt-0.5">
+                                <i class="fas fa-calendar-alt ml-1"></i> 
+                                ${user.createdAt ? new Date(user.createdAt).toLocaleDateString('ar-EG') : 'غير معروف'}
+                                ${user.lastLogin ? `<span class="mx-2">|</span>🕐 ${new Date(user.lastLogin).toLocaleDateString('ar-EG')}` : ''}
+                            </div>
+                        </div>
                     </div>
-                    <div class="flex items-center gap-3">
-                        ${isAdmin ? '<span class="text-xs bg-yellow-100 text-yellow-800 px-2 py-1 rounded-full">👑 مدير</span>' : ''}
-                        <span class="text-xs bg-gray-100 px-2 py-1 rounded-full">${user.plan || 'مجاني'}</span>
+                    
+                    <!-- الأزرار -->
+                    <div class="flex items-center gap-2 flex-shrink-0">
+                        ${isCurrentUser ? `
+                            <span class="text-xs text-green-600 bg-green-100 px-2 py-1 rounded-full">
+                                <i class="fas fa-check-circle"></i> أنت
+                            </span>
+                        ` : `
+                            ${isAdmin ? `
+                                <button onclick="removeAdminRole('${uid}')" 
+                                        class="text-yellow-600 hover:text-yellow-800 text-sm px-3 py-1 rounded-lg hover:bg-yellow-50 transition-colors"
+                                        title="إزالة صلاحية المدير">
+                                    <i class="fas fa-user-minus"></i> <span class="hidden sm:inline">إزالة مدير</span>
+                                </button>
+                            ` : `
+                                <button onclick="makeAdmin('${uid}')" 
+                                        class="text-blue-600 hover:text-blue-800 text-sm px-3 py-1 rounded-lg hover:bg-blue-50 transition-colors"
+                                        title="جعله مدير">
+                                    <i class="fas fa-crown"></i> <span class="hidden sm:inline">جعله مدير</span>
+                                </button>
+                            `}
+                            <button onclick="deleteUser('${uid}')" 
+                                    class="text-red-500 hover:text-red-700 text-sm px-3 py-1 rounded-lg hover:bg-red-50 transition-colors"
+                                    title="حذف المستخدم">
+                                <i class="fas fa-trash"></i> <span class="hidden sm:inline">حذف</span>
+                            </button>
+                        `}
                     </div>
                 </div>
             `;
+            index++;
         }
         
         container.innerHTML = html;
         
+        // ✅ تحديث عدد المستخدمين
+        const countSpan = document.querySelector('#adminTabUsers .font-bold');
+        if (countSpan) {
+            const userCount = Object.keys(users).length;
+            countSpan.innerText = `جميع المستخدمين (${userCount})`;
+        }
+        
     } catch (error) {
-        console.error('خطأ في تحميل المستخدمين:', error);
+        console.error('❌ خطأ في تحميل المستخدمين:', error);
+        showToast('❌ حدث خطأ في تحميل المستخدمين');
     }
+}
+
+async function deleteUser(uid) {
+    // ✅ منع حذف المستخدم الحالي
+    if (uid === currentUser?.uid) {
+        showToast('❌ لا يمكنك حذف حسابك الحالي');
+        return;
+    }
+    
+    // ✅ نافذة تأكيد مخصصة
+    openCustomConfirm(
+        '⚠️ هل أنت متأكد من حذف هذا المستخدم؟',
+        'سيتم حذف جميع بيانات المستخدم نهائياً! لا يمكن التراجع عن هذا الإجراء.',
+        async function(confirmed) {
+            if (confirmed) {
+                try {
+                    // ✅ حذف بيانات المستخدم من Realtime Database
+                    await db.ref(`users/${uid}`).remove();
+                    
+                    // ✅ حذف التذاكر الخاصة بالمستخدم
+                    const ticketsSnapshot = await db.ref('tickets').once('value');
+                    const tickets = ticketsSnapshot.val();
+                    if (tickets) {
+                        for (let ticketId in tickets) {
+                            if (tickets[ticketId].userId === uid) {
+                                await db.ref(`tickets/${ticketId}`).remove();
+                            }
+                        }
+                    }
+                    
+                    showToast('✅ تم حذف المستخدم وجميع بياناته بنجاح');
+                    
+                    // ✅ إعادة تحميل قائمة المستخدمين
+                    loadAdminUsers();
+                    loadAdminDashboard();
+                    
+                } catch (error) {
+                    console.error('❌ خطأ في حذف المستخدم:', error);
+                    showToast('❌ حدث خطأ في حذف المستخدم');
+                }
+            }
+        },
+        uid
+    );
+}
+
+// ============================================================
+//  📌 جعل المستخدم مدير
+// ============================================================
+
+async function makeAdmin(uid) {
+    if (uid === currentUser?.uid) {
+        showToast('⚠️ أنت بالفعل مدير');
+        return;
+    }
+    
+    openCustomConfirm(
+        '👑 جعل هذا المستخدم مديراً؟',
+        'سيتم منح المستخدم صلاحيات المدير الكاملة',
+        async function(confirmed) {
+            if (confirmed) {
+                try {
+                    await db.ref(`users/${uid}`).update({
+                        role: 'admin',
+                        isAdmin: true
+                    });
+                    showToast('✅ تم جعل المستخدم مديراً بنجاح');
+                    loadAdminUsers();
+                    loadAdminDashboard();
+                } catch (error) {
+                    console.error('❌ خطأ:', error);
+                    showToast('❌ حدث خطأ');
+                }
+            }
+        },
+        uid
+    );
+}
+
+// ============================================================
+//  📌 إزالة صلاحية المدير
+// ============================================================
+
+async function removeAdminRole(uid) {
+    if (uid === currentUser?.uid) {
+        showToast('⚠️ لا يمكنك إزالة صلاحية المدير من حسابك');
+        return;
+    }
+    
+    openCustomConfirm(
+        '⚠️ إزالة صلاحية المدير؟',
+        'سيتم تحويل المستخدم إلى مستخدم عادي',
+        async function(confirmed) {
+            if (confirmed) {
+                try {
+                    await db.ref(`users/${uid}`).update({
+                        role: 'user',
+                        isAdmin: false
+                    });
+                    showToast('✅ تم إزالة صلاحية المدير');
+                    loadAdminUsers();
+                    loadAdminDashboard();
+                } catch (error) {
+                    console.error('❌ خطأ:', error);
+                    showToast('❌ حدث خطأ');
+                }
+            }
+        },
+        uid
+    );
 }
 
 // =============================================
@@ -16197,6 +17050,10 @@ async function loadTickets() {
     }
 }
 
+// ============================================================
+//  📌 عرض التذاكر مع العداد التنازلي
+// ============================================================
+
 function renderTickets(tickets) {
     const container = document.getElementById('ticketsList');
     const noMessage = document.getElementById('noTicketsMessage');
@@ -16219,18 +17076,36 @@ function renderTickets(tickets) {
         const statusLabels = { active: 'نشطة', waiting: 'قيد الانتظار', ended: 'منتهية' };
         const status = ticket.status || 'waiting';
         
+        // ✅ حساب الوقت المتبقي للتذكرة
+        const timeLeft = getTicketTimeLeft(ticket);
+        const timeLeftHtml = timeLeft ? `
+            <div class="flex items-center gap-2 text-xs ${timeLeft.isUrgent ? 'text-red-500 font-bold' : 'text-gray-500'}">
+                <i class="fas fa-clock"></i>
+                <span class="countdown-timer ${timeLeft.isUrgent ? 'urgent' : ''}" data-ticket="${ticket.id}">
+                    ${timeLeft.text}
+                </span>
+            </div>
+        ` : '';
+        
         return `
-            <div class="ticket-card bg-white rounded-2xl p-5 shadow-lg">
+            <div class="ticket-card bg-white rounded-2xl p-5 shadow-lg border-r-4 ${status === 'active' ? 'border-green-500' : status === 'waiting' ? 'border-yellow-500' : 'border-gray-300'}">
                 <div class="flex justify-between items-start mb-3">
-                    <h3 class="font-bold text-lg">${ticket.clientName}</h3>
+                    <div>
+                        <h3 class="font-bold text-lg">${ticket.clientName}</h3>
+                        <p class="text-xs text-gray-400">${ticket.phone || ''}</p>
+                    </div>
                     <span class="status-badge ${statusColors[status]}">${statusLabels[status]}</span>
                 </div>
-                <p class="text-sm text-gray-600 mb-2">📱 ${ticket.phone}</p>
-                <p class="text-sm text-gray-700 mb-3 line-clamp-2">${ticket.issue}</p>
-                <div class="flex justify-between items-center text-xs text-gray-400">
+                
+                <p class="text-sm text-gray-600 mb-2 line-clamp-2">${ticket.issue || 'محادثة مباشرة مع البوت'}</p>
+                
+                <div class="flex justify-between items-center text-xs text-gray-400 mb-3">
                     <span>🕐 ${new Date(ticket.createdAt).toLocaleString('ar-EG')}</span>
-                    <span>#${ticket.ticketNumber || 'N/A'}</span>
+                    <span class="font-mono">#${ticket.ticketNumber || 'N/A'}</span>
                 </div>
+                
+                ${timeLeftHtml}
+                
                 <div class="mt-3 flex gap-2 flex-wrap">
                     ${status === 'active' ? `
                         <button onclick="openTicketChat('${ticket.id}')" class="flex-1 bg-green-600 text-white py-2 rounded-lg hover:bg-green-700 transition text-sm">
@@ -16245,7 +17120,6 @@ function renderTickets(tickets) {
                             ✅ منتهية
                         </button>
                     `}
-                    <!-- ✅ زر حذف التذكرة (جديد) -->
                     <button onclick="deleteTicketFromCard('${ticket.id}')" class="bg-red-500 text-white px-4 py-2 rounded-lg hover:bg-red-600 transition text-sm" title="حذف التذكرة">
                         <i class="fas fa-trash"></i>
                     </button>
@@ -16253,6 +17127,105 @@ function renderTickets(tickets) {
             </div>
         `;
     }).join('');
+    
+    // ✅ بدء تحديث العدادات التنازلية
+    startCountdownTimers();
+}
+
+// ============================================================
+//  📌 حساب الوقت المتبقي للتذكرة
+// ============================================================
+
+function getTicketTimeLeft(ticket) {
+    if (!ticket || ticket.status === 'ended') return null;
+    
+    const now = new Date();
+    const createdAt = new Date(ticket.createdAt);
+    const timeDiff = now - createdAt;
+    const maxTime = 60 * 1000; // 60 ثانية كحد أقصى للتذكرة النشطة
+    
+    if (ticket.status === 'active') {
+        // ✅ للتذاكر النشطة: الوقت المنقضي منذ الإنشاء
+        const remaining = Math.max(0, maxTime - timeDiff);
+        const seconds = Math.ceil(remaining / 1000);
+        
+        if (seconds <= 0) {
+            return { text: '⏰ انتهت المهلة', isUrgent: true };
+        }
+        
+        return {
+            text: `⏳ ${seconds} ثانية`,
+            isUrgent: seconds < 30,
+            seconds: seconds
+        };
+    }
+    
+    if (ticket.status === 'waiting') {
+        // ✅ للتذاكر المنتظرة: الوقت حتى تفعيلها (افتراضي 30 ثانية)
+        const waitTime = 30 * 1000; // 30 ثانية انتظار
+        const remaining = Math.max(0, waitTime - timeDiff);
+        const seconds = Math.ceil(remaining / 1000);
+        
+        if (seconds <= 0) {
+            return { text: '⏳ جاري التفعيل...', isUrgent: false };
+        }
+        
+        return {
+            text: `⏳ ${seconds} ثانية`,
+            isUrgent: seconds < 10,
+            seconds: seconds
+        };
+    }
+    
+    return null;
+}
+
+// ============================================================
+//  📌 تحديث العدادات التنازلية
+// ============================================================
+
+function startCountdownTimers() {
+    // ✅ إلغاء المؤقت القديم
+    if (window.countdownInterval) {
+        clearInterval(window.countdownInterval);
+    }
+    
+    // ✅ بدء مؤقت جديد كل ثانية
+    window.countdownInterval = setInterval(() => {
+        document.querySelectorAll('.countdown-timer').forEach(el => {
+            const ticketId = el.dataset.ticket;
+            const ticket = currentTickets.find(t => t.id === ticketId);
+            if (ticket) {
+                const timeLeft = getTicketTimeLeft(ticket);
+                if (timeLeft) {
+                    el.textContent = timeLeft.text;
+                    if (timeLeft.isUrgent) {
+                        el.classList.add('urgent');
+                    } else {
+                        el.classList.remove('urgent');
+                    }
+                }
+            }
+        });
+    }, 1000);
+}
+
+// ============================================================
+//  📌 تحديث التذاكر وإعادة تحميل العدادات
+// ============================================================
+
+// عند تحميل التذاكر، نبدأ العدادات
+function loadTicketsWithCountdown() {
+    loadTickets();
+    // العدادات تبدأ تلقائياً من renderTickets
+}
+
+// عند إغلاق الشات، نوقف العدادات
+function stopCountdownTimers() {
+    if (window.countdownInterval) {
+        clearInterval(window.countdownInterval);
+        window.countdownInterval = null;
+    }
 }
 
 // ==================== حذف التذكرة من البطاقة مباشرة ====================
