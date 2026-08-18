@@ -6881,6 +6881,193 @@ function closeScreenFullscreen() {
 });
 
 
+document.addEventListener('DOMContentLoaded', function() {
+    const botBtn = document.getElementById('botFloatBtn');
+    const botContainer = document.getElementById('botFloatContainer');
+
+    if (!botBtn || !botContainer) return;
+
+    // متغيرات لمنع النقر المزدوج
+    let touchTimeout = null;
+    let isTouching = false;
+
+    // ===== معالج اللمس =====
+    botBtn.addEventListener('touchstart', function(e) {
+        // منع التمرير أو التكبير عند اللمس
+        e.preventDefault();
+        
+        // إذا كان هناك timeout سابق، ألغِه
+        if (touchTimeout) {
+            clearTimeout(touchTimeout);
+            touchTimeout = null;
+        }
+
+        isTouching = true;
+
+        // فتح الشات بعد 100ms (تأكيد أنها لمسة وليست سحب)
+        touchTimeout = setTimeout(function() {
+            if (isTouching) {
+                // فتح الشات
+                if (typeof openDirectBotChat === 'function') {
+                    openDirectBotChat();
+                } else {
+                    // طريقة بديلة
+                    if (typeof currentUser !== 'undefined' && currentUser) {
+                        if (typeof openTicketChat === 'function') {
+                            // إنشاء تذكرة مؤقتة
+                            const ticketId = 'direct_' + Date.now() + '_' + Math.random().toString(36).substring(2, 6);
+                            const ticketData = {
+                                clientName: currentUser.name || currentUser.username || 'مستخدم',
+                                phone: currentUser.phone || 'غير مسجل',
+                                issue: 'محادثة مباشرة مع البوت',
+                                userId: currentUser.uid,
+                                userName: currentUser.name || currentUser.username || 'مستخدم',
+                                status: 'active',
+                                createdAt: new Date().toISOString(),
+                                ticketNumber: 'DIR-' + Date.now().toString().slice(-6),
+                                botActive: true,
+                                botStep: 1,
+                                botProgram: 'الدعم المباشر',
+                                isDirectChat: true,
+                                messages: {}
+                            };
+                            
+                            if (typeof db !== 'undefined' && db) {
+                                db.ref(`tickets/${ticketId}`).set(ticketData).then(() => {
+                                    const welcomeMsg = {
+                                        senderId: 'bot',
+                                        senderName: '🤖 البوت',
+                                        message: '👋 مرحباً بك في شات الدعم المباشر!\n\n💬 أنا هنا لمساعدتك في أي استفسار عن برامجنا وخدماتنا.',
+                                        timestamp: new Date().toISOString(),
+                                        isBot: true
+                                    };
+                                    db.ref(`tickets/${ticketId}/messages`).push().set(welcomeMsg);
+                                    window.currentTicketId = ticketId;
+                                    if (typeof openTicketChat === 'function') {
+                                        openTicketChat(ticketId);
+                                    }
+                                    if (typeof showToast === 'function') {
+                                        showToast('💬 تم فتح شات الدعم المباشر');
+                                    }
+                                }).catch(function(err) {
+                                    console.error(err);
+                                    if (typeof showToast === 'function') {
+                                        showToast('❌ حدث خطأ في فتح الشات');
+                                    }
+                                });
+                            }
+                        }
+                    } else {
+                        if (typeof showToast === 'function') {
+                            showToast('❌ الرجاء تسجيل الدخول أولاً');
+                        }
+                        if (typeof showLoginPage === 'function') {
+                            showLoginPage();
+                        }
+                    }
+                }
+                isTouching = false;
+            }
+        }, 100);
+    });
+
+    // ===== عند رفع الإصبع =====
+    botBtn.addEventListener('touchend', function(e) {
+        e.preventDefault();
+        // لا نغلق هنا، لأن الـ timeout سيتعامل مع الفتح
+        // نضع تأخير صغير لتجنب الإلغاء
+        setTimeout(function() {
+            isTouching = false;
+        }, 50);
+    });
+
+    // ===== إذا تم إلغاء اللمس (مثلاً: سحب الإصبع) =====
+    botBtn.addEventListener('touchcancel', function(e) {
+        e.preventDefault();
+        if (touchTimeout) {
+            clearTimeout(touchTimeout);
+            touchTimeout = null;
+        }
+        isTouching = false;
+    });
+
+    // ===== منع التمرير عند اللمس =====
+    botBtn.addEventListener('touchmove', function(e) {
+        // إذا تحرك الإصبع، نلغي فتح الشات
+        if (touchTimeout) {
+            clearTimeout(touchTimeout);
+            touchTimeout = null;
+        }
+        isTouching = false;
+    });
+
+    // ===== أيضاً للماوس (كمبيوتر) =====
+    botBtn.addEventListener('click', function(e) {
+        // إذا كان اللمس نشطاً، نمنع النقر المزدوج
+        if (isTouching) {
+            e.preventDefault();
+            return;
+        }
+        
+        // فتح الشات (نفس الكود الأصلي)
+        if (typeof openDirectBotChat === 'function') {
+            openDirectBotChat();
+        } else if (typeof currentUser !== 'undefined' && currentUser) {
+            // الكود البديل...
+            if (typeof openTicketChat === 'function') {
+                const ticketId = 'direct_' + Date.now() + '_' + Math.random().toString(36).substring(2, 6);
+                const ticketData = {
+                    clientName: currentUser.name || currentUser.username || 'مستخدم',
+                    phone: currentUser.phone || 'غير مسجل',
+                    issue: 'محادثة مباشرة مع البوت',
+                    userId: currentUser.uid,
+                    userName: currentUser.name || currentUser.username || 'مستخدم',
+                    status: 'active',
+                    createdAt: new Date().toISOString(),
+                    ticketNumber: 'DIR-' + Date.now().toString().slice(-6),
+                    botActive: true,
+                    botStep: 1,
+                    botProgram: 'الدعم المباشر',
+                    isDirectChat: true,
+                    messages: {}
+                };
+                
+                if (typeof db !== 'undefined' && db) {
+                    db.ref(`tickets/${ticketId}`).set(ticketData).then(() => {
+                        const welcomeMsg = {
+                            senderId: 'bot',
+                            senderName: '🤖 البوت',
+                            message: '👋 مرحباً بك في شات الدعم المباشر!\n\n💬 أنا هنا لمساعدتك في أي استفسار عن برامجنا وخدماتنا.',
+                            timestamp: new Date().toISOString(),
+                            isBot: true
+                        };
+                        db.ref(`tickets/${ticketId}/messages`).push().set(welcomeMsg);
+                        window.currentTicketId = ticketId;
+                        openTicketChat(ticketId);
+                        if (typeof showToast === 'function') {
+                            showToast('💬 تم فتح شات الدعم المباشر');
+                        }
+                    }).catch(function(err) {
+                        console.error(err);
+                        if (typeof showToast === 'function') {
+                            showToast('❌ حدث خطأ في فتح الشات');
+                        }
+                    });
+                }
+            }
+        } else {
+            if (typeof showToast === 'function') {
+                showToast('❌ الرجاء تسجيل الدخول أولاً');
+            }
+            if (typeof showLoginPage === 'function') {
+                showLoginPage();
+            }
+        }
+    });
+
+    console.log('✅ تم إصلاح زر البوت لشاشات اللمس');
+});
+
         // =============================================
 //  تعديل دالة عرض لوحة المدير
 // =============================================
