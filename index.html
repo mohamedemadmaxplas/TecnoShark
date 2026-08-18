@@ -6889,17 +6889,37 @@ document.addEventListener('DOMContentLoaded', function() {
 
     // ===== متغيرات التحكم =====
     let isDragging = false;
-    let hasMoved = false;          // هل تحرك الزر؟
+    let hasMoved = false;
     let startX = 0, startY = 0;
     let offsetX = 0, offsetY = 0;
-    let dragStartTime = 0;
+    let isTouchDevice = ('ontouchstart' in window) || (navigator.maxTouchPoints > 0);
+    
+    // ===== منع النقر المزدوج =====
+    let clickTimeout = null;
+    let isClickHandled = false;
 
-    // ===== حفظ الموضع الأصلي =====
-    let originalRect = botContainer.getBoundingClientRect();
+    // ===== حفظ الموضع المحفوظ =====
+    function restorePosition() {
+        const savedX = localStorage.getItem('botFloatX');
+        const savedY = localStorage.getItem('botFloatY');
+        
+        if (savedX && savedY) {
+            botContainer.style.right = 'auto';
+            botContainer.style.bottom = 'auto';
+            botContainer.style.left = savedX + 'px';
+            botContainer.style.top = savedY + 'px';
+        } else {
+            botContainer.style.right = '20px';
+            botContainer.style.bottom = '100px';
+        }
+    }
+    restorePosition();
 
-    // ===== بدء السحب (ماوس) =====
+    // ============================================================
+    //  🖱️ أحداث الماوس (الكمبيوتر)
+    // ============================================================
+    
     botBtn.addEventListener('mousedown', function(e) {
-        e.preventDefault();
         const rect = botContainer.getBoundingClientRect();
         offsetX = e.clientX - rect.left;
         offsetY = e.clientY - rect.top;
@@ -6907,21 +6927,17 @@ document.addEventListener('DOMContentLoaded', function() {
         startY = e.clientY;
         isDragging = true;
         hasMoved = false;
-        dragStartTime = Date.now();
         botContainer.style.cursor = 'grabbing';
         botContainer.style.transition = 'none';
     });
 
-    // ===== أثناء السحب (ماوس) =====
     document.addEventListener('mousemove', function(e) {
         if (!isDragging) return;
-        e.preventDefault();
-
+        
         const dx = e.clientX - startX;
         const dy = e.clientY - startY;
 
-        // إذا تحرك أكثر من 8 بكسل، يعتبر سحباً
-        if (Math.abs(dx) > 8 || Math.abs(dy) > 8) {
+        if (Math.abs(dx) > 6 || Math.abs(dy) > 6) {
             hasMoved = true;
         }
 
@@ -6933,7 +6949,6 @@ document.addEventListener('DOMContentLoaded', function() {
         let newX = e.clientX - offsetX;
         let newY = e.clientY - offsetY;
 
-        // منع الخروج عن حدود الشاشة
         newX = Math.max(10, Math.min(newX, windowWidth - containerWidth - 10));
         newY = Math.max(10, Math.min(newY, windowHeight - containerHeight - 10));
 
@@ -6941,54 +6956,66 @@ document.addEventListener('DOMContentLoaded', function() {
         botContainer.style.bottom = 'auto';
         botContainer.style.left = newX + 'px';
         botContainer.style.top = newY + 'px';
-
-        // تحديث الموضع الأصلي
-        originalRect = botContainer.getBoundingClientRect();
     });
 
-    // ===== إنهاء السحب (ماوس) =====
     document.addEventListener('mouseup', function(e) {
         if (!isDragging) return;
         isDragging = false;
         botContainer.style.cursor = 'grab';
         botContainer.style.transition = 'all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1)';
 
-        // حفظ الموضع في localStorage
         const rect = botContainer.getBoundingClientRect();
         localStorage.setItem('botFloatX', rect.left);
         localStorage.setItem('botFloatY', rect.top);
 
-        // إذا تحرك الزر، نمنع فتح الشات
         if (hasMoved) {
-            console.log('🔄 الزر تحرك، لن يفتح الشات');
+            console.log('🔄 تم سحب الزر');
         }
     });
 
-    // ===== بدء السحب (لمس) =====
+    // ============================================================
+    //  📱 أحداث اللمس (الموبايل والتابلت)
+    // ============================================================
+    
+    let touchStartTime = 0;
+    let touchStartX = 0, touchStartY = 0;
+    let isTouchDragging = false;
+    let touchHasMoved = false;
+
     botBtn.addEventListener('touchstart', function(e) {
         const touch = e.touches[0];
         const rect = botContainer.getBoundingClientRect();
+        
         offsetX = touch.clientX - rect.left;
         offsetY = touch.clientY - rect.top;
-        startX = touch.clientX;
-        startY = touch.clientY;
-        isDragging = true;
-        hasMoved = false;
-        dragStartTime = Date.now();
+        touchStartX = touch.clientX;
+        touchStartY = touch.clientY;
+        touchStartTime = Date.now();
+        isTouchDragging = true;
+        touchHasMoved = false;
         botContainer.style.transition = 'none';
+        
+        // إلغاء أي timeout سابق
+        if (clickTimeout) {
+            clearTimeout(clickTimeout);
+            clickTimeout = null;
+        }
     }, { passive: true });
 
-    // ===== أثناء السحب (لمس) =====
     document.addEventListener('touchmove', function(e) {
-        if (!isDragging) return;
-        e.preventDefault();
-
+        if (!isTouchDragging) return;
+        
         const touch = e.touches[0];
-        const dx = touch.clientX - startX;
-        const dy = touch.clientY - startY;
+        const dx = touch.clientX - touchStartX;
+        const dy = touch.clientY - touchStartY;
 
-        if (Math.abs(dx) > 8 || Math.abs(dy) > 8) {
-            hasMoved = true;
+        if (Math.abs(dx) > 6 || Math.abs(dy) > 6) {
+            touchHasMoved = true;
+            // إلغاء فتح الشات إذا بدأ السحب
+            if (clickTimeout) {
+                clearTimeout(clickTimeout);
+                clickTimeout = null;
+            }
         }
 
         const windowWidth = window.innerWidth;
@@ -7006,43 +7033,49 @@ document.addEventListener('DOMContentLoaded', function() {
         botContainer.style.bottom = 'auto';
         botContainer.style.left = newX + 'px';
         botContainer.style.top = newY + 'px';
-
-        originalRect = botContainer.getBoundingClientRect();
     }, { passive: false });
 
-    // ===== إنهاء السحب (لمس) =====
     document.addEventListener('touchend', function(e) {
-        if (!isDragging) return;
-        isDragging = false;
+        if (!isTouchDragging) return;
+        isTouchDragging = false;
         botContainer.style.transition = 'all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1)';
 
         const rect = botContainer.getBoundingClientRect();
         localStorage.setItem('botFloatX', rect.left);
         localStorage.setItem('botFloatY', rect.top);
 
-        if (hasMoved) {
-            console.log('🔄 الزر تحرك، لن يفتح الشات');
+        // ✅ إذا لم يتحرك الزر، نفتح الشات
+        if (!touchHasMoved) {
+            // تأخير بسيط للتأكد من أن المستخدم لم يبدأ بالسحب
+            clickTimeout = setTimeout(function() {
+                if (!touchHasMoved && !isTouchDragging) {
+                    openBotChat();
+                }
+                clickTimeout = null;
+            }, 50);
+        } else {
+            console.log('🔄 تم سحب الزر (لمس)');
         }
-    });
+    }, { passive: true });
 
-    // ===== إلغاء السحب (لمس) =====
     document.addEventListener('touchcancel', function() {
-        if (isDragging) {
-            isDragging = false;
+        if (isTouchDragging) {
+            isTouchDragging = false;
             botContainer.style.transition = 'all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1)';
+            if (clickTimeout) {
+                clearTimeout(clickTimeout);
+                clickTimeout = null;
+            }
         }
     });
 
-    // ===== ✅ النقر لفتح الشات (يعمل فقط إذا لم يتحرك الزر) =====
-    function openChat() {
-        // إذا كان الزر قد تحرك، لا نفتح الشات
-        if (hasMoved) {
-            console.log('🚫 الزر تحرك، لن يفتح الشات');
-            return;
-        }
-
+    // ============================================================
+    //  🚀 دالة فتح الشات
+    // ============================================================
+    
+    function openBotChat() {
         // إذا كان في حالة سحب، لا نفتح
-        if (isDragging) {
+        if (isDragging || isTouchDragging) {
             return;
         }
 
@@ -7060,118 +7093,80 @@ document.addEventListener('DOMContentLoaded', function() {
         // ✅ فتح الشات
         if (typeof openDirectBotChat === 'function') {
             openDirectBotChat();
-        } else {
-            // طريقة بديلة
-            const ticketId = 'direct_' + Date.now() + '_' + Math.random().toString(36).substring(2, 6);
-            const ticketData = {
-                clientName: currentUser.name || currentUser.username || 'مستخدم',
-                phone: currentUser.phone || 'غير مسجل',
-                issue: 'محادثة مباشرة مع البوت',
-                userId: currentUser.uid,
-                userName: currentUser.name || currentUser.username || 'مستخدم',
-                status: 'active',
-                createdAt: new Date().toISOString(),
-                ticketNumber: 'DIR-' + Date.now().toString().slice(-6),
-                botActive: true,
-                botStep: 1,
-                botProgram: 'الدعم المباشر',
-                isDirectChat: true,
-                messages: {}
-            };
+            return;
+        }
 
-            if (typeof db !== 'undefined' && db) {
-                db.ref(`tickets/${ticketId}`).set(ticketData).then(() => {
-                    const welcomeMsg = {
-                        senderId: 'bot',
-                        senderName: '🤖 البوت',
-                        message: '👋 مرحباً بك في شات الدعم المباشر!\n\n💬 أنا هنا لمساعدتك في أي استفسار عن برامجنا وخدماتنا.',
-                        timestamp: new Date().toISOString(),
-                        isBot: true
-                    };
-                    db.ref(`tickets/${ticketId}/messages`).push().set(welcomeMsg);
-                    window.currentTicketId = ticketId;
-                    if (typeof openTicketChat === 'function') {
-                        openTicketChat(ticketId);
-                    }
-                    if (typeof showToast === 'function') {
-                        showToast('💬 تم فتح شات الدعم المباشر');
-                    }
-                }).catch(function(err) {
-                    console.error(err);
-                    if (typeof showToast === 'function') {
-                        showToast('❌ حدث خطأ في فتح الشات');
-                    }
-                });
-            }
+        // ✅ طريقة بديلة (إذا كانت الدالة غير موجودة)
+        const ticketId = 'direct_' + Date.now() + '_' + Math.random().toString(36).substring(2, 6);
+        const ticketData = {
+            clientName: currentUser.name || currentUser.username || 'مستخدم',
+            phone: currentUser.phone || 'غير مسجل',
+            issue: 'محادثة مباشرة مع البوت',
+            userId: currentUser.uid,
+            userName: currentUser.name || currentUser.username || 'مستخدم',
+            status: 'active',
+            createdAt: new Date().toISOString(),
+            ticketNumber: 'DIR-' + Date.now().toString().slice(-6),
+            botActive: true,
+            botStep: 1,
+            botProgram: 'الدعم المباشر',
+            isDirectChat: true,
+            messages: {}
+        };
+
+        if (typeof db !== 'undefined' && db) {
+            db.ref(`tickets/${ticketId}`).set(ticketData).then(() => {
+                const welcomeMsg = {
+                    senderId: 'bot',
+                    senderName: '🤖 البوت',
+                    message: '👋 مرحباً بك في شات الدعم المباشر!\n\n💬 أنا هنا لمساعدتك في أي استفسار عن برامجنا وخدماتنا.',
+                    timestamp: new Date().toISOString(),
+                    isBot: true
+                };
+                db.ref(`tickets/${ticketId}/messages`).push().set(welcomeMsg);
+                window.currentTicketId = ticketId;
+                if (typeof openTicketChat === 'function') {
+                    openTicketChat(ticketId);
+                }
+                if (typeof showToast === 'function') {
+                    showToast('💬 تم فتح شات الدعم المباشر');
+                }
+            }).catch(function(err) {
+                console.error(err);
+                if (typeof showToast === 'function') {
+                    showToast('❌ حدث خطأ في فتح الشات');
+                }
+            });
         }
     }
 
-    // ===== مستمع النقر (للماوس) =====
+    // ============================================================
+    //  🎯 مستمع النقر (للماوس)
+    // ============================================================
+    
     botBtn.addEventListener('click', function(e) {
         // إذا كان في حالة سحب، نمنع الفتح
         if (isDragging) {
             e.preventDefault();
             return;
         }
-
-        // إذا تحرك الزر، نمنع الفتح
-        if (hasMoved) {
-            e.preventDefault();
-            console.log('🚫 الزر تحرك، لن يفتح الشات');
-            return;
-        }
-
-        openChat();
+        openBotChat();
     });
 
-    // ===== مستمع اللمس (للموبايل والتابلت) =====
-    botBtn.addEventListener('touchstart', function(e) {
-        // لا نفعل شيئاً هنا، السحب يتم التعامل معه في touchmove
-        // سنستخدم touchend لفتح الشات إذا لم يتحرك
-    }, { passive: true });
-
-    botBtn.addEventListener('touchend', function(e) {
-        e.preventDefault();
-
-        // إذا كان في حالة سحب، نمنع الفتح
-        if (isDragging) {
-            return;
-        }
-
-        // إذا تحرك الزر، نمنع الفتح
-        if (hasMoved) {
-            console.log('🚫 الزر تحرك، لن يفتح الشات');
-            return;
-        }
-
-        openChat();
+    // ============================================================
+    //  🔄 مستمع إعادة تحميل الصفحة لحفظ الموضع
+    // ============================================================
+    
+    window.addEventListener('beforeunload', function() {
+        const rect = botContainer.getBoundingClientRect();
+        localStorage.setItem('botFloatX', rect.left);
+        localStorage.setItem('botFloatY', rect.top);
     });
 
-    // ===== استعادة الموضع المحفوظ =====
-    function restorePosition() {
-        const savedX = localStorage.getItem('botFloatX');
-        const savedY = localStorage.getItem('botFloatY');
-        
-        if (savedX && savedY) {
-            botContainer.style.right = 'auto';
-            botContainer.style.bottom = 'auto';
-            botContainer.style.left = savedX + 'px';
-            botContainer.style.top = savedY + 'px';
-        } else {
-            // الموضع الافتراضي
-            botContainer.style.right = '20px';
-            botContainer.style.bottom = '100px';
-        }
-        
-        // تحديث الموضع الأصلي
-        setTimeout(function() {
-            originalRect = botContainer.getBoundingClientRect();
-        }, 100);
-    }
-
-    restorePosition();
-
-    // ===== إعادة تعيين hasMoved عند تغيير حجم الشاشة =====
+    // ============================================================
+    //  📐 استجابة لتغيير حجم الشاشة
+    // ============================================================
+    
     window.addEventListener('resize', function() {
         const rect = botContainer.getBoundingClientRect();
         const windowWidth = window.innerWidth;
@@ -7193,11 +7188,10 @@ document.addEventListener('DOMContentLoaded', function() {
             botContainer.style.bottom = 'auto';
             botContainer.style.top = '10px';
         }
-
-        originalRect = botContainer.getBoundingClientRect();
     });
 
-    console.log('✅ زر البوت جاهز - السحب لا يفتح الشات، النقر فقط يفتحه');
+    console.log('✅ زر البوت جاهز - يعمل على جميع الأجهزة');
+    console.log('📱 السحب = لا يفتح الشات | النقر = يفتح الشات');
 });
 
         // =============================================
@@ -17704,3 +17698,5 @@ function goToMyAccountPage() {
     </script>
 </body>
 </html>
+
+    
