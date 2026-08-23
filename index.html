@@ -6417,30 +6417,43 @@
 </div>
 
 <!-- ==================== صفحة تحميل الملف (مثل ميديا فاير) ==================== -->
-<div id="fileDownloadPage" class="hidden page-container" style="min-height: 100vh; background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%); display: none; align-items: center; justify-content: center; padding: 20px;">
+<div id="fileDownloadPage" class="hidden page-container" style="min-height: 100vh; background: linear-gradient(135deg, #f0f4ff 0%, #e2e8f0 100%); display: none; align-items: center; justify-content: center; padding: 20px;">
     <div class="container mx-auto px-4" style="max-width: 550px; width: 100%;">
-        
-        <!-- ✅ حذف الهيدر العلوي نهائياً -->
         
         <!-- بطاقة التحميل -->
         <div class="bg-white rounded-3xl shadow-2xl overflow-hidden animate-fade-scale" style="border: 1px solid rgba(255,255,255,0.2);">
             
-            <!-- ✅ صورة الملف كبيرة -->
+            <!-- محتوى الملف -->
             <div class="p-8 text-center">
                 <!-- أيقونة الملف كبيرة -->
                 <div class="w-32 h-32 mx-auto mb-4 rounded-2xl bg-gradient-to-br from-blue-50 to-indigo-50 flex items-center justify-center shadow-inner" id="downloadFileIcon">
                     <i class="fas fa-file-alt text-6xl text-blue-500"></i>
                 </div>
                 
-                <!-- اسم الملف -->
-                <h2 class="text-2xl font-bold text-gray-800 mb-2" id="downloadFileName">اسم الملف</h2>
+                <!-- ✅ اسم الملف -->
+                <h2 class="text-2xl font-bold text-gray-800 mb-1" id="downloadFileName">اسم الملف</h2>
                 
-                <!-- معلومات الملف -->
-                <div class="flex justify-center gap-4 text-sm text-gray-500 mb-6 flex-wrap">
-                    <span id="downloadFileSize"><i class="fas fa-weight-hanging ml-1"></i> 0 KB</span>
-                    <span id="downloadFileDate"><i class="fas fa-calendar ml-1"></i> -</span>
-                    <span id="downloadFileUploader"><i class="fas fa-user ml-1"></i> -</span>
-                    <span id="downloadFileDownloads"><i class="fas fa-download ml-1"></i> 0</span>
+                <!-- ✅ خط فاصل -->
+                <div class="w-20 h-1 bg-blue-500 mx-auto rounded-full mb-4"></div>
+                
+                <!-- ✅ معلومات الملف (منسقة) -->
+                <div class="grid grid-cols-2 gap-3 text-sm mb-6">
+                    <div class="bg-gray-50 rounded-xl p-3">
+                        <p class="text-gray-400 text-xs">حجم الملف</p>
+                        <p class="font-bold text-gray-700" id="downloadFileSize">0 KB</p>
+                    </div>
+                    <div class="bg-gray-50 rounded-xl p-3">
+                        <p class="text-gray-400 text-xs">تاريخ الرفع</p>
+                        <p class="font-bold text-gray-700" id="downloadFileDate">-</p>
+                    </div>
+                    <div class="bg-gray-50 rounded-xl p-3">
+                        <p class="text-gray-400 text-xs">رافع الملف</p>
+                        <p class="font-bold text-gray-700" id="downloadFileUploader">-</p>
+                    </div>
+                    <div class="bg-gray-50 rounded-xl p-3">
+                        <p class="text-gray-400 text-xs">مرات التحميل</p>
+                        <p class="font-bold text-gray-700" id="downloadFileDownloads">0</p>
+                    </div>
                 </div>
                 
                 <!-- ✅ زر التحميل الكبير -->
@@ -6449,56 +6462,65 @@
                     تحميل الملف
                 </button>
                 
-                <!-- ✅ رابط التحميل مخفي (غير ظاهر للمستخدم) -->
-                <div class="hidden" id="hiddenLinkContainer">
+                <!-- ✅ رابط التحميل مخفي -->
+                <div class="hidden">
                     <input type="text" id="downloadDirectLink" value="">
                 </div>
             </div>
         </div>
         
-        <!-- ✅ الفوتر الجديد -->
-        <div class="mt-8 text-center">
-            <!-- خط فاصل -->
-            <div class="flex items-center justify-center gap-4 mb-4">
-                <div class="flex-1 h-px bg-gray-300"></div>
-                <span class="text-xs text-gray-400">تم الرفع من خلال</span>
-                <div class="flex-1 h-px bg-gray-300"></div>
-            </div>
+        <!-- ✅ الفوتر الجديد (منظم وواضح) -->
+        <div class="mt-6 bg-white/80 backdrop-blur-sm rounded-2xl shadow-lg p-6">
             
             <!-- شعار الشركة -->
-            <a href="https://tecno-shark.vercel.app/" target="_blank" class="inline-flex items-center gap-2 hover:opacity-80 transition">
-                <img src="https://i.ibb.co/Fk4jw8pR/4840e6da-a9c5-4858-a78d-8ceb60d1eaaa.png" alt="TecnoShark" class="w-8 h-8 rounded-full border-2 border-blue-200">
-                <span class="text-lg font-bold text-gray-700">Tecno<span class="text-blue-600">Shark</span></span>
-            </a>
-            
-            <!-- أسماء المديرين -->
-            <div class="mt-3 flex flex-col items-center gap-1 text-sm text-gray-500">
-                <p class="flex items-center gap-2">
-                    <span class="text-xs bg-blue-100 text-blue-600 px-2 py-0.5 rounded-full">CEO</span>
-                    <span>محمد عماد عبد العاطي</span>
-                </p>
-                <p class="flex items-center gap-2">
-                    <span class="text-xs bg-indigo-100 text-indigo-600 px-2 py-0.5 rounded-full">CTO</span>
-                    <span>عبد الرحمن محمد صبحي</span>
-                </p>
+            <div class="flex items-center justify-center gap-3 mb-4">
+                <img src="https://i.ibb.co/Fk4jw8pR/4840e6da-a9c5-4858-a78d-8ceb60d1eaaa.png" alt="TecnoShark" class="w-10 h-10 rounded-full border-2 border-blue-200 shadow-md">
+                <span class="text-xl font-bold text-gray-700">Tecno<span class="text-blue-600">Shark</span></span>
+                <span class="text-xs text-gray-400 bg-gray-100 px-2 py-0.5 rounded-full">v2.0</span>
             </div>
             
-            <!-- حقوق النشر -->
-            <p class="text-xs text-gray-400 mt-4">
-                &copy; 2026 TecnoShark - جميع الحقوق محفوظة
-            </p>
+            <!-- ✅ أسماء المديرين (بالانجليزي) -->
+            <div class="grid grid-cols-2 gap-4 mb-4">
+                <div class="text-center bg-blue-50 rounded-xl p-3 border border-blue-100">
+                    <p class="text-xs text-blue-500 font-bold uppercase tracking-wider">CEO</p>
+                    <p class="font-bold text-gray-800 text-sm">Mohamed Emad</p>
+                    <p class="text-xs text-gray-500">Abdalty</p>
+                </div>
+                <div class="text-center bg-indigo-50 rounded-xl p-3 border border-indigo-100">
+                    <p class="text-xs text-indigo-500 font-bold uppercase tracking-wider">CTO</p>
+                    <p class="font-bold text-gray-800 text-sm">Abdulrahman</p>
+                    <p class="text-xs text-gray-500">Mohamed Sobhy</p>
+                </div>
+            </div>
             
-            <!-- روابط التواصل -->
-            <div class="flex justify-center gap-4 mt-3">
-                <a href="https://wa.me/201035636654" target="_blank" class="text-green-500 hover:text-green-600 transition text-sm">
-                    <i class="fab fa-whatsapp"></i> واتساب
+            <!-- ✅ خط فاصل -->
+            <div class="flex items-center justify-center gap-3 mb-3">
+                <div class="flex-1 h-px bg-gray-200"></div>
+                <span class="text-xs text-gray-400">تواصل معنا</span>
+                <div class="flex-1 h-px bg-gray-200"></div>
+            </div>
+            
+            <!-- ✅ أزرار التواصل الاجتماعي -->
+            <div class="flex justify-center gap-3 flex-wrap">
+                <a href="https://wa.me/201035636654" target="_blank" class="inline-flex items-center gap-2 bg-green-500 hover:bg-green-600 text-white px-4 py-2 rounded-full text-sm transition-all hover:scale-105 shadow-md shadow-green-200">
+                    <i class="fab fa-whatsapp"></i>
+                    واتساب
                 </a>
-                <a href="https://www.facebook.com/share/18oMJ3PRYG/" target="_blank" class="text-blue-600 hover:text-blue-700 transition text-sm">
-                    <i class="fab fa-facebook"></i> فيسبوك
+                <a href="https://www.facebook.com/share/18oMJ3PRYG/" target="_blank" class="inline-flex items-center gap-2 bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-full text-sm transition-all hover:scale-105 shadow-md shadow-blue-200">
+                    <i class="fab fa-facebook-f"></i>
+                    فيسبوك
                 </a>
-                <a href="https://www.tiktok.com/@tecno.shark47" target="_blank" class="text-black hover:text-gray-700 transition text-sm">
-                    <i class="fab fa-tiktok"></i> تيك توك
+                <a href="https://www.tiktok.com/@tecno.shark47" target="_blank" class="inline-flex items-center gap-2 bg-black hover:bg-gray-800 text-white px-4 py-2 rounded-full text-sm transition-all hover:scale-105 shadow-md shadow-gray-300">
+                    <i class="fab fa-tiktok"></i>
+                    تيك توك
                 </a>
+            </div>
+            
+            <!-- ✅ حقوق النشر -->
+            <div class="text-center mt-4 pt-3 border-t border-gray-100">
+                <p class="text-xs text-gray-400">
+                    &copy; 2026 <span class="font-bold text-gray-600">TecnoShark</span> - جميع الحقوق محفوظة
+                </p>
             </div>
         </div>
     </div>
@@ -10037,31 +10059,31 @@ async function loadFileForDownload(fileId) {
     }
 }
 
-// ==================== عرض معلومات الملف (معدل - بدون رابط) ====================
+// ==================== عرض معلومات الملف (منظم) ====================
 function displayFileDownloadInfo(file) {
     // إظهار المحتوى وإخفاء الأخطاء
     document.getElementById('fileDownloadContent').classList.remove('hidden');
     document.getElementById('downloadErrorContent').classList.add('hidden');
     document.getElementById('downloadPrivateContent').classList.add('hidden');
     
-    // اسم الملف
+    // ✅ اسم الملف
     document.getElementById('downloadFileName').textContent = file.displayName || file.name;
     
-    // حجم الملف
+    // ✅ حجم الملف
     const size = file.size || 0;
-    document.getElementById('downloadFileSize').innerHTML = `<i class="fas fa-weight-hanging ml-1"></i> ${formatBytes(size)}`;
+    document.getElementById('downloadFileSize').textContent = formatBytes(size);
     
-    // تاريخ الرفع
+    // ✅ تاريخ الرفع
     const date = file.uploadedAt ? new Date(file.uploadedAt) : new Date();
-    document.getElementById('downloadFileDate').innerHTML = `<i class="fas fa-calendar ml-1"></i> ${date.toLocaleDateString('ar-EG')}`;
+    document.getElementById('downloadFileDate').textContent = date.toLocaleDateString('ar-EG');
     
-    // رافع الملف
-    document.getElementById('downloadFileUploader').innerHTML = `<i class="fas fa-user ml-1"></i> ${file.userName || 'مستخدم'}`;
+    // ✅ رافع الملف
+    document.getElementById('downloadFileUploader').textContent = file.userName || 'مستخدم';
     
-    // عدد التحميلات
-    document.getElementById('downloadFileDownloads').innerHTML = `<i class="fas fa-download ml-1"></i> ${file.downloads || 0}`;
+    // ✅ عدد التحميلات
+    document.getElementById('downloadFileDownloads').textContent = file.downloads || 0;
     
-    // أيقونة الملف حسب النوع
+    // ✅ أيقونة الملف حسب النوع
     const iconMap = {
         'image': 'fa-image',
         'document': 'fa-file-alt',
@@ -10082,7 +10104,7 @@ function displayFileDownloadInfo(file) {
     const iconEl = document.getElementById('downloadFileIcon');
     iconEl.innerHTML = `<i class="fas ${icon} text-6xl ${color}"></i>`;
     
-    // ✅ حفظ الرابط في input مخفي (غير ظاهر للمستخدم)
+    // حفظ الرابط في input مخفي
     const link = getFileDownloadLink(downloadFileId);
     document.getElementById('downloadDirectLink').value = link;
 }
