@@ -6416,27 +6416,24 @@
     </div>
 </div>
 
-<!-- ==================== صفحة تحميل الملف (مثل ميديا فاير) ==================== -->
+<!-- ==================== صفحة تحميل الملف ==================== -->
 <div id="fileDownloadPage" class="hidden page-container" style="min-height: 100vh; background: linear-gradient(135deg, #f0f4ff 0%, #e2e8f0 100%); display: none; align-items: center; justify-content: center; padding: 20px;">
     <div class="container mx-auto px-4" style="max-width: 550px; width: 100%;">
         
         <!-- بطاقة التحميل -->
-        <div class="bg-white rounded-3xl shadow-2xl overflow-hidden animate-fade-scale" style="border: 1px solid rgba(255,255,255,0.2);">
+        <div class="bg-white rounded-3xl shadow-2xl overflow-hidden animate-fade-scale">
             
             <!-- محتوى الملف -->
-            <div class="p-8 text-center">
-                <!-- أيقونة الملف كبيرة -->
+            <div id="fileDownloadContent" class="p-8 text-center">
+                <!-- أيقونة الملف -->
                 <div class="w-32 h-32 mx-auto mb-4 rounded-2xl bg-gradient-to-br from-blue-50 to-indigo-50 flex items-center justify-center shadow-inner" id="downloadFileIcon">
                     <i class="fas fa-file-alt text-6xl text-blue-500"></i>
                 </div>
                 
-                <!-- ✅ اسم الملف -->
                 <h2 class="text-2xl font-bold text-gray-800 mb-1" id="downloadFileName">اسم الملف</h2>
-                
-                <!-- ✅ خط فاصل -->
                 <div class="w-20 h-1 bg-blue-500 mx-auto rounded-full mb-4"></div>
                 
-                <!-- ✅ معلومات الملف (منسقة) -->
+                <!-- معلومات الملف -->
                 <div class="grid grid-cols-2 gap-3 text-sm mb-6">
                     <div class="bg-gray-50 rounded-xl p-3">
                         <p class="text-gray-400 text-xs">حجم الملف</p>
@@ -6456,35 +6453,59 @@
                     </div>
                 </div>
                 
-                <!-- ✅ زر التحميل الكبير -->
+                <!-- زر التحميل -->
                 <button onclick="downloadFileFromPage()" id="downloadFileBtn" class="w-full bg-gradient-to-r from-green-500 to-green-600 hover:from-green-600 hover:to-green-700 text-white py-4 rounded-2xl font-bold text-xl transition-all transform hover:scale-[1.02] shadow-lg shadow-green-200 flex items-center justify-center gap-3">
                     <i class="fas fa-download text-2xl"></i>
                     تحميل الملف
                 </button>
                 
-                <!-- ✅ رابط التحميل مخفي -->
+                <!-- رابط مخفي -->
                 <div class="hidden">
                     <input type="text" id="downloadDirectLink" value="">
                 </div>
             </div>
+            
+            <!-- حالة الخطأ -->
+            <div id="downloadErrorContent" class="hidden p-8 text-center">
+                <div class="w-24 h-24 mx-auto mb-4 rounded-2xl bg-red-50 flex items-center justify-center">
+                    <i class="fas fa-exclamation-triangle text-5xl text-red-500"></i>
+                </div>
+                <h2 class="text-2xl font-bold text-gray-800 mb-2">⚠️ عذراً!</h2>
+                <p class="text-gray-500 mb-4" id="downloadErrorMessage">الملف غير موجود أو تم حذفه</p>
+                <a href="/" class="inline-block bg-blue-600 hover:bg-blue-700 text-white px-6 py-3 rounded-xl transition">
+                    <i class="fas fa-home ml-2"></i> العودة للرئيسية
+                </a>
+            </div>
+            
+            <!-- حالة خاصة (خاص) -->
+            <div id="downloadPrivateContent" class="hidden p-8 text-center">
+                <div class="w-24 h-24 mx-auto mb-4 rounded-2xl bg-yellow-50 flex items-center justify-center">
+                    <i class="fas fa-lock text-5xl text-yellow-500"></i>
+                </div>
+                <h2 class="text-2xl font-bold text-gray-800 mb-2">🔒 ملف خاص</h2>
+                <p class="text-gray-500 mb-4">هذا الملف خاص ولا يمكن تحميله إلا من قبل صاحبه</p>
+                <div class="flex flex-col gap-3">
+                    <button onclick="showLoginPage()" class="bg-blue-600 hover:bg-blue-700 text-white px-6 py-3 rounded-xl transition">
+                        <i class="fas fa-sign-in-alt ml-2"></i> تسجيل الدخول
+                    </button>
+                    <a href="/" class="text-blue-500 hover:underline text-sm">العودة للرئيسية</a>
+                </div>
+            </div>
         </div>
         
-        <!-- ✅ الفوتر الجديد (منظم وواضح) -->
+        <!-- الفوتر -->
         <div class="mt-6 bg-white/80 backdrop-blur-sm rounded-2xl shadow-lg p-6">
-            
-            <!-- شعار الشركة -->
             <div class="flex items-center justify-center gap-3 mb-4">
                 <img src="https://i.ibb.co/Fk4jw8pR/4840e6da-a9c5-4858-a78d-8ceb60d1eaaa.png" alt="TecnoShark" class="w-10 h-10 rounded-full border-2 border-blue-200 shadow-md">
                 <span class="text-xl font-bold text-gray-700">Tecno<span class="text-blue-600">Shark</span></span>
                 <span class="text-xs text-gray-400 bg-gray-100 px-2 py-0.5 rounded-full">v2.0</span>
             </div>
             
-            <!-- ✅ أسماء المديرين (بالانجليزي) -->
             <div class="grid grid-cols-2 gap-4 mb-4">
                 <div class="text-center bg-blue-50 rounded-xl p-3 border border-blue-100">
                     <p class="text-xs text-blue-500 font-bold uppercase tracking-wider">CEO</p>
                     <p class="font-bold text-gray-800 text-sm">Mohamed Emad</p>
-                    <p class="text-xs text-gray-500">Abdalty</p>
+                    <p class="text-xs text-gray-500">Abd El-Aty</p>
                 </div>
                 <div class="text-center bg-indigo-50 rounded-xl p-3 border border-indigo-100">
                     <p class="text-xs text-indigo-500 font-bold uppercase tracking-wider">CTO</p>
@@ -6493,30 +6514,24 @@
                 </div>
             </div>
             
-            <!-- ✅ خط فاصل -->
             <div class="flex items-center justify-center gap-3 mb-3">
                 <div class="flex-1 h-px bg-gray-200"></div>
                 <span class="text-xs text-gray-400">تواصل معنا</span>
                 <div class="flex-1 h-px bg-gray-200"></div>
             </div>
             
-            <!-- ✅ أزرار التواصل الاجتماعي -->
             <div class="flex justify-center gap-3 flex-wrap">
                 <a href="https://wa.me/201035636654" target="_blank" class="inline-flex items-center gap-2 bg-green-500 hover:bg-green-600 text-white px-4 py-2 rounded-full text-sm transition-all hover:scale-105 shadow-md shadow-green-200">
-                    <i class="fab fa-whatsapp"></i>
-                    واتساب
+                    <i class="fab fa-whatsapp"></i> واتساب
                 </a>
                 <a href="https://www.facebook.com/share/18oMJ3PRYG/" target="_blank" class="inline-flex items-center gap-2 bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-full text-sm transition-all hover:scale-105 shadow-md shadow-blue-200">
-                    <i class="fab fa-facebook-f"></i>
-                    فيسبوك
+                    <i class="fab fa-facebook-f"></i> فيسبوك
                 </a>
                 <a href="https://www.tiktok.com/@tecno.shark47" target="_blank" class="inline-flex items-center gap-2 bg-black hover:bg-gray-800 text-white px-4 py-2 rounded-full text-sm transition-all hover:scale-105 shadow-md shadow-gray-300">
-                    <i class="fab fa-tiktok"></i>
-                    تيك توك
+                    <i class="fab fa-tiktok"></i> تيك توك
                 </a>
             </div>
             
-            <!-- ✅ حقوق النشر -->
             <div class="text-center mt-4 pt-3 border-t border-gray-100">
                 <p class="text-xs text-gray-400">
                     &copy; 2026 <span class="font-bold text-gray-600">TecnoShark</span> - جميع الحقوق محفوظة
@@ -10019,7 +10034,7 @@ function showFileDownloadPage(fileId) {
     loadFileForDownload(fileId);
 }
 
-// ==================== تحميل بيانات الملف للعرض ====================
+// ==================== تحميل بيانات الملف للعرض (معدل) ====================
 async function loadFileForDownload(fileId) {
     try {
         const snapshot = await db.ref(`files/${fileId}`).once('value');
@@ -10059,31 +10074,44 @@ async function loadFileForDownload(fileId) {
     }
 }
 
-// ==================== عرض معلومات الملف (منظم) ====================
+// ==================== عرض معلومات الملف (معدل - مع التحقق من العناصر) ====================
 function displayFileDownloadInfo(file) {
-    // إظهار المحتوى وإخفاء الأخطاء
-    document.getElementById('fileDownloadContent').classList.remove('hidden');
-    document.getElementById('downloadErrorContent').classList.add('hidden');
-    document.getElementById('downloadPrivateContent').classList.add('hidden');
+    // التحقق من وجود العناصر قبل التعامل معها
+    const content = document.getElementById('fileDownloadContent');
+    const errorContent = document.getElementById('downloadErrorContent');
+    const privateContent = document.getElementById('downloadPrivateContent');
     
-    // ✅ اسم الملف
-    document.getElementById('downloadFileName').textContent = file.displayName || file.name;
+    if (content) content.classList.remove('hidden');
+    if (errorContent) errorContent.classList.add('hidden');
+    if (privateContent) privateContent.classList.add('hidden');
     
-    // ✅ حجم الملف
-    const size = file.size || 0;
-    document.getElementById('downloadFileSize').textContent = formatBytes(size);
+    // اسم الملف
+    const fileNameEl = document.getElementById('downloadFileName');
+    if (fileNameEl) fileNameEl.textContent = file.displayName || file.name;
     
-    // ✅ تاريخ الرفع
-    const date = file.uploadedAt ? new Date(file.uploadedAt) : new Date();
-    document.getElementById('downloadFileDate').textContent = date.toLocaleDateString('ar-EG');
+    // حجم الملف
+    const fileSizeEl = document.getElementById('downloadFileSize');
+    if (fileSizeEl) {
+        const size = file.size || 0;
+        fileSizeEl.textContent = formatBytes(size);
+    }
     
-    // ✅ رافع الملف
-    document.getElementById('downloadFileUploader').textContent = file.userName || 'مستخدم';
+    // تاريخ الرفع
+    const fileDateEl = document.getElementById('downloadFileDate');
+    if (fileDateEl) {
+        const date = file.uploadedAt ? new Date(file.uploadedAt) : new Date();
+        fileDateEl.textContent = date.toLocaleDateString('ar-EG');
+    }
     
-    // ✅ عدد التحميلات
-    document.getElementById('downloadFileDownloads').textContent = file.downloads || 0;
+    // رافع الملف
+    const uploaderEl = document.getElementById('downloadFileUploader');
+    if (uploaderEl) uploaderEl.textContent = file.userName || 'مستخدم';
     
-    // ✅ أيقونة الملف حسب النوع
+    // عدد التحميلات
+    const downloadsEl = document.getElementById('downloadFileDownloads');
+    if (downloadsEl) downloadsEl.textContent = file.downloads || 0;
+    
+    // أيقونة الملف حسب النوع
     const iconMap = {
         'image': 'fa-image',
         'document': 'fa-file-alt',
@@ -10102,11 +10130,16 @@ function displayFileDownloadInfo(file) {
     const color = colorMap[file.category] || 'text-blue-500';
     
     const iconEl = document.getElementById('downloadFileIcon');
-    iconEl.innerHTML = `<i class="fas ${icon} text-6xl ${color}"></i>`;
+    if (iconEl) {
+        iconEl.innerHTML = `<i class="fas ${icon} text-6xl ${color}"></i>`;
+    }
     
     // حفظ الرابط في input مخفي
-    const link = getFileDownloadLink(downloadFileId);
-    document.getElementById('downloadDirectLink').value = link;
+    const linkInput = document.getElementById('downloadDirectLink');
+    if (linkInput) {
+        const link = getFileDownloadLink(downloadFileId);
+        linkInput.value = link;
+    }
 }
 
 // ==================== تحميل الملف من الصفحة (معدل) ====================
@@ -10166,19 +10199,28 @@ function copyDownloadLink() {
     });
 }
 
-// ==================== عرض خطأ التحميل ====================
+// ==================== عرض خطأ التحميل (معدل) ====================
 function showDownloadError(message) {
-    document.getElementById('fileDownloadContent').classList.add('hidden');
-    document.getElementById('downloadErrorContent').classList.remove('hidden');
-    document.getElementById('downloadPrivateContent').classList.add('hidden');
-    document.getElementById('downloadErrorMessage').textContent = message || 'الملف غير موجود أو تم حذفه';
+    const content = document.getElementById('fileDownloadContent');
+    const errorContent = document.getElementById('downloadErrorContent');
+    const privateContent = document.getElementById('downloadPrivateContent');
+    const errorMsg = document.getElementById('downloadErrorMessage');
+    
+    if (content) content.classList.add('hidden');
+    if (errorContent) errorContent.classList.remove('hidden');
+    if (privateContent) privateContent.classList.add('hidden');
+    if (errorMsg) errorMsg.textContent = message || 'الملف غير موجود أو تم حذفه';
 }
 
-// ==================== عرض ملف خاص ====================
+// ==================== عرض ملف خاص (معدل) ====================
 function showDownloadPrivate() {
-    document.getElementById('fileDownloadContent').classList.add('hidden');
-    document.getElementById('downloadErrorContent').classList.add('hidden');
-    document.getElementById('downloadPrivateContent').classList.remove('hidden');
+    const content = document.getElementById('fileDownloadContent');
+    const errorContent = document.getElementById('downloadErrorContent');
+    const privateContent = document.getElementById('downloadPrivateContent');
+    
+    if (content) content.classList.add('hidden');
+    if (errorContent) errorContent.classList.add('hidden');
+    if (privateContent) privateContent.classList.remove('hidden');
 }
 
 
