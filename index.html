@@ -10034,9 +10034,10 @@ function showFileDownloadPage(fileId) {
     loadFileForDownload(fileId);
 }
 
-// ==================== تحميل بيانات الملف للعرض (معدل) ====================
+// ==================== تحميل بيانات الملف للعرض (معدل - يدعم الزوار) ====================
 async function loadFileForDownload(fileId) {
     try {
+        // ✅ محاولة قراءة الملف مباشرة (حتى لو مش مسجل)
         const snapshot = await db.ref(`files/${fileId}`).once('value');
         const file = snapshot.val();
         
@@ -10045,36 +10046,58 @@ async function loadFileForDownload(fileId) {
             return;
         }
         
-        // التحقق من الرؤية
-        if (file.visibility === 'private' && file.userId !== currentUser?.uid) {
+        // ✅ التحقق من الرؤية (حتى للزوار)
+        // إذا كان الملف عام (public) => يسمح للكل
+        // إذا كان خاص (private) => فقط صاحب الملف أو مدير
+        // إذا كان مدير (admin) => فقط المدير
+        
+        const isOwner = currentUser && file.userId === currentUser.uid;
+        const isAdminUser = currentUser && isAdmin();
+        const isPublic = file.visibility === 'public';
+        
+        if (file.visibility === 'private' && !isOwner && !isAdminUser) {
             showDownloadPrivate();
             return;
         }
         
-        if (file.visibility === 'admin' && !isAdmin()) {
+        if (file.visibility === 'admin' && !isAdminUser) {
             showDownloadError('هذا الملف مخصص للمدير فقط');
             return;
         }
         
-        // حفظ البيانات
-        downloadFileData = file;
-        downloadFileId = fileId;
-        
-        // عرض البيانات
-        displayFileDownloadInfo(file);
-        
-        // تحديث عدد التحميلات
-        await db.ref(`files/${fileId}/downloads`).transaction((current) => {
-            return (current || 0) + 1;
-        });
+        // ✅ إذا كان عام أو المالك أو المدير => يعرض الملف
+        if (isPublic || isOwner || isAdminUser) {
+            // حفظ البيانات
+            downloadFileData = file;
+            downloadFileId = fileId;
+            
+            // عرض البيانات
+            displayFileDownloadInfo(file);
+            
+            // ✅ تحديث عدد التحميلات (حتى لو مش مسجل)
+            try {
+                await db.ref(`files/${fileId}/downloads`).transaction((current) => {
+                    return (current || 0) + 1;
+                });
+            } catch (e) {
+                console.log('⚠️ تحديث التحميلات فشل (مش مهم)');
+            }
+        } else {
+            // ❌ غير مسموح
+            showDownloadError('ليس لديك صلاحية لعرض هذا الملف');
+        }
         
     } catch (error) {
         console.error('خطأ في تحميل الملف:', error);
-        showDownloadError('حدث خطأ في تحميل الملف');
+        if (error.message && error.message.includes('permission_denied')) {
+            showDownloadError('الملف غير موجود أو تم حذفه');
+        } else {
+            showDownloadError('حدث خطأ في تحميل الملف');
+        }
     }
 }
 
-// ==================== عرض معلومات الملف (معدل - مع التحقق من العناصر) ====================
+// ==================== عرض معلومات الملف (معدل - يدعم الزوار) ====================
 function displayFileDownloadInfo(file) {
     // التحقق من وجود العناصر قبل التعامل معها
     const content = document.getElementById('fileDownloadContent');
@@ -10103,7 +10126,7 @@ function displayFileDownloadInfo(file) {
         fileDateEl.textContent = date.toLocaleDateString('ar-EG');
     }
     
-    // رافع الملف
+    // ✅ رافع الملف (يظهر دايماً)
     const uploaderEl = document.getElementById('downloadFileUploader');
     if (uploaderEl) uploaderEl.textContent = file.userName || 'مستخدم';
     
@@ -10134,11 +10157,11 @@ function displayFileDownloadInfo(file) {
         iconEl.innerHTML = `<i class="fas ${icon} text-6xl ${color}"></i>`;
     }
     
-    // حفظ الرابط في input مخفي
+    // ✅ حفظ الرابط (للزوار أيضاً)
     const linkInput = document.getElementById('downloadDirectLink');
     if (linkInput) {
-        const link = getFileDownloadLink(downloadFileId);
-        linkInput.value = link;
+        const baseUrl = 'https://tecno-shark.vercel.app';
+        linkInput.value = baseUrl + '/?file=' + downloadFileId;
     }
 }
 
