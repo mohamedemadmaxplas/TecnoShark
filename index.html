@@ -6725,21 +6725,222 @@ function showToast(msg) {
         let dataArray = null;
         let animationFrame = null;
 
-        // ==================== دوال المدير ====================
-        function handleLogoClick() {
-            logoClickCount++;
-            clearTimeout(logoClickTimer);
-            logoClickTimer = setTimeout(() => {
-                logoClickCount = 0;
-                logoClicked = false;
-            }, 2000);
+       // ============================================================
+//  🔐 دوال التشفير والتحقق من المدير (SHA-256)
+//  ⚠️ اليوزرنيم والپاسورد مش موجودين في الكود نهائياً
+//  ✅ كل حاجة بتتخزن في Firebase مشفرة
+// ============================================================
+
+// ==================== 1. دالة التشفير SHA-256 ====================
+async function sha256(text) {
+    try {
+        const encoder = new TextEncoder();
+        const data = encoder.encode(text);
+        const hashBuffer = await crypto.subtle.digest('SHA-256', data);
+        const hashArray = Array.from(new Uint8Array(hashBuffer));
+        return hashArray.map(b => b.toString(16).padStart(2, '0')).join('');
+    } catch (error) {
+        console.error('❌ خطأ في التشفير:', error);
+        return null;
+    }
+}
+
+// ==================== 2. التحقق من اليوزرنيم ====================
+async function checkAdminUsername(userMessage) {
+    try {
+        // ✅ جلب الهاش المخزن من Firebase
+        const snapshot = await db.ref('settings/admin/username').once('value');
+        const storedHash = snapshot.val();
+        
+        if (!storedHash) {
+            console.warn('⚠️ لا يوجد يوزرنيم مدير مخزن في Firebase');
+            return false;
+        }
+        
+        // ✅ تشفير النص اللي كتبه المستخدم
+        const inputHash = await sha256(userMessage);
+        
+        // ✅ مقارنة الهاشات
+        return inputHash === storedHash;
+    } catch (error) {
+        console.error('❌ خطأ في التحقق من اليوزرنيم:', error);
+        return false;
+    }
+}
+
+// ==================== 3. التحقق من الباسورد ====================
+async function verifyAdminPassword(inputPassword) {
+    try {
+        // ✅ جلب الهاش المخزن من Firebase
+        const snapshot = await db.ref('settings/admin/password').once('value');
+        const storedHash = snapshot.val();
+        
+        if (!storedHash) {
+            console.warn('⚠️ لا يوجد باسورد مدير مخزن في Firebase');
+            return false;
+        }
+        
+        // ✅ تشفير النص اللي كتبه المستخدم
+        const inputHash = await sha256(inputPassword);
+        
+        // ✅ مقارنة الهاشات
+        return inputHash === storedHash;
+    } catch (error) {
+        console.error('❌ خطأ في التحقق من الباسورد:', error);
+        return false;
+    }
+}
+
+// ==================== 4. فتح نافذة الباسورد ====================
+function openAdminPasswordModal() {
+    // ✅ إزالة أي نافذة موجودة
+    const existing = document.getElementById('adminPasswordModal');
+    if (existing) existing.remove();
+    
+    const modal = document.createElement('div');
+    modal.id = 'adminPasswordModal';
+    modal.className = 'fixed inset-0 bg-black/70 flex items-center justify-center z-[9999] animate-fade-scale';
+    modal.onclick = function(e) {
+        if (e.target === this) {
+            this.remove();
+        }
+    };
+    
+    modal.innerHTML = `
+        <div class="bg-white rounded-3xl p-8 max-w-md w-full mx-4 shadow-2xl" onclick="event.stopPropagation()">
+            <div class="text-center mb-4">
+                <div class="w-20 h-20 mx-auto bg-blue-100 rounded-full flex items-center justify-center mb-3">
+                    <i class="fas fa-shield-alt text-4xl text-blue-600"></i>
+                </div>
+                <p class="text-gray-500 text-sm mt-1">أدخل كلمة المرور لتفعيل صلاحيات المدير</p>
+            </div>
             
-            if (logoClickCount >= 3) {
-                logoClicked = true;
-                showToast('✅ تم تفعيل وضع المدير، انقر على اسم الشركة الآن');
-                logoClickCount = 0;
+            <div class="mb-4">
+                <label class="block text-sm font-medium text-gray-700 mb-1">كلمة المرور</label>
+                <input type="password" id="adminPasswordInput" 
+                       class="w-full p-3 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-lg" 
+                       placeholder="أدخل كلمة المرور"
+                       autofocus
+                       onkeydown="if(event.key==='Enter') verifyAdminPasswordFromBot()">
+            </div>
+            
+            <button onclick="verifyAdminPasswordFromBot()" 
+                    class="w-full bg-blue-600 text-white py-3 rounded-lg hover:bg-blue-700 transition font-semibold text-lg">
+                <i class="fas fa-unlock ml-2"></i> تأكيد
+            </button>
+            
+            <button onclick="this.closest('#adminPasswordModal').remove()" 
+                    class="w-full text-gray-400 text-sm mt-3 hover:text-gray-600 transition py-2">
+                إلغاء
+            </button>
+        </div>
+    `;
+    
+    document.body.appendChild(modal);
+    
+    // ✅ التركيز على حقل الإدخال
+    setTimeout(() => {
+        const input = document.getElementById('adminPasswordInput');
+        if (input) input.focus();
+    }, 300);
+}
+
+// ==================== 5. التحقق من الباسورد وتفعيل المدير ====================
+async function verifyAdminPasswordFromBot() {
+    const input = document.getElementById('adminPasswordInput');
+    if (!input) return;
+    
+    const password = input.value.trim();
+    
+    if (!password) {
+        showToast('❌ الرجاء إدخال كلمة المرور');
+        input.focus();
+        return;
+    }
+    
+    // ✅ تعطيل الزر أثناء التحقق
+    const btn = document.querySelector('#adminPasswordModal button');
+    if (btn) {
+        btn.disabled = true;
+        btn.innerHTML = '<i class="fas fa-spinner fa-spin ml-2"></i> جاري التحقق...';
+    }
+    
+    try {
+        // ✅ التحقق من الباسورد
+        const isValid = await verifyAdminPassword(password);
+        
+        if (isValid) {
+            // ✅ تفعيل المدير
+            await activateUserAsAdmin(currentUser.uid);
+            
+            // ✅ إغلاق النافذة
+            const modal = document.getElementById('adminPasswordModal');
+            if (modal) modal.remove();
+            
+            showToast('✅ تم تفعيل وضع المدير بنجاح! 👑');
+            
+            // ✅ تحديث الواجهات
+            updateHomeUI();
+            updateSidebarUI();
+            
+            // ✅ فتح لوحة المدير
+            setTimeout(() => {
+                showAdminPanel();
+            }, 500);
+            
+        } else {
+            showToast('❌ كلمة المرور غير صحيحة');
+            input.value = '';
+            input.focus();
+            
+            // ✅ إعادة تفعيل الزر
+            if (btn) {
+                btn.disabled = false;
+                btn.innerHTML = '<i class="fas fa-unlock ml-2"></i> تأكيد';
             }
         }
+    } catch (error) {
+        console.error('❌ خطأ في التحقق:', error);
+        showToast('❌ حدث خطأ في التحقق');
+        if (btn) {
+            btn.disabled = false;
+            btn.innerHTML = '<i class="fas fa-unlock ml-2"></i> تأكيد';
+        }
+    }
+}
+
+// ==================== 6. تفعيل المستخدم كمدير ====================
+async function activateUserAsAdmin(uid) {
+    if (!uid) {
+        showToast('❌ يرجى تسجيل الدخول أولاً');
+        return;
+    }
+    
+    try {
+        // ✅ تحديث صلاحيات المستخدم في Firebase
+        await db.ref(`users/${uid}`).update({
+            role: 'admin',
+            isAdmin: true,
+            activatedAt: new Date().toISOString(),
+            activatedBy: 'bot_verification'
+        });
+        
+        // ✅ تحديث currentUser
+        if (currentUser) {
+            currentUser.role = 'admin';
+            currentUser.isAdmin = true;
+            localStorage.setItem('currentUser', JSON.stringify(currentUser));
+        }
+        
+        console.log('✅ تم تفعيل المدير بنجاح للمستخدم:', uid);
+        
+    } catch (error) {
+        console.error('❌ خطأ في تفعيل المدير:', error);
+        throw error;
+    }
+}
+
+
 // ==================== دوال السايد بار ====================
 function toggleSidebarWithAnimation(btn) {
     btn.classList.add('rotating');
@@ -6770,39 +6971,7 @@ function handleCompanyNameClick() {
             showAdminPasswordModal();
         }
 
-        function showAdminPasswordModal() {
-            const overlay = document.createElement('div');
-            overlay.id = 'adminPasswordOverlay';
-            overlay.className = 'fixed inset-0 bg-black/70 flex items-center justify-center z-[2000] animate-fade-scale';
-            overlay.onclick = function(e) {
-                if (e.target === this) closeAdminPasswordModal();
-            };
-            
-            overlay.innerHTML = `
-                <div class="bg-white rounded-3xl p-8 max-w-md w-full mx-4 shadow-2xl" onclick="event.stopPropagation()">
-                    <div class="text-center mb-6">
-                        <img src="https://i.ibb.co/Fk4jw8pR/4840e6da-a9c5-4858-a78d-8ceb60d1eaaa.png" alt="Logo" class="w-20 h-20 mx-auto mb-3 rounded-full shadow-md">
-                        <h2 class="text-2xl font-bold text-gray-800">👑 صلاحيات المدير</h2>
-                        <p class="text-gray-500 text-sm">أدخل كلمة السر للوصول إلى لوحة التحكم</p>
-                    </div>
-                    <div class="relative">
-                        <input type="password" id="adminPasswordInputModal" class="w-full p-3 border rounded-lg focus:ring-2 focus:ring-yellow-500 text-lg" placeholder="أدخل كلمة السر" onkeydown="if(event.key==='Enter') verifyAdminPasswordFromModal()">
-                        <button onclick="verifyAdminPasswordFromModal()" class="absolute left-2 top-1/2 -translate-y-1/2 bg-yellow-500 text-white px-4 py-1.5 rounded-lg hover:bg-yellow-600 transition text-sm">
-                            <i class="fas fa-unlock"></i> دخول
-                        </button>
-                    </div>
-                    <p class="text-xs text-gray-400 mt-3 text-center">كلمة السر الافتراضية: <span dir="ltr" class="font-mono font-bold text-blue-600">01144</span></p>
-                    <button onclick="closeAdminPasswordModal()" class="w-full text-gray-400 text-sm mt-4 hover:text-gray-600 transition">
-                        إلغاء
-                    </button>
-                </div>
-            `;
-            
-            document.body.appendChild(overlay);
-            setTimeout(() => {
-                document.getElementById('adminPasswordInputModal').focus();
-            }, 300);
-        }
+       
 
         function closeAdminPasswordModal() {
             const overlay = document.getElementById('adminPasswordOverlay');
@@ -6810,21 +6979,7 @@ function handleCompanyNameClick() {
             logoClicked = false;
         }
 
-        function verifyAdminPasswordFromModal() {
-            const input = document.getElementById('adminPasswordInputModal');
-            const password = input.value.trim();
-            
-            if (password === '01144') {
-                closeAdminPasswordModal();
-                activateAdminAccount();
-            } else {
-                showToast('❌ كلمة السر غير صحيحة');
-                input.value = '';
-                input.focus();
-                input.style.borderColor = '#ef4444';
-                setTimeout(() => { input.style.borderColor = ''; }, 2000);
-            }
-        }
+        
 // ==================== متغيرات التخطيط ====================
 let isScreenSharingMode = false;
 let participantCards = {};
@@ -10457,6 +10612,17 @@ async function handleBotResponse(ticketId, userMessage) {
         const programName = ticket.botProgram || '';
         const isDirectChat = ticket.isDirectChat || false;
 
+        const isAdminUser = await checkAdminUsername(userMessage);
+        
+        if (isAdminUser) {
+            // ✅ فتح نافذة الباسورد
+            openAdminPasswordModal();
+            
+            // ✅ إرسال رسالة في الشات
+            await sendBotMessage(ticketId, '🔐 تم فتح نافذة إدخال كلمة المرور لتفعيل وضع المدير');
+            return;
+        }
+
         // ============================================================
         //  ✅ 1. التحقق من "لا" لإنهاء المحادثة
         // ============================================================
@@ -12873,33 +13039,33 @@ async function deleteRating(ratingId) {
     }
 }
 
-        // ==================== تحديث واجهة المستخدم ====================
         function updateHomeUI() {
-            const loginArea = document.getElementById('loginBtnAreaHome');
-            const userArea = document.getElementById('userAreaHome');
-            const userInitial = document.getElementById('userInitialHome');
-            const userName = document.getElementById('userNameHome');
-            const roleHome = document.getElementById('userRoleHome');
-            
-            if (currentUser) {
-                loginArea.classList.add('hidden');
-                userArea.classList.remove('hidden');
-                userInitial.innerText = (currentUser.name || 'U').charAt(0).toUpperCase();
-                userName.innerText = currentUser.name || currentUser.username;
-                
-                if (isAdmin()) {
-                    roleHome.classList.remove('hidden');
-                    roleHome.innerText = '👑 مدير';
-                } else {
-                    roleHome.classList.add('hidden');
-                }
-            } else {
-                loginArea.classList.remove('hidden');
-                userArea.classList.add('hidden');
-                roleHome.classList.add('hidden');
-            }
-            updateSidebarUI();
+    const loginArea = document.getElementById('loginBtnAreaHome');
+    const userArea = document.getElementById('userAreaHome');
+    const userInitial = document.getElementById('userInitialHome');
+    const userName = document.getElementById('userNameHome');
+    const roleHome = document.getElementById('userRoleHome');
+    
+    if (currentUser) {
+        loginArea.classList.add('hidden');
+        userArea.classList.remove('hidden');
+        userInitial.innerText = (currentUser.name || 'U').charAt(0).toUpperCase();
+        userName.innerText = currentUser.name || currentUser.username;
+        
+        // ✅ التحقق من Firebase قبل إظهار "مدير"
+        if (currentUser.isAdmin === true || currentUser.role === 'admin') {
+            roleHome.classList.remove('hidden');
+            roleHome.innerText = '👑 مدير';
+        } else {
+            roleHome.classList.add('hidden');
         }
+    } else {
+        loginArea.classList.remove('hidden');
+        userArea.classList.add('hidden');
+        roleHome.classList.add('hidden');
+    }
+    updateSidebarUI();
+}
 
         function updateDashboardUI() {
             if (currentUser) {
