@@ -15104,7 +15104,7 @@ async function verifyAdminStatusOnLoad() {
             navigator.clipboard.writeText(text).then(() => { showToast('✅ تم نسخ: ' + text); });
         }
 
- // ==================== دوال تسجيل الدخول ====================
+ // ==================== تسجيل الدخول (معدل بالكامل) ====================
 async function login() {
     let identifier = document.getElementById('loginUsername').value.trim();
     const password = document.getElementById('loginPassword').value;
@@ -15120,14 +15120,30 @@ async function login() {
             email = `${identifier}@tecno.com`;
         }
         
+        showToast('⏳ جاري تسجيل الدخول...');
+        
         const userCredential = await auth.signInWithEmailAndPassword(email, password);
         const user = userCredential.user;
         
-        // ✅ جلب البيانات من Firebase مباشرة
+        // ✅ جلب البيانات من Firebase
         const snapshot = await db.ref(`users/${user.uid}`).once('value');
         const userData = snapshot.val();
         
-        // ✅ تحديد صلاحية المدير من Firebase (وليس localStorage)
+        // ✅ التحقق من وجود الحساب في Database
+        if (!userData) {
+            showToast('❌ الحساب غير موجود أو تم حذفه');
+            await auth.signOut();
+            return;
+        }
+        
+        // ✅ التحقق من أن الحساب غير معطل
+        if (userData.accountDisabled === true) {
+            showToast('❌ هذا الحساب معطل أو محذوف');
+            await auth.signOut();
+            return;
+        }
+        
+        // ✅ تحديد صلاحية المدير
         const isAdmin = userData?.isAdmin === true || userData?.role === 'admin';
         
         currentUser = {
@@ -15138,33 +15154,75 @@ async function login() {
             phone: userData?.phone || '',
             plan: userData?.plan || 'free',
             createdAt: userData?.createdAt || new Date().toISOString(),
-            isAdmin: isAdmin,        // ✅ من Firebase
-            role: isAdmin ? 'admin' : 'user'  // ✅ من Firebase
+            isAdmin: isAdmin,
+            role: isAdmin ? 'admin' : 'user'
         };
         
-        // ✅ حفظ في localStorage بعد التأكد من الصلاحية
         localStorage.setItem('currentUser', JSON.stringify(currentUser));
         
         showToast(`✅ مرحباً ${currentUser.name}`);
         
-        // ✅ تحديث جميع الواجهات
         await updateHomeUI();
         await updateSidebarUI();
         await updateMyAccountUI();
-        await verifyAdminStatusOnLoad();
         
-        // ✅ الانتقال للصفحة المناسبة
-        showDashboard();
+        // ✅ التوجيه للصفحة المناسبة
+        if (isAdmin) {
+            showAdminPanel();
+        } else {
+            showDashboard();
+        }
         
     } catch (error) {
         console.error('❌ خطأ في تسجيل الدخول:', error);
-        handleAuthError(error);
+        
+        // ✅ معالجة الأخطاء بشكل مفهوم
+        let errorMessage = '❌ حدث خطأ في تسجيل الدخول';
+        
+        switch (error.code) {
+            case 'auth/user-not-found':
+                errorMessage = '❌ لا يوجد حساب بهذا البريد الإلكتروني';
+                break;
+            case 'auth/wrong-password':
+                errorMessage = '❌ كلمة المرور غير صحيحة';
+                break;
+            case 'auth/invalid-credential':
+                errorMessage = '❌ البريد الإلكتروني أو كلمة المرور غير صحيحة';
+                break;
+            case 'auth/invalid-email':
+                errorMessage = '❌ البريد الإلكتروني غير صحيح';
+                break;
+            case 'auth/user-disabled':
+                errorMessage = '❌ هذا الحساب معطل، يرجى التواصل مع الدعم';
+                break;
+            case 'auth/too-many-requests':
+                errorMessage = '❌ محاولات كثيرة جداً، يرجى المحاولة لاحقاً';
+                break;
+            case 'auth/network-request-failed':
+                errorMessage = '❌ لا يوجد اتصال بالإنترنت، يرجى التحقق من الاتصال';
+                break;
+            case 'auth/internal-error':
+                errorMessage = '❌ حدث خطأ داخلي، يرجى المحاولة لاحقاً';
+                break;
+            default:
+                errorMessage = `❌ ${error.message || 'حدث خطأ غير معروف'}`;
+                break;
+        }
+        
+        showToast(errorMessage);
+        
+        // ✅ تنظيف الحقول في حالة الخطأ
+        document.getElementById('loginPassword').value = '';
+        document.getElementById('loginPassword').focus();
     }
 }
+
+// ==================== معالجة أخطاء Firebase بشكل مفهوم ====================
 function handleAuthError(error) {
     let message = '❌ حدث خطأ';
     
     switch (error.code) {
+        // ✅ أخطاء التسجيل
         case 'auth/email-already-in-use':
             message = '❌ هذا البريد الإلكتروني مستخدم بالفعل';
             break;
@@ -15174,20 +15232,48 @@ function handleAuthError(error) {
         case 'auth/weak-password':
             message = '❌ كلمة المرور ضعيفة (6 أحرف على الأقل)';
             break;
+        case 'auth/operation-not-allowed':
+            message = '❌ عملية غير مسموحة، يرجى التواصل مع الدعم';
+            break;
+        
+        // ✅ أخطاء تسجيل الدخول
         case 'auth/user-not-found':
-            message = '❌ لا يوجد حساب بهذا البريد';
+            message = '❌ لا يوجد حساب بهذا البريد الإلكتروني';
             break;
         case 'auth/wrong-password':
             message = '❌ كلمة المرور غير صحيحة';
             break;
-        case 'auth/too-many-requests':
-            message = '❌ محاولات كثيرة، حاول لاحقاً';
+        case 'auth/invalid-credential':
+            message = '❌ البريد الإلكتروني أو كلمة المرور غير صحيحة';
             break;
+        case 'auth/user-disabled':
+            message = '❌ هذا الحساب معطل، يرجى التواصل مع الدعم';
+            break;
+        case 'auth/too-many-requests':
+            message = '❌ محاولات كثيرة جداً، يرجى المحاولة لاحقاً';
+            break;
+        case 'auth/network-request-failed':
+            message = '❌ لا يوجد اتصال بالإنترنت';
+            break;
+        case 'auth/internal-error':
+            message = '❌ حدث خطأ داخلي، يرجى المحاولة لاحقاً';
+            break;
+        
+        // ✅ أخطاء إعادة تعيين كلمة المرور
+        case 'auth/user-not-found':
+            message = '❌ لا يوجد حساب بهذا البريد الإلكتروني';
+            break;
+        case 'auth/too-many-requests':
+            message = '❌ تم إرسال العديد من الطلبات، يرجى المحاولة لاحقاً';
+            break;
+        
         default:
-            message = `❌ ${error.message}`;
+            message = `❌ ${error.message || 'حدث خطأ غير معروف'}`;
+            break;
     }
     
     showToast(message);
+    console.error('🔥 Firebase Error:', error.code, error.message);
 }
    function logout() {
     auth.signOut().then(() => {
@@ -17442,77 +17528,7 @@ async function deleteUser(uid) {
     );
 }
 
-// ============================================================
-//  📌 التحقق من الحساب قبل تسجيل الدخول
-// ============================================================
 
-// تعديل دالة login
-async function login() {
-    let identifier = document.getElementById('loginUsername').value.trim();
-    const password = document.getElementById('loginPassword').value;
-    
-    if (!identifier || !password) { 
-        showToast('❌ الرجاء إدخال جميع البيانات'); 
-        return; 
-    }
-    
-    try {
-        let email = identifier;
-        if (!identifier.includes('@')) {
-            email = `${identifier}@tecno.com`;
-        }
-        
-        const userCredential = await auth.signInWithEmailAndPassword(email, password);
-        const user = userCredential.user;
-        
-        // ✅ جلب البيانات من Firebase
-        const snapshot = await db.ref(`users/${user.uid}`).once('value');
-        const userData = snapshot.val();
-        
-        // ✅ التحقق من وجود الحساب
-        if (!userData) {
-            showToast('❌ الحساب غير موجود أو تم حذفه');
-            await auth.signOut();
-            return;
-        }
-        
-        // ✅ التحقق من أن الحساب غير معطل
-        if (userData.accountDisabled === true) {
-            showToast('❌ هذا الحساب معطل أو محذوف');
-            await auth.signOut();
-            return;
-        }
-        
-        // ✅ تحديد صلاحية المدير
-        const isAdmin = userData?.isAdmin === true || userData?.role === 'admin';
-        
-        currentUser = {
-            uid: user.uid,
-            name: userData?.name || user.displayName || 'مستخدم',
-            username: userData?.username || email,
-            email: user.email || email,
-            phone: userData?.phone || '',
-            plan: userData?.plan || 'free',
-            createdAt: userData?.createdAt || new Date().toISOString(),
-            isAdmin: isAdmin,
-            role: isAdmin ? 'admin' : 'user'
-        };
-        
-        localStorage.setItem('currentUser', JSON.stringify(currentUser));
-        
-        showToast(`✅ مرحباً ${currentUser.name}`);
-        
-        await updateHomeUI();
-        await updateSidebarUI();
-        await updateMyAccountUI();
-        
-        showDashboard();
-        
-    } catch (error) {
-        console.error('❌ خطأ في تسجيل الدخول:', error);
-        handleAuthError(error);
-    }
-}
 
 // ============================================================
 //  📌 تعطيل حساب مستخدم (بدلاً من حذفه)
