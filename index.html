@@ -4982,6 +4982,548 @@
 .upload-progress-modal .btn-group .btn-danger:hover {
     background: #dc2626;
 }
+/* ==================== أنماط عداد المساحة التخزينية ==================== */
+
+/* ✅ شريط التقدم مع تأثير متحرك */
+#storageBar {
+    background: linear-gradient(90deg, #3b82f6, #8b5cf6, #3b82f6);
+    background-size: 200% 100%;
+    transition: width 0.7s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+#storageBar.animated {
+    animation: storageShimmer 2s linear infinite;
+}
+
+@keyframes storageShimmer {
+    0% { background-position: -200% 0; }
+    100% { background-position: 200% 0; }
+}
+
+/* ✅ حالة شريط التقدم عند القرب من الامتلاء */
+#storageBar.warning {
+    background: linear-gradient(90deg, #f59e0b, #f97316);
+}
+
+#storageBar.danger {
+    background: linear-gradient(90deg, #ef4444, #dc2626);
+    animation: storagePulse 1s ease-in-out infinite;
+}
+
+@keyframes storagePulse {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.6; }
+}
+
+/* ✅ تنسيق بطاقة السعة */
+.storage-card {
+    background: white;
+    border-radius: 16px;
+    padding: 12px 16px;
+    border: 1px solid #e5e7eb;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+    min-width: 200px;
+}
+
+.storage-card .storage-icon {
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    background: #eff6ff;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #3b82f6;
+}
+
+.storage-card .storage-used {
+    font-size: 14px;
+    font-weight: 700;
+    color: #1e293b;
+}
+
+.storage-card .storage-total {
+    font-size: 13px;
+    color: #94a3b8;
+}
+
+.storage-card .storage-percent {
+    font-size: 11px;
+    font-weight: 700;
+    color: #3b82f6;
+    background: #eff6ff;
+    padding: 2px 10px;
+    border-radius: 20px;
+}
+
+.storage-card .storage-bar-track {
+    width: 100%;
+    height: 5px;
+    background: #f1f5f9;
+    border-radius: 10px;
+    overflow: hidden;
+    margin-top: 8px;
+}
+
+.storage-card .storage-bar-fill {
+    height: 100%;
+    border-radius: 10px;
+    transition: width 0.7s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+.storage-card .storage-details {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-top: 4px;
+}
+
+.storage-card .storage-details span {
+    font-size: 10px;
+    color: #94a3b8;
+}
+
+.storage-card .storage-status {
+    font-size: 10px;
+}
+
+.storage-card .storage-status .available {
+    color: #22c55e;
+}
+
+.storage-card .storage-status .warning {
+    color: #f59e0b;
+}
+
+.storage-card .storage-status .full {
+    color: #ef4444;
+}
+
+
+.custom-scrollbar::-webkit-scrollbar {
+    width: 6px;
+}
+.custom-scrollbar::-webkit-scrollbar-track {
+    background: #f1f1f1;
+    border-radius: 10px;
+}
+.custom-scrollbar::-webkit-scrollbar-thumb {
+    background: #3b82f6;
+    border-radius: 10px;
+}
+.custom-scrollbar::-webkit-scrollbar-thumb:hover {
+    background: #2563eb;
+}
+/* ==================== تنسيق نص من نحن ==================== */
+#typingContainer {
+    font-family: 'Cairo', 'Tahoma', sans-serif;
+    font-size: 16px;
+    line-height: 2;
+    color: #1e293b;
+    white-space: pre-wrap;
+    word-wrap: break-word;
+    padding: 10px;
+}
+
+#typingContainer .section-title {
+    color: #1e3a5f;
+    font-weight: 800;
+    font-size: 20px;
+    display: block;
+    margin-top: 15px;
+    margin-bottom: 8px;
+    background: linear-gradient(135deg, #1e3a5f, #2563eb);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+}
+
+#typingContainer .highlight {
+    color: #2563eb;
+    font-weight: 600;
+}
+
+#typingContainer .emoji {
+    font-size: 22px;
+}
+
+#typingContainer .divider {
+    display: block;
+    color: #94a3b8;
+    font-size: 14px;
+    letter-spacing: 2px;
+    margin: 12px 0;
+    text-align: center;
+}
+
+#typingContainer .feature-item {
+    display: block;
+    padding: 4px 0 4px 25px;
+    position: relative;
+}
+
+#typingContainer .feature-item::before {
+    content: "▸";
+    position: absolute;
+    right: 5px;
+    color: #2563eb;
+    font-weight: bold;
+}
+
+#typingContainer .project-name {
+    color: #0f2b4f;
+    font-weight: 700;
+    font-size: 18px;
+}
+
+#typingContainer .project-desc {
+    color: #475569;
+    font-size: 15px;
+    padding-right: 20px;
+}
+
+#typingContainer .tech-tag {
+    display: inline-block;
+    background: #e2e8f0;
+    color: #1e293b;
+    padding: 2px 12px;
+    border-radius: 20px;
+    font-size: 13px;
+    margin: 2px;
+    font-weight: 500;
+}
+
+#typingContainer .team-name {
+    color: #1e3a5f;
+    font-weight: 700;
+    font-size: 17px;
+}
+
+#typingContainer .team-role {
+    color: #64748b;
+    font-size: 14px;
+    padding-right: 20px;
+}
+
+#typingContainer .quote {
+    color: #1e3a5f;
+    font-style: italic;
+    font-weight: 600;
+    font-size: 18px;
+    text-align: center;
+    padding: 10px 0;
+    border-top: 2px solid #e2e8f0;
+    border-bottom: 2px solid #e2e8f0;
+    margin: 10px 0;
+}
+
+/* ✅ تحسين مظهر النافذة */
+#typingContainer::-webkit-scrollbar {
+    width: 6px;
+}
+
+#typingContainer::-webkit-scrollbar-track {
+    background: #f1f5f9;
+    border-radius: 10px;
+}
+
+#typingContainer::-webkit-scrollbar-thumb {
+    background: #3b82f6;
+    border-radius: 10px;
+}
+
+#typingContainer::-webkit-scrollbar-thumb:hover {
+    background: #2563eb;
+}
+
+/* ==================== تنسيق الروابط ==================== */
+#typingText a {
+    color: #2563eb !important;
+    text-decoration: none !important;
+    font-weight: 600 !important;
+    cursor: pointer !important;
+    transition: all 0.3s ease !important;
+    display: inline-block !important;
+    padding: 4px 12px !important;
+    border-radius: 8px !important;
+    background: rgba(37, 99, 235, 0.08) !important;
+    border: 1px solid rgba(37, 99, 235, 0.15) !important;
+    margin: 2px 0 !important;
+    font-size: 15px !important;
+}
+
+#typingText a:hover {
+    color: #1d4ed8 !important;
+    background: rgba(37, 99, 235, 0.15) !important;
+    border-color: #2563eb !important;
+    transform: translateY(-1px) !important;
+    box-shadow: 0 2px 10px rgba(37, 99, 235, 0.15) !important;
+}
+
+#typingText a:active {
+    transform: scale(0.97) !important;
+}
+
+/* ✅ أيقونة الرابط */
+#typingText a::before {
+    content: "🔗 ";
+    font-size: 14px;
+}
+
+/* ✅ أيقونات مخصصة حسب نوع الرابط */
+#typingText a[href*="imtihan"]::before {
+    content: "📚 ";
+}
+#typingText a[href*="nabd"]::before {
+    content: "👕 ";
+}
+#typingText a[href*="kayan"]::before {
+    content: "⛵ ";
+}
+#typingText a[href*="wa.me"]::before {
+    content: "💬 ";
+}
+#typingText a[href*="facebook"]::before {
+    content: "📘 ";
+}
+#typingText a[href*="tiktok"]::before {
+    content: "🎵 ";
+}
+
+/* ==================== تنسيق حاوية النص ==================== */
+#typingContainer {
+    font-family: 'Cairo', 'Tahoma', sans-serif;
+    font-size: 16px;
+    line-height: 2;
+    color: #1e293b;
+    white-space: pre-wrap;
+    word-wrap: break-word;
+    padding: 10px;
+    max-height: 500px;
+    overflow-y: auto;
+    scroll-behavior: smooth; /* ✅ تمرير سلس */
+}
+
+/* ✅ تخصيص شريط التمرير */
+#typingContainer::-webkit-scrollbar {
+    width: 6px;
+}
+
+#typingContainer::-webkit-scrollbar-track {
+    background: #f1f5f9;
+    border-radius: 10px;
+}
+
+#typingContainer::-webkit-scrollbar-thumb {
+    background: #3b82f6;
+    border-radius: 10px;
+}
+
+#typingContainer::-webkit-scrollbar-thumb:hover {
+    background: #2563eb;
+}
+
+/* ✅ مؤشر الكتابة */
+#typingCursor {
+    display: inline-block;
+    width: 2px;
+    height: 24px;
+    background: #2563eb;
+    margin-right: 2px;
+    animation: blink 0.8s step-end infinite;
+    vertical-align: text-bottom;
+}
+
+@keyframes blink {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0; }
+}
+
+/* ==================== الصفحة الرئيسية ==================== */
+
+/* قسم الهيرو */
+.hero-section {
+    min-height: 90vh;
+    display: flex;
+    align-items: center;
+    position: relative;
+    background: linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f3460 100%);
+}
+
+/* أنيميشن الشعار */
+@keyframes float {
+    0%, 100% { transform: translateY(0px); }
+    50% { transform: translateY(-8px); }
+}
+
+.hero-section img {
+    animation: float 4s ease-in-out infinite;
+}
+
+/* ===== الإحصائيات ===== */
+.stat-item {
+    background: rgba(255, 255, 255, 0.08);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 14px;
+    padding: 10px 8px;
+    text-align: center;
+    transition: all 0.3s ease;
+}
+
+.stat-item:hover {
+    background: rgba(255, 255, 255, 0.15);
+    transform: translateY(-3px);
+    border-color: rgba(255, 255, 255, 0.2);
+}
+
+.stat-number {
+    font-size: 1.5rem;
+    font-weight: 800;
+    color: #ffffff;
+    text-shadow: 0 2px 20px rgba(0, 0, 0, 0.3);
+    line-height: 1.2;
+}
+
+.stat-label {
+    font-size: 0.7rem;
+    color: rgba(255, 255, 255, 0.7);
+    margin-top: 2px;
+}
+
+/* ===== بطاقات الخدمات ===== */
+.service-card {
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.service-card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+}
+
+.service-card .w-12 {
+    transition: transform 0.3s ease;
+}
+
+.service-card:hover .w-12 {
+    transform: scale(1.1) rotate(-5deg);
+}
+
+/* ===== التجاوب ===== */
+
+/* موبايل صغير */
+@media (max-width: 480px) {
+    .hero-section {
+        min-height: 80vh;
+    }
+    
+    .hero-section h1 {
+        font-size: 2rem;
+    }
+    
+    .stat-number {
+        font-size: 1.2rem;
+    }
+    
+    .stat-item {
+        padding: 8px 4px;
+        border-radius: 10px;
+    }
+    
+    .stat-label {
+        font-size: 0.6rem;
+    }
+    
+    .service-card {
+        padding: 16px;
+    }
+}
+
+/* موبايل متوسط */
+@media (min-width: 481px) and (max-width: 640px) {
+    .hero-section h1 {
+        font-size: 2.5rem;
+    }
+    
+    .stat-number {
+        font-size: 1.4rem;
+    }
+    
+    .service-card {
+        padding: 18px;
+    }
+}
+
+/* تابلت */
+@media (min-width: 641px) and (max-width: 1024px) {
+    .hero-section h1 {
+        font-size: 3.5rem;
+    }
+    
+    .stat-number {
+        font-size: 1.8rem;
+    }
+}
+
+/* كمبيوتر */
+@media (min-width: 1025px) {
+    .hero-section {
+        min-height: 100vh;
+    }
+    
+    .hero-section h1 {
+        font-size: 4.5rem;
+    }
+    
+    .stat-number {
+        font-size: 2.2rem;
+    }
+    
+    .stat-item {
+        padding: 16px 12px;
+        border-radius: 16px;
+    }
+}
+
+/* ===== أنيميشنات ===== */
+.animate-fade-up {
+    opacity: 0;
+    animation: fadeUp 0.8s ease forwards;
+}
+
+@keyframes fadeUp {
+    from {
+        opacity: 0;
+        transform: translateY(30px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.animate-fade-scale {
+    opacity: 0;
+    animation: fadeScale 0.8s ease forwards;
+}
+
+@keyframes fadeScale {
+    from {
+        opacity: 0;
+        transform: scale(0.9);
+    }
+    to {
+        opacity: 1;
+        transform: scale(1);
+    }
+}
+
+.delay-100 { animation-delay: 0.1s; }
+.delay-200 { animation-delay: 0.2s; }
+.delay-300 { animation-delay: 0.3s; }
+.delay-400 { animation-delay: 0.4s; }
+
 
     </style>
 </head>
@@ -5112,101 +5654,192 @@
     </div>
 </nav>
 
-
-    <!-- ==================== الصفحة الرئيسية ==================== -->
-    <div id="homePage" class="page-container">
-        <div class="hero-gradient text-white">
-            <div class="container mx-auto px-6 py-20 text-center">
-                <img src="https://i.ibb.co/Fk4jw8pR/4840e6da-a9c5-4858-a78d-8ceb60d1eaaa.png" alt="TecnoShark Logo" class="w-28 h-28 mx-auto mb-6 rounded-full shadow-xl border-4 border-white animate-fade-scale">
-                <h1 class="text-5xl md:text-6xl font-bold mb-4 animate-fade-up delay-100">Tecno<span class="text-yellow-300">Shark</span></h1>
-                <p class="text-xl md:text-2xl mb-6 opacity-90 animate-fade-up delay-200">شريكك الموثوق في عالم البرمجيات والحلول الرقمية</p>
-                <p class="text-lg max-w-2xl mx-auto opacity-80 animate-fade-up delay-300">نقدم خدمات متكاملة في تصميم وتطوير المواقع والتطبيقات، بأحدث التقنيات وأعلى معايير الجودة</p>
-                <div class="mt-8 flex gap-4 justify-center animate-fade-up delay-400 flex-wrap">
-                    <button onclick="showLoginPage()" class="bg-white text-blue-600 px-6 py-3 rounded-full font-bold hover:shadow-lg transition">
+<!-- ==================== الصفحة الرئيسية ==================== -->
+<div id="homePage" class="page-container">
+    
+    <!-- ===== قسم الهيرو ===== -->
+    <div class="hero-section relative overflow-hidden">
+        <!-- الخلفية -->
+        <div class="absolute inset-0 bg-gradient-to-br from-blue-900 via-indigo-800 to-purple-900">
+            <div class="absolute top-0 left-0 w-full h-full">
+                <div class="absolute top-10 left-10 w-64 h-64 bg-blue-400 rounded-full mix-blend-multiply filter blur-3xl opacity-20 animate-pulse"></div>
+                <div class="absolute bottom-10 right-10 w-96 h-96 bg-purple-400 rounded-full mix-blend-multiply filter blur-3xl opacity-20 animate-pulse delay-1000"></div>
+                <div class="absolute top-1/2 left-1/2 w-80 h-80 bg-indigo-400 rounded-full mix-blend-multiply filter blur-3xl opacity-20 animate-pulse delay-500"></div>
+            </div>
+        </div>
+        
+        <div class="container mx-auto px-4 py-12 sm:py-20 relative z-10">
+            <div class="text-center">
+                <!-- الشعار -->
+                <div class="animate-fade-scale">
+                    <img src="https://i.ibb.co/Fk4jw8pR/4840e6da-a9c5-4858-a78d-8ceb60d1eaaa.png" 
+                         alt="TecnoShark" 
+                         class="w-20 h-20 sm:w-28 sm:h-28 mx-auto mb-4 rounded-full shadow-2xl border-4 border-white/30 hover:scale-110 transition-transform duration-500">
+                </div>
+                
+                <!-- العنوان -->
+                <h1 class="text-3xl sm:text-5xl md:text-6xl font-bold text-white mb-3 animate-fade-up delay-100">
+                    Tecno<span class="text-yellow-400">Shark</span>
+                </h1>
+                <p class="text-base sm:text-xl text-blue-200 animate-fade-up delay-200">
+                    🦈 Turning Ideas Into Digital Reality
+                </p>
+                
+                <!-- الوصف -->
+                <p class="text-sm sm:text-lg text-blue-100 max-w-2xl mx-auto mt-4 animate-fade-up delay-300 leading-relaxed">
+                    شريكك الموثوق في عالم البرمجيات والحلول الرقمية
+                </p>
+                
+                <!-- الأزرار -->
+                <div class="mt-6 flex flex-wrap gap-3 justify-center animate-fade-up delay-400">
+                    <button onclick="showLoginPage()" 
+                            class="bg-white text-blue-600 px-5 sm:px-8 py-2.5 sm:py-3 rounded-full font-bold hover:shadow-2xl transition-all duration-300 hover:-translate-y-1 text-sm sm:text-base">
                         <i class="fas fa-user-plus ml-2"></i> ابدأ الآن
                     </button>
                     
-                    <button onclick="goToTicketsPage()" class="border-2 border-white px-6 py-3 rounded-full font-bold hover:bg-white/10 transition">
+                    <button onclick="goToAboutUsPage()" 
+                            class="border-2 border-white/40 text-white px-5 sm:px-8 py-2.5 sm:py-3 rounded-full font-bold hover:bg-white/10 transition-all duration-300 hover:-translate-y-1 text-sm sm:text-base">
+                        <i class="fas fa-info-circle ml-2"></i> من نحن
+                    </button>
+                    
+                    <button onclick="goToTicketsPage()" 
+                            class="border-2 border-white/30 text-white px-5 sm:px-8 py-2.5 sm:py-3 rounded-full font-bold hover:bg-white/10 transition-all duration-300 hover:-translate-y-1 text-sm sm:text-base">
                         <i class="fas fa-ticket-alt ml-2"></i> التذاكر
                     </button>
                 </div>
-            </div>
-        </div>
-
-        <div class="container mx-auto px-6 py-16" id="services">
-            <h2 class="text-3xl font-bold text-center text-gray-800 mb-12 animate-fade-up">خدماتنا <span class="text-blue-600">المتميزة</span></h2>
-            <div class="grid md:grid-cols-3 gap-8">
-                <div class="service-card bg-white rounded-2xl p-6 shadow-lg text-center border hover:shadow-2xl transition cursor-pointer">
-                    <div class="w-20 h-20 bg-blue-100 rounded-full flex items-center justify-center mx-auto mb-4">
-                        <i class="fas fa-code text-3xl text-blue-600"></i>
+                
+                <!-- الإحصائيات -->
+                <div class="mt-8 grid grid-cols-2 sm:grid-cols-4 gap-3 max-w-2xl mx-auto">
+                    <div class="stat-item">
+                        <p class="stat-number">4+</p>
+                        <p class="stat-label">سنوات خبرة</p>
                     </div>
-                    <h3 class="text-xl font-bold mb-2">تطوير المواقع</h3>
-                    <p class="text-gray-600">تصميم وتطوير مواقع احترافية متجاوبة مع جميع الأجهزة</p>
-                </div>
-                <div class="service-card bg-white rounded-2xl p-6 shadow-lg text-center border hover:shadow-2xl transition cursor-pointer">
-                    <div class="w-20 h-20 bg-emerald-100 rounded-full flex items-center justify-center mx-auto mb-4">
-                        <i class="fas fa-mobile-alt text-3xl text-emerald-600"></i>
+                    <div class="stat-item">
+                        <p class="stat-number">50+</p>
+                        <p class="stat-label">مشروع منجز</p>
                     </div>
-                    <h3 class="text-xl font-bold mb-2">تطبيقات الجوال</h3>
-                    <p class="text-gray-600">تطبيقات اندرويد و iOS عالية الأداء وسهلة الاستخدام</p>
-                </div>
-                <div class="service-card bg-white rounded-2xl p-6 shadow-lg text-center border hover:shadow-2xl transition cursor-pointer">
-                    <div class="w-20 h-20 bg-purple-100 rounded-full flex items-center justify-center mx-auto mb-4">
-                        <i class="fas fa-cloud-upload-alt text-3xl text-purple-600"></i>
+                    <div class="stat-item">
+                        <p class="stat-number">25+</p>
+                        <p class="stat-label">خبير تقني</p>
                     </div>
-                    <h3 class="text-xl font-bold mb-2">الحلول السحابية</h3>
-                    <p class="text-gray-600">استضافة وحلول سحابية آمنة ومتكاملة لعملك</p>
+                    <div class="stat-item">
+                        <p class="stat-number">100%</p>
+                        <p class="stat-label">رضا العملاء</p>
+                    </div>
                 </div>
             </div>
         </div>
-<div class="bg-gradient-to-r from-blue-600 to-indigo-600 text-white py-16">
-    <div class="container mx-auto px-6">
-        <div class="grid grid-cols-2 md:grid-cols-3 gap-8 md:gap-12 text-center">
-            
-            <!-- 1. المشاريع -->
-            <div class="stat-item">
-                <i class="fas fa-code text-4xl md:text-5xl mb-3 text-blue-200"></i>
-                <p class="text-3xl md:text-4xl font-bold">100+</p>
-                <p class="text-sm md:text-base text-blue-100 mt-1">مشروع</p>
-            </div>
-
-            <!-- 2. فريق العمل -->
-            <div class="stat-item">
-                <i class="fas fa-users text-4xl md:text-5xl mb-3 text-green-300"></i>
-                <p class="text-3xl md:text-4xl font-bold">25+</p>
-                <p class="text-sm md:text-base text-blue-100 mt-1">خبير</p>
-            </div>
-
-            <!-- 3. سنوات الخبرة -->
-            <div class="stat-item">
-                <i class="fas fa-trophy text-4xl md:text-5xl mb-3 text-yellow-300"></i>
-                <p class="text-3xl md:text-4xl font-bold">4+</p>
-                <p class="text-sm md:text-base text-blue-100 mt-1">سنوات</p>
-            </div>
-
+        
+        <!-- موجة -->
+        <div class="absolute bottom-0 left-0 w-full">
+            <svg viewBox="0 0 1200 120" preserveAspectRatio="none" class="w-full h-8 sm:h-12">
+                <path d="M321.39,56.44c58-10.79,114.16-30.13,172-41.86,82.39-16.72,168.19-17.73,250.45-.39C823.78,31,906.67,72,985.66,92.83c70.05,18.48,146.53,26.09,214.34,3V120H0V95.32C76.34,105.53,188.12,85.39,321.39,56.44Z" 
+                      class="fill-white"></path>
+            </svg>
         </div>
     </div>
-</div>
-
-
-        <footer class="bg-gray-900 text-white py-8">
-            <div class="container mx-auto px-6 text-center">
-                <p>&copy; 2026 TecnoShark - جميع الحقوق محفوظة</p>
-                <p class="text-gray-400 text-sm mt-2">شركة البرمجيات والحلول الرقمية</p>
-                <div class="footer-social">
-                    <a href="https://wa.me/201035636654" target="_blank" class="footer-social-btn footer-whatsapp">
+    
+    <!-- ===== قسم الخدمات ===== -->
+    <div class="container mx-auto px-4 py-12 sm:py-16">
+        <div class="text-center mb-8 sm:mb-12">
+            <h2 class="text-2xl sm:text-3xl font-bold text-gray-800">
+                خدماتنا <span class="text-blue-600">المتميزة</span>
+            </h2>
+            <p class="text-gray-500 text-sm sm:text-base mt-2">نقدم حلولاً متكاملة تناسب احتياجاتك</p>
+            <div class="w-16 h-1 bg-blue-600 mx-auto mt-3 rounded-full"></div>
+        </div>
+        
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6">
+            <!-- 1. تطوير المواقع -->
+            <div class="service-card bg-white rounded-2xl p-5 sm:p-6 shadow-lg hover:shadow-2xl transition-all duration-300 hover:-translate-y-1 border border-gray-100">
+                <div class="w-12 h-12 sm:w-14 sm:h-14 bg-blue-100 rounded-xl flex items-center justify-center mb-3">
+                    <i class="fas fa-code text-xl sm:text-2xl text-blue-600"></i>
+                </div>
+                <h3 class="text-base sm:text-lg font-bold text-gray-800">تطوير المواقع</h3>
+                <p class="text-sm text-gray-600 mt-1 leading-relaxed">تصميم وتطوير مواقع احترافية متجاوبة</p>
+            </div>
+            
+            <!-- 2. تطبيقات الجوال -->
+            <div class="service-card bg-white rounded-2xl p-5 sm:p-6 shadow-lg hover:shadow-2xl transition-all duration-300 hover:-translate-y-1 border border-gray-100">
+                <div class="w-12 h-12 sm:w-14 sm:h-14 bg-emerald-100 rounded-xl flex items-center justify-center mb-3">
+                    <i class="fas fa-mobile-alt text-xl sm:text-2xl text-emerald-600"></i>
+                </div>
+                <h3 class="text-base sm:text-lg font-bold text-gray-800">تطبيقات الجوال</h3>
+                <p class="text-sm text-gray-600 mt-1 leading-relaxed">تطبيقات Android و iOS عالية الأداء</p>
+            </div>
+            
+            <!-- 3. الحلول السحابية -->
+            <div class="service-card bg-white rounded-2xl p-5 sm:p-6 shadow-lg hover:shadow-2xl transition-all duration-300 hover:-translate-y-1 border border-gray-100">
+                <div class="w-12 h-12 sm:w-14 sm:h-14 bg-purple-100 rounded-xl flex items-center justify-center mb-3">
+                    <i class="fas fa-cloud-upload-alt text-xl sm:text-2xl text-purple-600"></i>
+                </div>
+                <h3 class="text-base sm:text-lg font-bold text-gray-800">الحلول السحابية</h3>
+                <p class="text-sm text-gray-600 mt-1 leading-relaxed">استضافة وحلول سحابية آمنة ومتكاملة</p>
+            </div>
+            
+            <!-- 4. أنظمة إدارة -->
+            <div class="service-card bg-white rounded-2xl p-5 sm:p-6 shadow-lg hover:shadow-2xl transition-all duration-300 hover:-translate-y-1 border border-gray-100">
+                <div class="w-12 h-12 sm:w-14 sm:h-14 bg-orange-100 rounded-xl flex items-center justify-center mb-3">
+                    <i class="fas fa-cogs text-xl sm:text-2xl text-orange-600"></i>
+                </div>
+                <h3 class="text-base sm:text-lg font-bold text-gray-800">أنظمة إدارة</h3>
+                <p class="text-sm text-gray-600 mt-1 leading-relaxed">ERP، POS، والحضور لتنظيم أعمالك</p>
+            </div>
+            
+            <!-- 5. تصميم UI/UX -->
+            <div class="service-card bg-white rounded-2xl p-5 sm:p-6 shadow-lg hover:shadow-2xl transition-all duration-300 hover:-translate-y-1 border border-gray-100">
+                <div class="w-12 h-12 sm:w-14 sm:h-14 bg-pink-100 rounded-xl flex items-center justify-center mb-3">
+                    <i class="fas fa-paint-brush text-xl sm:text-2xl text-pink-600"></i>
+                </div>
+                <h3 class="text-base sm:text-lg font-bold text-gray-800">تصميم UI/UX</h3>
+                <p class="text-sm text-gray-600 mt-1 leading-relaxed">واجهات جذابة وتجربة استخدام مدروسة</p>
+            </div>
+            
+            <!-- 6. الدعم الفني -->
+            <div class="service-card bg-white rounded-2xl p-5 sm:p-6 shadow-lg hover:shadow-2xl transition-all duration-300 hover:-translate-y-1 border border-gray-100">
+                <div class="w-12 h-12 sm:w-14 sm:h-14 bg-indigo-100 rounded-xl flex items-center justify-center mb-3">
+                    <i class="fas fa-headset text-xl sm:text-2xl text-indigo-600"></i>
+                </div>
+                <h3 class="text-base sm:text-lg font-bold text-gray-800">الدعم الفني</h3>
+                <p class="text-sm text-gray-600 mt-1 leading-relaxed">دعم على مدار الساعة واستشارات مجانية</p>
+            </div>
+        </div>
+    </div>
+    
+    <!-- ===== الفوتر ===== -->
+    <footer class="bg-gray-900 text-white py-6 sm:py-8">
+        <div class="container mx-auto px-4">
+            <div class="flex flex-col sm:flex-row justify-between items-center gap-4">
+                <div class="flex items-center gap-3">
+                    <img src="https://i.ibb.co/Fk4jw8pR/4840e6da-a9c5-4858-a78d-8ceb60d1eaaa.png" 
+                         alt="TecnoShark" 
+                         class="w-8 h-8 rounded-full border-2 border-blue-400">
+                    <span class="text-lg font-bold">Tecno<span class="text-blue-400">Shark</span></span>
+                </div>
+                
+                <div class="flex flex-wrap gap-3 justify-center">
+                    <a href="https://wa.me/201035636654" target="_blank" 
+                       class="bg-green-600 hover:bg-green-700 text-white px-3 sm:px-4 py-1.5 rounded-full text-sm transition flex items-center gap-1.5">
                         <i class="fab fa-whatsapp"></i> واتساب
                     </a>
-                    <a href="https://www.facebook.com/share/18oMJ3PRYG/" target="_blank" class="footer-social-btn footer-facebook">
+                    <a href="https://www.facebook.com/share/18oMJ3PRYG/" target="_blank" 
+                       class="bg-blue-700 hover:bg-blue-800 text-white px-3 sm:px-4 py-1.5 rounded-full text-sm transition flex items-center gap-1.5">
                         <i class="fab fa-facebook-f"></i> فيسبوك
                     </a>
-                    <a href="https://www.tiktok.com/@tecno.shark47" target="_blank" class="footer-social-btn footer-tiktok">
+                    <a href="https://www.tiktok.com/@tecno.shark47" target="_blank" 
+                       class="bg-black hover:bg-gray-800 text-white px-3 sm:px-4 py-1.5 rounded-full text-sm transition flex items-center gap-1.5">
                         <i class="fab fa-tiktok"></i> تيك توك
                     </a>
                 </div>
             </div>
-        </footer>
-    </div>
+            
+            <div class="border-t border-gray-800 mt-4 pt-4 text-center text-xs sm:text-sm text-gray-500">
+                <p>&copy; 2026 TecnoShark - جميع الحقوق محفوظة</p>
+                <p class="mt-1">🦈 صنع في مصر ❤️</p>
+            </div>
+        </div>
+    </footer>
+</div>
 
     <!-- ==================== صفحة تسجيل الدخول ==================== -->
     <div id="loginPage" class="hidden page-container flex items-center justify-center py-12">
@@ -5842,52 +6475,91 @@
 <!-- ==================== صفحة رفع الملفات ==================== -->
 <div id="filesPage" class="hidden page-container py-8">
     <div class="container mx-auto px-4">
-        <div class="flex justify-between items-center mb-6 flex-wrap gap-4">
+        <!-- رأس الصفحة -->
+        <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-6 gap-4">
             <h2 class="text-2xl font-bold text-gray-800">
                 <i class="fas fa-cloud-upload-alt text-blue-600 ml-2"></i> رفع الملفات
-                <span id="filesCount" class="text-sm text-gray-500 font-normal mr-2"></span>
+                <span id="filesCount" class="text-sm text-gray-500 font-normal mr-2">(0)</span>
             </h2>
-            <div class="flex items-center gap-3">
-                <span id="storageInfo" class="text-sm text-gray-600 bg-gray-100 px-3 py-1 rounded-full">
-                    <i class="fas fa-database ml-1"></i> السعة: <span id="storageUsedText">0</span> / <span id="storageTotalText">غير محدود</span>
-                </span>
-                <button onclick="openUploadModal()" class="bg-blue-600 text-white px-6 py-2 rounded-full hover:bg-blue-700 transition flex items-center gap-2">
-                    <i class="fas fa-plus"></i> رفع ملف جديد
+            
+            <!-- السعة التخزينية وزر الرفع -->
+            <div class="flex flex-wrap items-center gap-3 w-full sm:w-auto">
+                <!-- ✅ بطاقة السعة التخزينية المحسنة -->
+                <div class="bg-white rounded-2xl shadow-md px-4 py-3 border border-gray-100 min-w-[200px] flex-1 sm:flex-none">
+                    <div class="flex items-center justify-between gap-3">
+                        <div class="flex items-center gap-2">
+                            <div class="w-8 h-8 rounded-full bg-blue-50 flex items-center justify-center">
+                                <i class="fas fa-database text-blue-500 text-sm"></i>
+                            </div>
+                            <div>
+                                <p class="text-xs text-gray-400">المساحة المستخدمة</p>
+                                <p class="text-sm font-bold text-gray-700">
+                                    <span id="storageUsedText">0</span> / <span id="storageTotalText">2 GB</span>
+                                </p>
+                            </div>
+                        </div>
+                        <span id="storageUsagePercent" class="text-xs font-bold text-blue-600 bg-blue-50 px-2 py-1 rounded-full">0%</span>
+                    </div>
+                    <!-- ✅ شريط التقدم -->
+                    <div class="w-full h-2 bg-gray-100 rounded-full mt-2 overflow-hidden">
+                        <div id="storageBar" class="h-full bg-gradient-to-r from-blue-500 to-indigo-600 rounded-full transition-all duration-700 ease-out" style="width: 0%"></div>
+                    </div>
+                    <!-- ✅ تفاصيل إضافية -->
+                    <div class="flex justify-between items-center mt-1.5">
+                        <span class="text-[10px] text-gray-400">
+                            <i class="fas fa-file ml-1"></i> <span id="fileCountDisplay">0</span> ملف
+                        </span>
+                        <span class="text-[10px] text-gray-400" id="storageStatusText">
+                            <i class="fas fa-check-circle text-green-500 ml-1"></i> متاح
+                        </span>
+                    </div>
+                </div>
+                
+                <!-- ✅ زر رفع ملف جديد -->
+                <button onclick="openUploadModal()" class="bg-gradient-to-r from-blue-600 to-indigo-600 text-white px-5 py-2.5 rounded-full hover:from-blue-700 hover:to-indigo-700 transition-all duration-300 flex items-center gap-2 shadow-md hover:shadow-lg transform hover:scale-[1.02] whitespace-nowrap">
+                    <i class="fas fa-plus-circle"></i>
+                    <span class="hidden sm:inline">رفع ملف جديد</span>
+                    <span class="sm:hidden">رفع</span>
                 </button>
             </div>
         </div>
 
-        <!-- فلتر الملفات -->
+        <!-- ✅ أزرار الفلتر -->
         <div class="flex flex-wrap gap-2 mb-6">
-            <button onclick="filterFiles('all')" class="filter-btn px-4 py-2 rounded-full bg-blue-600 text-white text-sm" data-filter="all">
+            <button onclick="filterFiles('all')" class="filter-btn px-4 py-2 rounded-full bg-blue-600 text-white text-sm transition-all duration-300 shadow-sm hover:shadow-md" data-filter="all">
                 <i class="fas fa-list ml-1"></i> الكل
             </button>
-            <button onclick="filterFiles('image')" class="filter-btn px-4 py-2 rounded-full bg-gray-200 text-gray-700 hover:bg-blue-100 text-sm" data-filter="image">
+            <button onclick="filterFiles('image')" class="filter-btn px-4 py-2 rounded-full bg-gray-100 text-gray-700 hover:bg-blue-100 text-sm transition-all duration-300" data-filter="image">
                 <i class="fas fa-image ml-1"></i> صور
             </button>
-            <button onclick="filterFiles('document')" class="filter-btn px-4 py-2 rounded-full bg-gray-200 text-gray-700 hover:bg-blue-100 text-sm" data-filter="document">
+            <button onclick="filterFiles('document')" class="filter-btn px-4 py-2 rounded-full bg-gray-100 text-gray-700 hover:bg-blue-100 text-sm transition-all duration-300" data-filter="document">
                 <i class="fas fa-file-alt ml-1"></i> مستندات
             </button>
-            <button onclick="filterFiles('video')" class="filter-btn px-4 py-2 rounded-full bg-gray-200 text-gray-700 hover:bg-blue-100 text-sm" data-filter="video">
+            <button onclick="filterFiles('video')" class="filter-btn px-4 py-2 rounded-full bg-gray-100 text-gray-700 hover:bg-blue-100 text-sm transition-all duration-300" data-filter="video">
                 <i class="fas fa-video ml-1"></i> فيديو
             </button>
-            <button onclick="filterFiles('audio')" class="filter-btn px-4 py-2 rounded-full bg-gray-200 text-gray-700 hover:bg-blue-100 text-sm" data-filter="audio">
+            <button onclick="filterFiles('audio')" class="filter-btn px-4 py-2 rounded-full bg-gray-100 text-gray-700 hover:bg-blue-100 text-sm transition-all duration-300" data-filter="audio">
                 <i class="fas fa-music ml-1"></i> صوت
             </button>
-            <button onclick="filterFiles('other')" class="filter-btn px-4 py-2 rounded-full bg-gray-200 text-gray-700 hover:bg-blue-100 text-sm" data-filter="other">
+            <button onclick="filterFiles('other')" class="filter-btn px-4 py-2 rounded-full bg-gray-100 text-gray-700 hover:bg-blue-100 text-sm transition-all duration-300" data-filter="other">
                 <i class="fas fa-file ml-1"></i> أخرى
             </button>
         </div>
 
-        <!-- قائمة الملفات -->
-        <div id="filesList" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6"></div>
+        <!-- ✅ قائمة الملفات -->
+        <div id="filesList" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+            <!-- سيتم عرض الملفات هنا بواسطة JavaScript -->
+        </div>
 
-        <!-- رسالة عدم وجود ملفات -->
-        <div id="noFilesMessage" class="hidden text-center py-12">
-            <i class="fas fa-cloud-upload-alt text-6xl text-gray-300 mb-4"></i>
-            <p class="text-gray-500 text-lg">لا توجد ملفات مرفوعة</p>
-            <button onclick="openUploadModal()" class="mt-4 bg-blue-600 text-white px-6 py-2 rounded-full hover:bg-blue-700 transition">
-                <i class="fas fa-plus ml-2"></i> رفع أول ملف
+        <!-- ✅ رسالة عدم وجود ملفات -->
+        <div id="noFilesMessage" class="hidden text-center py-16">
+            <div class="w-24 h-24 mx-auto bg-gray-50 rounded-full flex items-center justify-center mb-4">
+                <i class="fas fa-cloud-upload-alt text-5xl text-gray-300"></i>
+            </div>
+            <p class="text-gray-500 text-lg font-medium">لا توجد ملفات مرفوعة</p>
+            <p class="text-gray-400 text-sm mt-1">قم برفع ملفاتك الأولى الآن</p>
+            <button onclick="openUploadModal()" class="mt-4 bg-blue-600 text-white px-6 py-2.5 rounded-full hover:bg-blue-700 transition-all duration-300 shadow-md hover:shadow-lg flex items-center gap-2 mx-auto">
+                <i class="fas fa-plus"></i> رفع أول ملف
             </button>
         </div>
     </div>
@@ -6547,6 +7219,61 @@
         </p>
     </div>
 </div>
+
+<!-- ==================== صفحة من نحن ==================== -->
+<div id="aboutUsPage" class="hidden page-container py-8">
+    <div class="container mx-auto px-4">
+        <div class="bg-white rounded-3xl shadow-2xl overflow-hidden animate-fade-scale">
+            
+            <!-- Header -->
+            <div class="relative bg-gradient-to-r from-blue-600 via-indigo-600 to-purple-600 p-6 md:p-10 text-white text-center overflow-hidden">
+                <div class="absolute inset-0 opacity-10">
+                    <div class="absolute top-0 left-0 w-64 h-64 bg-white rounded-full -translate-x-1/2 -translate-y-1/2 animate-pulse"></div>
+                    <div class="absolute bottom-0 right-0 w-96 h-96 bg-white rounded-full translate-x-1/3 translate-y-1/3 animate-pulse delay-1000"></div>
+                </div>
+                
+                <div class="relative z-10">
+                    <img src="https://i.ibb.co/Fk4jw8pR/4840e6da-a9c5-4858-a78d-8ceb60d1eaaa.png" 
+                         alt="TecnoShark" 
+                         class="w-20 h-20 mx-auto mb-3 rounded-full border-4 border-white shadow-xl">
+                    <h1 class="text-3xl md:text-4xl font-bold">🦈 من نحن</h1>
+                    <p class="text-blue-200 mt-1 text-sm md:text-base">TecnoShark — Turning Ideas Into Digital Reality</p>
+                </div>
+            </div>
+            
+            <!-- المحتوى -->
+            <div class="p-4 md:p-8">
+                <!-- تأثير الكتابة -->
+                <div class="mb-8 bg-gray-50 rounded-2xl p-4 md:p-6 border border-gray-200">
+                    <div class="flex items-center gap-2 mb-3 pb-2 border-b border-gray-200">
+                        <span class="w-3 h-3 rounded-full bg-red-500"></span>
+                        <span class="w-3 h-3 rounded-full bg-yellow-500"></span>
+                        <span class="w-3 h-3 rounded-full bg-green-500"></span>
+                        <span class="text-sm text-gray-500 mr-2 font-mono">📄 about.txt</span>
+                    </div>
+                    <div id="typingContainer" class="font-mono text-sm md:text-base leading-relaxed min-h-[300px] text-gray-800 max-h-[400px] overflow-y-auto custom-scrollbar">
+                        <span id="typingText"></span>
+                        <span id="typingCursor" class="inline-block w-0.5 h-5 bg-blue-600 animate-pulse ml-0.5"></span>
+                    </div>
+                </div>
+                
+                <!-- أزرار -->
+                <div class="text-center flex flex-wrap justify-center gap-3">
+                    <button onclick="goToHomePage()" class="bg-gray-200 text-gray-700 px-6 py-2 rounded-full hover:bg-gray-300 transition font-semibold text-sm">
+                        <i class="fas fa-arrow-right ml-2"></i> العودة
+                    </button>
+                    <a href="https://wa.me/201035636654" target="_blank" class="bg-green-500 text-white px-6 py-2 rounded-full hover:bg-green-600 transition font-semibold text-sm inline-flex items-center">
+                        <i class="fab fa-whatsapp ml-2"></i> تواصل معنا
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+
     <script>
        // ==================== تهيئة Firebase ====================
 const firebaseConfig = {
@@ -6725,21 +7452,227 @@ function showToast(msg) {
         let dataArray = null;
         let animationFrame = null;
 
-        // ==================== دوال المدير ====================
-        function handleLogoClick() {
-            logoClickCount++;
-            clearTimeout(logoClickTimer);
-            logoClickTimer = setTimeout(() => {
-                logoClickCount = 0;
-                logoClicked = false;
-            }, 2000);
-            
-            if (logoClickCount >= 3) {
-                logoClicked = true;
-                showToast('✅ تم تفعيل وضع المدير، انقر على اسم الشركة الآن');
-                logoClickCount = 0;
-            }
+
+
+async function sha256(text) {
+    try {
+        const encoder = new TextEncoder();
+        const data = encoder.encode(text);
+        const hashBuffer = await crypto.subtle.digest('SHA-256', data);
+        const hashArray = Array.from(new Uint8Array(hashBuffer));
+        return hashArray.map(b => b.toString(16).padStart(2, '0')).join('');
+    } catch (error) {
+        console.error('❌ خطأ في التشفير:', error);
+        return null;
+    }
+}
+
+async function checkAdminUsername(userMessage) {
+    try {
+        console.log('🔍 جاري التحقق من اليوزرنيم:', userMessage);
+        
+        // ✅ جلب اسم المستخدم من المسار الصحيح
+        const snapshot = await db.ref('settings/admin/username').once('value');
+        const storedHash = snapshot.val();
+        
+        console.log('📦 الهاش المخزن (من settings/admin/username):', storedHash);
+        
+        if (!storedHash) {
+            console.warn('⚠️ لا يوجد يوزرنيم في settings/admin/username');
+            return false;
         }
+        
+        const inputHash = await sha256(userMessage);
+        console.log('🔑 الهاش المدخل:', inputHash);
+        
+        const isMatch = (inputHash === storedHash);
+        console.log('✅ هل هناك تطابق؟', isMatch);
+        
+        return isMatch;
+        
+    } catch (error) {
+        console.error('❌ خطأ في التحقق من اليوزرنيم:', error);
+        return false;
+    }
+}
+
+function openAdminPasswordModal() {
+    const existing = document.getElementById('adminPasswordModal');
+    if (existing) existing.remove();
+    
+    const modal = document.createElement('div');
+    modal.id = 'adminPasswordModal';
+    modal.className = 'fixed inset-0 bg-black/70 flex items-center justify-center z-[9999] animate-fade-scale';
+    modal.onclick = function(e) {
+        if (e.target === this) {
+            this.remove();
+        }
+    };
+    
+    modal.innerHTML = `
+        <div class="bg-white rounded-3xl p-8 max-w-md w-full mx-4 shadow-2xl" onclick="event.stopPropagation()">
+            <div class="text-center mb-4">
+                <div class="w-20 h-20 mx-auto bg-blue-100 rounded-full flex items-center justify-center mb-3">
+                    <i class="fas fa-shield-alt text-4xl text-blue-600"></i>
+                </div>
+                <h3 class="text-2xl font-bold text-gray-800">🔐 تفعيل وضع المدير</h3>
+                <p class="text-gray-500 text-sm mt-1">أدخل كلمة المرور لتفعيل صلاحيات المدير</p>
+            </div>
+            
+            <div class="mb-4">
+                <label class="block text-sm font-medium text-gray-700 mb-1">كلمة المرور</label>
+                <input type="password" id="adminPasswordInput" 
+                       class="w-full p-3 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-lg" 
+                       placeholder="أدخل كلمة المرور"
+                       autofocus>
+            </div>
+            
+            <button onclick="verifyAdminPasswordFromBot()" 
+                    class="w-full bg-blue-600 text-white py-3 rounded-lg hover:bg-blue-700 transition font-semibold text-lg">
+                <i class="fas fa-unlock ml-2"></i> تأكيد
+            </button>
+            
+            <button onclick="this.closest('#adminPasswordModal').remove()" 
+                    class="w-full text-gray-400 text-sm mt-3 hover:text-gray-600 transition py-2">
+                إلغاء
+            </button>
+        </div>
+    `;
+    
+    document.body.appendChild(modal);
+    
+    setTimeout(() => {
+        const input = modal.querySelector('#adminPasswordInput');
+        if (input) {
+            input.focus();
+        }
+    }, 300);
+}
+
+
+async function verifyAdminPassword(inputPassword) {
+    try {
+        console.log('🔍 جاري التحقق من الباسورد:', inputPassword);
+        
+        if (!inputPassword || inputPassword.trim() === '') {
+            console.warn('⚠️ الباسورد فارغ');
+            return false;
+        }
+        
+        // ✅ جلب الباسورد من المسار الصحيح
+        const snapshot = await db.ref('settings/admin/password').once('value');
+        const storedHash = snapshot.val();
+        
+        console.log('📦 الهاش المخزن (من settings/admin/password):', storedHash);
+        
+        if (!storedHash) {
+            console.warn('⚠️ لا يوجد باسورد في settings/admin/password');
+            showToast('❌ كلمة المرور غير مسجلة في النظام');
+            return false;
+        }
+        
+        const inputHash = await sha256(inputPassword.trim());
+        console.log('🔑 الهاش المدخل:', inputHash);
+        
+        const isMatch = (inputHash === storedHash);
+        console.log('✅ هل هناك تطابق؟', isMatch);
+        
+        return isMatch;
+        
+    } catch (error) {
+        console.error('❌ خطأ في التحقق من الباسورد:', error);
+        showToast('❌ حدث خطأ في التحقق');
+        return false;
+    }
+}
+
+
+async function verifyAdminPasswordFromBot() {
+    const modal = document.getElementById('adminPasswordModal');
+    if (!modal) return;
+    
+    const input = modal.querySelector('#adminPasswordInput');
+    const password = input?.value?.trim();
+    
+    if (!password) {
+        showToast('❌ الرجاء إدخال كلمة المرور');
+        return;
+    }
+    
+    const isValid = await window.verifyAdminPassword(password);
+    
+    if (isValid) {
+        // ✅ تحديث المستخدم في Firebase
+        await db.ref(`users/${currentUser.uid}`).update({
+            role: 'admin',
+            isAdmin: true,
+            activatedAt: new Date().toISOString()
+        });
+        
+        // ✅ تحديث currentUser
+        currentUser.role = 'admin';
+        currentUser.isAdmin = true;
+        
+        // ✅ حفظ في localStorage
+        localStorage.setItem('currentUser', JSON.stringify(currentUser));
+        
+        // ✅ تحديث الواجهات
+        await updateHomeUI();
+        await updateSidebarUI();
+        await updateMyAccountUI();
+        
+        modal.remove();
+        showToast('✅ تم تفعيل وضع المدير بنجاح! 👑');
+        showAdminPanel();
+    } else {
+        showToast('❌ كلمة المرور غير صحيحة');
+        if (input) {
+            input.value = '';
+            input.focus();
+        }
+    }
+}
+
+
+async function activateUserAsAdmin(uid) {
+    if (!uid) {
+        showToast('❌ يرجى تسجيل الدخول أولاً');
+        return false;
+    }
+    
+    try {
+        // ✅ تحديث بيانات المستخدم في Firebase
+        await db.ref(`users/${uid}`).update({
+            role: 'admin',
+            isAdmin: true,
+            activatedAt: new Date().toISOString()
+        });
+        
+        // ✅ تحديث currentUser
+        if (currentUser) {
+            currentUser.role = 'admin';
+            currentUser.isAdmin = true;
+            localStorage.setItem('currentUser', JSON.stringify(currentUser));
+        }
+        
+        console.log('✅ تم تفعيل المستخدم كمدير:', uid);
+        showToast('✅ تم تفعيل المدير بنجاح! 👑');
+        
+        // ✅ تحديث الواجهات
+        await updateHomeUI();
+        await updateSidebarUI();
+        await updateMyAccountUI();
+        
+        return true;
+        
+    } catch (error) {
+        console.error('❌ خطأ في تفعيل المدير:', error);
+        showToast('❌ حدث خطأ في تفعيل المدير');
+        return false;
+    }
+}
+
+
 // ==================== دوال السايد بار ====================
 function toggleSidebarWithAnimation(btn) {
     btn.classList.add('rotating');
@@ -6770,39 +7703,7 @@ function handleCompanyNameClick() {
             showAdminPasswordModal();
         }
 
-        function showAdminPasswordModal() {
-            const overlay = document.createElement('div');
-            overlay.id = 'adminPasswordOverlay';
-            overlay.className = 'fixed inset-0 bg-black/70 flex items-center justify-center z-[2000] animate-fade-scale';
-            overlay.onclick = function(e) {
-                if (e.target === this) closeAdminPasswordModal();
-            };
-            
-            overlay.innerHTML = `
-                <div class="bg-white rounded-3xl p-8 max-w-md w-full mx-4 shadow-2xl" onclick="event.stopPropagation()">
-                    <div class="text-center mb-6">
-                        <img src="https://i.ibb.co/Fk4jw8pR/4840e6da-a9c5-4858-a78d-8ceb60d1eaaa.png" alt="Logo" class="w-20 h-20 mx-auto mb-3 rounded-full shadow-md">
-                        <h2 class="text-2xl font-bold text-gray-800">👑 صلاحيات المدير</h2>
-                        <p class="text-gray-500 text-sm">أدخل كلمة السر للوصول إلى لوحة التحكم</p>
-                    </div>
-                    <div class="relative">
-                        <input type="password" id="adminPasswordInputModal" class="w-full p-3 border rounded-lg focus:ring-2 focus:ring-yellow-500 text-lg" placeholder="أدخل كلمة السر" onkeydown="if(event.key==='Enter') verifyAdminPasswordFromModal()">
-                        <button onclick="verifyAdminPasswordFromModal()" class="absolute left-2 top-1/2 -translate-y-1/2 bg-yellow-500 text-white px-4 py-1.5 rounded-lg hover:bg-yellow-600 transition text-sm">
-                            <i class="fas fa-unlock"></i> دخول
-                        </button>
-                    </div>
-                    <p class="text-xs text-gray-400 mt-3 text-center">كلمة السر الافتراضية: <span dir="ltr" class="font-mono font-bold text-blue-600">01144</span></p>
-                    <button onclick="closeAdminPasswordModal()" class="w-full text-gray-400 text-sm mt-4 hover:text-gray-600 transition">
-                        إلغاء
-                    </button>
-                </div>
-            `;
-            
-            document.body.appendChild(overlay);
-            setTimeout(() => {
-                document.getElementById('adminPasswordInputModal').focus();
-            }, 300);
-        }
+       
 
         function closeAdminPasswordModal() {
             const overlay = document.getElementById('adminPasswordOverlay');
@@ -6810,21 +7711,7 @@ function handleCompanyNameClick() {
             logoClicked = false;
         }
 
-        function verifyAdminPasswordFromModal() {
-            const input = document.getElementById('adminPasswordInputModal');
-            const password = input.value.trim();
-            
-            if (password === '01144') {
-                closeAdminPasswordModal();
-                activateAdminAccount();
-            } else {
-                showToast('❌ كلمة السر غير صحيحة');
-                input.value = '';
-                input.focus();
-                input.style.borderColor = '#ef4444';
-                setTimeout(() => { input.style.borderColor = ''; }, 2000);
-            }
-        }
+        
 // ==================== متغيرات التخطيط ====================
 let isScreenSharingMode = false;
 let participantCards = {};
@@ -7418,13 +8305,52 @@ function closeScreenFullscreen() {
             }
         }
 
-        function isAdmin() {
-            return currentUser && (currentUser.role === 'admin' || currentUser.isAdmin === true);
-        }
+      function isAdmin() {
+    // ✅ التحقق من وجود المستخدم
+    if (!currentUser || !currentUser.uid) return false;
+    
+    // ✅ التحقق من الصلاحية من currentUser (الذي يتم تحديثه من Firebase)
+    return currentUser.isAdmin === true || currentUser.role === 'admin';
+}
 
+async function getStoredAdminPassword() {
+    try {
+        console.log('🔍 جاري جلب الباسورد المخزن...');
+        const snapshot = await db.ref('settings/admin/password').once('value');
+        const storedHash = snapshot.val();
+        
+        console.log('📦 الباسورد المخزن في Firebase:');
+        console.log(storedHash);
+        
+        if (storedHash) {
+            console.log('✅ تم جلب الباسورد بنجاح');
+            showToast('✅ تم جلب الباسورد المخزن (شوف الكونسول)');
+            return storedHash;
+        } else {
+            console.log('❌ لا يوجد باسورد مخزن في Firebase');
+            showToast('❌ لا يوجد باسورد مخزن');
+            return null;
+        }
+    } catch (error) {
+        console.error('❌ خطأ في جلب الباسورد:', error);
+        showToast('❌ حدث خطأ: ' + error.message);
+        return null;
+    }
+}
 
         document.addEventListener('DOMContentLoaded', function() {
     const ticketModal = document.getElementById('ticketModal');
+     const savedUser = localStorage.getItem('currentUser');
+    if (savedUser) {
+        try {
+            currentUser = JSON.parse(savedUser);
+            // ✅ التحقق من صلاحية المدير من Firebase
+            verifyAdminStatusOnLoad();
+        } catch (e) {
+            console.warn('⚠️ خطأ في تحميل المستخدم:', e);
+            currentUser = null;
+        }
+    }
     if (ticketModal) {
         const observer = new MutationObserver(function(mutations) {
             mutations.forEach(function(mutation) {
@@ -7436,12 +8362,31 @@ function closeScreenFullscreen() {
         observer.observe(ticketModal, { attributes: true, attributeFilter: ['class'] });
     }
 
+// التحقق من وجود صفحة من نحن
+    const aboutUsPage = document.getElementById('aboutUsPage');
+    if (aboutUsPage && !aboutUsPage.classList.contains('hidden')) {
+        setTimeout(() => {
+            startTypingEffect();
+            setTimeout(animateCounters, 1000);
+        }, 500);
+    }
 });
 
 
 document.addEventListener('DOMContentLoaded', function() {
     const botBtn = document.getElementById('botFloatBtn');
     const botContainer = document.getElementById('botFloatContainer');
+    const savedUser = localStorage.getItem('currentUser');
+    if (savedUser) {
+        try {
+            currentUser = JSON.parse(savedUser);
+            // ✅ التحقق من صلاحية المدير من Firebase
+            verifyAdminStatusOnLoad();
+        } catch (e) {
+            console.warn('⚠️ خطأ في تحميل المستخدم:', e);
+            currentUser = null;
+        }
+    }
 
     if (!botBtn || !botContainer) return;
 
@@ -7791,6 +8736,17 @@ document.addEventListener('DOMContentLoaded', function() {
         loadFiles();
     }
     const hasFile = checkFileFromURL();
+if (currentUser) {
+        verifyAdminStatusFromFirebase();
+    }
+// التحقق من وجود صفحة من نحن
+    const aboutUsPage = document.getElementById('aboutUsPage');
+    if (aboutUsPage && !aboutUsPage.classList.contains('hidden')) {
+        setTimeout(() => {
+            startTypingEffect();
+            setTimeout(animateCounters, 1000);
+        }, 500);
+    }
 });
 
 
@@ -7835,17 +8791,436 @@ function showAdminPanel() {
             }
         }
 
+const aboutUsText = `🦈 أهلاً بكم في TecnoShark
+
+أهلاً بكم في TecnoShark، فريق متخصص في صناعة الحلول الرقمية وتطوير المواقع والأنظمة والبرامج الحديثة.
+
+نحن في TecnoShark نؤمن أن البرمجة ليست مجرد كتابة أكواد، بل هي القدرة على تحويل الفكرة إلى تجربة رقمية متكاملة، سريعة، ذكية، وعصرية.
+
+نعمل على تطوير مشاريع تجمع بين التصميم الاحترافي، تجربة المستخدم، الأداء، الأمان، وسهولة الاستخدام، مع الاهتمام بأدق التفاصيل بدايةً من واجهة المستخدم وحتى طريقة عمل النظام بالكامل.
+
+━━━━━━━━━━━━━━━━━━
+🌐 مواقعنا الإلكترونية
+━━━━━━━━━━━━━━━━━━
+
+نقوم بتصميم وتطوير مواقع إلكترونية حديثة مع التركيز على UI/UX وتجربة المستخدم والأداء والتفاعل.
+
+✨ UI / UX Design
+نهتم بتصميم واجهات مستخدم حديثة وجذابة، مع تجربة UX مدروسة تجعل استخدام الموقع سهلاً ومريحاً وواضحاً.
+
+📱 Responsive Design
+تصميم متوافق مع Desktop وLaptop وTablet وMobile، بحيث يحافظ الموقع على شكله وتجربة استخدامه على مختلف الأجهزة.
+
+🎨 Modern Interface
+واجهات عصرية تحتوي على Animations وTransitions وInteractive Elements لإضافة الحيوية والتفاعل إلى تجربة المستخدم.
+
+⚡ Performance
+نهتم بسرعة تحميل الصفحات وسلاسة التفاعل والأداء العام للموقع.
+
+🔐 Security & Authentication
+عند الحاجة، نقوم بإضافة أنظمة تسجيل الدخول والمصادقة وإدارة الحسابات والصلاحيات وربط قواعد البيانات والخدمات الخلفية.
+
+☁️ Modern Technologies
+نعتمد على تقنيات حديثة مثل:
+HTML — CSS — JavaScript — React — Firebase
+وغيرها من التقنيات حسب طبيعة المشروع.
+
+━━━━━━━━━━━━━━━━━━
+📚 Imtihan — منصة الامتحانات الإلكترونية
+━━━━━━━━━━━━━━━━━━
+
+منصة إلكترونية متخصصة في إنشاء وإدارة الامتحانات والاختبارات، بواجهة حديثة وسهلة الاستخدام للطلاب والمعلمين.
+
+أهم المميزات:
+
+✅ إنشاء أنواع مختلفة من الأسئلة.
+✅ أسئلة الاختيار من متعدد.
+✅ أسئلة الصح والخطأ.
+✅ الأسئلة المقالية.
+✅ التصحيح التلقائي.
+✅ ظهور النتائج والتقارير.
+✅ إنشاء روابط مباشرة للامتحانات.
+✅ بنك أسئلة لتنظيم الأسئلة.
+✅ تحليلات لمتابعة أداء الطلاب.
+✅ إدارة نتائج الطلاب.
+✅ تصميم Responsive لمختلف الأجهزة.
+✅ واجهة UI/UX حديثة وسهلة الاستخدام.
+✅ استخدام تقنيات حديثة مثل React وFirebase.
+
+https://imtihan-eight.vercel.app/
+
+━━━━━━━━━━━━━━━━━━
+👕 Nabd — متجر الملابس الإلكتروني
+━━━━━━━━━━━━━━━━━━
+
+Nabd هو متجر إلكتروني قمنا بتطويره مع التركيز على تقديم تجربة تسوق عصرية وواجهة مستخدم جذابة.
+
+أهم المميزات:
+
+✅ تصميم UI حديث.
+✅ UX سهلة وواضحة.
+✅ عرض المنتجات بطريقة منظمة.
+✅ تجربة تصفح سلسة.
+✅ نظام متكامل للطلبات.
+✅ تقييمات العملاء.
+✅ إدارة المنتجات والطلبات.
+✅ لوحة تحكم متقدمة.
+✅ دعم طرق الدفع الإلكترونية.
+✅ تصميم متجاوب مع الهاتف والكمبيوتر.
+✅ Animations وTransitions لتحسين تجربة الاستخدام.
+
+https://nabd-ten.vercel.app/
+
+━━━━━━━━━━━━━━━━━━
+⛵ Scout DoJo — نظام الكشافة البحرية
+━━━━━━━━━━━━━━━━━━
+
+مشروع رقمي متخصص في تنظيم وإدارة المجموعات الكشفية، مع تصميم واجهة حديثة ولوحة تحكم متكاملة.
+
+أهم المميزات:
+
+✅ إدارة الأعضاء والبيانات والرتب.
+✅ إدارة المجموعات والهيئات والطلايع.
+✅ نظام النقاط والترتيب.
+✅ إدارة المهام والتكاليف.
+✅ متابعة الحضور والغياب.
+✅ إنشاء النماذج والتقييمات.
+✅ لوحة تحكم متكاملة.
+✅ واجهة UI/UX منظمة وسهلة الاستخدام.
+
+https://kayan-cyan.vercel.app/
+
+━━━━━━━━━━━━━━━━━━
+💻 برامج TecnoShark
+━━━━━━━━━━━━━━━━━━
+
+بالإضافة إلى المواقع، نقوم بتطوير برامج وأنظمة متخصصة مصممة لحل احتياجات عملية حقيقية.
+
+━━━━━━━━━━━━━━━━━━
+🛒 TS POS
+━━━━━━━━━━━━━━━━━━
+
+نظام نقاط بيع وإدارة للأنشطة التجارية، يساعد على تنظيم عمليات البيع والمخزون والعملاء والحسابات.
+
+أهم المميزات:
+
+✅ إدارة المنتجات والمخزون.
+✅ نظام بيع سريع.
+✅ دعم الباركود.
+✅ إدارة العملاء.
+✅ إدارة الموردين.
+✅ إدارة الموظفين والصلاحيات.
+✅ الفواتير والطباعة.
+✅ إدارة الخزنة.
+✅ الإيرادات والمصروفات.
+✅ تقارير المبيعات والأرباح والمخزون.
+✅ إمكانية العمل بدون إنترنت.
+
+━━━━━━━━━━━━━━━━━━
+📋 TS Attend Pro
+━━━━━━━━━━━━━━━━━━
+
+نظام متخصص في الحضور والغياب وإدارة الطلاب والفصول.
+
+أهم المميزات:
+
+✅ إدارة الطلاب والفصول.
+✅ تسجيل الحضور والغياب.
+✅ الحضور باستخدام الباركود.
+✅ إنشاء وطباعة باركود للطلاب.
+✅ تقارير الحضور.
+✅ إدارة المدفوعات والمصاريف.
+✅ إدارة الامتحانات والدرجات.
+✅ إصدار النتائج.
+✅ لوحة تحكم وإحصائيات.
+
+━━━━━━━━━━━━━━━━━━
+🏗️ TS Construction — نظام المقاولات
+━━━━━━━━━━━━━━━━━━
+
+نظام مخصص لإدارة أنشطة مواد البناء والمقاولات وتنظيم عمليات البيع والشراء والحسابات.
+
+أهم المميزات:
+
+✅ إدارة مواد البناء.
+✅ إدارة العملاء والموردين.
+✅ إدارة الحجوزات.
+✅ تسجيل مقدم الحجز.
+✅ إدارة فواتير الشراء.
+✅ إدارة الخزنة.
+✅ إدارة الإيرادات والمصروفات.
+✅ تقارير المبيعات والأرباح والمخزون.
+✅ طباعة الفواتير والإيصالات.
+✅ إمكانية العمل بدون إنترنت.
+
+━━━━━━━━━━━━━━━━━━
+👨‍💻 قيادة TecnoShark
+━━━━━━━━━━━━━━━━━━
+
+👑 CEO & Founder
+Mohamed Emad Abdelkader
+
+⚙️ CTO & Founder
+Abdelrahman Mohamed Sobhy
+
+━━━━━━━━━━━━━━━━━━
+🦈 TecnoShark
+━━━━━━━━━━━━━━━━━━
+
+We don't just build websites.
+We build digital experiences.
+
+نحن لا نبني مجرد مواقع أو برامج، بل نصنع تجارب وحلولاً رقمية تجمع بين التصميم، البرمجة، الأداء، والابتكار.
+
+TecnoShark — Turning Ideas Into Digital Reality.`;
+let typingIndex = 0;
+let typingTimeout = null;
+let isTypingComplete = false;
+let userScrolledUp = false;
+let lastScrollTop = 0;
+
+function startTypingEffect() {
+    const textElement = document.getElementById('typingText');
+    const cursorElement = document.getElementById('typingCursor');
+    const container = document.getElementById('typingContainer');
+    
+    if (!textElement) return;
+    
+    if (typingTimeout) clearTimeout(typingTimeout);
+    typingIndex = 0;
+    isTypingComplete = false;
+    userScrolledUp = false;
+    lastScrollTop = 0;
+    textElement.innerHTML = '';
+    cursorElement.style.display = 'inline-block';
+    
+    // ✅ مراقبة تمرير المستخدم
+    if (container) {
+        container.addEventListener('scroll', function() {
+            const currentScroll = container.scrollTop;
+            const maxScroll = container.scrollHeight - container.clientHeight;
+            
+            // ✅ إذا كان المستخدم في الأسفل
+            if (currentScroll >= maxScroll - 10) {
+                userScrolledUp = false;
+            } 
+            // ✅ إذا كان المستخدم في الأعلى أو المنتصف
+            else {
+                userScrolledUp = true;
+            }
+            
+            lastScrollTop = currentScroll;
+        });
+    }
+    
+    function typeNextChar() {
+        if (typingIndex < aboutUsText.length) {
+            const remainingText = aboutUsText.substring(typingIndex);
+            
+            // ✅ التحقق من وجود رابط
+            const linkMatch = remainingText.match(/^(https?:\/\/[^\s]+)/);
+            
+            if (linkMatch) {
+                const fullLink = linkMatch[1];
+                const icon = getLinkIcon(fullLink);
+                
+                const linkHtml = `<a href="${fullLink}" target="_blank" rel="noopener noreferrer" 
+                                    style="color: #2563eb; text-decoration: underline; font-weight: 600; cursor: pointer; 
+                                           transition: all 0.3s; display: inline-block; padding: 2px 8px; border-radius: 6px;
+                                           background: rgba(37, 99, 235, 0.05);"
+                                    onmouseover="this.style.color='#1d4ed8'; this.style.background='rgba(37,99,235,0.15)';"
+                                    onmouseout="this.style.color='#2563eb'; this.style.background='rgba(37,99,235,0.05)';"
+                                    onclick="event.stopPropagation(); window.open('${fullLink}', '_blank');">
+                                    ${icon} ${fullLink}
+                                </a>`;
+                
+                textElement.innerHTML += linkHtml;
+                typingIndex += fullLink.length;
+                
+                // ✅ تمرير للأسفل فقط إذا المستخدم لم يطلع لفوق
+                if (!userScrolledUp) {
+                    scrollToBottom();
+                }
+                
+                typingTimeout = setTimeout(typeNextChar, 80);
+                return;
+            }
+            
+            // ✅ معالجة الأحرف العادية
+            const char = aboutUsText[typingIndex];
+            
+            if (char === '\n') {
+                textElement.innerHTML += '<br>';
+            } else if (char === ' ') {
+                textElement.innerHTML += '&nbsp;';
+            } else {
+                textElement.innerHTML += char;
+            }
+            
+            typingIndex++;
+            
+            // ✅ تمرير للأسفل فقط إذا المستخدم لم يطلع لفوق
+            if (!userScrolledUp) {
+                scrollToBottom();
+            }
+            
+            // ✅ سرعة الكتابة
+            let delay = 10;
+            if (char === '.' || char === ',' || char === '!' || char === '؟') delay = 60;
+            else if (char === '\n') delay = 100;
+            else if (char === '—' || char === '━') delay = 40;
+            else if (char === '✅') delay = 70;
+            else if (char === ' ') delay = 6;
+            
+            typingTimeout = setTimeout(typeNextChar, delay);
+        } else {
+            isTypingComplete = true;
+            cursorElement.style.display = 'none';
+        }
+    }
+
+ // ✅ دالة التمرير للأسفل
+    function scrollToBottom() {
+        const container = document.getElementById('typingContainer');
+        if (container) {
+            container.scrollTop = container.scrollHeight;
+        }
+    }
+    
+    setTimeout(typeNextChar, 500);
+}
+
+// ==================== الحصول على أيقونة الرابط ====================
+function getLinkIcon(url) {
+    if (url.includes('imtihan')) return '📚';
+    if (url.includes('nabd')) return '👕';
+    if (url.includes('kayan')) return '⛵';
+    if (url.includes('wa.me')) return '💬';
+    if (url.includes('facebook')) return '📘';
+    if (url.includes('tiktok')) return '🎵';
+    if (url.includes('youtube')) return '📺';
+    if (url.includes('instagram')) return '📸';
+    if (url.includes('github')) return '🐙';
+    if (url.includes('vercel')) return '▲';
+    return '🔗';
+}
+
+// ==================== تحويل الروابط أثناء الكتابة ====================
+function convertLinksInText() {
+    const container = document.getElementById('typingText');
+    if (!container) return;
+    
+    let html = container.innerHTML;
+    const linkPattern = /(https?:\/\/[^\s<]+)/g;
+    
+    if (html.match(linkPattern)) {
+        html = html.replace(linkPattern, function(url) {
+            let cleanUrl = url.trim().replace(/[.,;:!?)]$/, '');
+            let icon = getLinkIcon(cleanUrl);
+            return `<a href="${cleanUrl}" target="_blank" rel="noopener noreferrer" 
+                    style="color: #2563eb; text-decoration: underline; font-weight: 600; cursor: pointer;"
+                    onclick="event.stopPropagation(); window.open('${cleanUrl}', '_blank');">
+                    ${icon} ${cleanUrl}
+                   </a>`;
+        });
+        container.innerHTML = html;
+    }
+}
+
+// ==================== تحويل جميع الروابط بعد الانتهاء ====================
+function convertAllLinks() {
+    const container = document.getElementById('typingText');
+    if (!container) return;
+    
+    let html = container.innerHTML;
+    const linkPattern = /(https?:\/\/[^\s<]+)/g;
+    
+    if (html.match(linkPattern)) {
+        html = html.replace(linkPattern, function(url) {
+            let cleanUrl = url.trim().replace(/[.,;:!?)]$/, '');
+            let icon = getLinkIcon(cleanUrl);
+            return `<a href="${cleanUrl}" target="_blank" rel="noopener noreferrer" 
+                    style="color: #2563eb; text-decoration: underline; font-weight: 600; cursor: pointer; 
+                           transition: all 0.3s; display: inline-block; padding: 2px 6px; border-radius: 6px;"
+                    onmouseover="this.style.color='#1d4ed8'; this.style.background='rgba(37,99,235,0.1)';"
+                    onmouseout="this.style.color='#2563eb'; this.style.background='transparent';"
+                    onclick="event.stopPropagation(); window.open('${cleanUrl}', '_blank');">
+                    ${icon} ${cleanUrl}
+                   </a>`;
+        });
+        container.innerHTML = html;
+    }
+}
+
+// ==================== الحصول على أيقونة الرابط ====================
+function getLinkIcon(url) {
+    if (url.includes('imtihan')) return '📚';
+    if (url.includes('nabd')) return '👕';
+    if (url.includes('kayan')) return '⛵';
+    if (url.includes('wa.me')) return '💬';
+    if (url.includes('facebook')) return '📘';
+    if (url.includes('tiktok')) return '🎵';
+    if (url.includes('youtube')) return '📺';
+    if (url.includes('instagram')) return '📸';
+    if (url.includes('github')) return '🐙';
+    if (url.includes('vercel')) return '▲';
+    return '🔗';
+}
+
+// ==================== الانتقال لصفحة من نحن ====================
+function goToAboutUsPage() {
+    // ✅ استخدام showSpecificPage بدلاً من الإخفاء اليدوي
+    showSpecificPage('aboutUsPage');
+    
+    // ✅ بدء تأثير الكتابة
+    setTimeout(startTypingEffect, 500);
+    
+    // تحديث القائمة الجانبية
+    updateSidebarUI();
+}
+
+// ==================== الانتقال من السايد بار ====================
+function goToAboutUsPageFromSidebar() {
+    closeSidebar();
+    goToAboutUsPage();
+}
+// ==================== عدادات متحركة ====================
+function animateCounters() {
+    const counters = document.querySelectorAll('.counter');
+    
+    counters.forEach(counter => {
+        const target = parseInt(counter.dataset.target);
+        const duration = 2000;
+        const stepTime = 20;
+        const steps = duration / stepTime;
+        const increment = target / steps;
+        let current = 0;
+        
+        const updateCounter = () => {
+            current += increment;
+            if (current < target) {
+                counter.textContent = Math.round(current);
+                setTimeout(updateCounter, stepTime);
+            } else {
+                counter.textContent = target;
+            }
+        };
+        
+        // استخدام Intersection Observer لبدء العد عند الظهور
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    updateCounter();
+                    observer.disconnect();
+                }
+            });
+        });
+        
+        observer.observe(counter);
+    });
+}
 
 
-
-// =============================================
-//  2. تكوين DeepSeek API
-// =============================================
-
-
-// ============================================================
-//  متغيرات المؤقت والتقييم
-// ============================================================
 
 let botInactivityTimer = null;
 let botWarningTimer = null;
@@ -8693,14 +10068,8 @@ function addNewFAQ(question, answer) {
     return false;
 }
 
-// =============================================
-//  6. دوال شات التذكرة
-// =============================================
-
-
-
 // ============================================================
-//  دالة فتح شات التذكرة - المصححة
+//  دالة فتح شات التذكرة - النسخة الكاملة المعدلة
 // ============================================================
 
 function openTicketChat(ticketId) {
@@ -8740,7 +10109,19 @@ function openTicketChat(ticketId) {
     
     if (adminNotice) adminNotice.classList.add('hidden');
     if (chatInput) chatInput.disabled = false;
-    if (adminBtn) adminBtn.innerHTML = '<i class="fas fa-user-cog"></i> دخول المدير';
+    
+    // ✅ التحكم في ظهور زر "دخول المدير" بناءً على صلاحية المستخدم
+    if (adminBtn) {
+        if (isAdmin()) {
+            // ✅ إذا كان المستخدم مديراً، يظهر الزر
+            adminBtn.style.display = 'inline-block';
+            adminBtn.innerHTML = '<i class="fas fa-user-cog"></i> دخول المدير';
+            adminBtn.className = 'bg-yellow-500 text-white px-4 py-2 rounded-lg hover:bg-yellow-600 transition text-sm';
+        } else {
+            // ✅ إذا كان المستخدم عادياً، يخفي الزر
+            adminBtn.style.display = 'none';
+        }
+    }
     
     // ✅ تحميل بيانات التذكرة
     if (typeof loadTicketChatData === 'function') {
@@ -8757,6 +10138,57 @@ function openTicketChat(ticketId) {
                 </div>
             `;
         }
+    }
+    
+    // ✅ بدء مؤقت عدم النشاط (إذا كانت الدالة موجودة)
+    if (typeof startInactivityTimer === 'function') {
+        startInactivityTimer(ticketId);
+    }
+    
+    // ✅ الاستماع للرسائل الجديدة لإعادة ضبط المؤقت
+    if (typeof db !== 'undefined' && db) {
+        const messagesRef = db.ref(`tickets/${ticketId}/messages`);
+        messagesRef.off('child_added'); // إزالة المستمع القديم
+        messagesRef.on('child_added', (snapshot) => {
+            const msg = snapshot.val();
+            // ✅ إذا كانت الرسالة من المستخدم (ليس بوت وليس نظام)
+            if (msg && msg.senderId !== 'bot' && !msg.isSystem && msg.senderId === currentUser?.uid) {
+                if (typeof resetInactivityTimer === 'function') {
+                    resetInactivityTimer(ticketId);
+                }
+            }
+        });
+    }
+    
+    console.log(`✅ تم فتح شات التذكرة: ${ticketId}`);
+}
+
+
+// ==================== التحقق من صلاحية المدير عند تحميل الصفحة ====================
+async function verifyAdminStatusFromFirebase() {
+    if (!currentUser || !currentUser.uid) return;
+    
+    try {
+        const snapshot = await db.ref(`users/${currentUser.uid}`).once('value');
+        const userData = snapshot.val();
+        
+        if (userData) {
+            // ✅ تحديث currentUser من Firebase
+            currentUser.isAdmin = userData.isAdmin === true || userData.role === 'admin';
+            currentUser.role = userData.role || 'user';
+            
+            // ✅ حفظ في localStorage
+            localStorage.setItem('currentUser', JSON.stringify(currentUser));
+            
+            // ✅ تحديث الواجهات
+            updateHomeUI();
+            updateSidebarUI();
+            updateMyAccountUI();
+            
+            console.log('✅ تم التحقق من صلاحية المدير من Firebase:', currentUser.isAdmin);
+        }
+    } catch (error) {
+        console.error('❌ خطأ في التحقق من صلاحية المدير:', error);
     }
 }
 // ============================================================
@@ -9530,8 +10962,8 @@ function showModernRatingModal(ticketId) {
 }
 
 // ==================== متغيرات التقدم ====================
-let uploadStartTime = 0;
-let uploadInterval = null;
+
+
 let uploadFileData = null;
 let uploadRetryCallback = null;
 
@@ -9614,15 +11046,14 @@ function updateProgress(percent, statusText, speed) {
     }
 }
 
-// ==================== دوال مساعدة للسرعة ====================
-
-// تحويل البايت إلى KB/MB
 function formatBytes(bytes) {
+    if (bytes < 0) return '0 B';
     if (bytes < 1024) return bytes + ' B';
     if (bytes < 1024 * 1024) return (bytes / 1024).toFixed(1) + ' KB';
     if (bytes < 1024 * 1024 * 1024) return (bytes / (1024 * 1024)).toFixed(1) + ' MB';
-    return (bytes / (1024 * 1024 * 1024)).toFixed(1) + ' GB';
+    return (bytes / (1024 * 1024 * 1024)).toFixed(2) + ' GB';
 }
+
 
 // حساب السرعة
 function calculateSpeed(bytes, timeMs) {
@@ -9672,30 +11103,30 @@ function showProgressError(errorMessage) {
 // ==================== إغلاق نافذة التقدم ====================
 function closeProgressAndRefresh() {
     const overlay = document.getElementById('uploadProgressOverlay');
-    overlay.classList.remove('active');
+    if (overlay) overlay.classList.remove('active');
     
     if (uploadInterval) {
         clearInterval(uploadInterval);
         uploadInterval = null;
     }
     
-    // تحديث قائمة الملفات
     loadFiles();
+}
+
+// ==================== إلغاء الرفع ====================
+function cancelUpload() {
+    if (isUploading) {
+        isUploading = false;
+        showToast('⛔ تم إلغاء الرفع');
+        closeProgressAndRefresh();
+    }
 }
 
 // ==================== إعادة المحاولة ====================
 function retryUpload() {
-    if (uploadRetryCallback) {
-        uploadRetryCallback();
-    } else {
-        // إعادة فتح نافذة الرفع
-        closeProgressAndRefresh();
-        setTimeout(() => {
-            openUploadModal();
-        }, 300);
-    }
+    const event = new Event('submit');
+    uploadFileWithProgress(event);
 }
-
 
 // ============================================================
 //  دالة إرسال التقييم المحسنة
@@ -9945,10 +11376,13 @@ async function closeTicketDueToInactivity(ticketId) {
 }
 
 // ============================================================
-//  📌 حذف التذكرة بعد انتهاء المحادثة
+//  دالة حذف التذكرة - النسخة المعدلة
 // ============================================================
+
 async function deleteTicketAfterChat(ticketId) {
     try {
+        console.log('🗑️ جاري حذف التذكرة:', ticketId);
+        
         // ✅ التحقق من وجود التذكرة
         const snapshot = await db.ref(`tickets/${ticketId}`).once('value');
         const ticket = snapshot.val();
@@ -9958,34 +11392,75 @@ async function deleteTicketAfterChat(ticketId) {
             return;
         }
         
-        // ✅ نقل التذكرة إلى السجل
-        await db.ref(`tickets_history/${ticketId}`).set({
-            ...ticket,
-            deletedAt: new Date().toISOString(),
-            deletedBy: 'system_auto',
-            deletedReason: ticket.endedReason || 'inactivity'
-        });
+        // ✅ التحقق من الصلاحية
+        const isOwner = ticket.userId === currentUser?.uid;
+        const isAdminUser = currentUser?.isAdmin === true || currentUser?.role === 'admin';
         
-        // ✅ حذف التذكرة من التذاكر النشطة
-        await db.ref(`tickets/${ticketId}`).remove();
+        // ✅ المستخدم العادي يمكنه حذف تذاكره الخاصة فقط
+        if (!isOwner && !isAdminUser) {
+            console.warn('⚠️ ليس لديك صلاحية لحذف هذه التذكرة');
+            showToast('❌ ليس لديك صلاحية لحذف هذه التذكرة');
+            return;
+        }
         
-        console.log(`🗑️ تم حذف التذكرة ${ticketId} ونقلها إلى السجل`);
+        // ✅ إذا كان المدير أو صاحب التذكرة
+        if (isAdminUser || isOwner) {
+            // ✅ نقل التذكرة إلى السجل (اختياري للمدير)
+            if (isAdminUser) {
+                try {
+                    await db.ref(`tickets_history/${ticketId}`).set({
+                        ...ticket,
+                        deletedAt: new Date().toISOString(),
+                        deletedBy: currentUser?.name || 'admin'
+                    });
+                    console.log(`📦 تم نقل التذكرة ${ticketId} إلى السجل`);
+                } catch (e) {
+                    console.warn('⚠️ لا يمكن الوصول إلى tickets_history، سيتم الحذف مباشرة');
+                }
+            }
+            
+            // ✅ حذف التذكرة
+            await db.ref(`tickets/${ticketId}`).remove();
+            console.log(`🗑️ تم حذف التذكرة ${ticketId}`);
+            showToast('🗑️ تم حذف التذكرة');
+        }
         
         // ✅ تحديث الواجهات
         if (typeof loadTickets === 'function') {
             loadTickets();
         }
         
-        // ✅ إغلاق الشات
+        // ✅ إغلاق الشات إذا كان مفتوحاً
         if (currentTicketId === ticketId) {
-            ticketEnded = true;
-            closeTicketChat();
+            chatEnded = true;
+            if (typeof closeTicketChat === 'function') {
+                closeTicketChat();
+            }
         }
         
     } catch (error) {
         console.error('❌ خطأ في حذف التذكرة:', error);
+        
+        // ✅ محاولة الحذف المباشر إذا فشل
+        if (error.code === 'PERMISSION_DENIED') {
+            try {
+                console.log('🔄 محاولة الحذف المباشر...');
+                await db.ref(`tickets/${ticketId}`).remove();
+                console.log('✅ تم الحذف المباشر');
+                showToast('🗑️ تم حذف التذكرة');
+                if (typeof loadTickets === 'function') {
+                    loadTickets();
+                }
+            } catch (e) {
+                console.error('❌ فشل الحذف المباشر:', e);
+                showToast('❌ لا يمكن حذف التذكرة. يرجى المحاولة لاحقاً.');
+            }
+        } else {
+            showToast('❌ حدث خطأ في حذف التذكرة');
+        }
     }
 }
+
 
 // ============================================================
 //  📌 دالة بدء الشات مع المؤقت
@@ -10034,10 +11509,8 @@ function showFileDownloadPage(fileId) {
     loadFileForDownload(fileId);
 }
 
-// ==================== تحميل بيانات الملف للعرض (معدل - يدعم الزوار) ====================
 async function loadFileForDownload(fileId) {
     try {
-        // ✅ محاولة قراءة الملف مباشرة (حتى لو مش مسجل)
         const snapshot = await db.ref(`files/${fileId}`).once('value');
         const file = snapshot.val();
         
@@ -10046,45 +11519,42 @@ async function loadFileForDownload(fileId) {
             return;
         }
         
-        // ✅ التحقق من الرؤية (حتى للزوار)
-        // إذا كان الملف عام (public) => يسمح للكل
-        // إذا كان خاص (private) => فقط صاحب الملف أو مدير
-        // إذا كان مدير (admin) => فقط المدير
-        
+        // ✅ ✅ التحقق من الرؤية
         const isOwner = currentUser && file.userId === currentUser.uid;
         const isAdminUser = currentUser && isAdmin();
         const isPublic = file.visibility === 'public';
         
-        if (file.visibility === 'private' && !isOwner && !isAdminUser) {
-            showDownloadPrivate();
-            return;
-        }
-        
-        if (file.visibility === 'admin' && !isAdminUser) {
-            showDownloadError('هذا الملف مخصص للمدير فقط');
-            return;
-        }
-        
-        // ✅ إذا كان عام أو المالك أو المدير => يعرض الملف
-        if (isPublic || isOwner || isAdminUser) {
-            // حفظ البيانات
-            downloadFileData = file;
-            downloadFileId = fileId;
-            
-            // عرض البيانات
+        // ✅ ✅ الصلاحية للتحميل:
+        // 1. عام (public) => أي شخص
+        // 2. خاص (private) => فقط المالك أو المدير
+        // 3. مدير (admin) => فقط المدير
+        if (isPublic) {
+            // ✅ عام: أي شخص يتحمله
             displayFileDownloadInfo(file);
             
-            // ✅ تحديث عدد التحميلات (حتى لو مش مسجل)
+            // ✅ تحديث عدد التحميلات
             try {
                 await db.ref(`files/${fileId}/downloads`).transaction((current) => {
                     return (current || 0) + 1;
                 });
             } catch (e) {
-                console.log('⚠️ تحديث التحميلات فشل (مش مهم)');
+                console.log('⚠️ تحديث التحميلات فشل');
+            }
+        } else if (isOwner || isAdminUser) {
+            // ✅ مالك أو مدير
+            displayFileDownloadInfo(file);
+            
+            // ✅ تحديث عدد التحميلات
+            try {
+                await db.ref(`files/${fileId}/downloads`).transaction((current) => {
+                    return (current || 0) + 1;
+                });
+            } catch (e) {
+                console.log('⚠️ تحديث التحميلات فشل');
             }
         } else {
             // ❌ غير مسموح
-            showDownloadError('ليس لديك صلاحية لعرض هذا الملف');
+            showDownloadError('ليس لديك صلاحية لتحميل هذا الملف');
         }
         
     } catch (error) {
@@ -10359,55 +11829,7 @@ window.skipRating = function() {
 
 // أضف هذا في بداية الكود مع المتغيرات الأخرى
 window.ratingSubmitted = false;
-// ============================================================
-//  دالة حذف التذكرة بعد انتهاء المحادثة (محسنة)
-// ============================================================
 
-async function deleteTicketAfterChat(ticketId) {
-    try {
-        // ✅ التحقق من وجود التذكرة
-        const snapshot = await db.ref(`tickets/${ticketId}`).once('value');
-        const ticket = snapshot.val();
-        
-        if (!ticket) {
-            console.log('ℹ️ التذكرة غير موجودة أو تم حذفها مسبقاً');
-            return;
-        }
-        
-        // ✅ نقل التذكرة إلى سجل المحادثات المنتهية (بدلاً من الحذف الفوري)
-        await db.ref(`tickets_history/${ticketId}`).set({
-            ...ticket,
-            deletedAt: new Date().toISOString(),
-            deletedBy: currentUser?.name || 'system'
-        });
-        
-        // ✅ حذف التذكرة من التذاكر النشطة
-        await db.ref(`tickets/${ticketId}`).remove();
-        
-        console.log(`🗑️ تم حذف التذكرة ${ticketId} ونقلها إلى السجل`);
-        
-        // ✅ تحديث الواجهات
-        if (typeof loadTickets === 'function') {
-            loadTickets();
-        }
-        
-        if (typeof renderTickets === 'function') {
-            renderTickets(currentTickets);
-        }
-        
-        // ✅ إغلاق الشات إذا كان مفتوحاً
-        if (currentTicketId === ticketId) {
-            chatEnded = true;
-            closeTicketChat();
-        }
-        
-        // ✅ إظهار إشعار
-        showToast('🗑️ تم حذف التذكرة بنجاح');
-        
-    } catch (error) {
-        console.error('❌ خطأ في حذف التذكرة:', error);
-    }
-}
 
 // ============================================================
 //  دالة إرسال رسالة البوت (معدلة للتأكد من الفواصل)
@@ -10453,12 +11875,28 @@ async function handleBotResponse(ticketId, userMessage) {
         const ticket = snapshot.val();
         if (!ticket || ticket.botActive === false) return;
 
-        const message = userMessage.toLowerCase().trim();
-        const programName = ticket.botProgram || '';
-        const isDirectChat = ticket.isDirectChat || false;
+        // ============================================================
+        //  ✅ 1. التحقق من المدير (أول حاجة)
+        // ============================================================
+        const isAdminUser = await checkAdminUsername(userMessage);
+        
+        if (isAdminUser) {
+            // ✅ فتح نافذة الباسورد
+            openAdminPasswordModal();
+            
+            // ✅ إرسال رسالة في الشات
+            await sendBotMessage(ticketId, '🔐 تم فتح نافذة إدخال كلمة المرور لتفعيل وضع المدير');
+            return;
+        }
 
         // ============================================================
-        //  ✅ 1. التحقق من "لا" لإنهاء المحادثة
+        //  ✅ 2. باقي منطق البوت
+        // ============================================================
+        const message = userMessage.toLowerCase().trim();
+        const programName = ticket.botProgram || '';
+
+        // ============================================================
+        //  ✅ 3. التحقق من "لا" لإنهاء المحادثة
         // ============================================================
         const endKeywords = ['لا', 'no', 'كفاية', 'انتهيت', 'خلص', 'بس', 'خلاص', 'مع السلامه', 'باي', 'سلام', 'كفايه', 'انتهينا', 'نهائي', 'اخر'];
         if (endKeywords.some(kw => message.includes(kw))) {
@@ -10471,14 +11909,12 @@ async function handleBotResponse(ticketId, userMessage) {
             chatEnded = true;
             updateBotStatus(false);
             
-            // ✅ عرض نافذة التقييم
             setTimeout(() => {
                 if (typeof showModernRatingModal === 'function') {
                     showModernRatingModal(ticketId);
                 }
             }, 1500);
             
-            // ✅ حذف التذكرة بعد التقييم
             setTimeout(() => {
                 if (typeof deleteTicketAfterChat === 'function') {
                     deleteTicketAfterChat(ticketId);
@@ -10489,7 +11925,7 @@ async function handleBotResponse(ticketId, userMessage) {
         }
 
         // ============================================================
-        //  ✅ 2. التحقق من "نعم" للمتابعة
+        //  ✅ 4. التحقق من "نعم" للمتابعة
         // ============================================================
         const yesKeywords = ['نعم', 'yes', 'اكيد', 'طبعا', 'موافق', 'ايوه', 'اي', 'اه', 'ايوة', 'نعم نعم', 'طبعاً'];
         if (yesKeywords.some(kw => message.includes(kw))) {
@@ -10498,7 +11934,7 @@ async function handleBotResponse(ticketId, userMessage) {
         }
 
         // ============================================================
-        //  ✅ 3. البحث في مكتبة الأسئلة (findAnswerInFAQ)
+        //  ✅ 5. البحث في مكتبة الأسئلة (findAnswerInFAQ)
         // ============================================================
         const result = findAnswerInFAQ(message, programName);
         if (result.found && result.answer) {
@@ -10509,7 +11945,7 @@ async function handleBotResponse(ticketId, userMessage) {
         }
 
         // ============================================================
-        //  ✅ 4. البحث عن سعر البرنامج (من Firebase)
+        //  ✅ 6. البحث عن سعر البرنامج (من Firebase)
         // ============================================================
         const priceMatch = await checkPriceQuestion(message);
         if (priceMatch.found) {
@@ -10520,7 +11956,7 @@ async function handleBotResponse(ticketId, userMessage) {
         }
 
         // ============================================================
-        //  ✅ 5. قائمة البرامج
+        //  ✅ 7. قائمة البرامج
         // ============================================================
         if (message.includes('البرامج') || message.includes('قائمه') || message.includes('قائمة')) {
             const programsList = await getProgramsList();
@@ -10531,7 +11967,7 @@ async function handleBotResponse(ticketId, userMessage) {
         }
 
         // ============================================================
-        //  ✅ 6. قائمة المواقع
+        //  ✅ 8. قائمة المواقع
         // ============================================================
         if (message.includes('المواقع') || message.includes('مواقع') || message.includes('المشاريع')) {
             const sitesList = await getSitesListAnswer();
@@ -10542,7 +11978,7 @@ async function handleBotResponse(ticketId, userMessage) {
         }
 
         // ============================================================
-        //  ✅ 7. أسئلة عن الشركة (مباشرة)
+        //  ✅ 9. أسئلة عن الشركة (مباشرة)
         // ============================================================
         const companyKeywords = ['الشركه', 'الشركة', 'من نحن', 'تعريف', 'معلومات', 'عن الشركة', 'شركة تكنو', 'تكنو شيرك'];
         if (companyKeywords.some(kw => message.includes(kw))) {
@@ -10554,19 +11990,7 @@ async function handleBotResponse(ticketId, userMessage) {
         }
 
         // ============================================================
-        //  ✅ 8. أسئلة عن المديرين
-        // ============================================================
-        const managerKeywords = ['محمد عماد', 'عماد', 'مدير', 'CEO', 'المدير التنفيذي', 'صاحب', 'مالك', 'المؤسس', 'عبد الرحمن', 'عبدالرحمن', 'CTO', 'مدير التقنيه'];
-        if (managerKeywords.some(kw => message.includes(kw))) {
-            const managerAnswer = getManagerAnswer(message);
-            await sendBotMessage(ticketId, managerAnswer);
-            await sendBotMessage(ticketId, '📋 هل لديك أي سؤال آخر؟ اكتب "نعم" للمتابعة أو "لا" لإنهاء المحادثة.');
-            resetInactivityTimer(ticketId);
-            return;
-        }
-
-        // ============================================================
-        //  ✅ 9. إذا لم توجد إجابة
+        //  ✅ 10. إذا لم توجد إجابة
         // ============================================================
         await sendBotMessage(ticketId, '⚠️ عذراً، لم أستطع فهم سؤالك بالكامل.');
         await sendBotMessage(ticketId, '💡 يرجى إعادة صياغة السؤال بشكل أوضح، أو اكتب "مساعدة" للحصول على قائمة بالأسئلة المتاحة.');
@@ -11363,7 +12787,14 @@ function addNewFAQWithProgram(question, answer, programName) {
     return false;
 }
 
+// استبدل دالة toggleTicketChatAdmin الموجودة بهذه النسخة
 function toggleTicketChatAdmin() {
+    // ✅ التحقق من صلاحية المدير من Firebase
+    if (!isAdmin()) {
+        showToast('❌ ليس لديك صلاحيات المدير');
+        return;
+    }
+    
     isAdminMode = !isAdminMode;
     const notice = document.getElementById('adminModeNotice');
     const btn = document.getElementById('adminToggleBtn');
@@ -11426,26 +12857,7 @@ function showHomePage() {
     updateHomeUI();
     updateSidebarUI();
 }
-        // =============================================
-//  تعديل دالة التحقق من كلمة سر المدير
-// =============================================
-function verifyAdminPassword() {
-    const input = document.getElementById('adminPasswordInput');
-    const password = input.value.trim();
-    
-    if (password === '01144') {
-        document.getElementById('adminLockScreen').classList.add('hidden');
-        document.getElementById('adminDashboard').classList.remove('hidden');
-        loadAdminDashboard();
-        loadAdminPrograms();      // ✅ جديد: تحميل البرامج
-        loadAdminUsers();         // ✅ جديد: تحميل المستخدمين
-        showToast('👑 مرحباً بك في لوحة المدير');
-    } else {
-        showToast('❌ كلمة السر غير صحيحة');
-        input.value = '';
-        input.focus();
-    }
-}
+       
 
    // ============================================================
 //  دالة تحميل لوحة المدير - النسخة الكاملة مع التقييمات
@@ -11634,43 +13046,109 @@ const STORAGE_LIMITS = {
 // ==================== حساب المساحة المستخدمة ====================
 function getStorageUsed() {
     let total = 0;
+    
+    // ✅ ✅ حساب حجم ملفات المستخدم فقط
     currentFiles.forEach(file => {
-        if (file.userId === currentUser?.uid || isAdmin()) {
+        // ✅ ✅ المستخدم يرى فقط ملفاته
+        if (file.userId === currentUser?.uid) {
             total += file.size || 0;
         }
     });
+    
     return total;
 }
 
-// ==================== الحصول على الحد الأقصى للمستخدم الحالي ====================
 function getStorageLimit() {
-    if (isAdmin()) return STORAGE_LIMITS.admin;
-    return STORAGE_LIMITS.user;
+    // ✅ ✅ المدير: غير محدود
+    if (isAdmin()) return Infinity;
+    
+    // ✅ ✅ المستخدم العادي: 2 جيجابايت
+    return 2 * 1024 * 1024 * 1024; // 2 GB
 }
 
-// ==================== التحقق من المساحة المتاحة ====================
 function hasStorageSpace(fileSize) {
     if (isAdmin()) return true;
+    
     const used = getStorageUsed();
-    const limit = getStorageLimit();
-    return (used + fileSize) <= limit;
+    const limit = 2 * 1024 * 1024 * 1024;
+    const remaining = limit - used;
+    
+    if (remaining < fileSize) {
+        const remainingMB = (remaining / (1024 * 1024)).toFixed(2);
+        showToast(`❌ لا توجد مساحة كافية! المتبقي: ${remainingMB} MB`);
+        return false;
+    }
+    
+    return true;
 }
 
 
-// ==================== تحميل الملفات ====================
+// ==================== تحميل الملفات (مع تخزين مؤقت لصلاحيات المستخدمين) ====================
+let userRolesCache = {}; // ✅ تخزين مؤقت لصلاحيات المستخدمين
+
 async function loadFiles() {
+    // ✅ التحقق من تسجيل الدخول
+    if (!currentUser || !currentUser.uid) {
+        showToast('❌ الرجاء تسجيل الدخول أولاً');
+        return;
+    }
+    
     try {
         const snapshot = await db.ref('files').once('value');
         const allFiles = snapshot.val();
         const filesList = [];
+        const isAdminUser = isAdmin();
         
         if (allFiles) {
+            // ✅ جمع جميع معرفات المستخدمين لتحميل صلاحياتهم دفعة واحدة
+            const userIds = new Set();
             for (let id in allFiles) {
                 const file = allFiles[id];
-                // عرض الملفات التي أنشأها المستخدم أو العامة أو الخاصة بالمدير
-                if (file.userId === currentUser?.uid || 
-                    file.visibility === 'public' || 
-                    (isAdmin() && file.visibility === 'admin')) {
+                if (file.userId) {
+                    userIds.add(file.userId);
+                }
+            }
+            
+            // ✅ تحميل صلاحيات جميع المستخدمين دفعة واحدة (إذا لم تكن في الكاش)
+            const usersToLoad = [];
+            for (let uid of userIds) {
+                if (!userRolesCache[uid]) {
+                    usersToLoad.push(uid);
+                }
+            }
+            
+            // ✅ تحميل بيانات المستخدمين
+            if (usersToLoad.length > 0) {
+                const usersSnapshot = await db.ref('users').once('value');
+                const usersData = usersSnapshot.val();
+                if (usersData) {
+                    for (let uid in usersData) {
+                        const userData = usersData[uid];
+                        userRolesCache[uid] = {
+                            isAdmin: userData?.isAdmin === true || userData?.role === 'admin',
+                            name: userData?.name || 'مستخدم'
+                        };
+                    }
+                }
+            }
+            
+            // ✅ فلترة الملفات
+            for (let id in allFiles) {
+                const file = allFiles[id];
+                const isOwner = file.userId === currentUser.uid;
+                const fileOwnerData = userRolesCache[file.userId] || { isAdmin: false };
+                
+                let canView = false;
+                
+                if (isOwner) {
+                    // ✅ المالك يرى ملفاته دائماً
+                    canView = true;
+                } else if (isAdminUser && fileOwnerData.isAdmin) {
+                    // ✅ المدير يرى فقط ملفات المديرين الآخرين
+                    canView = true;
+                }
+                
+                if (canView) {
                     filesList.push({ id, ...file });
                 }
             }
@@ -11680,18 +13158,21 @@ async function loadFiles() {
         renderFiles(currentFiles);
         updateStorageInfo();
         
+        console.log(`✅ تم تحميل ${filesList.length} ملف للمستخدم: ${currentUser.name}`);
+        console.log(`📄 نوع المستخدم: ${isAdminUser ? 'مدير' : 'عادي'}`);
+        
     } catch (error) {
-        console.error('خطأ في تحميل الملفات:', error);
+        console.error('❌ خطأ في تحميل الملفات:', error);
         showToast('❌ خطأ في تحميل الملفات');
     }
 }
 
-// ==================== عرض الملفات ====================
 function renderFiles(files) {
     const container = document.getElementById('filesList');
     const noMessage = document.getElementById('noFilesMessage');
     if (!container) return;
     
+    // ✅ فلترة الملفات حسب التصنيف
     const filtered = files.filter(file => {
         if (currentFileFilter === 'all') return true;
         return file.category === currentFileFilter;
@@ -11723,6 +13204,37 @@ function renderFiles(files) {
         const color = colorMap[file.category] || 'text-gray-500';
         const size = (file.size / 1024).toFixed(1) + ' KB';
         
+        // ✅ تحديد صلاحية الحذف
+        const isOwner = file.userId === currentUser?.uid;
+        const isAdminUser = isAdmin();
+        
+        // ✅ ✅ المدير لا يستطيع حذف ملفات المديرين الآخرين (فقط المالك)
+        // ✅ المالك فقط من يستطيع حذف ملفه
+        const canDelete = isOwner;
+        
+        // ✅ تحديد نوع الرؤية
+        let visibilityText = '';
+        let visibilityIcon = '';
+        let visibilityColor = '';
+        if (file.visibility === 'private') {
+            visibilityText = 'خاص';
+            visibilityIcon = 'fa-lock';
+            visibilityColor = 'text-gray-500';
+        } else if (file.visibility === 'admin') {
+            visibilityText = 'مدير';
+            visibilityIcon = 'fa-crown';
+            visibilityColor = 'text-yellow-500';
+        } else if (file.visibility === 'public') {
+            visibilityText = 'رابط عام';
+            visibilityIcon = 'fa-link';
+            visibilityColor = 'text-blue-500';
+        }
+        
+        // ✅ ✅ تحديد ما إذا كان الملف لمدير آخر (لإظهار علامة)
+        const isAdminFile = userRolesCache[file.userId]?.isAdmin === true;
+        const isCurrentUserAdmin = isAdminUser;
+        const showAdminBadge = isAdminFile && !isOwner && isCurrentUserAdmin;
+        
         return `
             <div class="bg-white rounded-2xl p-5 shadow-lg hover:shadow-xl transition-all cursor-pointer border hover:border-blue-300" onclick="viewFile('${file.id}')">
                 <div class="flex items-start gap-4">
@@ -11733,20 +13245,72 @@ function renderFiles(files) {
                         <h3 class="font-bold text-gray-800 truncate">${file.displayName || file.name}</h3>
                         <p class="text-xs text-gray-500">${size}</p>
                         <p class="text-xs text-gray-400">${new Date(file.uploadedAt).toLocaleDateString('ar-EG')}</p>
+                        ${isOwner ? '<p class="text-xs text-blue-500">📁 ملفك الشخصي</p>' : ''}
+                        ${showAdminBadge ? '<p class="text-xs text-yellow-500">👑 ملف مدير آخر</p>' : ''}
+                        ${!isOwner && !showAdminBadge && isAdminUser ? '<p class="text-xs text-gray-400">📄 ملف مستخدم</p>' : ''}
                     </div>
                 </div>
                 <div class="mt-3 flex items-center justify-between">
                     <span class="text-xs px-2 py-1 rounded-full bg-gray-100 text-gray-600">${file.category || 'أخرى'}</span>
-                    <span class="text-xs ${file.visibility === 'public' ? 'text-green-500' : file.visibility === 'admin' ? 'text-yellow-500' : 'text-gray-500'}">
-                        <i class="fas ${file.visibility === 'public' ? 'fa-globe' : file.visibility === 'admin' ? 'fa-crown' : 'fa-lock'}"></i>
-                        ${file.visibility === 'public' ? 'عام' : file.visibility === 'admin' ? 'مدير' : 'خاص'}
-                    </span>
+                    <div class="flex items-center gap-2">
+                        <span class="text-xs ${visibilityColor}" title="${file.visibility === 'public' ? 'رابط عام للتحميل' : file.visibility === 'admin' ? 'للمدير فقط' : 'خاص'}">
+                            <i class="fas ${visibilityIcon}"></i>
+                            ${visibilityText}
+                        </span>
+                        ${canDelete ? `
+                            <button onclick="event.stopPropagation(); deleteFileDirect('${file.id}')" 
+                                    class="text-red-500 hover:text-red-700 text-sm p-1 rounded-full hover:bg-red-50 transition" 
+                                    title="حذف الملف">
+                                <i class="fas fa-trash"></i>
+                            </button>
+                        ` : `
+                            <span class="text-xs text-gray-400" title="ليس لديك صلاحية حذف هذا الملف">
+                                <i class="fas fa-lock"></i>
+                            </span>
+                        `}
+                    </div>
                 </div>
             </div>
         `;
     }).join('');
+}
+
+// ==================== حذف الملف مباشرة (للمالك فقط) ====================
+function deleteFileDirect(fileId) {
+    if (!fileId) {
+        showToast('❌ لا يوجد ملف للحذف');
+        return;
+    }
     
-    updateFilesCount(files);
+    const file = currentFiles.find(f => f.id === fileId);
+    if (!file) {
+        showToast('❌ الملف غير موجود');
+        return;
+    }
+    
+    // ✅ ✅ التحقق من الصلاحية: المالك فقط
+    const isOwner = file.userId === currentUser?.uid;
+    
+    if (!isOwner) {
+        showToast('❌ ليس لديك صلاحية حذف هذا الملف (المالك فقط)');
+        return;
+    }
+    
+    if (!confirm(`⚠️ هل أنت متأكد من حذف ملفك "${file.displayName}"؟`)) {
+        return;
+    }
+    
+    showToast('⏳ جاري حذف الملف...');
+    
+    db.ref(`files/${fileId}`).remove()
+        .then(() => {
+            showToast('✅ تم حذف الملف بنجاح');
+            loadFiles();
+        })
+        .catch((error) => {
+            console.error('❌ خطأ في حذف الملف:', error);
+            showToast('❌ حدث خطأ في حذف الملف: ' + error.message);
+        });
 }
 
 // ==================== تحديث عدد الملفات ====================
@@ -11757,21 +13321,97 @@ function updateFilesCount(files) {
     }
 }
 
-// ==================== تحديث معلومات السعة التخزينية ====================
+// ==================== تحديث معلومات السعة التخزينية (محسنة) ====================
 function updateStorageInfo() {
     const used = getStorageUsed();
     const limit = getStorageLimit();
     const usedText = document.getElementById('storageUsedText');
     const totalText = document.getElementById('storageTotalText');
+    const storageBar = document.getElementById('storageBar');
+    const usagePercent = document.getElementById('storageUsagePercent');
+    const fileCountDisplay = document.getElementById('fileCountDisplay');
+    const statusText = document.getElementById('storageStatusText');
     
+    // ✅ تحديث النص المستخدم
     if (usedText) {
-        usedText.innerText = (used / (1024 * 1024)).toFixed(2) + ' MB';
+        const usedInMB = used / (1024 * 1024);
+        if (used === 0) {
+            usedText.innerText = '0';
+        } else if (usedInMB < 1) {
+            usedText.innerText = (used / 1024).toFixed(0);
+        } else if (usedInMB < 1024) {
+            usedText.innerText = usedInMB.toFixed(1);
+        } else {
+            usedText.innerText = (usedInMB / 1024).toFixed(2);
+        }
     }
+    
+    // ✅ تحديث النص الكلي
     if (totalText) {
-        if (limit === Infinity) {
+        if (isAdmin()) {
             totalText.innerText = 'غير محدود';
         } else {
-            totalText.innerText = (limit / (1024 * 1024 * 1024)).toFixed(0) + ' GB';
+            const limitInGB = limit / (1024 * 1024 * 1024);
+            if (limitInGB >= 1) {
+                totalText.innerText = limitInGB.toFixed(0) + ' GB';
+            } else {
+                totalText.innerText = (limit / (1024 * 1024)).toFixed(0) + ' MB';
+            }
+        }
+    }
+    
+    // ✅ تحديث شريط التقدم
+    if (storageBar) {
+        const percent = limit === Infinity ? 0 : Math.min((used / limit) * 100, 100);
+        storageBar.style.width = percent + '%';
+        
+        // ✅ تغيير لون الشريط حسب النسبة
+        storageBar.classList.remove('warning', 'danger', 'animated');
+        if (percent > 90) {
+            storageBar.classList.add('danger');
+        } else if (percent > 70) {
+            storageBar.classList.add('warning');
+        } else if (percent > 0 && percent < 100) {
+            storageBar.classList.add('animated');
+        }
+    }
+    
+    // ✅ تحديث نسبة الاستخدام
+    if (usagePercent) {
+        const percent = limit === Infinity ? 0 : Math.min((used / limit) * 100, 100);
+        usagePercent.innerText = percent.toFixed(0) + '%';
+        
+        // ✅ تغيير لون النسبة
+        if (percent > 90) {
+            usagePercent.className = 'text-xs font-bold text-red-600 bg-red-50 px-2 py-1 rounded-full';
+        } else if (percent > 70) {
+            usagePercent.className = 'text-xs font-bold text-yellow-600 bg-yellow-50 px-2 py-1 rounded-full';
+        } else {
+            usagePercent.className = 'text-xs font-bold text-blue-600 bg-blue-50 px-2 py-1 rounded-full';
+        }
+    }
+    
+    // ✅ تحديث عدد الملفات
+    if (fileCountDisplay) {
+        const count = currentFiles ? currentFiles.length : 0;
+        fileCountDisplay.innerText = count;
+    }
+    
+    // ✅ تحديث حالة المساحة
+    if (statusText) {
+        const percent = limit === Infinity ? 0 : Math.min((used / limit) * 100, 100);
+        if (isAdmin()) {
+            statusText.innerHTML = '<i class="fas fa-crown text-yellow-500 ml-1"></i> غير محدود';
+            statusText.className = 'text-[10px] text-yellow-600';
+        } else if (percent > 95) {
+            statusText.innerHTML = '<i class="fas fa-exclamation-triangle text-red-500 ml-1"></i> ممتلئ تقريباً';
+            statusText.className = 'text-[10px] text-red-600';
+        } else if (percent > 80) {
+            statusText.innerHTML = '<i class="fas fa-exclamation-circle text-yellow-500 ml-1"></i> مساحة محدودة';
+            statusText.className = 'text-[10px] text-yellow-600';
+        } else {
+            statusText.innerHTML = '<i class="fas fa-check-circle text-green-500 ml-1"></i> متاح';
+            statusText.className = 'text-[10px] text-green-600';
         }
     }
 }
@@ -11809,100 +13449,442 @@ function closeUploadModal(event) {
     }
 }
 
-// ==================== دالة رفع الملف مع شريط التقدم ====================
+let uploadTask = null;
+let isUploading = false;
+let uploadStartTime = 0;
+let uploadedBytes = 0;
+let totalFileSize = 0;
+let uploadSpeed = 0;
+let speedSamples = [];
+let lastProgressUpdate = 0;
+let uploadInterval = null;
+
+// ==================== رفع ملف مع تقدم حقيقي ====================
 async function uploadFileWithProgress(event) {
     event.preventDefault();
+    
+    if (!currentUser) {
+        showToast('❌ الرجاء تسجيل الدخول أولاً');
+        return;
+    }
     
     const displayName = document.getElementById('fileDisplayName').value.trim();
     const fileInput = document.getElementById('fileInput');
     const category = document.getElementById('fileCategory').value;
     const visibility = document.getElementById('fileVisibility').value;
     
-    if (!displayName) {
-        showToast('❌ الرجاء إدخال اسم الملف');
-        return;
-    }
-    
-    if (!fileInput.files || fileInput.files.length === 0) {
-        showToast('❌ الرجاء اختيار ملف');
+    if (!displayName || !fileInput.files || fileInput.files.length === 0) {
+        showToast('❌ الرجاء إدخال اسم الملف واختيار ملف');
         return;
     }
     
     const file = fileInput.files[0];
-    const maxSize = isAdmin() ? Infinity : 10 * 1024 * 1024;
+    const maxSize = isAdmin() ? 20 * 1024 * 1024 : 5 * 1024 * 1024;
     
-    if (file.size > maxSize && !isAdmin()) {
-        showToast('❌ حجم الملف يتجاوز الحد الأقصى (10 ميجابايت)');
+    if (file.size > maxSize) {
+        showToast(`❌ حجم الملف يتجاوز الحد الأقصى (${maxSize / (1024 * 1024)} ميجابايت)`);
         return;
     }
     
-    if (!hasStorageSpace(file.size) && !isAdmin()) {
-        showToast('❌ لا توجد مساحة تخزين كافية');
+    if (!hasStorageSpace(file.size)) {
         return;
     }
+    
+    totalFileSize = file.size;
+    uploadedBytes = 0;
+    uploadSpeed = 0;
+    speedSamples = [];
+    uploadStartTime = Date.now();
+    lastProgressUpdate = 0;
+    isUploading = true;
     
     // ✅ إظهار نافذة التقدم
-    showProgressModal(file.name);
+    showRealProgressModal(file.name, file.size);
+    await sleep(100); // تأخير بسيط لظهور النافذة
     
-    // ✅ تخزين البيانات لإعادة المحاولة
-    uploadRetryCallback = () => {
-        uploadFileWithProgress(event);
-    };
+    // ✅ تعطيل زر الإرسال
+    const submitBtn = document.querySelector('#uploadForm button[type="submit"]');
+    if (submitBtn) submitBtn.disabled = true;
     
     try {
-        // تحويل الملف إلى Base64 مع تحديث التقدم
-        const base64 = await fileToBase64WithProgress(file);
+        // ✅ ========== 1. قراءة الملف ==========
+        updateRealProgress(5, 'جاري قراءة الملف...');
+        await sleep(50);
+        
+        const arrayBuffer = await file.arrayBuffer();
+        const uint8Array = new Uint8Array(arrayBuffer);
+        
+        // ✅ ========== 2. تشفير وضغط مع تحديث التقدم ==========
+        updateRealProgress(10, 'جاري التشفير والضغط...');
+        await sleep(50);
+        
+        const compressed = compressAndEncryptStream(uint8Array);
+        const compressedSize = compressed.length;
+        const compressionRatio = ((1 - compressedSize / totalFileSize) * 100).toFixed(1);
+        
+        updateRealProgress(30, `✅ تم التشفير (نسبة الضغط: ${compressionRatio}%)`);
+        await sleep(50);
+        
+        // ✅ ========== 3. تحويل إلى Base64 مع تقدم حقيقي ==========
+        updateRealProgress(35, 'جاري تحويل البيانات...');
+        await sleep(50);
+        
+        const base64 = await arrayBufferToBase64WithProgress(compressed, totalFileSize);
+        
+        // ✅ ========== 4. حفظ في Firebase ==========
+        updateRealProgress(90, 'جاري حفظ البيانات...');
+        await sleep(50);
         
         const fileData = {
             name: file.name,
             displayName: displayName,
-            size: file.size,
+            size: totalFileSize,
+            compressedSize: compressedSize,
             type: file.type,
             category: category,
             visibility: visibility,
             data: base64,
+            compressionRatio: compressionRatio,
             userId: currentUser.uid,
-            userName: currentUser.name || currentUser.username,
+            userName: currentUser.name || currentUser.username || 'مستخدم',
             uploadedAt: new Date().toISOString(),
-            downloads: 0
+            downloads: 0,
+            fileId: 'file_' + Date.now()
         };
         
-        // محاكاة سرعة الرفع
-        let progress = 0;
-        const speedInterval = setInterval(() => {
-            progress += Math.random() * 15 + 5;
-            if (progress >= 95) {
-                clearInterval(speedInterval);
-            }
-            const speed = (Math.random() * 200 + 50).toFixed(0);
-            updateProgress(progress, 'جاري الرفع...', speed + ' KB/s');
-        }, 200);
-        
-        // حفظ في Firebase
         const newRef = db.ref('files').push();
         await newRef.set(fileData);
         
-        // إكمال التقدم
-        clearInterval(speedInterval);
-        updateProgress(100, '✅ تم الرفع بنجاح!', '');
+        // ✅ ========== 5. اكتمال الرفع ==========
+        updateRealProgress(100, '✅ تم الرفع بنجاح!');
         
-        // إغلاق نافذة الرفع الأصلية
+        setTimeout(() => {
+            document.getElementById('progressButtons').style.display = 'flex';
+        }, 500);
+        
         closeUploadModal();
         
-        // إعادة تعيين callback
-        uploadRetryCallback = null;
-        
-        // تحديث القائمة بعد ثانية
         setTimeout(() => {
             loadFiles();
-        }, 1000);
+        }, 500);
+        
+        if (submitBtn) submitBtn.disabled = false;
+        isUploading = false;
+        
+        showToast(`✅ تم رفع "${displayName}" بنجاح! (ضغط ${compressionRatio}%)`);
         
     } catch (error) {
-        console.error('خطأ في رفع الملف:', error);
-        showProgressError(error.message || 'حدث خطأ في رفع الملف');
-        uploadRetryCallback = () => {
-            uploadFileWithProgress(event);
-        };
+        console.error('❌ خطأ في رفع الملف:', error);
+        showRealProgressError(error.message || 'حدث خطأ في رفع الملف');
+        if (submitBtn) submitBtn.disabled = false;
+        isUploading = false;
+    }
+}
+
+// ==================== تحويل ArrayBuffer إلى Base64 مع تقدم حقيقي ====================
+function arrayBufferToBase64WithProgress(uint8Array, totalSize) {
+    return new Promise((resolve, reject) => {
+        try {
+            const chunkSize = 1024 * 32; // 32KB chunks - حجم مناسب للتحديث
+            const totalChunks = Math.ceil(uint8Array.length / chunkSize);
+            let processed = 0;
+            let base64Chunks = [];
+            let chunkIndex = 0;
+            
+            // ✅ استخدام setInterval لتحديث التقدم بانتظام
+            const progressInterval = setInterval(() => {
+                const progress = 35 + (processed / uint8Array.length) * 50;
+                const percent = Math.min(Math.round(progress), 85);
+                const speedText = formatBytes(uploadSpeed) + '/s';
+                updateRealProgress(percent, 
+                    `جاري التحميل... ${percent}% (${formatBytes(processed)} / ${formatBytes(uint8Array.length)})`,
+                    speedText
+                );
+            }, 200);
+            
+            // ✅ دالة معالجة الـ chunk التالي مع تأخير للسماح بتحديث الـ UI
+            function processNextChunk() {
+                if (processed >= uint8Array.length) {
+                    clearInterval(progressInterval);
+                    const finalBase64 = base64Chunks.join('');
+                    resolve(finalBase64);
+                    return;
+                }
+                
+                const end = Math.min(processed + chunkSize, uint8Array.length);
+                const chunk = uint8Array.slice(processed, end);
+                
+                // ✅ تحويل chunk إلى Base64
+                let chunkBase64;
+                try {
+                    chunkBase64 = btoa(String.fromCharCode.apply(null, chunk));
+                } catch (e) {
+                    let binary = '';
+                    for (let i = 0; i < chunk.length; i++) {
+                        binary += String.fromCharCode(chunk[i]);
+                    }
+                    chunkBase64 = btoa(binary);
+                }
+                
+                base64Chunks.push(chunkBase64);
+                processed = end;
+                chunkIndex++;
+                
+                // ✅ تحديث السرعة
+                const elapsed = (Date.now() - uploadStartTime) / 1000;
+                if (elapsed > 0.5) {
+                    uploadSpeed = processed / elapsed;
+                    speedSamples.push(uploadSpeed);
+                    if (speedSamples.length > 5) speedSamples.shift();
+                }
+                
+                // ✅ تأخير بسيط للسماح بتحديث الـ UI (مهم جداً!)
+                setTimeout(processNextChunk, 10); // 10ms تأخير
+            }
+            
+            // ✅ بدء المعالجة
+            processNextChunk();
+            
+        } catch (error) {
+            reject(error);
+        }
+    });
+}
+
+// ==================== دالة التشفير والضغط ====================
+function compressAndEncryptStream(data) {
+    const result = [];
+    let runLength = 1;
+    const key = 0x55;
+    
+    for (let i = 0; i < data.length; i++) {
+        const byte = data[i] ^ key;
+        
+        if (i < data.length - 1 && data[i] === data[i + 1]) {
+            runLength++;
+            continue;
+        }
+        
+        if (runLength > 1) {
+            result.push(byte);
+            result.push(Math.min(runLength, 255));
+            runLength = 1;
+        } else {
+            result.push(byte);
+        }
+    }
+    
+    return new Uint8Array(result);
+}
+
+function sleep(ms) {
+    return new Promise(resolve => setTimeout(resolve, ms));
+}
+
+function decompressAndDecrypt(compressed) {
+    const result = [];
+    const key = 0x55;
+    let i = 0;
+    
+    while (i < compressed.length) {
+        const value = compressed[i] ^ key;
+        i++;
+        
+        // ✅ التحقق من وجود RLE
+        if (i < compressed.length && compressed[i] < 0x80) {
+            const count = compressed[i];
+            i++;
+            for (let j = 0; j < count; j++) {
+                result.push(value);
+            }
+        } else {
+            result.push(value);
+        }
+    }
+    
+    return new Uint8Array(result);
+}
+
+// ==================== عرض نافذة التقدم ====================
+function showRealProgressModal(fileName, fileSize) {
+    const overlay = document.getElementById('uploadProgressOverlay');
+    const icon = document.getElementById('progressIcon');
+    const bar = document.getElementById('progressBar');
+    const percent = document.getElementById('progressPercent');
+    const status = document.getElementById('progressStatus');
+    const title = document.getElementById('progressTitle');
+    const fileNameEl = document.getElementById('progressFileName');
+    const buttons = document.getElementById('progressButtons');
+    const errorButtons = document.getElementById('progressErrorButtons');
+    const speedEl = document.getElementById('progressSpeed');
+    const timeEl = document.getElementById('progressTime');
+    
+    overlay.classList.add('active');
+    icon.className = 'icon-container uploading';
+    icon.innerHTML = '<i class="fas fa-cloud-upload-alt"></i>';
+    bar.className = 'progress-bar';
+    bar.style.width = '0%';
+    percent.textContent = '0';
+    status.textContent = 'جاري التحميل...';
+    title.textContent = 'جاري رفع الملف';
+    fileNameEl.textContent = fileName;
+    buttons.style.display = 'none';
+    errorButtons.style.display = 'none';
+    speedEl.textContent = '0 KB/s';
+    timeEl.textContent = '0s';
+    
+    // ✅ عرض حجم الملف
+    let sizeInfo = document.getElementById('fileSizeInfo');
+    if (!sizeInfo) {
+        const modalContent = document.querySelector('.upload-progress-modal');
+        if (modalContent) {
+            const infoDiv = document.createElement('div');
+            infoDiv.id = 'fileSizeInfo';
+            infoDiv.className = 'file-size-info';
+            infoDiv.style.cssText = 'display: block; margin-bottom: 10px; font-weight: bold; color: #1e293b;';
+            modalContent.insertBefore(infoDiv, modalContent.querySelector('.progress-bar-container'));
+            sizeInfo = infoDiv;
+        }
+    }
+    if (sizeInfo) {
+        sizeInfo.textContent = `📁 ${formatBytes(fileSize)}`;
+        sizeInfo.style.display = 'block';
+    }
+    
+    // ✅ عرض شريط المعلومات
+    let infoBar = document.getElementById('uploadInfoBar');
+    if (!infoBar) {
+        const modalContent = document.querySelector('.upload-progress-modal');
+        if (modalContent) {
+            const barDiv = document.createElement('div');
+            barDiv.id = 'uploadInfoBar';
+            barDiv.className = 'upload-info-bar';
+            barDiv.style.cssText = 'display: flex; justify-content: space-between; font-size: 13px; color: #64748b; margin-bottom: 5px;';
+            barDiv.innerHTML = `
+                <span id="uploadedSize">0 / ${formatBytes(fileSize)}</span>
+                <span id="uploadPercentage">0%</span>
+            `;
+            modalContent.insertBefore(barDiv, modalContent.querySelector('.progress-bar-container'));
+            infoBar = barDiv;
+        }
+    }
+    if (infoBar) {
+        infoBar.style.display = 'flex';
+    }
+    
+    uploadStartTime = Date.now();
+    uploadedBytes = 0;
+    totalFileSize = fileSize;
+    speedSamples = [];
+    
+    // ✅ بدء تحديث الوقت
+    if (uploadInterval) clearInterval(uploadInterval);
+    uploadInterval = setInterval(() => {
+        const elapsed = Math.floor((Date.now() - uploadStartTime) / 1000);
+        if (elapsed < 60) {
+            timeEl.textContent = elapsed + 's';
+        } else {
+            const mins = Math.floor(elapsed / 60);
+            const secs = elapsed % 60;
+            timeEl.textContent = mins + 'm ' + secs + 's';
+        }
+    }, 1000);
+}
+
+// ==================== تحديث التقدم ====================
+function updateRealProgress(percent, statusText, speedText) {
+    const bar = document.getElementById('progressBar');
+    const percentEl = document.getElementById('progressPercent');
+    const statusEl = document.getElementById('progressStatus');
+    const speedEl = document.getElementById('progressSpeed');
+    const uploadedSizeEl = document.getElementById('uploadedSize');
+    const percentageEl = document.getElementById('uploadPercentage');
+    
+    const clampedPercent = Math.min(Math.round(percent), 100);
+    
+    if (bar) {
+        bar.style.width = clampedPercent + '%';
+        if (clampedPercent === 100) {
+            bar.classList.add('complete');
+        }
+    }
+    
+    if (percentEl) {
+        percentEl.textContent = clampedPercent;
+    }
+    
+    if (statusEl && statusText) {
+        statusEl.textContent = statusText;
+    }
+    
+    if (speedEl && speedText) {
+        speedEl.textContent = speedText;
+    }
+    
+    if (uploadedSizeEl) {
+        const currentBytes = Math.floor((clampedPercent / 100) * totalFileSize);
+        uploadedBytes = currentBytes;
+        uploadedSizeEl.textContent = `${formatBytes(currentBytes)} / ${formatBytes(totalFileSize)}`;
+    }
+    
+    if (percentageEl) {
+        percentageEl.textContent = clampedPercent + '%';
+    }
+    
+    // ✅ حساب السرعة
+    if (clampedPercent > 0 && clampedPercent < 100) {
+        const elapsed = (Date.now() - uploadStartTime) / 1000;
+        if (elapsed > 0.5) {
+            const currentBytes = Math.floor((clampedPercent / 100) * totalFileSize);
+            const speed = currentBytes / elapsed;
+            
+            if (Date.now() - lastProgressUpdate > 500) {
+                uploadSpeed = speed;
+                speedSamples.push(speed);
+                if (speedSamples.length > 5) speedSamples.shift();
+                const avgSpeed = speedSamples.reduce((a, b) => a + b, 0) / speedSamples.length;
+                
+                if (speedEl) {
+                    speedEl.textContent = formatBytes(avgSpeed) + '/s';
+                }
+                lastProgressUpdate = Date.now();
+            }
+        }
+    }
+}
+
+// ==================== عرض خطأ التقدم ====================
+function showRealProgressError(message) {
+    const icon = document.getElementById('progressIcon');
+    const bar = document.getElementById('progressBar');
+    const status = document.getElementById('progressStatus');
+    const title = document.getElementById('progressTitle');
+    const errorButtons = document.getElementById('progressErrorButtons');
+    const buttons = document.getElementById('progressButtons');
+    
+    if (icon) {
+        icon.className = 'icon-container error';
+        icon.innerHTML = '<i class="fas fa-times-circle"></i>';
+    }
+    
+    if (bar) {
+        bar.className = 'progress-bar error';
+    }
+    
+    if (status) {
+        status.textContent = '❌ ' + (message || 'حدث خطأ في الرفع');
+    }
+    
+    if (title) {
+        title.textContent = '❌ فشل الرفع';
+    }
+    
+    if (buttons) buttons.style.display = 'none';
+    if (errorButtons) errorButtons.style.display = 'flex';
+    
+    if (uploadInterval) {
+        clearInterval(uploadInterval);
+        uploadInterval = null;
     }
 }
 
@@ -11947,11 +13929,30 @@ function fileToBase64WithProgress(file) {
     });
 }
 
-// ==================== عرض الملف في النافذة (معدل) ====================
 function viewFile(fileId) {
     const file = currentFiles.find(f => f.id === fileId);
     if (!file) {
         showToast('❌ الملف غير موجود');
+        return;
+    }
+    
+    // ✅ التحقق من الصلاحية لعرض الملف
+    const isOwner = file.userId === currentUser?.uid;
+    const isAdminUser = isAdmin();
+    
+    // ✅ ✅ المدير يشوف ملفات المديرين الآخرين فقط
+    let canView = false;
+    if (isOwner) {
+        canView = true;
+    } else if (isAdminUser) {
+        const fileOwnerIsAdmin = userRolesCache[file.userId]?.isAdmin === true;
+        if (fileOwnerIsAdmin) {
+            canView = true;
+        }
+    }
+    
+    if (!canView) {
+        showToast('❌ ليس لديك صلاحية لعرض هذا الملف');
         return;
     }
     
@@ -11961,10 +13962,22 @@ function viewFile(fileId) {
     document.getElementById('fileViewTitle').innerText = file.displayName || file.name;
     document.getElementById('fileViewName').innerText = file.displayName || file.name;
     document.getElementById('fileViewSize').innerText = 'الحجم: ' + (file.size / 1024).toFixed(1) + ' KB';
-    document.getElementById('fileViewUploader').innerText = 'رفع بواسطة: ' + (file.userName || 'مستخدم');
-    document.getElementById('fileViewDate').innerText = 'التاريخ: ' + new Date(file.uploadedAt).toLocaleString('ar-EG');
     
-    // ✅ الرابط الصحيح
+    // ✅ عرض اسم المالك
+    const uploaderName = file.userName || 'مستخدم غير معروف';
+    const fileOwnerIsAdmin = userRolesCache[file.userId]?.isAdmin === true;
+    let ownerBadge = '';
+    if (isOwner) {
+        ownerBadge = ' <span style="color: #22c55e; font-size: 12px;">(أنت)</span>';
+    } else if (fileOwnerIsAdmin && isAdminUser) {
+        ownerBadge = ' <span style="color: #f59e0b; font-size: 12px;">(مدير)</span>';
+    }
+    
+    document.getElementById('fileViewUploader').innerHTML = `
+        رفع بواسطة: <strong>${uploaderName}</strong> ${ownerBadge}
+    `;
+    
+    document.getElementById('fileViewDate').innerText = 'التاريخ: ' + new Date(file.uploadedAt).toLocaleString('ar-EG');
     document.getElementById('fileDownloadLink').value = getFileDownloadLink(fileId);
     
     const iconMap = {
@@ -11975,6 +13988,18 @@ function viewFile(fileId) {
         'other': 'fa-file'
     };
     document.getElementById('fileViewIcon').className = 'fas ' + (iconMap[file.category] || 'fa-file') + ' text-6xl text-blue-500';
+    
+    // ✅ ✅ زر الحذف يظهر فقط للمالك
+    const deleteBtn = document.querySelector('#fileViewModal .btn-danger') || 
+                      document.querySelector('#fileViewModal button:last-child');
+    if (deleteBtn) {
+        if (isOwner) {
+            deleteBtn.style.display = 'inline-block';
+            deleteBtn.innerText = '🗑️ حذف';
+        } else {
+            deleteBtn.style.display = 'none';
+        }
+    }
     
     modal.classList.add('active');
 }
@@ -12042,7 +14067,7 @@ function copyFileLink() {
     });
 }
 
-// ==================== حذف الملف ====================
+// ==================== حذف الملف (للمالك فقط) ====================
 function deleteFile() {
     if (!currentViewFileId) {
         showToast('❌ لا يوجد ملف للحذف');
@@ -12055,24 +14080,31 @@ function deleteFile() {
         return;
     }
     
-    // التحقق من الصلاحية
-    if (file.userId !== currentUser?.uid && !isAdmin()) {
-        showToast('❌ ليس لديك صلاحية حذف هذا الملف');
+    // ✅ ✅ التحقق من الصلاحية: المالك فقط
+    const isOwner = file.userId === currentUser?.uid;
+    
+    if (!isOwner) {
+        showToast('❌ ليس لديك صلاحية حذف هذا الملف (المالك فقط)');
         return;
     }
     
-    if (confirm(`⚠️ هل أنت متأكد من حذف الملف "${file.displayName}"؟`)) {
-        db.ref(`files/${currentViewFileId}`).remove().then(() => {
-            showToast('✅ تم حذف الملف');
+    if (!confirm(`⚠️ هل أنت متأكد من حذف ملفك "${file.displayName}"؟`)) {
+        return;
+    }
+    
+    showToast('⏳ جاري حذف الملف...');
+    
+    db.ref(`files/${currentViewFileId}`).remove()
+        .then(() => {
+            showToast('✅ تم حذف الملف بنجاح');
             closeFileViewModal();
             loadFiles();
-        }).catch((error) => {
-            console.error('خطأ في حذف الملف:', error);
-            showToast('❌ حدث خطأ في حذف الملف');
+        })
+        .catch((error) => {
+            console.error('❌ خطأ في حذف الملف:', error);
+            showToast('❌ حدث خطأ في حذف الملف: ' + error.message);
         });
-    }
 }
-
 // ==================== التحقق من رابط الملف في URL (معدل) ====================
 function checkFileFromURL() {
     const urlParams = new URLSearchParams(window.location.search);
@@ -12180,17 +14212,14 @@ function createStarsHtml(rating) {
             });
         }
 
-    // ============================================================
-//  دالة إظهار صفحة محددة - مع إخفاء صحيح للشات
-// ============================================================
-
+    // ==================== إظهار صفحة محددة ====================
 function showSpecificPage(pageId) {
-    // قائمة بجميع الصفحات
+    // ✅ قائمة بجميع الصفحات
     const pages = [
         'homePage', 'loginPage', 'registerPage', 'forgotPasswordPage', 
         'dashboardPage', 'aboutPage', 'myAccountPage', 'mailPage', 
         'ticketsPage', 'meetingPage', 'adminPanelPage', 'meetingsRoomPage', 
-        'meetingRoomPage', 'ticketChatPage', 'filesPage'  // ✅ أضف filesPage هنا
+        'meetingRoomPage', 'ticketChatPage', 'filesPage', 'aboutUsPage'  // ✅ أضف aboutUsPage هنا
     ];
     
     // إخفاء جميع الصفحات
@@ -12212,16 +14241,9 @@ function showSpecificPage(pageId) {
         page.style.position = 'relative';
         page.style.zIndex = '10';
         
-        // ✅ إذا كانت صفحة حسابي، تحديث البيانات
-        if (pageId === 'myAccountPage') {
-            updateMyAccountUI();
-        }
-        
-        if (pageId === 'ticketsPage') {
-            page.style.display = 'block';
-            if (typeof loadTickets === 'function') {
-                loadTickets();
-            }
+        // ✅ إذا كانت صفحة من نحن، ابدأ تأثير الكتابة
+        if (pageId === 'aboutUsPage') {
+            setTimeout(startTypingEffect, 300);
         }
         
         return true;
@@ -12873,34 +14895,72 @@ async function deleteRating(ratingId) {
     }
 }
 
-        // ==================== تحديث واجهة المستخدم ====================
-        function updateHomeUI() {
-            const loginArea = document.getElementById('loginBtnAreaHome');
-            const userArea = document.getElementById('userAreaHome');
-            const userInitial = document.getElementById('userInitialHome');
-            const userName = document.getElementById('userNameHome');
-            const roleHome = document.getElementById('userRoleHome');
+ async function updateHomeUI() {
+    const loginArea = document.getElementById('loginBtnAreaHome');
+    const userArea = document.getElementById('userAreaHome');
+    const userInitial = document.getElementById('userInitialHome');
+    const userName = document.getElementById('userNameHome');
+    const roleHome = document.getElementById('userRoleHome');
+    
+    // ✅ التحقق من وجود المستخدم
+    if (currentUser && currentUser.uid) {
+        // ✅ جلب البيانات من Firebase مباشرة (وليس localStorage)
+        try {
+            const snapshot = await db.ref(`users/${currentUser.uid}`).once('value');
+            const userData = snapshot.val();
             
-            if (currentUser) {
-                loginArea.classList.add('hidden');
-                userArea.classList.remove('hidden');
-                userInitial.innerText = (currentUser.name || 'U').charAt(0).toUpperCase();
-                userName.innerText = currentUser.name || currentUser.username;
-                
-                if (isAdmin()) {
-                    roleHome.classList.remove('hidden');
-                    roleHome.innerText = '👑 مدير';
-                } else {
-                    roleHome.classList.add('hidden');
-                }
+            if (userData) {
+                // ✅ تحديث currentUser من Firebase
+                const isAdmin = userData.isAdmin === true || userData.role === 'admin';
+                currentUser.isAdmin = isAdmin;
+                currentUser.role = isAdmin ? 'admin' : 'user';
+                // ✅ تحديث localStorage ولكن بالبيانات الصحيحة من Firebase
+                localStorage.setItem('currentUser', JSON.stringify(currentUser));
             } else {
-                loginArea.classList.remove('hidden');
-                userArea.classList.add('hidden');
-                roleHome.classList.add('hidden');
+                // ✅ إذا لم توجد بيانات في Firebase، المستخدم ليس مديراً
+                currentUser.isAdmin = false;
+                currentUser.role = 'user';
+                localStorage.setItem('currentUser', JSON.stringify(currentUser));
             }
-            updateSidebarUI();
+        } catch (error) {
+            console.error('❌ خطأ في جلب بيانات المستخدم من Firebase:', error);
+            // ✅ في حالة الخطأ، نستخدم البيانات المخزنة ولكن نتحقق منها
+            if (currentUser.isAdmin === undefined) {
+                currentUser.isAdmin = false;
+                currentUser.role = 'user';
+            }
         }
-
+        
+        // ✅ عرض بيانات المستخدم
+        loginArea.classList.add('hidden');
+        userArea.classList.remove('hidden');
+        userInitial.innerText = (currentUser.name || 'U').charAt(0).toUpperCase();
+        userName.innerText = currentUser.name || currentUser.username || 'مستخدم';
+        
+        // ✅ التحقق من صلاحية المدير (من Firebase بعد التحديث)
+        const isAdmin = currentUser.isAdmin === true || currentUser.role === 'admin';
+        
+        // ✅ إظهار أو إخفاء كلمة "مدير"
+        if (isAdmin) {
+            roleHome.classList.remove('hidden');
+            roleHome.innerText = '👑 مدير';
+            roleHome.style.display = 'inline-block';
+        } else {
+            roleHome.classList.add('hidden');
+            roleHome.style.display = 'none';
+        }
+        
+    } else {
+        // ✅ المستخدم غير مسجل الدخول
+        loginArea.classList.remove('hidden');
+        userArea.classList.add('hidden');
+        roleHome.classList.add('hidden');
+        roleHome.style.display = 'none';
+    }
+    
+    // ✅ تحديث القائمة الجانبية أيضاً
+    await updateSidebarUI();
+}
         function updateDashboardUI() {
             if (currentUser) {
                 document.getElementById('dashboardUserName').innerText = currentUser.name || currentUser.username;
@@ -12912,37 +14972,118 @@ async function deleteRating(ratingId) {
             }
         }
 
-        function updateSidebarUI() {
-            const sidebarUserName = document.getElementById('sidebarUserName');
-            const sidebarUserStatus = document.getElementById('sidebarUserStatus');
-            const sidebarUserRole = document.getElementById('sidebarUserRole');
-            const sidebarAuthSection = document.getElementById('sidebarAuthSection');
-            const sidebarLogoutSection = document.getElementById('sidebarLogoutSection');
-            const sidebarAdminSection = document.getElementById('sidebarAdminSection');
+ async function updateSidebarUI() {
+    const sidebarUserName = document.getElementById('sidebarUserName');
+    const sidebarUserStatus = document.getElementById('sidebarUserStatus');
+    const sidebarUserRole = document.getElementById('sidebarUserRole');
+    const sidebarAuthSection = document.getElementById('sidebarAuthSection');
+    const sidebarLogoutSection = document.getElementById('sidebarLogoutSection');
+    const sidebarAdminSection = document.getElementById('sidebarAdminSection');
+    
+    // ✅ التحقق من وجود المستخدم
+    if (currentUser && currentUser.uid) {
+        // ✅ جلب البيانات من Firebase
+        try {
+            const snapshot = await db.ref(`users/${currentUser.uid}`).once('value');
+            const userData = snapshot.val();
             
-            if (currentUser) {
-                sidebarUserName.innerText = currentUser.name || 'مستخدم';
-                sidebarUserStatus.innerText = 'مسجل الدخول';
-                sidebarAuthSection.classList.add('hidden');
-                sidebarLogoutSection.classList.remove('hidden');
+            if (userData) {
+                const isAdmin = userData.isAdmin === true || userData.role === 'admin';
+                currentUser.isAdmin = isAdmin;
+                currentUser.role = isAdmin ? 'admin' : 'user';
+                // ✅ تحديث localStorage ولكن بالبيانات الصحيحة
+                localStorage.setItem('currentUser', JSON.stringify(currentUser));
+            }
+        } catch (error) {
+            console.error('❌ خطأ في جلب بيانات المستخدم:', error);
+        }
+        
+        // ✅ عرض اسم المستخدم
+        sidebarUserName.innerText = currentUser.name || 'مستخدم';
+        sidebarUserStatus.innerText = 'مسجل الدخول';
+        
+        // ✅ ✅ إخفاء أزرار تسجيل الدخول وإنشاء حساب
+        sidebarAuthSection.classList.add('hidden');
+        sidebarAuthSection.style.display = 'none';
+        
+        // ✅ ✅ إظهار زر تسجيل الخروج
+        sidebarLogoutSection.classList.remove('hidden');
+        sidebarLogoutSection.style.display = 'block';
+        
+        // ✅ التحقق من صلاحية المدير
+        const isAdmin = currentUser.isAdmin === true || currentUser.role === 'admin';
+        
+        if (isAdmin) {
+            sidebarUserRole.classList.remove('hidden');
+            sidebarUserRole.innerText = '👑 مدير';
+            sidebarUserRole.style.display = 'block';
+            sidebarAdminSection.classList.remove('hidden');
+            sidebarAdminSection.style.display = 'block';
+        } else {
+            sidebarUserRole.classList.add('hidden');
+            sidebarUserRole.style.display = 'none';
+            sidebarAdminSection.classList.add('hidden');
+            sidebarAdminSection.style.display = 'none';
+        }
+    } else {
+        // ✅ المستخدم غير مسجل الدخول
+        sidebarUserName.innerText = 'زائر';
+        sidebarUserStatus.innerText = 'غير مسجل الدخول';
+        sidebarUserRole.classList.add('hidden');
+        sidebarUserRole.style.display = 'none';
+        
+        // ✅ ✅ إظهار أزرار تسجيل الدخول وإنشاء حساب
+        sidebarAuthSection.classList.remove('hidden');
+        sidebarAuthSection.style.display = 'block';
+        
+        // ✅ ✅ إخفاء زر تسجيل الخروج
+        sidebarLogoutSection.classList.add('hidden');
+        sidebarLogoutSection.style.display = 'none';
+        
+        sidebarAdminSection.classList.add('hidden');
+        sidebarAdminSection.style.display = 'none';
+    }
+}
+
+async function verifyAdminStatusOnLoad() {
+    // ✅ إذا كان هناك مستخدم مسجل
+    if (currentUser && currentUser.uid) {
+        try {
+            const snapshot = await db.ref(`users/${currentUser.uid}`).once('value');
+            const userData = snapshot.val();
+            
+            if (userData) {
+                // ✅ تحديث الصلاحية من Firebase
+                const isAdmin = userData.isAdmin === true || userData.role === 'admin';
+                currentUser.isAdmin = isAdmin;
+                currentUser.role = isAdmin ? 'admin' : 'user';
                 
-                if (isAdmin()) {
-                    sidebarUserRole.classList.remove('hidden');
-                    sidebarUserRole.innerText = '👑 مدير';
-                    sidebarAdminSection.classList.remove('hidden');
-                } else {
-                    sidebarUserRole.classList.add('hidden');
-                    sidebarAdminSection.classList.add('hidden');
-                }
+                // ✅ حفظ التحديث في localStorage
+                localStorage.setItem('currentUser', JSON.stringify(currentUser));
+                
+                console.log('✅ تم التحقق من صلاحية المدير من Firebase:', isAdmin);
             } else {
-                sidebarUserName.innerText = 'زائر';
-                sidebarUserStatus.innerText = 'غير مسجل الدخول';
-                sidebarUserRole.classList.add('hidden');
-                sidebarAuthSection.classList.remove('hidden');
-                sidebarLogoutSection.classList.add('hidden');
-                sidebarAdminSection.classList.add('hidden');
+                // ✅ إذا لم توجد بيانات، المستخدم ليس مديراً
+                currentUser.isAdmin = false;
+                currentUser.role = 'user';
+                localStorage.setItem('currentUser', JSON.stringify(currentUser));
+            }
+        } catch (error) {
+            console.error('❌ خطأ في التحقق من صلاحية المدير:', error);
+            // ✅ في حالة الخطأ، نضع المستخدم كـ user عادي
+            if (currentUser) {
+                currentUser.isAdmin = false;
+                currentUser.role = 'user';
+                localStorage.setItem('currentUser', JSON.stringify(currentUser));
             }
         }
+        
+        // ✅ تحديث الواجهات
+        await updateHomeUI();
+        await updateSidebarUI();
+        await updateMyAccountUI();
+    }
+}
 
         // ==================== دوال السايد بار ====================
         function toggleSidebarWithAnimation(btn) {
@@ -12963,7 +15104,8 @@ async function deleteRating(ratingId) {
             navigator.clipboard.writeText(text).then(() => { showToast('✅ تم نسخ: ' + text); });
         }
 
- async function login() {
+ // ==================== دوال تسجيل الدخول ====================
+async function login() {
     let identifier = document.getElementById('loginUsername').value.trim();
     const password = document.getElementById('loginPassword').value;
     
@@ -12974,69 +15116,45 @@ async function deleteRating(ratingId) {
     
     try {
         let email = identifier;
-        
         if (!identifier.includes('@')) {
             email = `${identifier}@tecno.com`;
-            showToast(`⏳ جاري تسجيل الدخول باستخدام: ${email}`);
         }
         
         const userCredential = await auth.signInWithEmailAndPassword(email, password);
         const user = userCredential.user;
         
-        console.log('✅ تم تسجيل الدخول بنجاح، UID:', user.uid);
-        
+        // ✅ جلب البيانات من Firebase مباشرة
         const snapshot = await db.ref(`users/${user.uid}`).once('value');
         const userData = snapshot.val();
         
-        if (userData) {
-            currentUser = {
-                uid: user.uid,
-                name: userData.name || user.displayName || 'مستخدم',
-                username: userData.username || email,
-                email: userData.email || email,
-                phone: userData.phone || '',
-                plan: userData.plan || 'free',
-                createdAt: userData.createdAt || new Date().toISOString(),
-                ...userData
-            };
-        } else {
-            currentUser = {
-                uid: user.uid,
-                name: user.displayName || 'مستخدم',
-                username: email,
-                email: user.email || email,
-                phone: '',
-                plan: 'free',
-                createdAt: new Date().toISOString()
-            };
-            
-            await db.ref(`users/${user.uid}`).set({
-                name: currentUser.name,
-                username: currentUser.username,
-                email: currentUser.email,
-                phone: currentUser.phone,
-                plan: currentUser.plan,
-                createdAt: currentUser.createdAt,
-                uid: user.uid
-            });
-        }
+        // ✅ تحديد صلاحية المدير من Firebase (وليس localStorage)
+        const isAdmin = userData?.isAdmin === true || userData?.role === 'admin';
         
+        currentUser = {
+            uid: user.uid,
+            name: userData?.name || user.displayName || 'مستخدم',
+            username: userData?.username || email,
+            email: user.email || email,
+            phone: userData?.phone || '',
+            plan: userData?.plan || 'free',
+            createdAt: userData?.createdAt || new Date().toISOString(),
+            isAdmin: isAdmin,        // ✅ من Firebase
+            role: isAdmin ? 'admin' : 'user'  // ✅ من Firebase
+        };
+        
+        // ✅ حفظ في localStorage بعد التأكد من الصلاحية
         localStorage.setItem('currentUser', JSON.stringify(currentUser));
-        await db.ref(`users/${user.uid}/lastLogin`).set(new Date().toISOString());
         
         showToast(`✅ مرحباً ${currentUser.name}`);
         
         // ✅ تحديث جميع الواجهات
-        updateHomeUI();
-        updateSidebarUI();
-        updateMyAccountUI();
+        await updateHomeUI();
+        await updateSidebarUI();
+        await updateMyAccountUI();
+        await verifyAdminStatusOnLoad();
         
         // ✅ الانتقال للصفحة المناسبة
-        if (document.getElementById('myAccountPage') && !document.getElementById('myAccountPage').classList.contains('hidden')) {
-            // إذا كنت في صفحة حسابي، ابقى فيها
-        } else {
-            showDashboard();
-        }
+        showDashboard();
         
     } catch (error) {
         console.error('❌ خطأ في تسجيل الدخول:', error);
@@ -13199,7 +15317,7 @@ auth.onAuthStateChanged(async (user) => {
 
         function prevStep(step) { showStep(step); }
 
-     async function completeRegistration() {
+   async function completeRegistration() {
     const agree = document.getElementById('agreeTerms').checked;
     if (!agree) { 
         showToast('❌ الرجاء الموافقة على الشروط'); 
@@ -13238,7 +15356,9 @@ auth.onAuthStateChanged(async (user) => {
             plan: 'free',
             createdAt: new Date().toISOString(),
             lastLogin: new Date().toISOString(),
-            uid: user.uid
+            uid: user.uid,
+            isAdmin: false,      // ✅ المستخدم الجديد ليس مديراً
+            role: 'user'         // ✅ دور المستخدم العادي
         });
         
         // ✅ تعيين المستخدم الحالي
@@ -13249,15 +15369,21 @@ auth.onAuthStateChanged(async (user) => {
             email: email,
             phone: tempUserData.phone || '',
             plan: 'free',
-            createdAt: new Date().toISOString()
+            createdAt: new Date().toISOString(),
+            isAdmin: false,
+            role: 'user'
         };
         
         localStorage.setItem('currentUser', JSON.stringify(currentUser));
         
         showToast('✅ تم إنشاء الحساب بنجاح');
+        
+        // ✅ تحديث الواجهات
+        await updateHomeUI();
+        await updateSidebarUI();
+        await updateMyAccountUI();
+        
         showDashboard();
-        updateHomeUI();
-        updateSidebarUI();
         
     } catch (error) {
         console.error('❌ خطأ في إنشاء الحساب:', error);
@@ -15033,7 +17159,6 @@ function adminFilterTickets(filter) {
 }
 
 
-
 async function adminRefreshTickets() {
     try {
         const snapshot = await db.ref('tickets').once('value');
@@ -15093,10 +17218,6 @@ function adminRefreshAll() {
     showToast('🔄 تم تحديث جميع البيانات');
 }
 
-// ============================================================
-//  📌 تحميل المستخدمين في لوحة المدير - مع زر حذف
-// ============================================================
-
 async function loadAdminUsers() {
     try {
         const snapshot = await db.ref('users').once('value');
@@ -15124,12 +17245,29 @@ async function loadAdminUsers() {
         for (let uid in users) {
             const user = users[uid];
             const isAdmin = user.role === 'admin' || user.isAdmin === true;
-            const isCurrentUser = uid === currentUser?.uid; // ✅ منع حذف المستخدم الحالي
+            const isCurrentUser = uid === currentUser?.uid;
             
-            // ✅ تحديد لون الصف
+            // ✅ ✅ عرض عدد الملفات الخاصة بكل مستخدم
+            let fileCount = 0;
+            try {
+                const filesSnapshot = await db.ref('files').orderByChild('userId').equalTo(uid).once('value');
+                const files = filesSnapshot.val();
+                if (files) fileCount = Object.keys(files).length;
+            } catch (e) {
+                // تجاهل الخطأ
+            }
+            
+            // ✅ ✅ عرض عدد التذاكر الخاصة بكل مستخدم
+            let ticketCount = 0;
+            try {
+                const ticketsSnapshot = await db.ref('tickets').orderByChild('userId').equalTo(uid).once('value');
+                const tickets = ticketsSnapshot.val();
+                if (tickets) ticketCount = Object.keys(tickets).length;
+            } catch (e) {
+                // تجاهل الخطأ
+            }
+            
             const rowColor = isAdmin ? 'bg-yellow-50' : (index % 2 === 0 ? 'bg-gray-50' : 'bg-white');
-            
-            // ✅ أيقونة الحالة
             const statusIcon = isAdmin ? '👑' : '👤';
             const statusText = isAdmin ? 'مدير' : 'مستخدم';
             const statusColor = isAdmin ? 'text-yellow-600 bg-yellow-100' : 'text-blue-600 bg-blue-100';
@@ -15137,32 +17275,28 @@ async function loadAdminUsers() {
             html += `
                 <div class="flex justify-between items-center p-4 hover:bg-gray-50 border-b ${rowColor} transition-colors duration-200">
                     <div class="flex items-center gap-4 flex-1 min-w-0">
-                        <!-- الصورة الرمزية -->
                         <div class="w-10 h-10 rounded-full ${isAdmin ? 'bg-yellow-200' : 'bg-blue-200'} flex items-center justify-center text-sm font-bold ${isAdmin ? 'text-yellow-700' : 'text-blue-700'} flex-shrink-0">
                             ${(user.name || 'U').charAt(0).toUpperCase()}
                         </div>
-                        
-                        <!-- معلومات المستخدم -->
                         <div class="min-w-0 flex-1">
                             <div class="font-bold text-gray-800 text-sm sm:text-base truncate">
                                 ${user.name || 'مستخدم'}
                                 <span class="text-xs ${statusColor} px-2 py-0.5 rounded-full mr-2">
                                     ${statusIcon} ${statusText}
                                 </span>
+                                ${isCurrentUser ? '<span class="text-xs text-green-600 bg-green-100 px-2 py-0.5 rounded-full">أنت</span>' : ''}
                             </div>
                             <div class="text-xs text-gray-500 truncate">
                                 <span dir="ltr" class="font-mono">${user.username || user.email || ''}</span>
                                 ${user.phone ? `<span class="mx-2">|</span><span dir="ltr">${user.phone}</span>` : ''}
                             </div>
-                            <div class="text-xs text-gray-400 mt-0.5">
-                                <i class="fas fa-calendar-alt ml-1"></i> 
-                                ${user.createdAt ? new Date(user.createdAt).toLocaleDateString('ar-EG') : 'غير معروف'}
-                                ${user.lastLogin ? `<span class="mx-2">|</span>🕐 ${new Date(user.lastLogin).toLocaleDateString('ar-EG')}` : ''}
+                            <div class="text-xs text-gray-400 mt-0.5 flex flex-wrap gap-2">
+                                <span><i class="fas fa-file ml-1"></i> ${fileCount} ملف</span>
+                                <span><i class="fas fa-ticket ml-1"></i> ${ticketCount} تذكرة</span>
+                                <span><i class="fas fa-calendar-alt ml-1"></i> ${user.createdAt ? new Date(user.createdAt).toLocaleDateString('ar-EG') : 'غير معروف'}</span>
                             </div>
                         </div>
                     </div>
-                    
-                    <!-- الأزرار -->
                     <div class="flex items-center gap-2 flex-shrink-0">
                         ${isCurrentUser ? `
                             <span class="text-xs text-green-600 bg-green-100 px-2 py-1 rounded-full">
@@ -15216,30 +17350,40 @@ async function deleteUser(uid) {
         return;
     }
     
-    // ✅ نافذة تأكيد مخصصة
     openCustomConfirm(
         '⚠️ هل أنت متأكد من حذف هذا المستخدم؟',
-        'سيتم حذف جميع بيانات المستخدم نهائياً! لا يمكن التراجع عن هذا الإجراء.',
+        'سيتم حذف جميع بيانات المستخدم نهائياً! (الملفات، التذاكر، والبيانات الشخصية)',
         async function(confirmed) {
             if (confirmed) {
                 try {
                     // ✅ حذف بيانات المستخدم من Realtime Database
                     await db.ref(`users/${uid}`).remove();
                     
-                    // ✅ حذف التذاكر الخاصة بالمستخدم
-                    const ticketsSnapshot = await db.ref('tickets').once('value');
+                    // ✅ حذف جميع ملفات المستخدم
+                    const filesSnapshot = await db.ref('files').orderByChild('userId').equalTo(uid).once('value');
+                    const files = filesSnapshot.val();
+                    if (files) {
+                        for (let fileId in files) {
+                            await db.ref(`files/${fileId}`).remove();
+                        }
+                        console.log(`🗑️ تم حذف ${Object.keys(files).length} ملف للمستخدم`);
+                    }
+                    
+                    // ✅ حذف جميع تذاكر المستخدم
+                    const ticketsSnapshot = await db.ref('tickets').orderByChild('userId').equalTo(uid).once('value');
                     const tickets = ticketsSnapshot.val();
                     if (tickets) {
                         for (let ticketId in tickets) {
-                            if (tickets[ticketId].userId === uid) {
-                                await db.ref(`tickets/${ticketId}`).remove();
-                            }
+                            await db.ref(`tickets/${ticketId}`).remove();
+                            // حذف رسائل الشات المرتبطة
+                            await db.ref(`tickets/${ticketId}/messages`).remove();
                         }
+                        console.log(`🗑️ تم حذف ${Object.keys(tickets).length} تذكرة للمستخدم`);
                     }
                     
                     showToast('✅ تم حذف المستخدم وجميع بياناته بنجاح');
                     
-                    // ✅ إعادة تحميل قائمة المستخدمين
+                    // ✅ إعادة تحميل القوائم
                     loadAdminUsers();
                     loadAdminDashboard();
                     
@@ -15764,27 +17908,7 @@ function cleanOldAudioData() {
             }
         }
 
-        async function updateStorageInfo() {
-            try {
-                const snapshot = await db.ref('messages').once('value');
-                const allMessages = snapshot.val();
-                let myMessagesCount = 0;
-                if (allMessages) {
-                    for (let uid in allMessages) {
-                        const msg = allMessages[uid];
-                        if (msg.from === currentUser?.username || msg.to === currentUser?.username) {
-                            myMessagesCount++;
-                        }
-                    }
-                }
-                const maxMessages = 100;
-                const percent = Math.min((myMessagesCount / maxMessages) * 100, 100);
-                document.getElementById('storageUsed').style.width = `${percent}%`;
-                document.getElementById('storageText').innerText = `${myMessagesCount} / ${maxMessages} رسالة`;
-            } catch (error) {
-                console.error('خطأ:', error);
-            }
-        }
+       
 
         function refreshMails() {
             loadMails();
@@ -18787,14 +20911,11 @@ async function loadProgramQuestionsForTicket(ticketId, programName) {
     }
 }
 
-   // ============================================================
-//  دالة تحميل التذاكر - المصححة
-// ============================================================
-
 async function loadTickets() {
     // ✅ التحقق من تسجيل الدخول
-    if (!currentUser) {
+    if (!currentUser || !currentUser.uid) {
         console.warn('⚠️ لا يوجد مستخدم مسجل الدخول');
+        showToast('❌ الرجاء تسجيل الدخول أولاً');
         return;
     }
     
@@ -18805,40 +20926,61 @@ async function loadTickets() {
     }
     
     try {
-        const snapshot = await db.ref('tickets').once('value');
-        const allTickets = snapshot.val();
-        const ticketsList = [];
+        let ticketsList = [];
         
-        if (allTickets) {
-            for (let id in allTickets) {
-                const ticket = allTickets[id];
-                // ✅ عرض التذاكر للمستخدم الحالي أو للمدير
-                if (isAdmin() || ticket.userId === currentUser.uid) {
-                    ticketsList.push({ id, ...ticket });
+        // ✅ إذا كان المدير، يشوف كل التذاكر
+        if (isAdmin()) {
+            const snapshot = await db.ref('tickets').once('value');
+            const allTickets = snapshot.val();
+            
+            if (allTickets) {
+                for (let id in allTickets) {
+                    ticketsList.push({ id, ...allTickets[id] });
+                }
+            }
+        } else {
+            // ✅ ✅ المستخدم العادي يشوف تذاكره فقط (باستخدام userId)
+            const snapshot = await db.ref('tickets')
+                .orderByChild('userId')
+                .equalTo(currentUser.uid)  // ✅ فلترة حسب userId
+                .once('value');
+            
+            const userTickets = snapshot.val();
+            
+            if (userTickets) {
+                for (let id in userTickets) {
+                    ticketsList.push({ id, ...userTickets[id] });
                 }
             }
         }
         
+        // ✅ ترتيب التذاكر من الأحدث إلى الأقدم
+        ticketsList.sort((a, b) => {
+            return new Date(b.createdAt) - new Date(a.createdAt);
+        });
+        
         currentTickets = ticketsList;
         
-        // ✅ التحقق من وجود دالة renderTickets
+        // ✅ عرض التذاكر
         if (typeof renderTickets === 'function') {
             renderTickets(currentTickets);
-        } else {
-            console.warn('⚠️ دالة renderTickets غير موجودة');
         }
         
+        // ✅ تحديث عدد التذاكر
         if (typeof updateTicketsCount === 'function') {
             updateTicketsCount();
         }
         
-        if (typeof checkAndUpdateTicketStatus === 'function') {
-            checkAndUpdateTicketStatus();
-        }
+        console.log(`✅ تم تحميل ${ticketsList.length} تذكرة للمستخدم: ${currentUser.name}`);
         
     } catch (error) {
         console.error('❌ خطأ في تحميل التذاكر:', error);
-        showToast('❌ خطأ في تحميل التذاكر');
+        
+        if (error.message && error.message.includes('permission_denied')) {
+            showToast('❌ ليس لديك صلاحية لعرض التذاكر');
+        } else {
+            showToast('❌ خطأ في تحميل التذاكر: ' + error.message);
+        }
     }
 }
 
@@ -19022,25 +21164,46 @@ function stopCountdownTimers() {
 
 // ==================== حذف التذكرة من البطاقة مباشرة ====================
 async function deleteTicketFromCard(ticketId) {
-    // ✅ استخدام نافذة التأكيد المخصصة
+    // ✅ التحقق من وجود التذكرة
+    const ticket = currentTickets.find(t => t.id === ticketId);
+    if (!ticket) {
+        showToast('❌ التذكرة غير موجودة');
+        return;
+    }
+    
+    // ✅ التحقق من الصلاحية
+    const isOwner = ticket.userId === currentUser?.uid;
+    const isAdminUser = currentUser?.isAdmin === true || currentUser?.role === 'admin';
+    
+    // ✅ المستخدم العادي يمكنه حذف تذاكره الخاصة فقط
+    if (!isOwner && !isAdminUser) {
+        showToast('❌ ليس لديك صلاحية حذف هذه التذكرة');
+        return;
+    }
+    
+    // ✅ نافذة تأكيد
+    const confirmMsg = isAdminUser 
+        ? '⚠️ هل أنت متأكد من حذف هذه التذكرة؟'
+        : '⚠️ هل أنت متأكد من حذف تذكرتك؟';
+    
     openCustomConfirm(
-        '⚠️ هل أنت متأكد من حذف هذه التذكرة؟',
+        confirmMsg,
         'سيتم حذف التذكرة وجميع رسائل الشات المرتبطة بها!',
         async function(confirmed) {
             if (confirmed) {
                 try {
-                    // حذف التذكرة من Firebase
+                    // ✅ حذف التذكرة من Firebase
                     await db.ref(`tickets/${ticketId}`).remove();
                     
-                    // حذف رسائل الشات المرتبطة (إن وجدت)
+                    // ✅ حذف رسائل الشات المرتبطة
                     await db.ref(`tickets/${ticketId}/messages`).remove();
                     
                     showToast('✅ تم حذف التذكرة بنجاح');
                     
-                    // تحديث القائمة
+                    // ✅ تحديث القائمة
                     loadTickets();
                     
-                    // إذا كانت هذه التذكرة مفتوحة في الشات، أغلقها
+                    // ✅ إذا كانت هذه التذكرة مفتوحة في الشات، أغلقها
                     if (currentTicketId === ticketId) {
                         closeTicketChat();
                     }
@@ -19184,6 +21347,296 @@ function goToMyAccountPage() {
         } else {
             showHomePage();
         }
+
+        (function() {
+    'use strict';
+    
+    // ============================================================
+    //  1. منع فتح أدوات المطور (F12, Ctrl+Shift+I, Ctrl+Shift+J, Ctrl+U)
+    // ============================================================
+    
+    // منع اختصارات لوحة المفاتيح
+    document.addEventListener('keydown', function(e) {
+        // F12
+        if (e.key === 'F12' || e.keyCode === 123) {
+            e.preventDefault();
+            e.stopPropagation();
+            
+            return false;
+        }
+        
+        // Ctrl+Shift+I (أدوات المطور)
+        if (e.ctrlKey && e.shiftKey && (e.key === 'I' || e.key === 'i' || e.keyCode === 73)) {
+            e.preventDefault();
+            e.stopPropagation();
+            
+            return false;
+        }
+        
+        // Ctrl+Shift+J (الكونسول)
+        if (e.ctrlKey && e.shiftKey && (e.key === 'J' || e.key === 'j' || e.keyCode === 74)) {
+            e.preventDefault();
+            e.stopPropagation();
+           
+            return false;
+        }
+        
+        // Ctrl+U (عرض المصدر)
+        if (e.ctrlKey && (e.key === 'U' || e.key === 'u' || e.keyCode === 85)) {
+            e.preventDefault();
+            e.stopPropagation();
+           
+            return false;
+        }
+        
+        // Ctrl+S (حفظ الصفحة)
+        if (e.ctrlKey && (e.key === 'S' || e.key === 's' || e.keyCode === 83)) {
+            e.preventDefault();
+            e.stopPropagation();
+            
+            return false;
+        }
+        
+        // Ctrl+P (طباعة)
+        if (e.ctrlKey && (e.key === 'P' || e.key === 'p' || e.keyCode === 80)) {
+            e.preventDefault();
+            e.stopPropagation();
+           
+            return false;
+        }
+    });
+    
+    // ============================================================
+    //  2. منع النقر بزر الماوس الأيمن
+    // ============================================================
+    
+    document.addEventListener('contextmenu', function(e) {
+        e.preventDefault();
+        e.stopPropagation();
+        
+        return false;
+    });
+    
+    // منع سحب النص (لتحديد النص)
+    document.addEventListener('selectstart', function(e) {
+        e.preventDefault();
+        return false;
+    });
+    
+    // ============================================================
+    //  3. منع فتح الصفحات عبر الرابط المباشر (URL)
+    // ============================================================
+    
+    // قائمة الصفحات المحمية (لا يمكن الوصول لها عبر الرابط المباشر)
+    const protectedPages = [
+        'adminPanelPage',
+        'dashboardPage',
+        'myAccountPage',
+        'mailPage',
+        'ticketsPage',
+        'meetingPage',
+        'meetingsRoomPage',
+        'meetingRoomPage',
+        'filesPage',
+        'ticketChatPage'
+    ];
+    
+    // التحقق من وجود المستخدم
+    function isUserLoggedIn() {
+        return currentUser && currentUser.uid;
+    }
+    
+    // التحقق من الصفحة الحالية
+    function checkPageAccess() {
+        // ✅ الصفحات المسموح بها للزوار
+        const publicPages = ['homePage', 'loginPage', 'registerPage', 'forgotPasswordPage', 'aboutUsPage'];
+        
+        // البحث عن الصفحة الظاهرة
+        let currentPage = null;
+        protectedPages.forEach(pageId => {
+            const el = document.getElementById(pageId);
+            if (el && !el.classList.contains('hidden') && el.style.display !== 'none') {
+                currentPage = pageId;
+            }
+        });
+        
+        // إذا كانت الصفحة محمية والمستخدم غير مسجل دخول
+        if (currentPage && !publicPages.includes(currentPage) && !isUserLoggedIn()) {
+            // إخفاء الصفحة المحمية
+            const pageEl = document.getElementById(currentPage);
+            if (pageEl) {
+                pageEl.classList.add('hidden');
+                pageEl.style.display = 'none';
+            }
+            // التوجيه للصفحة الرئيسية
+            showHomePage();
+            showToast('🔒 يرجى تسجيل الدخول للوصول إلى هذه الصفحة');
+            return false;
+        }
+        
+        return true;
+    }
+    
+    // ============================================================
+    //  4. منع استخدام window.open لفتح الصفحات
+    // ============================================================
+    
+    // حفظ الدالة الأصلية
+    const originalOpen = window.open;
+    
+    // استبدالها بدالة مخصصة
+    window.open = function(url, name, features) {
+        // التحقق من أن الرابط ليس صفحة داخلية محمية
+        if (url && typeof url === 'string') {
+            // التحقق من الصفحات المحمية
+            for (let page of protectedPages) {
+                if (url.includes(page) || url.includes(`#${page}`)) {
+                    showBlockMessage('🚫 غير مسموح بفتح هذه الصفحة');
+                    return null;
+                }
+            }
+        }
+        
+        // السماح بفتح الروابط الخارجية فقط
+        if (url && (url.startsWith('http://') || url.startsWith('https://'))) {
+            return originalOpen.call(window, url, name, features);
+        }
+        
+        showBlockMessage('🚫 غير مسموح بفتح هذه الصفحة');
+        return null;
+    };
+    
+    // ============================================================
+    //  5. منع الوصول للصفحات من خلال history
+    // ============================================================
+    
+    // منع استخدام history.back() و history.forward()
+    window.addEventListener('popstate', function(e) {
+        // التحقق من الصفحة الحالية
+        const currentPage = document.querySelector('.page-container:not(.hidden)');
+        if (currentPage && protectedPages.some(p => currentPage.id === p)) {
+            if (!isUserLoggedIn()) {
+                showHomePage();
+                showToast('🔒 يرجى تسجيل الدخول');
+            }
+        }
+    });
+    
+    // ============================================================
+    //  6. عرض رسالة الحظر
+    // ============================================================
+    
+    function showBlockMessage(message) {
+        // استخدام Toast إذا كان موجود
+        if (typeof showToast === 'function') {
+            showToast(message);
+        } else {
+            // عرض رسالة منبثقة بسيطة
+            const existing = document.getElementById('blockMessage');
+            if (existing) existing.remove();
+            
+            const div = document.createElement('div');
+            div.id = 'blockMessage';
+            div.style.cssText = `
+                position: fixed;
+                bottom: 20px;
+                left: 50%;
+                transform: translateX(-50%);
+                background: rgba(220, 38, 38, 0.95);
+                color: white;
+                padding: 12px 24px;
+                border-radius: 12px;
+                z-index: 999999;
+                font-weight: bold;
+                font-size: 14px;
+                box-shadow: 0 4px 20px rgba(0,0,0,0.3);
+                animation: slideUp 0.3s ease;
+                backdrop-filter: blur(10px);
+            `;
+            div.textContent = message;
+            document.body.appendChild(div);
+            
+            setTimeout(() => {
+                div.style.opacity = '0';
+                div.style.transition = 'opacity 0.5s';
+                setTimeout(() => div.remove(), 500);
+            }, 3000);
+        }
+    }
+    
+    // ============================================================
+    //  7. منع استخدام eval و new Function (لحماية إضافية)
+    // ============================================================
+    
+    // منع eval
+    const originalEval = window.eval;
+    window.eval = function(code) {
+        showBlockMessage('🚫 تم حظر تنفيذ الأكواد');
+        return null;
+    };
+    
+    // منع Function constructor
+    const originalFunction = window.Function;
+    window.Function = function() {
+        showBlockMessage('🚫 تم حظر إنشاء دوال');
+        return null;
+    };
+    
+    // ============================================================
+    //  8. التحقق من الصفحات عند التحميل
+    // ============================================================
+    
+    // تنفيذ التحقق عند تحميل الصفحة
+    document.addEventListener('DOMContentLoaded', function() {
+        // تأخير بسيط للتأكد من تحميل كل شيء
+        setTimeout(checkPageAccess, 500);
+    });
+    
+    // التحقق عند تغيير الصفحة
+    const originalShowSpecificPage = window.showSpecificPage;
+    if (originalShowSpecificPage) {
+        window.showSpecificPage = function(pageId) {
+            // التحقق من الصلاحية
+            if (protectedPages.includes(pageId) && !isUserLoggedIn()) {
+                showBlockMessage('🔒 يرجى تسجيل الدخول للوصول إلى هذه الصفحة');
+                showHomePage();
+                return;
+            }
+            return originalShowSpecificPage.call(this, pageId);
+        };
+    }
+    
+    // ============================================================
+    //  9. منع الوصول من خلال console.log (حماية إضافية)
+    // ============================================================
+    
+    // تعطيل console.log و console.warn و console.error
+    if (console) {
+        console.log = function() {};
+        console.warn = function() {};
+        console.error = function() {};
+        console.info = function() {};
+        console.debug = function() {};
+        console.table = function() {};
+        console.dir = function() {};
+    }
+    
+    // ============================================================
+    //  10. منع محاولات اختراق إذا كان المستخدم مدير (اختياري)
+    // ============================================================
+    
+    // إذا كان المستخدم مدير، نسمح ببعض الأشياء
+    // نضيف هذا الخيار لتسهيل التطوير
+    window.allowDevTools = false; // غيّر إلى true إذا كنت تريد السماح
+    
+    if (window.allowDevTools) {
+        // إلغاء الحماية إذا كان المطور يريد ذلك
+        console.log('🔓 وضع المطور مفعل');
+    }
+    
+    console.log('🛡️ تم تفعيل الحماية بنجاح');
+    
+})();
 
         console.log('✅ تم تحميل TecnoShark بنجاح');
         console.log('👑 كلمة سر المدير: 01144');
