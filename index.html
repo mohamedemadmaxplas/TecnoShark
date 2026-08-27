@@ -5841,29 +5841,50 @@
     </footer>
 </div>
 
-    <!-- ==================== صفحة تسجيل الدخول ==================== -->
-    <div id="loginPage" class="hidden page-container flex items-center justify-center py-12">
-        <div class="bg-white rounded-2xl shadow-xl p-8 max-w-md w-full mx-4 animate-fade-scale">
-            <div class="text-center mb-6">
-                <img src="https://i.ibb.co/Fk4jw8pR/4840e6da-a9c5-4858-a78d-8ceb60d1eaaa.png" alt="Logo" class="w-20 h-20 mx-auto mb-3 rounded-full shadow-md">
-                <h1 class="text-2xl font-bold">تسجيل الدخول</h1>
-                <p class="text-gray-500 text-sm">أهلاً بك في TecnoShark</p>
-            </div>
-            <div class="mb-4">
-                <label class="block text-sm font-medium text-gray-700 mb-1">اسم المستخدم</label>
-                <input type="text" id="loginUsername" class="w-full p-3 border rounded-lg focus:ring-2 focus:ring-blue-500" placeholder="أدخل اسم المستخدم">
-            </div>
-            <div class="mb-6">
-                <label class="block text-sm font-medium text-gray-700 mb-1">كلمة المرور</label>
-                <input type="password" id="loginPassword" class="w-full p-3 border rounded-lg focus:ring-2 focus:ring-blue-500" placeholder="أدخل كلمة المرور">
-            </div>
-            <button onclick="login()" class="w-full bg-blue-600 text-white py-3 rounded-lg hover:bg-blue-700 transition font-semibold">تسجيل الدخول</button>
-            <div class="mt-4 text-center"><a onclick="showForgotPasswordPage()" class="text-sm text-blue-600 cursor-pointer hover:underline">نسيت كلمة المرور؟</a></div>
-            <hr class="my-6">
-            <p class="text-center text-sm text-gray-600">ليس لديك حساب؟ <a onclick="showRegisterPage()" class="text-blue-600 cursor-pointer hover:underline font-semibold">إنشاء حساب جديد</a></p>
-            <button onclick="showHomePage()" class="w-full text-gray-400 text-sm mt-4 hover:text-gray-600 transition">العودة للرئيسية</button>
+   <!-- ==================== صفحة تسجيل الدخول ==================== -->
+<div id="loginPage" class="hidden page-container flex items-center justify-center py-12">
+    <div class="bg-white rounded-2xl shadow-xl p-8 max-w-md w-full mx-4 animate-fade-scale">
+        <div class="text-center mb-6">
+            <img src="https://i.ibb.co/Fk4jw8pR/4840e6da-a9c5-4858-a78d-8ceb60d1eaaa.png" alt="Logo" class="w-20 h-20 mx-auto mb-3 rounded-full shadow-md">
+            <h1 class="text-2xl font-bold">تسجيل الدخول</h1>
+            <p class="text-gray-500 text-sm">أهلاً بك في TecnoShark</p>
         </div>
+        
+        <div class="mb-4">
+            <label class="block text-sm font-medium text-gray-700 mb-1">اسم المستخدم</label>
+            <input type="text" id="loginUsername" class="w-full p-3 border rounded-lg focus:ring-2 focus:ring-blue-500" placeholder="أدخل اسم المستخدم">
+        </div>
+        
+        <div class="mb-4">
+            <label class="block text-sm font-medium text-gray-700 mb-1">كلمة المرور</label>
+            <div class="relative">
+                <input type="password" id="loginPassword" class="w-full p-3 border rounded-lg focus:ring-2 focus:ring-blue-500 pr-12" placeholder="أدخل كلمة المرور">
+                <button type="button" onclick="toggleLoginPassword()" class="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600 transition">
+                    <i class="fas fa-eye" id="loginPasswordIcon"></i>
+                </button>
+            </div>
+        </div>
+        
+        <button onclick="login()" class="w-full bg-blue-600 text-white py-3 rounded-lg hover:bg-blue-700 transition font-semibold">
+            <i class="fas fa-sign-in-alt ml-2"></i> تسجيل الدخول
+        </button>
+        
+        <div class="mt-4 text-center flex flex-wrap justify-center gap-3">
+            <a onclick="showForgotPasswordPage()" class="text-sm text-blue-600 cursor-pointer hover:underline">
+                نسيت كلمة المرور؟
+            </a>
+            <span class="text-gray-300">|</span>
+            <a onclick="showRegisterPage()" class="text-sm text-blue-600 cursor-pointer hover:underline">
+                إنشاء حساب جديد
+            </a>
+        </div>
+        
+        <hr class="my-6">
+        <button onclick="showHomePage()" class="w-full text-gray-400 text-sm hover:text-gray-600 transition">
+            <i class="fas fa-arrow-right ml-2"></i> العودة للرئيسية
+        </button>
     </div>
+</div>
 
     <!-- ==================== صفحة حول الشركة ==================== -->
     <div id="aboutPage" class="hidden page-container py-12">
@@ -15274,6 +15295,20 @@ function handleAuthError(error) {
     
     showToast(message);
     console.error('🔥 Firebase Error:', error.code, error.message);
+}
+
+// ==================== إظهار/إخفاء كلمة المرور في تسجيل الدخول ====================
+function toggleLoginPassword() {
+    const passwordInput = document.getElementById('loginPassword');
+    const icon = document.getElementById('loginPasswordIcon');
+    
+    if (passwordInput.type === 'password') {
+        passwordInput.type = 'text';
+        icon.className = 'fas fa-eye-slash';
+    } else {
+        passwordInput.type = 'password';
+        icon.className = 'fas fa-eye';
+    }
 }
    function logout() {
     auth.signOut().then(() => {
