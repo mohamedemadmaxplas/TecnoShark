@@ -21348,20 +21348,23 @@ function goToMyAccountPage() {
             showHomePage();
         }
 
-        (function() {
+     // ============================================================
+//  🛡️ كود حماية الموقع - نسخة متوافقة مع Firebase
+// ============================================================
+
+(function() {
     'use strict';
     
     // ============================================================
     //  1. منع فتح أدوات المطور (F12, Ctrl+Shift+I, Ctrl+Shift+J, Ctrl+U)
     // ============================================================
     
-    // منع اختصارات لوحة المفاتيح
     document.addEventListener('keydown', function(e) {
         // F12
         if (e.key === 'F12' || e.keyCode === 123) {
             e.preventDefault();
             e.stopPropagation();
-            
+            showToast('🚫 تم حظر أدوات المطور');
             return false;
         }
         
@@ -21369,7 +21372,7 @@ function goToMyAccountPage() {
         if (e.ctrlKey && e.shiftKey && (e.key === 'I' || e.key === 'i' || e.keyCode === 73)) {
             e.preventDefault();
             e.stopPropagation();
-            
+            showToast('🚫 تم حظر أدوات المطور');
             return false;
         }
         
@@ -21377,7 +21380,7 @@ function goToMyAccountPage() {
         if (e.ctrlKey && e.shiftKey && (e.key === 'J' || e.key === 'j' || e.keyCode === 74)) {
             e.preventDefault();
             e.stopPropagation();
-           
+            showToast('🚫 تم حظر الكونسول');
             return false;
         }
         
@@ -21385,7 +21388,7 @@ function goToMyAccountPage() {
         if (e.ctrlKey && (e.key === 'U' || e.key === 'u' || e.keyCode === 85)) {
             e.preventDefault();
             e.stopPropagation();
-           
+            showToast('🚫 تم حظر عرض المصدر');
             return false;
         }
         
@@ -21393,15 +21396,7 @@ function goToMyAccountPage() {
         if (e.ctrlKey && (e.key === 'S' || e.key === 's' || e.keyCode === 83)) {
             e.preventDefault();
             e.stopPropagation();
-            
-            return false;
-        }
-        
-        // Ctrl+P (طباعة)
-        if (e.ctrlKey && (e.key === 'P' || e.key === 'p' || e.keyCode === 80)) {
-            e.preventDefault();
-            e.stopPropagation();
-           
+            showToast('🚫 تم حظر حفظ الصفحة');
             return false;
         }
     });
@@ -21413,21 +21408,15 @@ function goToMyAccountPage() {
     document.addEventListener('contextmenu', function(e) {
         e.preventDefault();
         e.stopPropagation();
-        
-        return false;
-    });
-    
-    // منع سحب النص (لتحديد النص)
-    document.addEventListener('selectstart', function(e) {
-        e.preventDefault();
+        showToast('🚫 تم حظر القائمة المنبثقة');
         return false;
     });
     
     // ============================================================
-    //  3. منع فتح الصفحات عبر الرابط المباشر (URL)
+    //  3. منع الوصول للصفحات المحمية (مع السماح لـ Firebase)
     // ============================================================
     
-    // قائمة الصفحات المحمية (لا يمكن الوصول لها عبر الرابط المباشر)
+    // قائمة الصفحات المحمية
     const protectedPages = [
         'adminPanelPage',
         'dashboardPage',
@@ -21446,12 +21435,35 @@ function goToMyAccountPage() {
         return currentUser && currentUser.uid;
     }
     
-    // التحقق من الصفحة الحالية
+    // ✅ السماح لـ Firebase بالعمل بشكل طبيعي
+    // لا نمنع eval و Function لأن Firebase يحتاجهم
+    
+    // ============================================================
+    //  4. منع استخدام window.open للصفحات المحمية فقط
+    // ============================================================
+    
+    const originalOpen = window.open;
+    window.open = function(url, name, features) {
+        if (url && typeof url === 'string') {
+            for (let page of protectedPages) {
+                if (url.includes(page) || url.includes(`#${page}`)) {
+                    if (!isUserLoggedIn()) {
+                        showToast('🔒 يرجى تسجيل الدخول للوصول إلى هذه الصفحة');
+                        return null;
+                    }
+                }
+            }
+        }
+        return originalOpen.call(window, url, name, features);
+    };
+    
+    // ============================================================
+    //  5. التحقق من الصفحات عند التحميل
+    // ============================================================
+    
     function checkPageAccess() {
-        // ✅ الصفحات المسموح بها للزوار
         const publicPages = ['homePage', 'loginPage', 'registerPage', 'forgotPasswordPage', 'aboutUsPage'];
         
-        // البحث عن الصفحة الظاهرة
         let currentPage = null;
         protectedPages.forEach(pageId => {
             const el = document.getElementById(pageId);
@@ -21460,83 +21472,34 @@ function goToMyAccountPage() {
             }
         });
         
-        // إذا كانت الصفحة محمية والمستخدم غير مسجل دخول
         if (currentPage && !publicPages.includes(currentPage) && !isUserLoggedIn()) {
-            // إخفاء الصفحة المحمية
             const pageEl = document.getElementById(currentPage);
             if (pageEl) {
                 pageEl.classList.add('hidden');
                 pageEl.style.display = 'none';
             }
-            // التوجيه للصفحة الرئيسية
             showHomePage();
             showToast('🔒 يرجى تسجيل الدخول للوصول إلى هذه الصفحة');
             return false;
         }
-        
         return true;
     }
     
     // ============================================================
-    //  4. منع استخدام window.open لفتح الصفحات
+    //  6. دالة عرض رسائل الحظر (باستخدام Toast الموجود)
     // ============================================================
     
-    // حفظ الدالة الأصلية
-    const originalOpen = window.open;
-    
-    // استبدالها بدالة مخصصة
-    window.open = function(url, name, features) {
-        // التحقق من أن الرابط ليس صفحة داخلية محمية
-        if (url && typeof url === 'string') {
-            // التحقق من الصفحات المحمية
-            for (let page of protectedPages) {
-                if (url.includes(page) || url.includes(`#${page}`)) {
-                    showBlockMessage('🚫 غير مسموح بفتح هذه الصفحة');
-                    return null;
-                }
-            }
-        }
-        
-        // السماح بفتح الروابط الخارجية فقط
-        if (url && (url.startsWith('http://') || url.startsWith('https://'))) {
-            return originalOpen.call(window, url, name, features);
-        }
-        
-        showBlockMessage('🚫 غير مسموح بفتح هذه الصفحة');
-        return null;
-    };
-    
-    // ============================================================
-    //  5. منع الوصول للصفحات من خلال history
-    // ============================================================
-    
-    // منع استخدام history.back() و history.forward()
-    window.addEventListener('popstate', function(e) {
-        // التحقق من الصفحة الحالية
-        const currentPage = document.querySelector('.page-container:not(.hidden)');
-        if (currentPage && protectedPages.some(p => currentPage.id === p)) {
-            if (!isUserLoggedIn()) {
-                showHomePage();
-                showToast('🔒 يرجى تسجيل الدخول');
-            }
-        }
-    });
-    
-    // ============================================================
-    //  6. عرض رسالة الحظر
-    // ============================================================
-    
-    function showBlockMessage(message) {
-        // استخدام Toast إذا كان موجود
-        if (typeof showToast === 'function') {
-            showToast(message);
+    function showToast(message) {
+        // استخدام Toast الموجود في الموقع
+        if (typeof window.showToast === 'function') {
+            window.showToast(message);
         } else {
-            // عرض رسالة منبثقة بسيطة
-            const existing = document.getElementById('blockMessage');
+            // إنشاء Toast مؤقت
+            const existing = document.getElementById('securityToast');
             if (existing) existing.remove();
             
             const div = document.createElement('div');
-            div.id = 'blockMessage';
+            div.id = 'securityToast';
             div.style.cssText = `
                 position: fixed;
                 bottom: 20px;
@@ -21565,76 +21528,37 @@ function goToMyAccountPage() {
     }
     
     // ============================================================
-    //  7. منع استخدام eval و new Function (لحماية إضافية)
+    //  7. منع تحديد النص (مع إمكانية الاستثناء للحقول)
     // ============================================================
     
-    // منع eval
-    const originalEval = window.eval;
-    window.eval = function(code) {
-        showBlockMessage('🚫 تم حظر تنفيذ الأكواد');
-        return null;
-    };
-    
-    // منع Function constructor
-    const originalFunction = window.Function;
-    window.Function = function() {
-        showBlockMessage('🚫 تم حظر إنشاء دوال');
-        return null;
-    };
+    document.addEventListener('selectstart', function(e) {
+        // السماح بتحديد النص في حقول الإدخال
+        if (e.target.tagName === 'INPUT' || e.target.tagName === 'TEXTAREA' || e.target.tagName === 'SELECT') {
+            return;
+        }
+        e.preventDefault();
+        return false;
+    });
     
     // ============================================================
-    //  8. التحقق من الصفحات عند التحميل
+    //  8. تنفيذ التحقق عند تحميل الصفحة
     // ============================================================
     
-    // تنفيذ التحقق عند تحميل الصفحة
     document.addEventListener('DOMContentLoaded', function() {
-        // تأخير بسيط للتأكد من تحميل كل شيء
         setTimeout(checkPageAccess, 500);
     });
     
-    // التحقق عند تغيير الصفحة
-    const originalShowSpecificPage = window.showSpecificPage;
-    if (originalShowSpecificPage) {
-        window.showSpecificPage = function(pageId) {
-            // التحقق من الصلاحية
-            if (protectedPages.includes(pageId) && !isUserLoggedIn()) {
-                showBlockMessage('🔒 يرجى تسجيل الدخول للوصول إلى هذه الصفحة');
-                showHomePage();
-                return;
-            }
-            return originalShowSpecificPage.call(this, pageId);
-        };
-    }
-    
     // ============================================================
-    //  9. منع الوصول من خلال console.log (حماية إضافية)
+    //  9. توفير وضع المطور للمسؤولين (اختياري)
     // ============================================================
     
-    // تعطيل console.log و console.warn و console.error
-    if (console) {
-        console.log = function() {};
-        console.warn = function() {};
-        console.error = function() {};
-        console.info = function() {};
-        console.debug = function() {};
-        console.table = function() {};
-        console.dir = function() {};
-    }
+    // يمكن تفعيل هذا للمطورين
+    window.allowDevTools = false;
     
-    // ============================================================
-    //  10. منع محاولات اختراق إذا كان المستخدم مدير (اختياري)
-    // ============================================================
+    // إذا كان المستخدم مديراً، نسمح ببعض الأشياء
+    // يمكنك تفعيل هذا عند الحاجة
     
-    // إذا كان المستخدم مدير، نسمح ببعض الأشياء
-    // نضيف هذا الخيار لتسهيل التطوير
-    window.allowDevTools = false; // غيّر إلى true إذا كنت تريد السماح
-    
-    if (window.allowDevTools) {
-        // إلغاء الحماية إذا كان المطور يريد ذلك
-        console.log('🔓 وضع المطور مفعل');
-    }
-    
-    console.log('🛡️ تم تفعيل الحماية بنجاح');
+    console.log('🛡️ تم تفعيل الحماية بنجاح (متوافقة مع Firebase)');
     
 })();
 
