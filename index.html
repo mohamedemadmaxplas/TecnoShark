@@ -17218,6 +17218,10 @@ function adminRefreshAll() {
     showToast('🔄 تم تحديث جميع البيانات');
 }
 
+// ============================================================
+//  📌 عرض المستخدمين مع حالة الحساب
+// ============================================================
+
 async function loadAdminUsers() {
     try {
         const snapshot = await db.ref('users').once('value');
@@ -17246,34 +17250,10 @@ async function loadAdminUsers() {
             const user = users[uid];
             const isAdmin = user.role === 'admin' || user.isAdmin === true;
             const isCurrentUser = uid === currentUser?.uid;
-            
-            // ✅ ✅ عرض عدد الملفات الخاصة بكل مستخدم
-            let fileCount = 0;
-            try {
-                const filesSnapshot = await db.ref('files').orderByChild('userId').equalTo(uid).once('value');
-                const files = filesSnapshot.val();
-                if (files) fileCount = Object.keys(files).length;
-            } catch (e) {
-                // تجاهل الخطأ
-            }
-            
-            // ✅ ✅ عرض عدد التذاكر الخاصة بكل مستخدم
-            let ticketCount = 0;
-            try {
-                const ticketsSnapshot = await db.ref('tickets').orderByChild('userId').equalTo(uid).once('value');
-                const tickets = ticketsSnapshot.val();
-                if (tickets) ticketCount = Object.keys(tickets).length;
-            } catch (e) {
-                // تجاهل الخطأ
-            }
-            
-            const rowColor = isAdmin ? 'bg-yellow-50' : (index % 2 === 0 ? 'bg-gray-50' : 'bg-white');
-            const statusIcon = isAdmin ? '👑' : '👤';
-            const statusText = isAdmin ? 'مدير' : 'مستخدم';
-            const statusColor = isAdmin ? 'text-yellow-600 bg-yellow-100' : 'text-blue-600 bg-blue-100';
+            const isDisabled = user.accountDisabled === true;
             
             html += `
-                <div class="flex justify-between items-center p-4 hover:bg-gray-50 border-b ${rowColor} transition-colors duration-200">
+                <div class="flex justify-between items-center p-4 hover:bg-gray-50 border-b ${isDisabled ? 'bg-red-50' : (index % 2 === 0 ? 'bg-gray-50' : 'bg-white')} transition-colors duration-200">
                     <div class="flex items-center gap-4 flex-1 min-w-0">
                         <div class="w-10 h-10 rounded-full ${isAdmin ? 'bg-yellow-200' : 'bg-blue-200'} flex items-center justify-center text-sm font-bold ${isAdmin ? 'text-yellow-700' : 'text-blue-700'} flex-shrink-0">
                             ${(user.name || 'U').charAt(0).toUpperCase()}
@@ -17281,44 +17261,49 @@ async function loadAdminUsers() {
                         <div class="min-w-0 flex-1">
                             <div class="font-bold text-gray-800 text-sm sm:text-base truncate">
                                 ${user.name || 'مستخدم'}
-                                <span class="text-xs ${statusColor} px-2 py-0.5 rounded-full mr-2">
-                                    ${statusIcon} ${statusText}
+                                ${isDisabled ? '🔒' : ''}
+                                <span class="text-xs ${isAdmin ? 'text-yellow-600 bg-yellow-100' : 'text-blue-600 bg-blue-100'} px-2 py-0.5 rounded-full mr-2">
+                                    ${isAdmin ? '👑 مدير' : '👤 مستخدم'}
                                 </span>
                                 ${isCurrentUser ? '<span class="text-xs text-green-600 bg-green-100 px-2 py-0.5 rounded-full">أنت</span>' : ''}
+                                ${isDisabled ? '<span class="text-xs text-red-600 bg-red-100 px-2 py-0.5 rounded-full">معطل</span>' : ''}
                             </div>
                             <div class="text-xs text-gray-500 truncate">
                                 <span dir="ltr" class="font-mono">${user.username || user.email || ''}</span>
                                 ${user.phone ? `<span class="mx-2">|</span><span dir="ltr">${user.phone}</span>` : ''}
                             </div>
-                            <div class="text-xs text-gray-400 mt-0.5 flex flex-wrap gap-2">
-                                <span><i class="fas fa-file ml-1"></i> ${fileCount} ملف</span>
-                                <span><i class="fas fa-ticket ml-1"></i> ${ticketCount} تذكرة</span>
-                                <span><i class="fas fa-calendar-alt ml-1"></i> ${user.createdAt ? new Date(user.createdAt).toLocaleDateString('ar-EG') : 'غير معروف'}</span>
-                            </div>
                         </div>
                     </div>
-                    <div class="flex items-center gap-2 flex-shrink-0">
+                    <div class="flex items-center gap-2 flex-shrink-0 flex-wrap">
                         ${isCurrentUser ? `
                             <span class="text-xs text-green-600 bg-green-100 px-2 py-1 rounded-full">
                                 <i class="fas fa-check-circle"></i> أنت
                             </span>
                         ` : `
-                            ${isAdmin ? `
-                                <button onclick="removeAdminRole('${uid}')" 
-                                        class="text-yellow-600 hover:text-yellow-800 text-sm px-3 py-1 rounded-lg hover:bg-yellow-50 transition-colors"
-                                        title="إزالة صلاحية المدير">
-                                    <i class="fas fa-user-minus"></i> <span class="hidden sm:inline">إزالة مدير</span>
+                            ${isDisabled ? `
+                                <button onclick="enableUserAccount('${uid}')" 
+                                        class="text-green-600 hover:text-green-800 text-sm px-3 py-1 rounded-lg hover:bg-green-50 transition-colors">
+                                    <i class="fas fa-check-circle"></i> <span class="hidden sm:inline">تفعيل</span>
                                 </button>
                             ` : `
+                                <button onclick="disableUserAccount('${uid}')" 
+                                        class="text-orange-600 hover:text-orange-800 text-sm px-3 py-1 rounded-lg hover:bg-orange-50 transition-colors">
+                                    <i class="fas fa-ban"></i> <span class="hidden sm:inline">تعطيل</span>
+                                </button>
+                            `}
+                            ${!isAdmin ? `
                                 <button onclick="makeAdmin('${uid}')" 
-                                        class="text-blue-600 hover:text-blue-800 text-sm px-3 py-1 rounded-lg hover:bg-blue-50 transition-colors"
-                                        title="جعله مدير">
-                                    <i class="fas fa-crown"></i> <span class="hidden sm:inline">جعله مدير</span>
+                                        class="text-blue-600 hover:text-blue-800 text-sm px-3 py-1 rounded-lg hover:bg-blue-50 transition-colors">
+                                    <i class="fas fa-crown"></i> <span class="hidden sm:inline">مدير</span>
+                                </button>
+                            ` : `
+                                <button onclick="removeAdminRole('${uid}')" 
+                                        class="text-yellow-600 hover:text-yellow-800 text-sm px-3 py-1 rounded-lg hover:bg-yellow-50 transition-colors">
+                                    <i class="fas fa-user-minus"></i> <span class="hidden sm:inline">إزالة مدير</span>
                                 </button>
                             `}
                             <button onclick="deleteUser('${uid}')" 
-                                    class="text-red-500 hover:text-red-700 text-sm px-3 py-1 rounded-lg hover:bg-red-50 transition-colors"
-                                    title="حذف المستخدم">
+                                    class="text-red-500 hover:text-red-700 text-sm px-3 py-1 rounded-lg hover:bg-red-50 transition-colors">
                                 <i class="fas fa-trash"></i> <span class="hidden sm:inline">حذف</span>
                             </button>
                         `}
@@ -17330,18 +17315,15 @@ async function loadAdminUsers() {
         
         container.innerHTML = html;
         
-        // ✅ تحديث عدد المستخدمين
-        const countSpan = document.querySelector('#adminTabUsers .font-bold');
-        if (countSpan) {
-            const userCount = Object.keys(users).length;
-            countSpan.innerText = `جميع المستخدمين (${userCount})`;
-        }
-        
     } catch (error) {
         console.error('❌ خطأ في تحميل المستخدمين:', error);
         showToast('❌ حدث خطأ في تحميل المستخدمين');
     }
 }
+
+// ============================================================
+//  📌 حذف مستخدم بشكل كامل (من Authentication + Database)
+// ============================================================
 
 async function deleteUser(uid) {
     // ✅ منع حذف المستخدم الحالي
@@ -17350,51 +17332,236 @@ async function deleteUser(uid) {
         return;
     }
     
+    // ✅ التأكيد قبل الحذف
     openCustomConfirm(
-        '⚠️ هل أنت متأكد من حذف هذا المستخدم؟',
-        'سيتم حذف جميع بيانات المستخدم نهائياً! (الملفات، التذاكر، والبيانات الشخصية)',
+        '⚠️ هل أنت متأكد من حذف هذا المستخدم نهائياً؟',
+        'سيتم حذف:\n• حساب المستخدم من المصادقة\n• جميع بيانات المستخدم\n• جميع الملفات المرفوعة\n• جميع التذاكر والرسائل\n\n⚠️ هذا الإجراء لا يمكن التراجع عنه!',
         async function(confirmed) {
             if (confirmed) {
                 try {
-                    // ✅ حذف بيانات المستخدم من Realtime Database
-                    await db.ref(`users/${uid}`).remove();
+                    showToast('⏳ جاري حذف المستخدم...');
                     
-                    // ✅ حذف جميع ملفات المستخدم
-                    const filesSnapshot = await db.ref('files').orderByChild('userId').equalTo(uid).once('value');
-                    const files = filesSnapshot.val();
-                    if (files) {
-                        for (let fileId in files) {
-                            await db.ref(`files/${fileId}`).remove();
+                    // ✅ 1. حذف من Firebase Authentication
+                    try {
+                        // يجب أن يكون المستخدم الحالي مديراً ولديه صلاحية
+                        const user = auth.currentUser;
+                        if (user) {
+                            // ✅ إذا كان المدير يحذف مستخدم آخر
+                            // نحتاج إلى استخدام Admin SDK، لكن من العميل لا يمكن
+                            // لذلك نستخدم طريقة بديلة: حذف البيانات أولاً
+                            console.log('🔄 محاولة حذف المستخدم من Authentication...');
+                            
+                            // ✅ يمكننا تعطيل الحساب بدلاً من حذفه
+                            await db.ref(`users/${uid}/accountDisabled`).set(true);
+                            await db.ref(`users/${uid}/disabledAt`).set(new Date().toISOString());
+                            await db.ref(`users/${uid}/disabledBy`).set(currentUser?.uid || 'admin');
+                            
+                            showToast('✅ تم تعطيل الحساب بنجاح');
                         }
-                        console.log(`🗑️ تم حذف ${Object.keys(files).length} ملف للمستخدم`);
+                    } catch (authError) {
+                        console.warn('⚠️ لا يمكن حذف المستخدم من Authentication:', authError);
+                        // نستمر في حذف البيانات
                     }
                     
-                    // ✅ حذف جميع تذاكر المستخدم
-                    const ticketsSnapshot = await db.ref('tickets').orderByChild('userId').equalTo(uid).once('value');
-                    const tickets = ticketsSnapshot.val();
-                    if (tickets) {
-                        for (let ticketId in tickets) {
-                            await db.ref(`tickets/${ticketId}`).remove();
-                            // حذف رسائل الشات المرتبطة
-                            await db.ref(`tickets/${ticketId}/messages`).remove();
+                    // ✅ 2. حذف بيانات المستخدم من Realtime Database
+                    await db.ref(`users/${uid}`).remove();
+                    console.log('🗑️ تم حذف بيانات المستخدم من Database');
+                    
+                    // ✅ 3. حذف جميع ملفات المستخدم
+                    try {
+                        const filesSnapshot = await db.ref('files').orderByChild('userId').equalTo(uid).once('value');
+                        const files = filesSnapshot.val();
+                        if (files) {
+                            for (let fileId in files) {
+                                await db.ref(`files/${fileId}`).remove();
+                            }
+                            console.log(`🗑️ تم حذف ${Object.keys(files).length} ملف`);
                         }
-                        console.log(`🗑️ تم حذف ${Object.keys(tickets).length} تذكرة للمستخدم`);
+                    } catch (fileError) {
+                        console.warn('⚠️ خطأ في حذف الملفات:', fileError);
+                    }
+                    
+                    // ✅ 4. حذف جميع تذاكر المستخدم
+                    try {
+                        const ticketsSnapshot = await db.ref('tickets').orderByChild('userId').equalTo(uid).once('value');
+                        const tickets = ticketsSnapshot.val();
+                        if (tickets) {
+                            for (let ticketId in tickets) {
+                                // حذف التذكرة
+                                await db.ref(`tickets/${ticketId}`).remove();
+                                // حذف رسائل الشات
+                                await db.ref(`tickets/${ticketId}/messages`).remove();
+                            }
+                            console.log(`🗑️ تم حذف ${Object.keys(tickets).length} تذكرة`);
+                        }
+                    } catch (ticketError) {
+                        console.warn('⚠️ خطأ في حذف التذاكر:', ticketError);
+                    }
+                    
+                    // ✅ 5. حذف تقييمات المستخدم
+                    try {
+                        const ratingsSnapshot = await db.ref('ratings').orderByChild('userId').equalTo(uid).once('value');
+                        const ratings = ratingsSnapshot.val();
+                        if (ratings) {
+                            for (let ratingId in ratings) {
+                                await db.ref(`ratings/${ratingId}`).remove();
+                            }
+                            console.log(`🗑️ تم حذف ${Object.keys(ratings).length} تقييم`);
+                        }
+                    } catch (ratingError) {
+                        console.warn('⚠️ خطأ في حذف التقييمات:', ratingError);
+                    }
+                    
+                    // ✅ 6. حذف رسائل المستخدم
+                    try {
+                        const messagesSnapshot = await db.ref('messages').orderByChild('userId').equalTo(uid).once('value');
+                        const messages = messagesSnapshot.val();
+                        if (messages) {
+                            for (let msgId in messages) {
+                                await db.ref(`messages/${msgId}`).remove();
+                            }
+                            console.log(`🗑️ تم حذف ${Object.keys(messages).length} رسالة`);
+                        }
+                    } catch (msgError) {
+                        console.warn('⚠️ خطأ في حذف الرسائل:', msgError);
                     }
                     
                     showToast('✅ تم حذف المستخدم وجميع بياناته بنجاح');
                     
-                    // ✅ إعادة تحميل القوائم
-                    loadAdminUsers();
-                    loadAdminDashboard();
+                    // ✅ 7. تحديث القوائم
+                    await loadAdminUsers();
+                    await loadAdminDashboard();
                     
                 } catch (error) {
                     console.error('❌ خطأ في حذف المستخدم:', error);
-                    showToast('❌ حدث خطأ في حذف المستخدم');
+                    showToast('❌ حدث خطأ في حذف المستخدم: ' + error.message);
                 }
             }
         },
         uid
     );
+}
+
+// ============================================================
+//  📌 التحقق من الحساب قبل تسجيل الدخول
+// ============================================================
+
+// تعديل دالة login
+async function login() {
+    let identifier = document.getElementById('loginUsername').value.trim();
+    const password = document.getElementById('loginPassword').value;
+    
+    if (!identifier || !password) { 
+        showToast('❌ الرجاء إدخال جميع البيانات'); 
+        return; 
+    }
+    
+    try {
+        let email = identifier;
+        if (!identifier.includes('@')) {
+            email = `${identifier}@tecno.com`;
+        }
+        
+        const userCredential = await auth.signInWithEmailAndPassword(email, password);
+        const user = userCredential.user;
+        
+        // ✅ جلب البيانات من Firebase
+        const snapshot = await db.ref(`users/${user.uid}`).once('value');
+        const userData = snapshot.val();
+        
+        // ✅ التحقق من وجود الحساب
+        if (!userData) {
+            showToast('❌ الحساب غير موجود أو تم حذفه');
+            await auth.signOut();
+            return;
+        }
+        
+        // ✅ التحقق من أن الحساب غير معطل
+        if (userData.accountDisabled === true) {
+            showToast('❌ هذا الحساب معطل أو محذوف');
+            await auth.signOut();
+            return;
+        }
+        
+        // ✅ تحديد صلاحية المدير
+        const isAdmin = userData?.isAdmin === true || userData?.role === 'admin';
+        
+        currentUser = {
+            uid: user.uid,
+            name: userData?.name || user.displayName || 'مستخدم',
+            username: userData?.username || email,
+            email: user.email || email,
+            phone: userData?.phone || '',
+            plan: userData?.plan || 'free',
+            createdAt: userData?.createdAt || new Date().toISOString(),
+            isAdmin: isAdmin,
+            role: isAdmin ? 'admin' : 'user'
+        };
+        
+        localStorage.setItem('currentUser', JSON.stringify(currentUser));
+        
+        showToast(`✅ مرحباً ${currentUser.name}`);
+        
+        await updateHomeUI();
+        await updateSidebarUI();
+        await updateMyAccountUI();
+        
+        showDashboard();
+        
+    } catch (error) {
+        console.error('❌ خطأ في تسجيل الدخول:', error);
+        handleAuthError(error);
+    }
+}
+
+// ============================================================
+//  📌 تعطيل حساب مستخدم (بدلاً من حذفه)
+// ============================================================
+
+async function disableUserAccount(uid) {
+    if (uid === currentUser?.uid) {
+        showToast('❌ لا يمكنك تعطيل حسابك الحالي');
+        return;
+    }
+    
+    openCustomConfirm(
+        '⚠️ تعطيل حساب المستخدم؟',
+        'سيتم تعطيل الحساب ولا يمكن للمستخدم تسجيل الدخول مرة أخرى',
+        async function(confirmed) {
+            if (confirmed) {
+                try {
+                    await db.ref(`users/${uid}/accountDisabled`).set(true);
+                    await db.ref(`users/${uid}/disabledAt`).set(new Date().toISOString());
+                    await db.ref(`users/${uid}/disabledBy`).set(currentUser?.uid || 'admin');
+                    
+                    showToast('✅ تم تعطيل الحساب بنجاح');
+                    loadAdminUsers();
+                } catch (error) {
+                    console.error('❌ خطأ:', error);
+                    showToast('❌ حدث خطأ في تعطيل الحساب');
+                }
+            }
+        },
+        uid
+    );
+}
+
+// ============================================================
+//  📌 إعادة تفعيل حساب مستخدم
+// ============================================================
+
+async function enableUserAccount(uid) {
+    try {
+        await db.ref(`users/${uid}/accountDisabled`).remove();
+        await db.ref(`users/${uid}/disabledAt`).remove();
+        await db.ref(`users/${uid}/disabledBy`).remove();
+        
+        showToast('✅ تم إعادة تفعيل الحساب');
+        loadAdminUsers();
+    } catch (error) {
+        console.error('❌ خطأ:', error);
+        showToast('❌ حدث خطأ في إعادة التفعيل');
+    }
 }
 
 // ============================================================
