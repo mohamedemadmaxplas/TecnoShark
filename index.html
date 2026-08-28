@@ -5341,13 +5341,13 @@
 
 /* ==================== الصفحة الرئيسية ==================== */
 
-/* قسم الهيرو */
 .hero-section {
-    min-height: 90vh;
+    min-height: 10vh;
     display: flex;
     align-items: center;
     position: relative;
-    background: linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f3460 100%);
+    background: linear-gradient(135deg, #0a1628 0%, #0f1f3d 50%, #1a3a6e 100%); /* ألوان أغمق */
+    padding: 40px 0;
 }
 
 /* أنيميشن الشعار */
@@ -5660,13 +5660,14 @@
     <!-- ===== قسم الهيرو ===== -->
     <div class="hero-section relative overflow-hidden">
         <!-- الخلفية -->
-        <div class="absolute inset-0 bg-gradient-to-br from-blue-900 via-indigo-800 to-purple-900">
-            <div class="absolute top-0 left-0 w-full h-full">
-                <div class="absolute top-10 left-10 w-64 h-64 bg-blue-400 rounded-full mix-blend-multiply filter blur-3xl opacity-20 animate-pulse"></div>
-                <div class="absolute bottom-10 right-10 w-96 h-96 bg-purple-400 rounded-full mix-blend-multiply filter blur-3xl opacity-20 animate-pulse delay-1000"></div>
-                <div class="absolute top-1/2 left-1/2 w-80 h-80 bg-indigo-400 rounded-full mix-blend-multiply filter blur-3xl opacity-20 animate-pulse delay-500"></div>
-            </div>
-        </div>
+      <!-- الخلفية - ألوان زرقاء داكنة جداً -->
+<div class="absolute inset-0 bg-gradient-to-br from-blue-950 via-blue-900 to-slate-900">
+    <div class="absolute top-0 left-0 w-full h-full">
+        <div class="absolute top-10 left-10 w-64 h-64 bg-blue-600 rounded-full mix-blend-multiply filter blur-3xl opacity-15 animate-pulse"></div>
+        <div class="absolute bottom-10 right-10 w-96 h-96 bg-blue-700 rounded-full mix-blend-multiply filter blur-3xl opacity-15 animate-pulse delay-1000"></div>
+        <div class="absolute top-1/2 left-1/2 w-80 h-80 bg-indigo-800 rounded-full mix-blend-multiply filter blur-3xl opacity-15 animate-pulse delay-500"></div>
+    </div>
+</div>
         
         <div class="container mx-auto px-4 py-12 sm:py-20 relative z-10">
             <div class="text-center">
@@ -5677,10 +5678,9 @@
                          class="w-20 h-20 sm:w-28 sm:h-28 mx-auto mb-4 rounded-full shadow-2xl border-4 border-white/30 hover:scale-110 transition-transform duration-500">
                 </div>
                 
-                <!-- العنوان -->
-                <h1 class="text-3xl sm:text-5xl md:text-6xl font-bold text-white mb-3 animate-fade-up delay-100">
-                    Tecno<span class="text-yellow-400">Shark</span>
-                </h1>
+              <h1 class="text-3xl sm:text-5xl md:text-6xl font-bold text-white mb-3 animate-fade-up delay-100">
+    Tecno<span class="text-blue-400">Shark</span>  <!-- غير اللون لأزرق فاتح ولكن على خلفية داكنة -->
+</h1>
                 <p class="text-base sm:text-xl text-blue-200 animate-fade-up delay-200">
                     🦈 Turning Ideas Into Digital Reality
                 </p>
