@@ -11585,7 +11585,6 @@ async function loadFileForDownload(fileId) {
     }
 }
 
-// ==================== عرض معلومات الملف (معدل - يدعم الزوار) ====================
 function displayFileDownloadInfo(file) {
     // التحقق من وجود العناصر قبل التعامل معها
     const content = document.getElementById('fileDownloadContent');
@@ -11595,6 +11594,10 @@ function displayFileDownloadInfo(file) {
     if (content) content.classList.remove('hidden');
     if (errorContent) errorContent.classList.add('hidden');
     if (privateContent) privateContent.classList.add('hidden');
+    
+    // ✅ تخزين بيانات الملف في المتغيرات العامة للاستخدام في التحميل
+    downloadFileData = file;
+    downloadFileId = file.id || file.fileId;
     
     // اسم الملف
     const fileNameEl = document.getElementById('downloadFileName');
@@ -11651,6 +11654,20 @@ function displayFileDownloadInfo(file) {
         const baseUrl = 'https://tecno-shark.vercel.app';
         linkInput.value = baseUrl + '/?file=' + downloadFileId;
     }
+    
+    // ✅ إظهار زر التحميل
+    const downloadBtn = document.getElementById('downloadFileBtn');
+    if (downloadBtn) {
+        downloadBtn.style.display = 'flex';
+        downloadBtn.disabled = false;
+    }
+    
+    console.log('✅ تم عرض معلومات الملف:', {
+        id: downloadFileId,
+        name: file.displayName || file.name,
+        size: file.size,
+        type: file.type
+    });
 }
 
 // ==================== تحميل الملف من الصفحة (معدل) ====================
@@ -14030,7 +14047,6 @@ function closeFileViewModal(event) {
     }
 }
 
-// استبدل دالة downloadFile() بهذه النسخة المحسّنة
 function downloadFile() {
     if (!currentViewFileId) {
         showToast('❌ لا يوجد ملف للتحميل');
@@ -14043,39 +14059,37 @@ function downloadFile() {
         return;
     }
 
+    // ✅ اطبع البيانات في الكونسول عشان تشوف شكلها
+    console.log('📦 بيانات الملف:', {
+        name: file.name,
+        type: file.type,
+        dataLength: file.data ? file.data.length : 0,
+        dataStart: file.data ? file.data.substring(0, 50) : 'لا توجد بيانات'
+    });
+
     try {
-        // ✅ استخراج البيانات من Base64 وتحويلها إلى Blob
-        const base64String = file.data;
-        const byteCharacters = atob(base64String.split(',')[1]);
-        const byteNumbers = new Array(byteCharacters.length);
-        for (let i = 0; i < byteCharacters.length; i++) {
-            byteNumbers[i] = byteCharacters.charCodeAt(i);
+        // ✅ جرب طريقة التحميل المباشرة
+        if (file.data) {
+            const link = document.createElement('a');
+            link.href = file.data;
+            link.download = file.name;
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+            
+            db.ref(`files/${currentViewFileId}/downloads`).transaction((current) => {
+                return (current || 0) + 1;
+            });
+            
+            showToast('✅ بدء تحميل الملف');
+            return;
         }
-        const byteArray = new Uint8Array(byteNumbers);
-        const blob = new Blob([byteArray], { type: file.type || 'application/octet-stream' });
         
-        // ✅ إنشاء رابط تحميل مؤقت
-        const link = document.createElement('a');
-        link.href = URL.createObjectURL(blob);
-        link.download = file.name;
-        document.body.appendChild(link);
-        link.click();
-        document.body.removeChild(link);
+        showToast('❌ لا توجد بيانات للتحميل');
         
-        // ✅ تحرير الرابط المؤقت بعد التحميل
-        setTimeout(() => {
-            URL.revokeObjectURL(link.href);
-        }, 1000);
-
-        // تحديث عدد مرات التحميل
-        db.ref(`files/${currentViewFileId}/downloads`).transaction((current) => {
-            return (current || 0) + 1;
-        });
-
-        showToast('✅ بدء تحميل الملف');
     } catch (error) {
-        console.error('خطأ في تحميل الملف:', error);
-        showToast('❌ حدث خطأ في تحميل الملف');
+        console.error('❌ خطأ في التحميل:', error);
+        showToast('❌ حدث خطأ: ' + error.message);
     }
 }
 
