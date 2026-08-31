@@ -11530,9 +11530,16 @@ function showFileDownloadPage(fileId) {
     loadFileForDownload(fileId);
 }
 
-async function loadFileForDownload(fileId) {
-    try {
-        const snapshot = await db.ref(`files/${fileId}`).once('value');
+// ==================== دالة تحميل الملف من صفحة التحميل الخارجية ====================
+function loadFileForDownload(fileId) {
+    // ✅ التحقق من وجود fileId
+    if (!fileId) {
+        showDownloadError('معرف الملف غير صحيح');
+        return;
+    }
+    
+    // ✅ البحث عن الملف في قاعدة البيانات
+    db.ref(`files/${fileId}`).once('value').then(snapshot => {
         const file = snapshot.val();
         
         if (!file) {
@@ -11540,52 +11547,93 @@ async function loadFileForDownload(fileId) {
             return;
         }
         
-        // ✅ ✅ التحقق من الرؤية
-        const isOwner = currentUser && file.userId === currentUser.uid;
-        const isAdminUser = currentUser && isAdmin();
-        const isPublic = file.visibility === 'public';
+        // ✅ تخزين بيانات الملف للاستخدام
+        window.downloadFileData = file;
+        window.downloadFileId = fileId;
         
-        // ✅ ✅ الصلاحية للتحميل:
-        // 1. عام (public) => أي شخص
-        // 2. خاص (private) => فقط المالك أو المدير
-        // 3. مدير (admin) => فقط المدير
-        if (isPublic) {
-            // ✅ عام: أي شخص يتحمله
-            displayFileDownloadInfo(file);
-            
-            // ✅ تحديث عدد التحميلات
-            try {
-                await db.ref(`files/${fileId}/downloads`).transaction((current) => {
-                    return (current || 0) + 1;
-                });
-            } catch (e) {
-                console.log('⚠️ تحديث التحميلات فشل');
-            }
-        } else if (isOwner || isAdminUser) {
-            // ✅ مالك أو مدير
-            displayFileDownloadInfo(file);
-            
-            // ✅ تحديث عدد التحميلات
-            try {
-                await db.ref(`files/${fileId}/downloads`).transaction((current) => {
-                    return (current || 0) + 1;
-                });
-            } catch (e) {
-                console.log('⚠️ تحديث التحميلات فشل');
-            }
-        } else {
-            // ❌ غير مسموح
-            showDownloadError('ليس لديك صلاحية لتحميل هذا الملف');
+        // ✅ تحديث واجهة صفحة التحميل
+        const content = document.getElementById('fileDownloadContent');
+        const errorContent = document.getElementById('downloadErrorContent');
+        const privateContent = document.getElementById('downloadPrivateContent');
+        
+        if (content) content.classList.remove('hidden');
+        if (errorContent) errorContent.classList.add('hidden');
+        if (privateContent) privateContent.classList.add('hidden');
+        
+        // ✅ عرض اسم الملف
+        const fileNameEl = document.getElementById('downloadFileName');
+        if (fileNameEl) fileNameEl.textContent = file.displayName || file.name;
+        
+        // ✅ عرض حجم الملف
+        const fileSizeEl = document.getElementById('downloadFileSize');
+        if (fileSizeEl) {
+            fileSizeEl.textContent = formatBytes(file.size || 0);
         }
         
-    } catch (error) {
-        console.error('خطأ في تحميل الملف:', error);
+        // ✅ عرض تاريخ الرفع
+        const fileDateEl = document.getElementById('downloadFileDate');
+        if (fileDateEl) {
+            const date = file.uploadedAt ? new Date(file.uploadedAt) : new Date();
+            fileDateEl.textContent = date.toLocaleDateString('ar-EG');
+        }
+        
+        // ✅ عرض اسم الرافع
+        const uploaderEl = document.getElementById('downloadFileUploader');
+        if (uploaderEl) uploaderEl.textContent = file.userName || 'مستخدم';
+        
+        // ✅ عرض عدد التحميلات
+        const downloadsEl = document.getElementById('downloadFileDownloads');
+        if (downloadsEl) downloadsEl.textContent = file.downloads || 0;
+        
+        // ✅ عرض أيقونة الملف حسب النوع
+        const iconMap = {
+            'image': 'fa-image text-pink-500',
+            'document': 'fa-file-alt text-blue-500',
+            'video': 'fa-video text-purple-500',
+            'audio': 'fa-music text-green-500',
+            'other': 'fa-file text-gray-500'
+        };
+        const iconClass = iconMap[file.category] || 'fa-file text-gray-500';
+        const iconEl = document.getElementById('downloadFileIcon');
+        if (iconEl) {
+            iconEl.innerHTML = `<i class="fas ${iconClass} text-6xl"></i>`;
+        }
+        
+        // ✅ تحديث الرابط في حقل الإدخال
+        const linkInput = document.getElementById('downloadDirectLink');
+        if (linkInput) {
+            linkInput.value = file.downloadURL || 'لا يوجد رابط';
+        }
+        
+        // ✅ تحديث زر التحميل
+        const downloadBtn = document.getElementById('downloadFileBtn');
+        if (downloadBtn) {
+            if (file.downloadURL) {
+                downloadBtn.style.display = 'flex';
+                downloadBtn.onclick = function() {
+                    window.open(file.downloadURL, '_blank');
+                    // ✅ تحديث عدد التحميلات
+                    db.ref(`files/${fileId}/downloads`).transaction((current) => {
+                        return (current || 0) + 1;
+                    });
+                };
+            } else {
+                downloadBtn.style.display = 'none';
+                showDownloadError('لا يوجد رابط تحميل للملف');
+            }
+        }
+        
+        // ✅ إظهار صفحة التحميل
+        document.getElementById('fileDownloadPage').style.display = 'flex';
+        
+    }).catch(error => {
+        console.error('❌ خطأ في تحميل الملف:', error);
         if (error.message && error.message.includes('permission_denied')) {
             showDownloadError('الملف غير موجود أو تم حذفه');
         } else {
             showDownloadError('حدث خطأ في تحميل الملف');
         }
-    }
+    });
 }
 
 // ==================== عرض معلومات الملف (معدل - يدعم الزوار) ====================
@@ -13480,7 +13528,7 @@ let speedSamples = [];
 let lastProgressUpdate = 0;
 let uploadInterval = null;
 
-// ==================== رفع ملف مع تقدم حقيقي ====================
+// ==================== دالة رفع الملف مع التقدم (باستخدام Firebase Storage) ====================
 async function uploadFileWithProgress(event) {
     event.preventDefault();
     
@@ -13493,8 +13541,7 @@ async function uploadFileWithProgress(event) {
     const fileInput = document.getElementById('fileInput');
     const category = document.getElementById('fileCategory').value;
     const visibility = document.getElementById('fileVisibility').value;
-    
-    if (!displayName || !fileInput.files || fileInput.files.length === 0) {
+        if (!displayName || !fileInput.files || fileInput.files.length === 0) {
         showToast('❌ الرجاء إدخال اسم الملف واختيار ملف');
         return;
     }
@@ -13521,78 +13568,91 @@ async function uploadFileWithProgress(event) {
     
     // ✅ إظهار نافذة التقدم
     showRealProgressModal(file.name, file.size);
-    await sleep(100); // تأخير بسيط لظهور النافذة
+    await sleep(100);
     
     // ✅ تعطيل زر الإرسال
     const submitBtn = document.querySelector('#uploadForm button[type="submit"]');
     if (submitBtn) submitBtn.disabled = true;
     
     try {
-        // ✅ ========== 1. قراءة الملف ==========
-        updateRealProgress(5, 'جاري قراءة الملف...');
-        await sleep(50);
+        // ✅ إنشاء مسار فريد للملف في Firebase Storage
+        const filePath = `user_files/${currentUser.uid}/${Date.now()}_${file.name}`;
+        const storageRef = firebase.storage().ref(filePath);
         
-        const arrayBuffer = await file.arrayBuffer();
-        const uint8Array = new Uint8Array(arrayBuffer);
+        // ✅ بدء رفع الملف إلى Firebase Storage
+        const uploadTask = storageRef.put(file);
         
-        // ✅ ========== 2. تشفير وضغط مع تحديث التقدم ==========
-        updateRealProgress(10, 'جاري التشفير والضغط...');
-        await sleep(50);
-        
-        const compressed = compressAndEncryptStream(uint8Array);
-        const compressedSize = compressed.length;
-        const compressionRatio = ((1 - compressedSize / totalFileSize) * 100).toFixed(1);
-        
-        updateRealProgress(30, `✅ تم التشفير (نسبة الضغط: ${compressionRatio}%)`);
-        await sleep(50);
-        
-        // ✅ ========== 3. تحويل إلى Base64 مع تقدم حقيقي ==========
-        updateRealProgress(35, 'جاري تحويل البيانات...');
-        await sleep(50);
-        
-        const base64 = await arrayBufferToBase64WithProgress(compressed, totalFileSize);
-        
-        // ✅ ========== 4. حفظ في Firebase ==========
-        updateRealProgress(90, 'جاري حفظ البيانات...');
-        await sleep(50);
-        
-        const fileData = {
-            name: file.name,
-            displayName: displayName,
-            size: totalFileSize,
-            compressedSize: compressedSize,
-            type: file.type,
-            category: category,
-            visibility: visibility,
-            data: base64,
-            compressionRatio: compressionRatio,
-            userId: currentUser.uid,
-            userName: currentUser.name || currentUser.username || 'مستخدم',
-            uploadedAt: new Date().toISOString(),
-            downloads: 0,
-            fileId: 'file_' + Date.now()
-        };
-        
-        const newRef = db.ref('files').push();
-        await newRef.set(fileData);
-        
-        // ✅ ========== 5. اكتمال الرفع ==========
-        updateRealProgress(100, '✅ تم الرفع بنجاح!');
-        
-        setTimeout(() => {
-            document.getElementById('progressButtons').style.display = 'flex';
-        }, 500);
-        
-        closeUploadModal();
-        
-        setTimeout(() => {
-            loadFiles();
-        }, 500);
-        
-        if (submitBtn) submitBtn.disabled = false;
-        isUploading = false;
-        
-        showToast(`✅ تم رفع "${displayName}" بنجاح! (ضغط ${compressionRatio}%)`);
+        // ✅ مراقبة تقدم الرفع
+        uploadTask.on('state_changed',
+            (snapshot) => {
+                // ✅ حساب نسبة التقدم
+                const progress = (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
+                const speed = snapshot.bytesTransferred / ((Date.now() - uploadStartTime) / 1000);
+                
+                // ✅ تحديث واجهة التقدم
+                updateRealProgress(
+                    progress,
+                    `جاري الرفع... ${Math.round(progress)}% (${formatBytes(snapshot.bytesTransferred)} / ${formatBytes(snapshot.totalBytes)})`,
+                    formatBytes(speed) + '/s'
+                );
+            },
+            (error) => {
+                // ❌ خطأ في الرفع
+                console.error('❌ خطأ في رفع الملف:', error);
+                showRealProgressError(error.message || 'حدث خطأ في رفع الملف');
+                if (submitBtn) submitBtn.disabled = false;
+                isUploading = false;
+            },
+            async () => {
+                // ✅ اكتمال الرفع - الحصول على رابط التحميل
+                try {
+                    const downloadURL = await uploadTask.snapshot.ref.getDownloadURL();
+                    
+                    // ✅ حفظ بيانات الملف في Realtime Database مع الرابط
+                    const fileData = {
+                        name: file.name,
+                        displayName: displayName,
+                        size: file.size,
+                        type: file.type,
+                        category: category,
+                        visibility: visibility,
+                        downloadURL: downloadURL, // الرابط السحابي الدائم
+                        userId: currentUser.uid,
+                        userName: currentUser.name || currentUser.username || 'مستخدم',
+                        uploadedAt: new Date().toISOString(),
+                        downloads: 0,
+                        fileId: 'file_' + Date.now()
+                    };
+                    
+                    const newRef = db.ref('files').push();
+                    await newRef.set(fileData);
+                    
+                    // ✅ اكتمال الرفع بنجاح
+                    updateRealProgress(100, '✅ تم الرفع بنجاح!');
+                    
+                    setTimeout(() => {
+                        document.getElementById('progressButtons').style.display = 'flex';
+                    }, 500);
+                    
+                    closeUploadModal();
+                    
+                    setTimeout(() => {
+                        loadFiles();
+                    }, 500);
+                    
+                    if (submitBtn) submitBtn.disabled = false;
+                    isUploading = false;
+                    
+                    showToast(`✅ تم رفع "${displayName}" بنجاح!`);
+                    
+                } catch (error) {
+                    console.error('❌ خطأ في حفظ بيانات الملف:', error);
+                    showRealProgressError(error.message || 'حدث خطأ في حفظ بيانات الملف');
+                    if (submitBtn) submitBtn.disabled = false;
+                    isUploading = false;
+                }
+            }
+        );
         
     } catch (error) {
         console.error('❌ خطأ في رفع الملف:', error);
@@ -13950,6 +14010,7 @@ function fileToBase64WithProgress(file) {
     });
 }
 
+// ==================== دالة عرض الملف (باستخدام النافذة المنبثقة) ====================
 function viewFile(fileId) {
     const file = currentFiles.find(f => f.id === fileId);
     if (!file) {
@@ -13961,7 +14022,7 @@ function viewFile(fileId) {
     const isOwner = file.userId === currentUser?.uid;
     const isAdminUser = isAdmin();
     
-    // ✅ ✅ المدير يشوف ملفات المديرين الآخرين فقط
+    // ✅ المدير يشوف ملفات المديرين الآخرين فقط
     let canView = false;
     if (isOwner) {
         canView = true;
@@ -13980,8 +14041,13 @@ function viewFile(fileId) {
     currentViewFileId = fileId;
     
     const modal = document.getElementById('fileViewModal');
+    
+    // ✅ تحديث محتوى النافذة المنبثقة
     document.getElementById('fileViewTitle').innerText = file.displayName || file.name;
-    document.getElementById('fileViewName').innerText = file.displayName || file.name;
+    document.getElementById('fileViewName').innerHTML = `
+        <i class="fas fa-file-alt text-blue-500 ml-2"></i>
+        ${file.displayName || file.name}
+    `;
     document.getElementById('fileViewSize').innerText = 'الحجم: ' + (file.size / 1024).toFixed(1) + ' KB';
     
     // ✅ عرض اسم المالك
@@ -13999,30 +14065,41 @@ function viewFile(fileId) {
     `;
     
     document.getElementById('fileViewDate').innerText = 'التاريخ: ' + new Date(file.uploadedAt).toLocaleString('ar-EG');
-    document.getElementById('fileDownloadLink').value = getFileDownloadLink(fileId);
     
+    // ✅ عرض رابط التحميل (من Firebase Storage)
+    const linkInput = document.getElementById('fileDownloadLink');
+    if (linkInput) {
+        linkInput.value = file.downloadURL || 'لا يوجد رابط';
+    }
+    
+    // ✅ عرض أيقونة الملف حسب النوع
     const iconMap = {
-        'image': 'fa-image',
-        'document': 'fa-file-alt',
-        'video': 'fa-video',
-        'audio': 'fa-music',
-        'other': 'fa-file'
+        'image': 'fa-image text-pink-500',
+        'document': 'fa-file-alt text-blue-500',
+        'video': 'fa-video text-purple-500',
+        'audio': 'fa-music text-green-500',
+        'other': 'fa-file text-gray-500'
     };
-    document.getElementById('fileViewIcon').className = 'fas ' + (iconMap[file.category] || 'fa-file') + ' text-6xl text-blue-500';
+    const iconClass = iconMap[file.category] || 'fa-file text-gray-500';
+    document.getElementById('fileViewIcon').className = 'fas ' + iconClass + ' text-6xl';
     
-    // ✅ ✅ زر الحذف يظهر فقط للمالك
-    const deleteBtn = document.querySelector('#fileViewModal .btn-danger') || 
-                      document.querySelector('#fileViewModal button:last-child');
+    // ✅ زر الحذف يظهر فقط للمالك
+    const deleteBtn = document.querySelector('#fileViewModal button:last-child');
     if (deleteBtn) {
         if (isOwner) {
             deleteBtn.style.display = 'inline-block';
             deleteBtn.innerText = '🗑️ حذف';
+            deleteBtn.onclick = function() {
+                deleteFile();
+            };
         } else {
             deleteBtn.style.display = 'none';
         }
     }
     
+    // ✅ إظهار النافذة المنبثقة
     modal.classList.add('active');
+    modal.style.display = 'flex';
 }
 
 // ==================== إغلاق نافذة عرض الملف ====================
@@ -14033,7 +14110,7 @@ function closeFileViewModal(event) {
     }
 }
 
-// ==================== تحميل الملف (تنزيل) ====================
+// ==================== دالة تحميل الملف (تنزيل) ====================
 function downloadFile() {
     if (!currentViewFileId) {
         showToast('❌ لا يوجد ملف للتحميل');
@@ -14046,45 +14123,62 @@ function downloadFile() {
         return;
     }
     
+    // ✅ التحقق من وجود رابط تحميل صالح
+    if (!file.downloadURL) {
+        showToast('❌ لا يوجد رابط تحميل للملف');
+        return;
+    }
+    
     try {
-        // استخراج البيانات من Base64
-        const link = document.createElement('a');
-        link.href = file.data;
-        link.download = file.name;
-        document.body.appendChild(link);
-        link.click();
-        document.body.removeChild(link);
+        // ✅ فتح رابط التحميل في نافذة جديدة
+        window.open(file.downloadURL, '_blank');
         
-        // تحديث عدد مرات التحميل
+        // ✅ تحديث عدد مرات التحميل
         db.ref(`files/${currentViewFileId}/downloads`).transaction((current) => {
             return (current || 0) + 1;
         });
         
         showToast('✅ بدء تحميل الملف');
+        
     } catch (error) {
         console.error('خطأ في تحميل الملف:', error);
         showToast('❌ حدث خطأ في تحميل الملف');
     }
 }
 
-// ==================== نسخ رابط التحميل من نافذة العرض (معدل) ====================
+
+// ==================== دالة نسخ رابط التحميل ====================
 function copyFileLink() {
-    const linkInput = document.getElementById('fileDownloadLink');
-    if (!linkInput) return;
-    
-    // ✅ تأكد من الرابط الصحيح
-    let link = linkInput.value;
-    if (!link || link.startsWith('file://')) {
-        link = getFileDownloadLink(currentViewFileId);
-        linkInput.value = link;
+    if (!currentViewFileId) {
+        showToast('❌ لا يوجد ملف للنسخ');
+        return;
     }
     
-    navigator.clipboard.writeText(link).then(() => {
+    const file = currentFiles.find(f => f.id === currentViewFileId);
+    if (!file) {
+        showToast('❌ الملف غير موجود');
+        return;
+    }
+    
+    // ✅ التحقق من وجود رابط تحميل
+    if (!file.downloadURL) {
+        showToast('❌ لا يوجد رابط للنسخ');
+        return;
+    }
+    
+    // ✅ نسخ الرابط إلى الحافظة
+    navigator.clipboard.writeText(file.downloadURL).then(() => {
         showToast('✅ تم نسخ رابط التحميل');
     }).catch(() => {
-        linkInput.select();
-        document.execCommand('copy');
-        showToast('✅ تم نسخ رابط التحميل');
+        // ✅ طريقة بديلة للنسخ
+        const linkInput = document.getElementById('fileDownloadLink');
+        if (linkInput) {
+            linkInput.select();
+            document.execCommand('copy');
+            showToast('✅ تم نسخ رابط التحميل');
+        } else {
+            showToast('❌ حدث خطأ في نسخ الرابط');
+        }
     });
 }
 
