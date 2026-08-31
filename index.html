@@ -11513,7 +11513,7 @@ function startChatWithTimer(ticketId) {
 let downloadFileData = null;
 let downloadFileId = null;
 
-// ==================== عرض صفحة تحميل الملف ====================
+// استبدل دالة showFileDownloadPage() الموجودة بهذه النسخة
 function showFileDownloadPage(fileId) {
     // إخفاء جميع الصفحات
     document.querySelectorAll('.page-container, .page-content').forEach(el => {
@@ -11521,63 +11521,60 @@ function showFileDownloadPage(fileId) {
         el.classList.add('hidden');
     });
     
+    // ✅ تأكد من إخفاء صفحة رفع الملفات (filesPage) بشكل خاص
+    const filesPage = document.getElementById('filesPage');
+    if (filesPage) {
+        filesPage.style.display = 'none';
+        filesPage.classList.add('hidden');
+    }
+    
     // إظهار صفحة التحميل
     const page = document.getElementById('fileDownloadPage');
-    page.style.display = 'flex';
-    page.classList.remove('hidden');
+    if (page) {
+        page.style.display = 'flex';
+        page.classList.remove('hidden');
+    } else {
+        console.error('❌ صفحة التحميل غير موجودة');
+        return;
+    }
     
     // تحميل بيانات الملف
     loadFileForDownload(fileId);
 }
 
+// استبدل دالة loadFileForDownload() الموجودة بهذه النسخة
 async function loadFileForDownload(fileId) {
     try {
         const snapshot = await db.ref(`files/${fileId}`).once('value');
         const file = snapshot.val();
-        
+
         if (!file) {
             showDownloadError('الملف غير موجود أو تم حذفه');
             return;
         }
-        
-        // ✅ ✅ التحقق من الرؤية
+
+        // ✅ ✅ التحقق من الرؤية (تم التعديل)
         const isOwner = currentUser && file.userId === currentUser.uid;
         const isAdminUser = currentUser && isAdmin();
         const isPublic = file.visibility === 'public';
-        
+
         // ✅ ✅ الصلاحية للتحميل:
         // 1. عام (public) => أي شخص
         // 2. خاص (private) => فقط المالك أو المدير
         // 3. مدير (admin) => فقط المدير
         if (isPublic) {
-            // ✅ عام: أي شخص يتحمله
+            // ✅ عام: أي شخص يتحمله (تم إزالة شرط isOwner)
             displayFileDownloadInfo(file);
-            
-            // ✅ تحديث عدد التحميلات
-            try {
-                await db.ref(`files/${fileId}/downloads`).transaction((current) => {
-                    return (current || 0) + 1;
-                });
-            } catch (e) {
-                console.log('⚠️ تحديث التحميلات فشل');
-            }
+            // تحديث عدد التحميلات...
         } else if (isOwner || isAdminUser) {
             // ✅ مالك أو مدير
             displayFileDownloadInfo(file);
-            
-            // ✅ تحديث عدد التحميلات
-            try {
-                await db.ref(`files/${fileId}/downloads`).transaction((current) => {
-                    return (current || 0) + 1;
-                });
-            } catch (e) {
-                console.log('⚠️ تحديث التحميلات فشل');
-            }
+            // تحديث عدد التحميلات...
         } else {
             // ❌ غير مسموح
             showDownloadError('ليس لديك صلاحية لتحميل هذا الملف');
         }
-        
+
     } catch (error) {
         console.error('خطأ في تحميل الملف:', error);
         if (error.message && error.message.includes('permission_denied')) {
@@ -14033,33 +14030,48 @@ function closeFileViewModal(event) {
     }
 }
 
-// ==================== تحميل الملف (تنزيل) ====================
+// استبدل دالة downloadFile() بهذه النسخة المحسّنة
 function downloadFile() {
     if (!currentViewFileId) {
         showToast('❌ لا يوجد ملف للتحميل');
         return;
     }
-    
+
     const file = currentFiles.find(f => f.id === currentViewFileId);
     if (!file) {
         showToast('❌ الملف غير موجود');
         return;
     }
-    
+
     try {
-        // استخراج البيانات من Base64
+        // ✅ استخراج البيانات من Base64 وتحويلها إلى Blob
+        const base64String = file.data;
+        const byteCharacters = atob(base64String.split(',')[1]);
+        const byteNumbers = new Array(byteCharacters.length);
+        for (let i = 0; i < byteCharacters.length; i++) {
+            byteNumbers[i] = byteCharacters.charCodeAt(i);
+        }
+        const byteArray = new Uint8Array(byteNumbers);
+        const blob = new Blob([byteArray], { type: file.type || 'application/octet-stream' });
+        
+        // ✅ إنشاء رابط تحميل مؤقت
         const link = document.createElement('a');
-        link.href = file.data;
+        link.href = URL.createObjectURL(blob);
         link.download = file.name;
         document.body.appendChild(link);
         link.click();
         document.body.removeChild(link);
         
+        // ✅ تحرير الرابط المؤقت بعد التحميل
+        setTimeout(() => {
+            URL.revokeObjectURL(link.href);
+        }, 1000);
+
         // تحديث عدد مرات التحميل
         db.ref(`files/${currentViewFileId}/downloads`).transaction((current) => {
             return (current || 0) + 1;
         });
-        
+
         showToast('✅ بدء تحميل الملف');
     } catch (error) {
         console.error('خطأ في تحميل الملف:', error);
