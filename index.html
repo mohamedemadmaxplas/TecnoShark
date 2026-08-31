@@ -11685,7 +11685,7 @@ function downloadFileFromPage() {
             return;
         }
         
-        showToast('⏳ جاري تجهيز الملف للتحميل...');
+        showToast('⏳ جاري فك تشفير الملف...');
         
         setTimeout(() => {
             try {
@@ -11694,16 +11694,21 @@ function downloadFileFromPage() {
                     base64Data = base64Data.split(',')[1];
                 }
                 
-                const byteCharacters = atob(base64Data);
-                const byteNumbers = new Array(byteCharacters.length);
-                for (let i = 0; i < byteNumbers.length; i++) {
-                    byteNumbers[i] = byteCharacters.charCodeAt(i);
+                // ✅ فك تشفير Base64
+                const binaryString = atob(base64Data);
+                const bytes = new Uint8Array(binaryString.length);
+                for (let i = 0; i < binaryString.length; i++) {
+                    bytes[i] = binaryString.charCodeAt(i);
                 }
-                const byteArray = new Uint8Array(byteNumbers);
                 
+                // ✅ فك الضغط والتشفير
+                const decompressed = decompressAndDecrypt(bytes);
+                
+                // ✅ إنشاء Blob
                 const contentType = file.type || 'application/octet-stream';
-                const blob = new Blob([byteArray], { type: contentType });
+                const blob = new Blob([decompressed], { type: contentType });
                 
+                // ✅ تحميل الملف
                 const url = URL.createObjectURL(blob);
                 const link = document.createElement('a');
                 link.href = url;
@@ -11729,7 +11734,7 @@ function downloadFileFromPage() {
                 showToast('✅ بدء تحميل الملف');
                 
             } catch (error) {
-                console.error('❌ خطأ:', error);
+                console.error('❌ خطأ في فك التشفير:', error);
                 showToast('❌ حدث خطأ: ' + error.message);
             }
         }, 100);
@@ -14083,6 +14088,7 @@ function closeFileViewModal(event) {
 
 let downloadProgressInterval = null;
 
+// ==================== تحميل الملف مع فك التشفير والضغط ====================
 function downloadFile() {
     if (!currentViewFileId && !downloadFileId) {
         showToast('❌ لا يوجد ملف للتحميل');
@@ -14107,31 +14113,31 @@ function downloadFile() {
             return;
         }
         
-        // ✅ إظهار رسالة التحميل
-        showToast('⏳ جاري تجهيز الملف للتحميل...');
+        showToast('⏳ جاري فك تشفير الملف...');
         
-        // ✅ استخدام setTimeout عشان الـ UI يتحديث
         setTimeout(() => {
             try {
-                // ✅ استخراج البيانات من Base64
+                // ✅ 1. استخراج البيانات من Base64
                 let base64Data = file.data;
                 if (base64Data.includes(',')) {
                     base64Data = base64Data.split(',')[1];
                 }
                 
-                // ✅ فك تشفير Base64
-                const byteCharacters = atob(base64Data);
-                const byteNumbers = new Array(byteCharacters.length);
-                for (let i = 0; i < byteNumbers.length; i++) {
-                    byteNumbers[i] = byteCharacters.charCodeAt(i);
+                // ✅ 2. فك تشفير Base64
+                const binaryString = atob(base64Data);
+                const bytes = new Uint8Array(binaryString.length);
+                for (let i = 0; i < binaryString.length; i++) {
+                    bytes[i] = binaryString.charCodeAt(i);
                 }
-                const byteArray = new Uint8Array(byteNumbers);
                 
-                // ✅ إنشاء Blob
+                // ✅ 3. فك الضغط والتشفير (عكس compressAndEncryptStream)
+                const decompressed = decompressAndDecrypt(bytes);
+                
+                // ✅ 4. إنشاء Blob من البيانات الأصلية
                 const contentType = file.type || 'application/octet-stream';
-                const blob = new Blob([byteArray], { type: contentType });
+                const blob = new Blob([decompressed], { type: contentType });
                 
-                // ✅ إنشاء رابط التحميل
+                // ✅ 5. تحميل الملف
                 const url = URL.createObjectURL(blob);
                 const link = document.createElement('a');
                 link.href = url;
@@ -14140,18 +14146,14 @@ function downloadFile() {
                 link.click();
                 document.body.removeChild(link);
                 
-                // ✅ تحرير الرابط بعد التحميل
                 setTimeout(() => {
                     URL.revokeObjectURL(url);
                 }, 5000);
                 
                 // ✅ تحديث عدد التحميلات
-                const fileRef = fileId ? db.ref(`files/${fileId}/downloads`) : null;
-                if (fileRef) {
-                    fileRef.transaction((current) => {
-                        return (current || 0) + 1;
-                    });
-                }
+                db.ref(`files/${fileId}/downloads`).transaction((current) => {
+                    return (current || 0) + 1;
+                });
                 
                 // ✅ تحديث العدد في الواجهة
                 const downloadsEl = document.getElementById('downloadFileDownloads');
@@ -14163,8 +14165,8 @@ function downloadFile() {
                 showToast('✅ بدء تحميل الملف');
                 
             } catch (error) {
-                console.error('❌ خطأ في تجهيز الملف:', error);
-                showToast('❌ حدث خطأ: ' + error.message);
+                console.error('❌ خطأ في فك التشفير:', error);
+                showToast('❌ حدث خطأ في فك تشفير الملف: ' + error.message);
             }
         }, 100);
         
@@ -14173,6 +14175,7 @@ function downloadFile() {
         showToast('❌ حدث خطأ: ' + error.message);
     }
 }
+
 
 // ==================== نسخ رابط التحميل من نافذة العرض (معدل) ====================
 function copyFileLink() {
