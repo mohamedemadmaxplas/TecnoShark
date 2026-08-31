@@ -11586,7 +11586,6 @@ async function loadFileForDownload(fileId) {
 }
 
 function displayFileDownloadInfo(file) {
-    // التحقق من وجود العناصر قبل التعامل معها
     const content = document.getElementById('fileDownloadContent');
     const errorContent = document.getElementById('downloadErrorContent');
     const privateContent = document.getElementById('downloadPrivateContent');
@@ -11595,7 +11594,7 @@ function displayFileDownloadInfo(file) {
     if (errorContent) errorContent.classList.add('hidden');
     if (privateContent) privateContent.classList.add('hidden');
     
-    // ✅ تخزين بيانات الملف في المتغيرات العامة للاستخدام في التحميل
+    // ✅ تخزين بيانات الملف
     downloadFileData = file;
     downloadFileId = file.id || file.fileId;
     
@@ -11617,7 +11616,7 @@ function displayFileDownloadInfo(file) {
         fileDateEl.textContent = date.toLocaleDateString('ar-EG');
     }
     
-    // ✅ رافع الملف (يظهر دايماً)
+    // رافع الملف
     const uploaderEl = document.getElementById('downloadFileUploader');
     if (uploaderEl) uploaderEl.textContent = file.userName || 'مستخدم';
     
@@ -11625,7 +11624,7 @@ function displayFileDownloadInfo(file) {
     const downloadsEl = document.getElementById('downloadFileDownloads');
     if (downloadsEl) downloadsEl.textContent = file.downloads || 0;
     
-    // أيقونة الملف حسب النوع
+    // أيقونة الملف
     const iconMap = {
         'image': 'fa-image',
         'document': 'fa-file-alt',
@@ -11648,14 +11647,14 @@ function displayFileDownloadInfo(file) {
         iconEl.innerHTML = `<i class="fas ${icon} text-6xl ${color}"></i>`;
     }
     
-    // ✅ حفظ الرابط (للزوار أيضاً)
+    // حفظ الرابط
     const linkInput = document.getElementById('downloadDirectLink');
     if (linkInput) {
         const baseUrl = 'https://tecno-shark.vercel.app';
         linkInput.value = baseUrl + '/?file=' + downloadFileId;
     }
     
-    // ✅ إظهار زر التحميل
+    // إظهار زر التحميل
     const downloadBtn = document.getElementById('downloadFileBtn');
     if (downloadBtn) {
         downloadBtn.style.display = 'flex';
@@ -11670,7 +11669,6 @@ function displayFileDownloadInfo(file) {
     });
 }
 
-// ==================== نفس الكود لـ downloadFileFromPage ====================
 function downloadFileFromPage() {
     if (!downloadFileData || !downloadFileId) {
         showToast('❌ لا يوجد ملف للتحميل');
@@ -11689,26 +11687,23 @@ function downloadFileFromPage() {
         
         setTimeout(() => {
             try {
-                let base64Data = file.data;
-                if (base64Data.includes(',')) {
-                    base64Data = base64Data.split(',')[1];
-                }
+                // ✅ 1. فك تشفير Base64
+                const binaryString = atob(file.data);
                 
-                // ✅ فك تشفير Base64
-                const binaryString = atob(base64Data);
+                // ✅ 2. تحويل إلى Uint8Array
                 const bytes = new Uint8Array(binaryString.length);
                 for (let i = 0; i < binaryString.length; i++) {
                     bytes[i] = binaryString.charCodeAt(i);
                 }
                 
-                // ✅ فك الضغط والتشفير
+                // ✅ 3. فك الضغط والتشفير
                 const decompressed = decompressAndDecrypt(bytes);
                 
-                // ✅ إنشاء Blob
+                // ✅ 4. إنشاء Blob
                 const contentType = file.type || 'application/octet-stream';
                 const blob = new Blob([decompressed], { type: contentType });
                 
-                // ✅ تحميل الملف
+                // ✅ 5. تحميل الملف
                 const url = URL.createObjectURL(blob);
                 const link = document.createElement('a');
                 link.href = url;
@@ -13533,7 +13528,6 @@ let speedSamples = [];
 let lastProgressUpdate = 0;
 let uploadInterval = null;
 
-// ==================== رفع ملف مع تقدم حقيقي ====================
 async function uploadFileWithProgress(event) {
     event.preventDefault();
     
@@ -13574,21 +13568,20 @@ async function uploadFileWithProgress(event) {
     
     // ✅ إظهار نافذة التقدم
     showRealProgressModal(file.name, file.size);
-    await sleep(100); // تأخير بسيط لظهور النافذة
+    await sleep(100);
     
-    // ✅ تعطيل زر الإرسال
     const submitBtn = document.querySelector('#uploadForm button[type="submit"]');
     if (submitBtn) submitBtn.disabled = true;
     
     try {
-        // ✅ ========== 1. قراءة الملف ==========
+        // ✅ 1. قراءة الملف
         updateRealProgress(5, 'جاري قراءة الملف...');
         await sleep(50);
         
         const arrayBuffer = await file.arrayBuffer();
         const uint8Array = new Uint8Array(arrayBuffer);
         
-        // ✅ ========== 2. تشفير وضغط مع تحديث التقدم ==========
+        // ✅ 2. تشفير وضغط
         updateRealProgress(10, 'جاري التشفير والضغط...');
         await sleep(50);
         
@@ -13599,13 +13592,18 @@ async function uploadFileWithProgress(event) {
         updateRealProgress(30, `✅ تم التشفير (نسبة الضغط: ${compressionRatio}%)`);
         await sleep(50);
         
-        // ✅ ========== 3. تحويل إلى Base64 مع تقدم حقيقي ==========
+        // ✅ 3. تحويل البيانات المشفرة إلى Base64
         updateRealProgress(35, 'جاري تحويل البيانات...');
         await sleep(50);
         
-        const base64 = await arrayBufferToBase64WithProgress(compressed, totalFileSize);
+        // ✅ تحويل Uint8Array إلى Base64 بشكل صحيح
+        let binary = '';
+        for (let i = 0; i < compressed.length; i++) {
+            binary += String.fromCharCode(compressed[i]);
+        }
+        const base64 = btoa(binary);
         
-        // ✅ ========== 4. حفظ في Firebase ==========
+        // ✅ 4. حفظ في Firebase
         updateRealProgress(90, 'جاري حفظ البيانات...');
         await sleep(50);
         
@@ -13617,7 +13615,7 @@ async function uploadFileWithProgress(event) {
             type: file.type,
             category: category,
             visibility: visibility,
-            data: base64,
+            data: base64,  // ✅ تخزين Base64 فقط (بدون data:image/png;base64,)
             compressionRatio: compressionRatio,
             userId: currentUser.uid,
             userName: currentUser.name || currentUser.username || 'مستخدم',
@@ -13629,7 +13627,7 @@ async function uploadFileWithProgress(event) {
         const newRef = db.ref('files').push();
         await newRef.set(fileData);
         
-        // ✅ ========== 5. اكتمال الرفع ==========
+        // ✅ 5. اكتمال الرفع
         updateRealProgress(100, '✅ تم الرفع بنجاح!');
         
         setTimeout(() => {
@@ -13725,7 +13723,6 @@ function arrayBufferToBase64WithProgress(uint8Array, totalSize) {
     });
 }
 
-// ==================== دالة التشفير والضغط ====================
 function compressAndEncryptStream(data) {
     const result = [];
     let runLength = 1;
@@ -13764,7 +13761,6 @@ function decompressAndDecrypt(compressed) {
         const value = compressed[i] ^ key;
         i++;
         
-        // ✅ التحقق من وجود RLE
         if (i < compressed.length && compressed[i] < 0x80) {
             const count = compressed[i];
             i++;
@@ -14088,7 +14084,6 @@ function closeFileViewModal(event) {
 
 let downloadProgressInterval = null;
 
-// ==================== تحميل الملف مع فك التشفير والضغط ====================
 function downloadFile() {
     if (!currentViewFileId && !downloadFileId) {
         showToast('❌ لا يوجد ملف للتحميل');
@@ -14115,16 +14110,13 @@ function downloadFile() {
         
         showToast('⏳ جاري فك تشفير الملف...');
         
+        // ✅ استخدام setTimeout لتحديث الـ UI
         setTimeout(() => {
             try {
-                // ✅ 1. استخراج البيانات من Base64
-                let base64Data = file.data;
-                if (base64Data.includes(',')) {
-                    base64Data = base64Data.split(',')[1];
-                }
+                // ✅ 1. فك تشفير Base64
+                const binaryString = atob(file.data);
                 
-                // ✅ 2. فك تشفير Base64
-                const binaryString = atob(base64Data);
+                // ✅ 2. تحويل إلى Uint8Array
                 const bytes = new Uint8Array(binaryString.length);
                 for (let i = 0; i < binaryString.length; i++) {
                     bytes[i] = binaryString.charCodeAt(i);
