@@ -11670,38 +11670,72 @@ function displayFileDownloadInfo(file) {
     });
 }
 
-// ==================== تحميل الملف من الصفحة (معدل) ====================
+// ==================== نفس الكود لـ downloadFileFromPage ====================
 function downloadFileFromPage() {
     if (!downloadFileData || !downloadFileId) {
         showToast('❌ لا يوجد ملف للتحميل');
         return;
     }
-    
+
     try {
-        // استخراج البيانات من Base64
-        const link = document.createElement('a');
-        link.href = downloadFileData.data;
-        link.download = downloadFileData.name;
-        document.body.appendChild(link);
-        link.click();
-        document.body.removeChild(link);
+        const file = downloadFileData;
         
-        showToast('✅ بدء تحميل الملف');
-        
-        // تحديث عدد التحميلات
-        db.ref(`files/${downloadFileId}/downloads`).transaction((current) => {
-            return (current || 0) + 1;
-        });
-        
-        // تحديث العدد في الواجهة
-        const downloadsEl = document.getElementById('downloadFileDownloads');
-        if (downloadsEl) {
-            const current = parseInt(downloadsEl.textContent) || 0;
-            downloadsEl.innerHTML = `<i class="fas fa-download ml-1"></i> ${current + 1}`;
+        if (!file.data) {
+            showToast('❌ لا توجد بيانات للتحميل');
+            return;
         }
         
+        showToast('⏳ جاري تجهيز الملف للتحميل...');
+        
+        setTimeout(() => {
+            try {
+                let base64Data = file.data;
+                if (base64Data.includes(',')) {
+                    base64Data = base64Data.split(',')[1];
+                }
+                
+                const byteCharacters = atob(base64Data);
+                const byteNumbers = new Array(byteCharacters.length);
+                for (let i = 0; i < byteNumbers.length; i++) {
+                    byteNumbers[i] = byteCharacters.charCodeAt(i);
+                }
+                const byteArray = new Uint8Array(byteNumbers);
+                
+                const contentType = file.type || 'application/octet-stream';
+                const blob = new Blob([byteArray], { type: contentType });
+                
+                const url = URL.createObjectURL(blob);
+                const link = document.createElement('a');
+                link.href = url;
+                link.download = file.name;
+                document.body.appendChild(link);
+                link.click();
+                document.body.removeChild(link);
+                
+                setTimeout(() => {
+                    URL.revokeObjectURL(url);
+                }, 5000);
+                
+                db.ref(`files/${downloadFileId}/downloads`).transaction((current) => {
+                    return (current || 0) + 1;
+                });
+                
+                const downloadsEl = document.getElementById('downloadFileDownloads');
+                if (downloadsEl) {
+                    const current = parseInt(downloadsEl.textContent) || 0;
+                    downloadsEl.textContent = current + 1;
+                }
+                
+                showToast('✅ بدء تحميل الملف');
+                
+            } catch (error) {
+                console.error('❌ خطأ:', error);
+                showToast('❌ حدث خطأ: ' + error.message);
+            }
+        }, 100);
+        
     } catch (error) {
-        console.error('خطأ في تحميل الملف:', error);
+        console.error('❌ خطأ:', error);
         showToast('❌ حدث خطأ في تحميل الملف');
     }
 }
@@ -14047,48 +14081,95 @@ function closeFileViewModal(event) {
     }
 }
 
+let downloadProgressInterval = null;
+
 function downloadFile() {
-    if (!currentViewFileId) {
+    if (!currentViewFileId && !downloadFileId) {
         showToast('❌ لا يوجد ملف للتحميل');
         return;
     }
-
-    const file = currentFiles.find(f => f.id === currentViewFileId);
+    
+    const fileId = currentViewFileId || downloadFileId;
+    
+    let file = currentFiles.find(f => f.id === fileId);
+    if (!file && downloadFileData) {
+        file = downloadFileData;
+    }
+    
     if (!file) {
         showToast('❌ الملف غير موجود');
         return;
     }
 
-    // ✅ اطبع البيانات في الكونسول عشان تشوف شكلها
-    console.log('📦 بيانات الملف:', {
-        name: file.name,
-        type: file.type,
-        dataLength: file.data ? file.data.length : 0,
-        dataStart: file.data ? file.data.substring(0, 50) : 'لا توجد بيانات'
-    });
-
     try {
-        // ✅ جرب طريقة التحميل المباشرة
-        if (file.data) {
-            const link = document.createElement('a');
-            link.href = file.data;
-            link.download = file.name;
-            document.body.appendChild(link);
-            link.click();
-            document.body.removeChild(link);
-            
-            db.ref(`files/${currentViewFileId}/downloads`).transaction((current) => {
-                return (current || 0) + 1;
-            });
-            
-            showToast('✅ بدء تحميل الملف');
+        if (!file.data) {
+            showToast('❌ لا توجد بيانات للتحميل');
             return;
         }
         
-        showToast('❌ لا توجد بيانات للتحميل');
+        // ✅ إظهار رسالة التحميل
+        showToast('⏳ جاري تجهيز الملف للتحميل...');
+        
+        // ✅ استخدام setTimeout عشان الـ UI يتحديث
+        setTimeout(() => {
+            try {
+                // ✅ استخراج البيانات من Base64
+                let base64Data = file.data;
+                if (base64Data.includes(',')) {
+                    base64Data = base64Data.split(',')[1];
+                }
+                
+                // ✅ فك تشفير Base64
+                const byteCharacters = atob(base64Data);
+                const byteNumbers = new Array(byteCharacters.length);
+                for (let i = 0; i < byteNumbers.length; i++) {
+                    byteNumbers[i] = byteCharacters.charCodeAt(i);
+                }
+                const byteArray = new Uint8Array(byteNumbers);
+                
+                // ✅ إنشاء Blob
+                const contentType = file.type || 'application/octet-stream';
+                const blob = new Blob([byteArray], { type: contentType });
+                
+                // ✅ إنشاء رابط التحميل
+                const url = URL.createObjectURL(blob);
+                const link = document.createElement('a');
+                link.href = url;
+                link.download = file.name;
+                document.body.appendChild(link);
+                link.click();
+                document.body.removeChild(link);
+                
+                // ✅ تحرير الرابط بعد التحميل
+                setTimeout(() => {
+                    URL.revokeObjectURL(url);
+                }, 5000);
+                
+                // ✅ تحديث عدد التحميلات
+                const fileRef = fileId ? db.ref(`files/${fileId}/downloads`) : null;
+                if (fileRef) {
+                    fileRef.transaction((current) => {
+                        return (current || 0) + 1;
+                    });
+                }
+                
+                // ✅ تحديث العدد في الواجهة
+                const downloadsEl = document.getElementById('downloadFileDownloads');
+                if (downloadsEl) {
+                    const current = parseInt(downloadsEl.textContent) || 0;
+                    downloadsEl.textContent = current + 1;
+                }
+                
+                showToast('✅ بدء تحميل الملف');
+                
+            } catch (error) {
+                console.error('❌ خطأ في تجهيز الملف:', error);
+                showToast('❌ حدث خطأ: ' + error.message);
+            }
+        }, 100);
         
     } catch (error) {
-        console.error('❌ خطأ في التحميل:', error);
+        console.error('❌ خطأ في تحميل الملف:', error);
         showToast('❌ حدث خطأ: ' + error.message);
     }
 }
